@@ -1,0 +1,61 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  openapi/_original/*.json (servers[] blocks), https://api-docs.decisiv.net/docs/api/oauth/,
+  https://api-docs.decisiv.net/docs/api/1/architecture/authentication/
+published_sandbox: false
+note: >-
+  Decisiv does not publish a self-serve sandbox, test credentials, or any magic test values. What it DOES
+  publish — and what an integrator can act on — is a documented staging environment that mirrors
+  production host-for-host. Every SRM Gateway spec lists the staging host FIRST in servers[], and the
+  OAuth walkthrough and the Platform API authentication page use staging hosts in every worked example.
+  Access to staging still requires Decisiv to provision an OAuth Application, so this is a
+  provider-granted test environment rather than an open sandbox. No test cards, no fixture generator, no
+  time simulation, no trigger tooling exists — appropriate for a service-management platform with no
+  payment surface of its own.
+environments:
+- name: staging
+  role: test
+  hosts:
+  - https://srm-api.staging.decisivapps.com
+  - https://login.staging.decisivapps.com
+  - https://api.staging.decisivapps.com
+  - https://api.staging.decisiv.net
+  evidence: >-
+    servers[0] in all four SRM Gateway specs is https://srm-api.staging.decisivapps.com; the OAuth docs
+    POST to https://login.staging.decisivapps.com/oauth/token and GET
+    https://api.staging.decisivapps.com/platform_api/cases; the Platform API auth page uses
+    api.staging.decisiv.net.
+- name: production
+  role: live
+  hosts:
+  - https://srm-api.decisivapps.com
+  - https://login.decisiv.net
+  - https://global-assets.decisivapps.com
+  - https://service-provider.decisivapps.com
+  - https://api.decisiv.net
+separation:
+  mechanism: distinct hostnames
+  key_prefixes: false
+  mode_flag: false
+  note: >-
+    There is no test/live key prefix and no mode switch. Test versus live is decided entirely by which
+    host you point at, which means a misconfigured base URL is a silent production write. Credentials are
+    also environment-scoped, so an integrator holds two sets.
+test_values: []
+test_utilities:
+  test_clock: false
+  fixture_generator: false
+  event_trigger_tooling: false
+  event_suppression:
+    supported: true
+    header: X-DECISIV-SILENCE-EVENTS
+    note: >-
+      Not a test tool as such, but the closest thing Decisiv ships: it lets a caller mute the webhook
+      events a write would otherwise emit, which is what makes bulk backfills safe.
+provisioning:
+  self_serve: false
+  process: >-
+    Contact Decisiv to have an OAuth Application created and the account provisioned per module. The
+    legacy transition token is self-service for existing Case application users
+    (Admin > Customize Your Database > Platform API > Create Transition Token).

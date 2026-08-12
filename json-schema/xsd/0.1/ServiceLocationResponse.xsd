@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    xmlns:sl="http://www.decisiv.net/platform_api/0.1/Case/ServiceLocationResponse"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/ServiceLocationResponse">
+    <xs:element type="sl:ServiceLocationResponse" name="serviceLocation"></xs:element>
+    <xs:element name="serviceLocations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="serviceLocation" type="sl:ServiceLocationResponse" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="ServiceLocationResponse">
+        <xs:all>
+            <xs:element name="URL" type="xs:string"></xs:element>
+            <xs:element name="id" type="xs:string"></xs:element>
+            <xs:element name="externalId" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="name" type="xs:string"></xs:element>
+            <xs:element name="address" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="address2" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="city" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="state" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="postalCode" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="country" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="phone" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="fax" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="email" type="xs:string" nillable="true"></xs:element>
+            <xs:element name="createdAt" type="xs:dateTime" nillable="true"/>
+            <xs:element name="updatedAt" type="xs:dateTime" nillable="true"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

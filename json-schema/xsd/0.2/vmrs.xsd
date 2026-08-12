@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:vmrs="http://www.decisiv.net/platform_api/0.2/Case/VMRS"
+  targetNamespace="http://www.decisiv.net/platform_api/0.2/Case/VMRS">
+  <xs:complexType name="VMRS">
+    <xs:all>
+      <xs:element name="code15" type="vmrs:VMRSCode15" nillable="true" minOccurs="0"/>
+      <xs:element name="code18" type="vmrs:VMRSCode18" nillable="true" minOccurs="0"/>
+      <xs:element name="code79" type="vmrs:VMRSCode79" nillable="true" minOccurs="0"/>
+      <xs:element name="code33" type="vmrs:VMRSCode33" nillable="true" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="caseVMRS" >
+    <xs:sequence>
+      <xs:element name="code14" type="vmrs:VMRSCode14" nillable="true" minOccurs="0"/>
+      <xs:element name="code15" type="vmrs:VMRSCode15" nillable="true" minOccurs="0"/>
+      <xs:element name="code16" type="vmrs:VMRSCode16" nillable="true" minOccurs="0"/>
+      <xs:element name="code17" type="vmrs:VMRSCode17" nillable="true" minOccurs="0"/>
+      <xs:element name="complaintCode33" type="vmrs:VMRSCode33" nillable="true" minOccurs="0"/>
+      <xs:element name="complaintCode79" type="vmrs:VMRSCode79" nillable="true" minOccurs="0"/>
+      <xs:element name="correctionCode33" type="vmrs:VMRSCode33" nillable="true" minOccurs="0"/>
+      <xs:element name="correctionCode79" type="vmrs:VMRSCode79" nillable="true" minOccurs="0"/>
+      <xs:element name="code82" type="vmrs:VMRSCode82" nillable="true" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode14">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{2}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode15">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Za-z0-9]{1,2}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode16">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode17">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode18">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Za-z0-9]{2}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode33">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{3}-\d{3}-\d{3}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode79">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Za-z0-9]{2}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VMRSCode82">
+    <xs:sequence>
+      <xs:element name="code" nillable="true" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="\d{3}" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

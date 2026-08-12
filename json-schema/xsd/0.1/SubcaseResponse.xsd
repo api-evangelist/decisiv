@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:sc="http://www.decisiv.net/platform_api/0.1/Case/SubcaseResponse"
+    xmlns:g="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/SubcaseResponse">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes" schemaLocation="CaseTypes.xsd"></xs:import>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+        schemaLocation="GroupedUser.xsd"/>
+    <xs:complexType name="SubcaseResponse">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="URL" type="xs:string"/>
+            <xs:element name="estimateURL" type="xs:string"/>
+            <xs:element name="parentCaseURL" type="xs:string" minOccurs="0"/>
+            <xs:element name="assetURL" type="xs:string"/>
+            <xs:element name="customerURL" type="xs:string"/>
+            <xs:element name="billingCustomerURL" type="xs:string"/>
+            <xs:element name="shippingCustomerURL" type="xs:string"/>
+            <xs:element name="serviceLocationURL" type="xs:string"/>
+            <xs:element name="notesURL" type="xs:string"/>
+            <xs:element name="attachmentsURL" type="xs:string"/>
+            <xs:element ref="ct:primaryContact"/>
+            <xs:element ref="ct:breakdown"/>
+            <xs:element ref="ct:assetInformation"/>
+            <xs:element name="cause" type="xs:string"/>
+            <xs:element name="correction" type="xs:string" nillable="true"/>
+            <xs:element name="complaint" type="xs:string" nillable="true"/>
+            <xs:element ref="ct:customComplaintCodes" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="etr" type="xs:dateTime" nillable="true"/>
+            <xs:element name="atr" type="xs:dateTime" nillable="true"/>
+            <xs:element ref="ct:status"/>
+            <xs:element name="poNumber" type="xs:string" nillable="true"/>
+            <xs:element name="roNumber" type="xs:string" nillable="true"/>
+            <xs:element name="shopSupplies" type="ct:Currency"/>
+            <xs:element name="hazWaste" type="ct:Currency"/>
+            <xs:element name="freight" type="ct:Currency"/>
+            <xs:element name="tax" type="ct:Currency"/>
+            <xs:element name="partsTotal" type="ct:Currency"/>
+            <xs:element name="laborTotal" type="ct:Currency"/>
+            <xs:element name="coreTotal" type="ct:Currency"/>
+            <xs:element name="total" type="ct:Currency"/>
+            <xs:element name="createdAt" type="xs:dateTime"/>
+            <xs:element name="updatedAt" type="xs:dateTime"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="subcase" type="sc:SubcaseResponse"></xs:element>
+    <xs:element name="subcases">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="subcase" type="sc:SubcaseResponse" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

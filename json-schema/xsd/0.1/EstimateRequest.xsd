@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:ct="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+  xmlns:ei="http://www.decisiv.net/platform_api/0.1/Case/EstimateItemRequest"
+  xmlns:e="http://www.decisiv.net/platform_api/0.1/Case/EstimateRequest"
+  xmlns:ac="http://www.decisiv.net/platform_api/0.1/Case/AdditionalCharges"
+  targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/EstimateRequest">
+
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes" schemaLocation="CaseTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/EstimateItemRequest" schemaLocation="EstimateItemRequest.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/AdditionalCharges"
+             schemaLocation="AdditionalCharges.xsd"/>
+  <xs:element name="estimate" type="e:Estimate"/>
+  <xs:complexType name="Estimate">
+    <xs:all>
+      <xs:element name="shopSupplies" type="ct:Currency" minOccurs="0"/>
+      <xs:element name="hazWaste" type="ct:Currency" minOccurs="0"/>
+      <xs:element name="freight" type="ct:Currency" minOccurs="0"/>
+      <xs:element name="tax" type="ct:Currency" minOccurs="0"/>
+      <xs:element name="items" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="item" type="ei:EstimateItem" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="additionalCharges" nillable="true" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="charge" type="ac:AdditionalCharge" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="approvalGroupConfigurations" minOccurs="0" maxOccurs="1" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="configuration" type="e:ApprovalGroupConfiguration" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="ApprovalGroupConfiguration">
+    <xs:sequence>
+      <xs:element name="tag" type="xs:string"/>
+      <xs:element name="description" type="xs:string" minOccurs="0" nillable="true"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

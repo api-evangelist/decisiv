@@ -1,0 +1,33 @@
+generated: '2026-08-12'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.decisiv.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 31 05:30:42 2026 GMT
+  hsts: true
+  hsts_max_age: 63072000
+- host: srm-api.decisivapps.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Dec 20 23:59:59 2026 GMT
+  hsts: null
+- host: global-assets.decisivapps.com
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Feb  6 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: decisiv.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: decisivapps.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

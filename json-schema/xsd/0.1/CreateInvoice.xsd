@@ -1,0 +1,147 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.decisiv.net/platform_api/0.1/Invoices/CreateInvoice" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="create-invoice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="customer">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="name"/>
+              <xs:element type="xs:string" name="tag"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="due-on" nillable="true">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:date">
+                <xs:attribute type="xs:string" name="type"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="issued-at" nillable="true">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:dateTime">
+                <xs:attribute type="xs:string" name="type"/>
+                <xs:attribute type="xs:string" name="nil" use="optional"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="lines">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="line">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="connections">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="connection" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:all>
+                                <xs:element type="xs:string" name="relationship"/>
+                                <xs:element type="xs:string" name="tag"/>
+                                <xs:element name="url" nillable="true">
+                                  <xs:complexType>
+                                    <xs:simpleContent>
+                                      <xs:extension base="xs:string">
+                                        <xs:attribute type="xs:string" name="nil" use="optional"/>
+                                      </xs:extension>
+                                    </xs:simpleContent>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:all>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="type"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="description"/>
+                    <xs:element name="measurement">
+                      <xs:complexType>
+                        <xs:all>
+                          <xs:element name="final">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:decimal">
+                                  <xs:attribute type="xs:string" name="type"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="initial">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:decimal">
+                                  <xs:attribute type="xs:string" name="type"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element type="xs:string" name="unit"/>
+                        </xs:all>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="quantity">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:decimal">
+                            <xs:attribute type="xs:string" name="type"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="tag"/>
+                    <xs:element name="total">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:decimal">
+                            <xs:attribute type="xs:string" name="type"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="unit-price">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:decimal">
+                            <xs:attribute type="xs:string" name="type"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="unit-tax">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:decimal">
+                            <xs:attribute type="xs:string" name="type"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="vmrs">
+                      <xs:complexType>
+                        <xs:all>
+                          <xs:element type="xs:string" name="code14"/>
+                          <xs:element type="xs:string" name="code15"/>
+                          <xs:element type="xs:string" name="code33"/>
+                        </xs:all>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="type"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element type="xs:string" name="number"/>
+        <xs:element type="xs:string" name="po-number"/>
+        <xs:element type="xs:string" name="status"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

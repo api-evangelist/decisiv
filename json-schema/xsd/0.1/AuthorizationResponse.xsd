@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:a="http://www.decisiv.net/platform_api/0.1/Case/AuthorizationResponse"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/AuthorizationResponse">
+    <xs:element name="AuthorizationResponse" type="a:AuthorizationResponse"/>
+    <xs:complexType name="AuthorizationResponse">
+        <xs:all>
+            <xs:element name="token" type="xs:string"/>
+            <xs:element name="type" type="a:TokenType"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="TokenType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Bearer"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

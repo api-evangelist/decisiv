@@ -1,0 +1,100 @@
+generated: '2026-08-12'
+method: probed
+source: https://login.decisiv.net/.well-known/openid-configuration
+docs: https://api-docs.decisiv.net/docs/api/oauth/
+note: >-
+  Decisiv's OpenAPI security schemes declare oauth2 flows with EMPTY scope maps in all six specs, so the
+  spec-derived pass produced zero scopes. The real scope list comes from the provider's own OAuth 2.0 /
+  OIDC discovery document at login.decisiv.net, which publishes scopes_supported. Decisiv does not
+  publish a per-resource scope reference page; authorization is granted per OAuth Application through
+  account provisioning (a request to an unprovisioned module returns 428 with
+  decisiv:access:003 "OAuth Application does not have appropriate provisioning to access this resource"),
+  which means the coarse scopes below are the whole published scope vocabulary.
+issuer: decisiv.net
+authorization_server: https://login.decisiv.net
+schemes:
+- name: OAuth2AuthorizationCode
+  source: openapi/decisiv-account-management-openapi.yml
+  status: current
+  note: required flow for all new integrations
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.decisiv.net/auth/api_gateway
+    tokenUrl: https://login.decisiv.net/oauth/token
+    refreshUrl: https://login.decisiv.net/oauth/token
+    scopes_declared_in_spec: 0
+- name: OAuth2Password
+  source: openapi/decisiv-account-management-openapi.yml
+  status: deprecated
+  note: >-
+    Marked "**Deprecated.**" in the spec description — available only during the migration window to
+    the authorization-code flow and slated for removal in a future release.
+  flows:
+  - flow: password
+    tokenUrl: https://login.decisiv.net/oauth/token
+    scopes_declared_in_spec: 0
+- name: OAuth2Password
+  source: openapi/decisiv-global-assets-openapi.yml
+  status: deprecated
+  flows:
+  - flow: password
+    tokenUrl: https://portal.decisivapps.com/oauth/token
+    scopes_declared_in_spec: 0
+scopes:
+- scope: openid
+  description: Request an OpenID Connect ID token alongside the access token.
+  sources: [https://login.decisiv.net/.well-known/openid-configuration]
+- scope: public
+  description: Public / unauthenticated-tier access.
+  sources: [https://login.decisiv.net/.well-known/openid-configuration]
+- scope: read
+  description: Read access to the resources the OAuth Application is provisioned for.
+  sources: [https://login.decisiv.net/.well-known/openid-configuration]
+- scope: write
+  description: Create access to the resources the OAuth Application is provisioned for.
+  sources: [https://login.decisiv.net/.well-known/openid-configuration]
+- scope: update
+  description: Modify access to the resources the OAuth Application is provisioned for.
+  sources: [https://login.decisiv.net/.well-known/openid-configuration]
+grant_types_supported:
+- authorization_code
+- refresh_token
+- password
+- client_credentials
+pkce:
+  supported: true
+  code_challenge_methods: [S256, plain]
+id_token:
+  signing_alg: [ES256]
+  jwks_uri: https://login.decisiv.net/oauth/discovery/keys
+  claims:
+  - iss
+  - sub
+  - aud
+  - exp
+  - iat
+  - username
+  - email
+  - id
+  - first_name
+  - last_name
+  - name
+  - phone
+  - roles
+  - rbac_groups
+  - rbac_permissions
+endpoints:
+  authorization: https://login.decisiv.net/oauth/authorize
+  token: https://login.decisiv.net/oauth/token
+  revocation: https://login.decisiv.net/oauth/revoke
+  introspection: https://login.decisiv.net/oauth/introspect
+  userinfo: https://login.decisiv.net/oauth/userinfo
+x-evidence:
+- url: https://login.decisiv.net/.well-known/openid-configuration
+  http_status: 200
+  content_type: application/vnd.api+json
+- url: https://login.decisiv.net/.well-known/oauth-authorization-server
+  http_status: 200
+  content_type: application/vnd.api+json
+- url: https://login.decisiv.net/oauth/discovery/keys
+  http_status: 200

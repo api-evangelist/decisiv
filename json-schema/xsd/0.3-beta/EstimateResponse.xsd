@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:ct="http://www.decisiv.net/platform_api/0.3-beta/Case/CaseTypes"
+           xmlns:ac="http://www.decisiv.net/platform_api/0.2/Case/AdditionalCharges"
+           xmlns:e="http://www.decisiv.net/platform_api/0.3-beta/Case/EstimateResponse"
+           targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/EstimateResponse">
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.3-beta/Case/CaseTypes"
+             schemaLocation="CaseTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/AdditionalCharges"
+             schemaLocation="../0.2/AdditionalCharges.xsd"/>
+  <xs:element name="estimates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="estimate" type="e:Estimate" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="estimate" type="e:Estimate"/>
+  <xs:complexType name="Estimate">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="uuid" type="xs:string"/>
+      <xs:element name="URL" type="xs:string"/>
+      <xs:element name="caseURL" type="xs:string"/>
+      <xs:element name="itemsURL" type="xs:string"/>
+      <xs:element name="versionsURL" type="xs:string"/>
+      <xs:element name="digest" type="xs:string" nillable="true"/>
+      <xs:element name="shopSupplies" type="ct:Currency"/>
+      <xs:element name="hazWaste" type="ct:Currency"/>
+      <xs:element name="freight" type="ct:Currency"/>
+      <xs:element name="tax" type="ct:Currency"/>
+      <xs:element name="partsTotal" type="ct:Currency"/>
+      <xs:element name="laborTotal" type="ct:Currency"/>
+      <xs:element name="coreTotal" type="ct:Currency"/>
+      <xs:element name="additionalCharges" nillable="true" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="charge" type="ac:AdditionalCharge" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="additionalChargesTotals" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="total" type="ac:AdditionalChargeTotal" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="total" type="ct:Currency"/>
+      <xs:element name="createdAt" type="xs:dateTime"/>
+      <xs:element name="updatedAt" type="xs:dateTime"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

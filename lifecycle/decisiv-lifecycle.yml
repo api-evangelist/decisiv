@@ -1,0 +1,91 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://api-docs.decisiv.net/, https://api-docs.decisiv.net/docs/api/1/architecture/versioning/,
+  https://api-docs.decisiv.net/docs/api/1/changelog/, openapi/_original/*.json
+versioning:
+  srm_gateway:
+    scheme: uri-path
+    current: v1
+    build_version: 0.48.24
+    note: Every SRM Gateway module reports the same info.version (0.48.24) — one build train across four specs.
+  platform_api:
+    scheme: header
+    application_version_header: Accept-Version
+    resource_version_header: Accept
+    current: '1'
+    default_when_header_absent: '0.0.7'
+    published_versions: ['0.0.7', '0.1', '0.2', '0.3-beta', '1']
+    docs: https://api-docs.decisiv.net/docs/api/1/architecture/versioning/
+    note: >-
+      Resource version and serialization format are negotiated separately from the application version,
+      and XSDs for every published resource version ship in the downloadable schema bundle.
+  global_assets:
+    scheme: uri-path
+    current: v1
+    spec_version: 2.1.5
+  service_provider:
+    scheme: uri-path
+    current: v1
+    spec_version: 2.0.4
+
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  deprecated_features:
+  - item: OAuth 2.0 password grant (OAuth2Password security scheme)
+    status: deprecated
+    evidence: >-
+      "**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow
+      (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will
+      be removed in a future release." — declared in the securitySchemes of all four SRM Gateway specs.
+    replacement: OAuth2AuthorizationCode (authorization code + PKCE)
+    removal_date: null
+  - item: X-Decisiv-Transition-Token
+    status: transitional
+    evidence: >-
+      Required alongside OAuth on the Global Assets / Service Provider / Platform APIs "during this
+      transition" to OAuth 2.0 — https://api-docs.decisiv.net/docs/api/oauth/
+  note: >-
+    Decisiv marks individual features deprecated inside the specs but publishes NO deprecation policy
+    page, no removal timeline, and no Sunset/Deprecation response headers. A consumer on the password
+    grant has been told it will be removed "in a future release" and nothing more.
+
+sla:
+  url: null
+  uptime_target: null
+
+status_page: null
+status_page_note: >-
+  No status page found. status.decisiv.com does not present a valid certificate for that name (TLS
+  handshake failure), status.decisiv.net does not resolve, and decisiv.statuspage.io redirects to
+  Atlassian's marketing page rather than a Decisiv page. There is no operational status surface for the
+  SRM Gateway.
+
+changelog:
+  platform_api:
+    url: https://api-docs.decisiv.net/docs/api/1/changelog/
+    dated: true
+    entries: 14
+    first_entry: '2015-11-17'
+    last_entry: '2021-09-30'
+    note: >-
+      The only dated public changelog Decisiv publishes covers the legacy XML Platform API and stops in
+      September 2021. The SRM Gateway — the current, actively-versioned product at build 0.48.24 —
+      publishes no changelog at all.
+  srm_gateway:
+    url: null
+    dated: false
+  artifact: changelog/decisiv-changelog.yml
+
+support:
+  docs: https://www.decisiv.com/resources/
+  contact_email: support@decisiv.com
+  sales_email: sales@decisiv.com
+  contact_in_spec: >-
+    info.contact in every SRM Gateway spec — Decisiv Support, support@decisiv.com, https://www.decisiv.com
+  terms_of_service: https://www.decisiv.com/terms-of-use
+  note: Access provisioning for the APIs is handled by named sales contact, not self-serve.

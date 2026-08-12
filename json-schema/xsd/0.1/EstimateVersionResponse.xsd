@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:ct="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+           xmlns:eit="http://www.decisiv.net/platform_api/0.1/Case/EstimateItemTypes"
+           xmlns:vmrs="http://www.decisiv.net/platform_api/0.1/Case/VMRS"
+           xmlns:g="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+           xmlns:ac="http://www.decisiv.net/platform_api/0.1/Case/AdditionalCharges"
+           xmlns:v="http://www.decisiv.net/platform_api/0.1/Case/EstimateVersionResponse"
+           targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/EstimateVersionResponse">
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+             schemaLocation="CaseTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/EstimateItemTypes"
+             schemaLocation="EstimateItemTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+             schemaLocation="GroupedUser.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/VMRS"
+             schemaLocation="vmrs.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/AdditionalCharges"
+             schemaLocation="AdditionalCharges.xsd"/>
+  <xs:element name="versions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="version" type="v:Estimate" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="version" type="v:Estimate"/>
+  <xs:complexType name="Estimate">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="URL" type="xs:string"/>
+      <xs:element name="estimateId" type="xs:string"/>
+      <xs:element name="estimateURL" type="xs:string"/>
+      <xs:element name="version" type="xs:string"/>
+      <xs:element name="digest" type="xs:string" nillable="true"/>
+      <xs:element name="items" maxOccurs="1" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="item" type="v:EstimateItem" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="etr" type="xs:dateTime" nillable="true"/>
+      <xs:element name="shopSupplies" type="ct:Currency"/>
+      <xs:element name="hazWaste" type="ct:Currency"/>
+      <xs:element name="freight" type="ct:Currency"/>
+      <xs:element name="tax" type="ct:Currency"/>
+      <xs:element name="partsTotal" type="ct:Currency"/>
+      <xs:element name="laborTotal" type="ct:Currency"/>
+      <xs:element name="coreTotal" type="ct:Currency"/>
+      <xs:element name="additionalCharges" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="charge" type="ac:AdditionalCharge" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="additionalChargesTotals" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="total" type="ac:AdditionalChargeTotal" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="total" type="ct:Currency"/>
+      <xs:element name="createdAt" type="xs:dateTime"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="EstimateItem">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="itemURL" type="xs:string"/>
+      <xs:element name="itemId" type="xs:string"/>
+      <xs:element name="code" type="xs:string"/>
+      <xs:element name="name" type="xs:string" nillable="true"/>
+      <xs:element name="standardOperationNotes" type="xs:string" nillable="true"/>
+      <xs:element name="complaint" type="xs:string" nillable="true"/>
+      <xs:element name="cause" type="xs:string" nillable="true"/>
+      <xs:element name="correction" type="xs:string" nillable="true"/>
+      <xs:element name="jobCode" type="xs:string" nillable="true"/>
+      <xs:element name="priceCode" type="xs:string" nillable="true"/>
+      <xs:element name="approvalStatus" type="eit:ApprovalStatus" nillable="true"/>
+      <xs:element name="soldStatus" type="eit:SoldStatus"/>
+      <xs:element name="underWarranty" type="xs:boolean" nillable="true"/>
+      <xs:element name="billingClassification" type="eit:BillingClassification" minOccurs="0" nillable="true"/>
+      <xs:element name="labor" type="eit:LaborDetail"/>
+      <xs:element name="paint" type="eit:PaintDetail"/>
+      <xs:element name="additionalCharges" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="charge" type="ac:AdditionalCharge" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="additionalChargesTotals" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="total" type="ac:AdditionalChargeTotal" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="partsTotal" type="ct:Currency"/>
+      <xs:element name="coreTotal" type="ct:Currency"/>
+      <xs:element name="fixedPriceTotal" type="ct:Currency" minOccurs="0"/>
+      <xs:element name="total" type="ct:Currency"/>
+      <xs:element name="vmrs" type="vmrs:VMRS" nillable="true"/>
+      <xs:element name="approvalGroupTag" type="xs:string" nillable="true"/>
+      <xs:element name="parts" maxOccurs="1" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="part" type="v:EstimateItemPart" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="EstimateItemPart">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="partURL" type="xs:string"/>
+      <xs:element name="partId" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="partNumber" type="xs:string"/>
+      <xs:element name="quantity" type="xs:integer"/>
+      <xs:element name="quantityShipped" type="xs:integer" nillable="true"/>
+      <xs:element name="quantityBackordered" type="xs:integer" nillable="true"/>
+      <xs:element name="unitPrice" type="ct:Currency"/>
+      <xs:element name="coreQuantity" type="xs:integer"/>
+      <xs:element name="unitCorePrice" type="ct:Currency"/>
+      <xs:element name="totalPrice" type="ct:Currency"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

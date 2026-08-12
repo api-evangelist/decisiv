@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:root="http://www.decisiv.net/platform_api/0.1/Case/Root"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/Root">
+    <xs:element name="index" type="root:Root"/>
+    <xs:complexType name="Root">
+        <xs:all>
+            <xs:element name="profileURL" type="xs:string"/>
+            <xs:element name="casesURL" type="xs:string"/>
+            <xs:element name="assetsURL" type="xs:string"/>
+            <xs:element name="customersURL" type="xs:string"/>
+            <xs:element name="estimatesURL" type="xs:string"/>
+            <xs:element name="serviceLocationsURL" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:e="http://www.decisiv.net/platform_api/0.0.7/Case/400ErrorResponse"
+  targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/400ErrorResponse">
+  <xs:element name="BadRequestResponse" type="e:BadRequestResponse"/>
+  <xs:complexType name="BadRequestResponse">
+    <xs:all>
+      <xs:element name="message" type="xs:string" minOccurs="1"/>
+      <xs:element name="status" type="e:HttpStatus"/>
+      <xs:element name="errors" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="error" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:simpleType name="HttpStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="400 Bad Request"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

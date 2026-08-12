@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:ts="http://www.decisiv.net/platform_api/0.3-beta/Case/CreateTechnicianStoryResponse"
+           targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/CreateTechnicianStoryResponse">
+  <xs:element name="technicianStory" type="ts:TechnicianStory"/>
+  <xs:complexType name="TechnicianStory">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="content" type="xs:string"/>
+      <xs:element name="createdAt" type="xs:dateTime"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

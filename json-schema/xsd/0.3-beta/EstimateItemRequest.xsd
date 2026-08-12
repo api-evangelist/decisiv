@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:ct="http://www.decisiv.net/platform_api/0.3-beta/Case/CaseTypes"
+           xmlns:s="http://www.decisiv.net/platform_api/0.3-beta/Case/Salesman"
+           xmlns:g="http://www.decisiv.net/platform_api/0.2/Case/GroupedUser"
+           xmlns:eit="http://www.decisiv.net/platform_api/0.2/Case/EstimateItemTypes"
+           xmlns:vmrs="http://www.decisiv.net/platform_api/0.2/Case/VMRS"
+           xmlns:ac="http://www.decisiv.net/platform_api/0.2/Case/AdditionalCharges"
+           xmlns:e="http://www.decisiv.net/platform_api/0.3-beta/Case/EstimateItemRequest"
+           xmlns:eip="http://www.decisiv.net/platform_api/0.3-beta/Case/EstimateItemPartRequest"
+           targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/EstimateItemRequest">
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.3-beta/Case/CaseTypes"
+             schemaLocation="CaseTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/GroupedUser"
+             schemaLocation="../0.2/GroupedUser.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.3-beta/Case/Salesman"
+             schemaLocation="Salesman.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/EstimateItemTypes"
+             schemaLocation="../0.2/EstimateItemTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/VMRS"
+             schemaLocation="../0.2/vmrs.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/AdditionalCharges"
+             schemaLocation="../0.2/AdditionalCharges.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.3-beta/Case/EstimateItemPartRequest"
+             schemaLocation="EstimateItemPartRequest.xsd"/>
+  <xs:element name="item" type="e:EstimateItem"/>
+  <xs:element name="items">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="item" type="e:EstimateItem" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="EstimateItem">
+    <xs:all>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="code" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="standardOperationNotes" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="complaint" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="cause" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="correction" type="xs:string"  minOccurs="0" nillable="true"/>
+      <xs:element name="jobCode" type="xs:string"  minOccurs="0" nillable="true"/>
+      <xs:element name="priceCode" type="xs:string"  minOccurs="0" nillable="true"/>
+      <xs:element name="workStatus" type="eit:WorkStatus" minOccurs="0"/>
+      <xs:element name="assignee" type="g:GroupedUser" minOccurs="0" nillable="true"/>
+      <xs:element name="soldStatus" type="eit:SoldStatus" minOccurs="0"/>
+      <xs:element name="underWarranty" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="billingClassification" type="eit:BillingClassification" minOccurs="0" nillable="true"/>
+      <xs:element name="labor" type="eit:LaborDetail" minOccurs="0"/>
+      <xs:element name="additionalCharges" nillable="true" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="charge" type="ac:AdditionalCharge" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="vmrs" type="vmrs:VMRS" minOccurs="0" nillable="true"/>
+      <xs:element name="fixedPriceTotal" type="ct:Currency" minOccurs="0" nillable="true"/>
+      <xs:element name="approvalGroupTag" type="xs:string" minOccurs="0" nillable="true"/>
+      <xs:element name="parts" nillable="true" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="part" type="eip:EstimateItemPart" maxOccurs="unbounded" minOccurs="0"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

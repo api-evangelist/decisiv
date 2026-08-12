@@ -1,0 +1,149 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://registry.npmjs.org/-/v1/search?text=decisiv, per-package registry metadata at
+  registry.npmjs.org, https://api.github.com/orgs/Decisiv
+api_client_sdks: 0
+api_client_sdk_note: >-
+  DECISIV SHIPS NO API CLIENT LIBRARY IN ANY LANGUAGE. Searches of npm, PyPI, RubyGems, Maven Central,
+  NuGet, crates.io, Packagist and pkg.go.dev return no Decisiv SDK for the SRM Gateway, Global Assets,
+  Service Provider or Platform APIs, and neither the docs site nor the GitHub org publishes one. Every
+  integrator hand-rolls an HTTP client against the JSON:API surface. The packages below are real,
+  first-party and published under the @decisiv npm scope, but they are the Decisiv Key DESIGN SYSTEM —
+  React UI building blocks for building SRM Ecosystem application interfaces — not clients for the API.
+  They are recorded here honestly as what they are.
+packages:
+- language: javascript
+  registry: npm
+  name: '@decisiv/ui-components'
+  url: https://www.npmjs.com/package/@decisiv/ui-components
+  install: npm install @decisiv/ui-components
+  official: true
+  category: design-system
+  api_client: false
+  version: 2.0.0
+  published: '2020-08-10'
+  license: MIT
+  description: Decisiv's design system React components
+- language: javascript
+  registry: npm
+  name: '@decisiv/design-tokens'
+  url: https://www.npmjs.com/package/@decisiv/design-tokens
+  install: npm install @decisiv/design-tokens
+  official: true
+  category: design-system
+  api_client: false
+  version: 1.8.8
+  published: '2019-12-18'
+  license: MIT
+  description: Design tokens for Decisiv's design system
+- language: javascript
+  registry: npm
+  name: '@decisiv/iconix'
+  url: https://www.npmjs.com/package/@decisiv/iconix
+  install: npm install @decisiv/iconix
+  official: true
+  category: design-system
+  api_client: false
+  version: 2.0.0
+  published: '2020-08-10'
+  license: MIT
+  description: Decisiv's custom icon-font builder
+- language: javascript
+  registry: npm
+  name: '@decisiv/prop-types'
+  url: https://www.npmjs.com/package/@decisiv/prop-types
+  install: npm install @decisiv/prop-types
+  official: true
+  category: design-system
+  api_client: false
+  version: 1.6.9
+  published: '2020-08-04'
+  license: MIT
+  description: Decisiv's custom React PropType validators
+- language: javascript
+  registry: npm
+  name: '@decisiv/breakpoint-observer'
+  url: https://www.npmjs.com/package/@decisiv/breakpoint-observer
+  install: npm install @decisiv/breakpoint-observer
+  official: true
+  category: design-system
+  api_client: false
+  version: 1.8.8
+  published: '2020-08-04'
+  license: MIT
+  description: A collection of utils enabling component level responsiveness
+- language: javascript
+  registry: npm
+  name: '@decisiv/styled-components-static-styles'
+  url: https://www.npmjs.com/package/@decisiv/styled-components-static-styles
+  install: npm install @decisiv/styled-components-static-styles
+  official: true
+  category: build-tooling
+  api_client: false
+  version: 1.4.2
+  published: '2020-08-04'
+  license: MIT
+  description: Extracts the styles of styled-components into a static stylesheet
+- language: javascript
+  registry: npm
+  name: '@decisiv/babel-plugin-styled-components-references'
+  url: https://www.npmjs.com/package/@decisiv/babel-plugin-styled-components-references
+  install: npm install @decisiv/babel-plugin-styled-components-references
+  official: true
+  category: build-tooling
+  api_client: false
+  version: 1.3.7
+  published: '2020-08-04'
+  license: MIT
+  description: Babel plugin to replace references to styled components inside styled-components
+- language: javascript
+  registry: npm
+  name: '@decisiv/semantic-release-plugin-decorators'
+  url: https://www.npmjs.com/package/@decisiv/semantic-release-plugin-decorators
+  install: npm install @decisiv/semantic-release-plugin-decorators
+  official: true
+  category: build-tooling
+  api_client: false
+  version: 2.0.1
+  published: '2019-06-27'
+  license: MIT
+  repository: https://github.com/Decisiv/semantic-release-plugin-decorators
+- language: javascript
+  registry: npm
+  name: styled-components-modifiers
+  url: https://www.npmjs.com/package/styled-components-modifiers
+  install: npm install styled-components-modifiers
+  official: true
+  category: open-source-library
+  api_client: false
+  version: 1.2.5
+  published: '2019-10-10'
+  license: MIT
+  repository: https://github.com/Decisiv/styled-components-modifiers
+  description: A library that enables BEM flavored modifiers to styled components
+registries_checked:
+- {registry: npm, result: 9 first-party packages, all design-system/build tooling}
+- {registry: pypi, result: none}
+- {registry: rubygems, result: none}
+- {registry: maven-central, result: none}
+- {registry: nuget, result: none}
+- {registry: crates.io, result: none}
+- {registry: packagist, result: none}
+- {registry: pkg.go.dev, result: none}
+currency:
+  newest_publish: '2020-08-10'
+  finding: >-
+    Every published @decisiv package last shipped in 2019-2020. The design system has not had a release
+    in nearly six years while the SRM Gateway it is meant to build interfaces for has moved to build
+    0.48.24 with four OpenAPI 3.1 modules. @decisiv/ui-components 2.0.0 (2020-08-10) is the newest
+    artifact in the scope. This is the clearest provider-published, provider-dated decay signal on the
+    Decisiv developer surface.
+github_org:
+  url: https://github.com/Decisiv
+  public_repos: 39
+  finding: >-
+    The public GitHub organisation is almost entirely forks of third-party Ruby/Elixir/JavaScript
+    libraries (rack, resque, devise, ancestry, bypass, calcinator, alembic, samly). The only original
+    first-party code is the styled-components tooling. No API client, no .proto, no OpenAPI, no
+    example integration is published there.

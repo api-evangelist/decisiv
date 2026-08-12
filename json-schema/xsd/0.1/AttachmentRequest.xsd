@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:r="http://www.decisiv.net/platform_api/0.1/Case/RecipientRequest"
+    xmlns:s="http://www.decisiv.net/platform_api/0.1/Case/SenderRequest"
+    xmlns:a="http://www.decisiv.net/platform_api/0.1/Case/AttachmentRequest"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/AttachmentRequest">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/RecipientRequest" schemaLocation="RecipientRequest.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/SenderRequest" schemaLocation="SenderRequest.xsd"/>
+    <xs:element name="attachment" type="a:Attachment"/>
+    <xs:complexType name="Attachment">
+        <xs:all>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element ref="s:sender" minOccurs="0"/>
+            <xs:element name="internal" type="xs:boolean" nillable="true" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

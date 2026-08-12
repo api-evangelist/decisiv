@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:case="http://www.decisiv.net/platform_api/0.1/Case/CaseResponse"
+    xmlns:g="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+    xmlns:vmrs="http://www.decisiv.net/platform_api/0.1/Case/VMRS"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/CaseResponse">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+      schemaLocation="../0.1/CaseTypes.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+        schemaLocation="../0.1/GroupedUser.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/VMRS"
+        schemaLocation="../0.1/vmrs.xsd"/>
+    <xs:element name="cases">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="case" type="case:CaseResponseType" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="case" type="case:CaseResponseType"></xs:element>
+    <xs:complexType name="CaseResponseType">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="URL" type="xs:string"/>
+            <xs:element name="estimateURL" type="xs:string"/>
+            <xs:element name="parentCaseURL" type="xs:string" minOccurs="0"/>
+            <xs:element name="assetURL" type="xs:string"/>
+            <xs:element name="customerURL" type="xs:string"/>
+            <xs:element name="billingCustomerURL" type="xs:string"/>
+            <xs:element name="shippingCustomerURL" type="xs:string"/>
+            <xs:element name="serviceLocationURL" type="xs:string"/>
+            <xs:element name="notesURL" type="xs:string"/>
+            <xs:element name="attachmentsURL" type="xs:string"/>
+            <xs:element name="subcasesURL" type="xs:string"/>
+            <xs:element name="closeURL" type="xs:string"/>
+            <xs:element name="openURL" type="xs:string"/>
+            <xs:element name="assignee" type="g:GroupedUser" nillable="true"/>
+            <xs:element name="primaryContact" type="ct:Contact"/>
+            <xs:element name="breakdown" type="ct:Breakdown"/>
+            <xs:element name="assetInformation" type="ct:AssetInformation"/>
+            <xs:element name="cause" type="xs:string" nillable="true"/>
+            <xs:element name="correction" type="xs:string" nillable="true"/>
+            <xs:element name="complaint" type="xs:string" nillable="true"/>
+            <xs:element ref="ct:customComplaintCodes" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="downtime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="uptime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="customerRequestedAppointmentTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="serviceLocationSuggestedAppointmentTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="confirmedAppointmentTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="customerRequestedCompletionTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="followupTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="assetArrived" type="xs:dateTime" nillable="true"/>
+            <xs:element name="assetCheckInTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="etr" type="xs:dateTime" nillable="true"/>
+            <xs:element name="atr" type="xs:dateTime" nillable="true"/>
+            <xs:element ref="ct:status"/>
+            <xs:element name="poNumber" type="xs:string" nillable="true"/>
+            <xs:element name="roNumber" type="xs:string" nillable="true"/>
+            <xs:element name="invoiceAmount" type="ct:Currency" nillable="true"/>
+            <xs:element name="invoiceNumber" type="xs:string" nillable="true"/>
+            <xs:element name="invoiceDate" type="xs:date" nillable="true"/>
+            <xs:element name="authNumber" type="xs:string" nillable="true"/>
+            <xs:element name="tagNumber" type="xs:string" nillable="true"/>
+            <xs:element name="shopSupplies" type="ct:Currency"/>
+            <xs:element name="hazWaste" type="ct:Currency"/>
+            <xs:element name="freight" type="ct:Currency"/>
+            <xs:element name="tax" type="ct:Currency"/>
+            <xs:element name="partsTotal" type="ct:Currency"/>
+            <xs:element name="laborTotal" type="ct:Currency"/>
+            <xs:element name="coreTotal" type="ct:Currency"/>
+            <xs:element name="total" type="ct:Currency"/>
+            <xs:element name="createdAt" type="xs:dateTime"/>
+            <xs:element name="updatedAt" type="xs:dateTime"/>
+            <xs:element name="closed" type="xs:boolean"/>
+            <xs:element name="vmrs" type="vmrs:caseVMRS" nillable="true"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

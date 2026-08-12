@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:g="http://www.decisiv.net/platform_api/0.0.7/Case/GroupedUser"
+  targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/UsersResponse">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/GroupedUser"
+        schemaLocation="GroupedUser.xsd"/>
+    <xs:element name="users">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="g:GroupedUser" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

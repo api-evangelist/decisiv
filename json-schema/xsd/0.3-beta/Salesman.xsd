@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/Salesman">
+    <xs:complexType name="Salesman">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="name" type="xs:string" nillable="true" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

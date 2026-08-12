@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    xmlns:c="http://www.decisiv.net/platform_api/0.0.7/Case/CustomerResponse"
+    targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/CustomerResponse">
+    <xs:element type="c:CustomerResponse" name="customer"></xs:element>
+    <xs:element name="customers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="customer" type="c:CustomerResponse" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="CustomerResponse">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="externalID" type="xs:string"/>
+            <xs:element name="URL" type="xs:string"/>
+            <xs:element name="shippingCustomerURL" type="xs:string"/>
+            <xs:element name="billingCustomerURL" type="xs:string"/>
+            <xs:element name="companyName" type="xs:string"/>
+            <xs:element name="address1" type="xs:string"/>
+            <xs:element name="address2" type="xs:string"/>
+            <xs:element name="city" type="xs:string"/>
+            <xs:element name="state" type="xs:string"/>
+            <xs:element name="postalCode" type="xs:string"/>
+            <xs:element name="countryCode" type="xs:string"/>
+            <xs:element name="emailAddress" type="xs:string"/>
+            <xs:element name="phoneNumber" type="xs:string"/>
+            <xs:element name="phoneExtension" type="xs:string"/>
+            <xs:element name="faxNumber" type="xs:string"/>
+            <xs:element name="customerNumber" type="xs:string"/>
+            <xs:element name="accountNumber" type="xs:string"/>
+            <xs:element name="notes" type="xs:string"/>
+            <xs:element name="createdAt" type="xs:dateTime"/>
+            <xs:element name="updatedAt" type="xs:dateTime"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

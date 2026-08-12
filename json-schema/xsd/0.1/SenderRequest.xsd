@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:s="http://www.decisiv.net/platform_api/0.1/Case/SenderRequest"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"  targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/SenderRequest">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+        schemaLocation="CaseTypes.xsd"/>
+    <xs:element name="sender" type="s:Sender"/>
+    <xs:complexType name="Sender">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

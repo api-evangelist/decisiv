@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:ct="http://www.decisiv.net/platform_api/0.0.7/Case/CaseTypes"
+  xmlns:r="http://www.decisiv.net/platform_api/0.0.7/Case/RecipientRequest"
+  xmlns:s="http://www.decisiv.net/platform_api/0.0.7/Case/SenderRequest"
+  xmlns:n="http://www.decisiv.net/platform_api/0.0.7/Case/NoteRequest"
+  targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/NoteRequest">
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/CaseTypes" schemaLocation="CaseTypes.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/RecipientRequest" schemaLocation="RecipientRequest.xsd"/>
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/SenderRequest" schemaLocation="SenderRequest.xsd"/>
+  <xs:element name="note" type="n:Note"/>
+  <xs:complexType name="Note">
+    <xs:all>
+      <xs:element name="message" type="xs:string"/>
+      <xs:element name="public" type="xs:boolean" minOccurs="0"/>
+      <xs:element ref="s:sender" minOccurs="0"/>
+      <xs:element ref="r:recipients" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

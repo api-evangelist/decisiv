@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:fsr="http://www.decisiv.net/platform_api/0.1/Case/FleetServiceRequest"
+    xmlns:g="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/FleetServiceRequest">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/CaseTypes" schemaLocation="CaseTypes.xsd"></xs:import>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.1/Case/GroupedUser" schemaLocation="GroupedUser.xsd"></xs:import>
+    <xs:complexType name="FleetServiceRequestType">
+        <xs:all>
+            <xs:element ref="ct:assetIdentifier"></xs:element>
+            <xs:element name="assignee" type="g:GroupedUser" minOccurs="0"/>
+            <xs:element ref="ct:primaryContact"/>
+            <xs:element ref="ct:breakdown"/>
+            <xs:element ref="ct:assetInformation"/>
+            <xs:element name="complaint" type="xs:string"/>
+            <xs:element ref="ct:customComplaintCodes" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="downtime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="customerRequestedAppointmentTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="customerRequestedCompletionTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="followupTime" type="xs:dateTime" nillable="true"/>
+            <xs:element name="poNumber" type="xs:string" nillable="true"/>
+            <xs:element name="authNumber" type="xs:string" nillable="true"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="serviceRequest" type="fsr:FleetServiceRequestType"></xs:element>
+</xs:schema>

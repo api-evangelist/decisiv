@@ -1,0 +1,108 @@
+generated: '2026-08-12'
+method: searched
+source: live probes of every Decisiv host named in apis.yml and the OpenAPI servers[] blocks
+note: >-
+  Only login.decisiv.net serves a real /.well-known document — the OAuth 2.0 / OpenID Connect discovery
+  metadata for the Decisiv identity provider, returned identically at both the RFC 8414
+  (/.well-known/oauth-authorization-server) and OIDC (/.well-known/openid-configuration) paths as
+  application/vnd.api+json. Every 200 recorded on api-docs.decisiv.net and on login.decisiv.net's other
+  paths is a catch-all HTML shell, not a document, and is recorded here as a miss. The
+  *.decisivapps.com API hosts answer 403 on the whole /.well-known/ namespace. No security.txt, no
+  api-catalog, no ai-plugin.json, and no A2A agent card is served anywhere on the estate.
+hosts:
+- host: https://login.decisiv.net
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/vnd.api+json
+    file: decisiv-openid-configuration.json
+    real_document: true
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/vnd.api+json
+    file: decisiv-oauth-authorization-server.json
+    real_document: true
+    note: byte-identical to the openid-configuration response
+  - path: /oauth/discovery/keys
+    status: 200
+    content_type: application/json
+    file: decisiv-oauth-jwks.json
+    real_document: true
+    note: jwks_uri named by the discovery document; single ES256 EC P-256 signing key
+  - path: /.well-known/security.txt
+    status: 200
+    real_document: false
+    note: HTML login-page shell, not RFC 9116 text — treated as a miss
+  - path: /.well-known/api-catalog
+    status: 200
+    real_document: false
+    note: HTML login-page shell — treated as a miss
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    real_document: false
+    note: HTML login-page shell — treated as a miss
+  - path: /.well-known/agent-card.json
+    status: 200
+    real_document: false
+    note: HTML login-page shell — no A2A agent card
+  - path: /.well-known/agent.json
+    status: 200
+    real_document: false
+    note: HTML login-page shell — no A2A agent card
+- host: https://www.decisiv.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404, real_document: false}
+  - {path: /.well-known/openid-configuration, status: 404, real_document: false}
+  - {path: /.well-known/oauth-authorization-server, status: 404, real_document: false}
+  - {path: /.well-known/api-catalog, status: 404, real_document: false}
+  - {path: /.well-known/ai-plugin.json, status: 404, real_document: false}
+  - {path: /.well-known/agent-card.json, status: 404, real_document: false}
+  - {path: /.well-known/agent.json, status: 404, real_document: false}
+  - {path: /llms.txt, status: 404, real_document: false}
+- host: https://api-docs.decisiv.net
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    real_document: false
+    note: >-
+      Static docs site answers 200 with the same 6,660-byte index HTML for every unknown path — a
+      soft-404. Every /.well-known/* probe on this host returns that shell; none is a document.
+  - {path: /.well-known/openid-configuration, status: 200, real_document: false}
+  - {path: /.well-known/oauth-authorization-server, status: 200, real_document: false}
+  - {path: /.well-known/api-catalog, status: 200, real_document: false}
+  - {path: /.well-known/ai-plugin.json, status: 200, real_document: false}
+  - {path: /.well-known/agent-card.json, status: 200, real_document: false}
+  - {path: /.well-known/agent.json, status: 200, real_document: false}
+  - {path: /llms.txt, status: 200, real_document: false}
+- host: https://srm-api.decisivapps.com
+  documents:
+  - {path: /.well-known/security.txt, status: 403, real_document: false}
+  - {path: /.well-known/openid-configuration, status: 403, real_document: false}
+  - {path: /.well-known/oauth-authorization-server, status: 403, real_document: false}
+  - {path: /.well-known/api-catalog, status: 403, real_document: false}
+  - {path: /.well-known/agent-card.json, status: 403, real_document: false}
+  - {path: /.well-known/agent.json, status: 403, real_document: false}
+  - {path: /llms.txt, status: 403, real_document: false}
+- host: https://global-assets.decisivapps.com
+  documents:
+  - {path: /.well-known/security.txt, status: 403, real_document: false}
+  - {path: /.well-known/agent-card.json, status: 403, real_document: false}
+  - {path: /.well-known/agent.json, status: 403, real_document: false}
+- host: https://service-provider.decisivapps.com
+  documents:
+  - {path: /.well-known/security.txt, status: 403, real_document: false}
+  - {path: /.well-known/agent-card.json, status: 403, real_document: false}
+  - {path: /.well-known/agent.json, status: 403, real_document: false}
+- host: https://decisivmarketplace.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404, real_document: false}
+  - {path: /.well-known/agent-card.json, status: 404, real_document: false}
+  - {path: /.well-known/agent.json, status: 404, real_document: false}
+  - {path: /llms.txt, status: 404, real_document: false}
+summary:
+  hosts_probed: 8
+  real_documents: 3
+  security_txt: false
+  api_catalog: false
+  agent_card: false
+  oauth_metadata: true

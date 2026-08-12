@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/EstimateItemTypes"
+    xmlns:g="http://www.decisiv.net/platform_api/0.0.7/Case/GroupedUser"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.0.7/Case/CaseTypes"
+    xmlns:eit="http://www.decisiv.net/platform_api/0.0.7/Case/EstimateItemTypes">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/GroupedUser"
+               schemaLocation="GroupedUser.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/CaseTypes" schemaLocation="CaseTypes.xsd"></xs:import>
+    <xs:complexType name="VMRS">
+      <xs:all>
+        <xs:element name="code15" type="xs:string" nillable="true"/>
+        <xs:element name="code18" type="xs:string" nillable="true"/>
+        <xs:element name="code79" type="xs:string" nillable="true"/>
+        <xs:element name="code33" type="eit:VMRSCode33" nillable="true"/>
+      </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="VMRSCode33">
+      <xs:restriction base="xs:string">
+        <xs:pattern value="\d{3}-\d{3}-\d{3}" />
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="LaborDetail">
+      <xs:all>
+        <xs:element name="total" type="ct:Currency"/>
+        <xs:element name="rate" type="eit:Rate" minOccurs="0"/>
+        <xs:element name="hours" type="eit:Hours" minOccurs="0"/>
+        <xs:element name="skillLevel" type="eit:SkillLevel" minOccurs="0"/>
+      </xs:all>
+    </xs:complexType>
+    <xs:complexType name="PaintDetail">
+      <xs:all>
+        <xs:element name="total" type="ct:Currency"/>
+        <xs:element name="rate" type="eit:Rate" minOccurs="0"/>
+        <xs:element name="hours" type="eit:Hours" minOccurs="0"/>
+        <xs:element name="skillLevel" type="eit:SkillLevel" minOccurs="0"/>
+      </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="SkillLevel">
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"/>
+          <xs:maxLength value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Rate">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Hours">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ApprovalStatus">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="sold" />
+        <xs:enumeration value="not sold" />
+        <xs:enumeration value="deferred" />
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="BillingClassification">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value=""/>
+        <xs:enumeration value="billable"/>
+        <xs:enumeration value="policy"/>
+        <xs:enumeration value="warranty"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="WorkStatus">
+      <xs:all>
+        <xs:element name="code" type="eit:StatusCode"/>
+        <xs:element name="reason" type="eit:StatusReason" minOccurs="0"/>
+        <xs:element name="timestamp" type="xs:dateTime" minOccurs="0"/>
+        <xs:element name="setByUser" type="g:GroupedUser"/>
+      </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="StatusCode">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="start"/>
+        <xs:enumeration value="stop"/>
+        <xs:enumeration value="complete"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="StatusReason">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="break"/>
+        <xs:enumeration value="meal"/>
+        <xs:enumeration value="shift_change"/>
+        <xs:enumeration value="reassigned"/>
+        <xs:enumeration value="sick"/>
+        <xs:enumeration value="injured"/>
+        <xs:enumeration value="awaiting_approval"/>
+        <xs:enumeration value="awaiting_parts"/>
+        <xs:enumeration value="awaiting_tools"/>
+        <xs:enumeration value="awaiting_tech_support"/>
+        <xs:enumeration value="user_defined_1"/>
+        <xs:enumeration value="user_defined_2"/>
+        <xs:enumeration value="user_defined_3"/>
+        <xs:enumeration value="user_defined_4"/>
+      </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

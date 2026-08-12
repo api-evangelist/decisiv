@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:e="http://www.decisiv.net/platform_api/0.1/Case/422ErrorResponse"
+    targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/422ErrorResponse">
+    <xs:element name="UnprocessableEntityErrorResponse" type="e:UnprocessableEntityErrorResponse"/>
+    <xs:complexType name="UnprocessableEntityErrorResponse">
+        <xs:all>
+            <xs:element name="message" type="xs:string"/>
+            <xs:element name="errors" type="e:ValidationErrors"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="ValidationErrors">
+        <xs:sequence>
+          <xs:element name="error" type="e:ValidationError" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ValidationError">
+        <xs:all>
+            <xs:element name="resource" type="xs:string"/>
+            <xs:element name="field" type="xs:string"/>
+            <xs:element name="messages" type="e:ValidationMessages" minOccurs="0"/>
+            <xs:element name="code" type="e:ValidationCode"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="ValidationMessages">
+      <xs:sequence>
+        <xs:element name="message" type="xs:string" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="ValidationCode">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="missing"/>
+            <xs:enumeration value="missing_field"/>
+            <xs:enumeration value="invalid"/>
+            <xs:enumeration value="already_exists"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

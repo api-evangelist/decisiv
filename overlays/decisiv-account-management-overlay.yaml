@@ -1,0 +1,55 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Decisiv Account Management
+  version: 1.0.0
+extends: openapi/decisiv-account-management-openapi.yml
+actions:
+- target: $.info
+  description: Annotate with API Evangelist profile provenance and the artifacts derived from this spec.
+  update:
+    x-apievangelist-provider: decisiv
+    x-apievangelist-profile: https://apis.io/provider/decisiv/
+    x-apievangelist-harvested: '2026-08-12'
+    x-apievangelist-source: https://srm-api.decisivapps.com/api-docs/v1
+    x-apievangelist-artifacts:
+      authentication: authentication/decisiv-authentication.yml
+      scopes: scopes/decisiv-scopes.yml
+      conventions: conventions/decisiv-conventions.yml
+      errors: errors/decisiv-error-codes.yml
+      problem-types: errors/decisiv-problem-types.yml
+      lifecycle: lifecycle/decisiv-lifecycle.yml
+      rate-limits: rate-limits/decisiv-rate-limits.yml
+      data-model: data-model/decisiv-data-model.yml
+      conformance: conformance/decisiv-conformance.yml
+- target: $.info
+  description: Record the runtime semantics an agent needs that are true of this API but not expressible in the
+    spec itself.
+  update:
+    x-error-envelope: json-api-errors
+    x-error-code-registry: errors/decisiv-error-codes.yml
+    x-rate-limit-headers: []
+    x-rate-limit-documented: false
+- target: $.components.securitySchemes.OAuth2Password
+  description: Flag the deprecated password grant explicitly so tooling can refuse to select it.
+  update:
+    x-deprecated: true
+    x-replacement: OAuth2AuthorizationCode
+- target: $.components.securitySchemes.OAuth2AuthorizationCode
+  description: Attach the scope vocabulary published by the Decisiv authorization server, which the spec leaves
+    empty.
+  update:
+    x-scopes-source: https://login.decisiv.net/.well-known/openid-configuration
+    x-scopes-supported:
+    - public
+    - read
+    - write
+    - update
+    - openid
+    x-pkce:
+    - S256
+    - plain
+- target: $.info
+  description: Point at the derived webhook/event catalog, which this module manages but does not describe as an
+    event spec.
+  update:
+    x-event-catalog: asyncapi/decisiv-srm-gateway-webhooks.yml

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/EstimateVersionRequest">
+  <xs:element name="version">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="digest" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

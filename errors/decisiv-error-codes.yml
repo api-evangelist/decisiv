@@ -1,0 +1,1079 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/_original/*.json (SRM Gateway v0.48.24) — errors[] examples published in the specs
+format: json-api-errors
+envelope: '{"errors": [{"title", "detail", "code", "status", "source"}]}'
+code_scheme: decisiv:<domain>:<nnn>
+note: Decisiv publishes a genuinely rich, namespaced error-code registry inside its OpenAPI examples — VIN validation,
+  E.164 phone rules, RFC 3696 email rules, filter grammar, idempotency, sublet eligibility, deactivated assets/depots.
+  The envelope is JSON:API errors[], NOT RFC 9457 application/problem+json. Codes below are extracted verbatim from
+  the published examples; {{placeholders}} are Decisiv's own interpolation markers.
+code_count: 112
+domains:
+- access
+- account
+- attachments
+- authorization
+- base
+- cases
+- contacts
+- customer_assets
+- customer_requests
+- depots
+- email
+- extended_asset_attributes
+- filters
+- general
+- idempotency_key
+- location
+- metadata
+- meter_data
+- permission
+- permissions
+- phone
+- registered_asset
+- registered_assets
+- registered_components
+- relationships
+- request_attributes
+- request_schema
+- resource
+- service_requests
+- silence_webhook_events
+- sublet_associations
+- sublet_requests
+- timeout
+- vin_based_asset
+- vins
+- webhook_events
+- webhooks
+codes:
+- code: decisiv:access:001
+  title: Forbidden
+  status: '403'
+  detail: User does not have permission to perform this action on the requested resource(s)
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: access
+- code: decisiv:access:003
+  title: Precondition required
+  status: '428'
+  detail: OAuth Application does not have appropriate provisioning to access this resource
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: access
+- code: decisiv:account:002
+  title: Feature Unavailable
+  status: '403'
+  detail: Requested feature or action not available for this account
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: account
+- code: decisiv:attachments:001
+  title: File required
+  status: '400'
+  detail: A file must be provided
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: attachments
+- code: decisiv:attachments:002
+  title: File too large
+  status: '400'
+  detail: File size exceeds the maximum allowed (10 MB)
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: attachments
+- code: decisiv:attachments:003
+  title: Filename extension does not match
+  status: '400'
+  detail: Filename extension does not match the actual filename.
+  source:
+    pointer: /data/attributes/filename
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: attachments
+- code: decisiv:authorization:001
+  title: Forbidden
+  status: '403'
+  detail: You do not have permission to access this resource
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: authorization
+- code: decisiv:base:unexpected_value:103
+  title: Unexpected Value
+  status: '422'
+  detail: Value provided for unit_of_measure is not supported. Valid values are kg, lb
+  source:
+    pointer: /data/attributes/gvwr/unit_of_measure
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: base
+- code: decisiv:cases:001
+  title: Invalid Action Request
+  status: '409'
+  detail: Cases in the closed state of the Service Event lifecycle can not be closed again
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: cases
+- code: decisiv:cases:002
+  title: Invalid Action Request
+  status: '409'
+  detail: Cases in the opened state of the Service Event lifecycle can not be opened again
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: cases
+- code: decisiv:cases:line_items:001
+  title: Closed case not eligible
+  status: '422'
+  detail: Cases in the closed state cannot be modified
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: cases
+- code: decisiv:contacts:002
+  title: Must be present when primary_contact information has been provided.
+  status: '422'
+  detail: Triggered when contact data has been provided with missing mandatory fields
+  source:
+    pointer: /data/attributes/primary_contact/first_name
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: contacts
+- code: decisiv:customer_assets:005
+  title: Asset has been deactivated by the Registered Customer and is not eligible for use
+  status: '422'
+  detail: Occurs when an established Customer Asset related to a Registered Customer has since been deactivated
+    by the Customer
+  source:
+    parameter: id
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: customer_assets
+- code: decisiv:customer_requests:001
+  title: Response not allowed for status
+  status: '428'
+  detail: Only Customer Requests with a status of Pending may be accepted or declined by the requesting account
+  source:
+    pointer: /data/attributes/status
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: customer_requests
+- code: decisiv:depots:001
+  title: Resource Identifier - Deactivated Depot
+  status: '409'
+  detail: Operations on deactivated depots are inaccessible through this interface.
+  source:
+    parameter: id
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: depots
+- code: decisiv:depots:002
+  title: Validation Error
+  status: '422'
+  detail: Depot cannot be deactivated, it contains related assets.
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: depots
+- code: decisiv:email:001
+  title: Invalid Email - Domain Resolution
+  status: '422'
+  detail: Email domain name could not be resolved by DNS
+  source:
+    pointer: /data/attributes/communication/0/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: email
+- code: decisiv:email:002
+  title: Invalid Email - Local Part Length
+  status: '422'
+  detail: Local-part exceeds maximum length of 64 octets
+  source:
+    pointer: /data/attributes/communication/0/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: email
+- code: decisiv:email:003
+  title: Invalid Email - Domain Length
+  status: '422'
+  detail: Email domain length exceeds 255 characters
+  source:
+    pointer: /data/attributes/communication/0/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: email
+- code: decisiv:email:004
+  title: Invalid Email - Invalid Syntax
+  status: '422'
+  detail: Email address does not match correct syntax in RFC 3696
+  source:
+    pointer: /data/attributes/communication/0/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: email
+- code: decisiv:extended_asset_attributes:001
+  title: Extended Asset Attribute Association Exists
+  status: '422'
+  detail: The extended asset attribute must be unique for the Extended Attribute and Customer Asset within your
+    Account
+  source:
+    pointer: /data/relationships
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: extended_asset_attributes
+- code: decisiv:filters:001
+  title: Filter not allowed
+  status: '400'
+  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+  source:
+    parameter: filter[filter_name]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: filters
+- code: decisiv:filters:002
+  title: Invalid filter value
+  status: '400'
+  detail: '''aaa-113j-uuid'' is not a valid value for filter. Expected values: uuid'
+  source:
+    parameter: filter[registered_asset.id]
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:004
+  title: Filter validation failed
+  status: '400'
+  detail: Date range must not exceed 180 days
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:006
+  title: Required filter is missing
+  status: '400'
+  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+  source:
+    parameter: filter[srm_account_id]
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:007
+  title: Minimum character length not met
+  status: '400'
+  detail: Filter value must be at least 3 characters
+  source:
+    parameter: filter[name]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:008
+  title: Maximum character length not met
+  status: '400'
+  detail: Filter value must be less than 4096 characters
+  source:
+    parameter: filter[external_reference.decisiv]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:009
+  title: Invalid Filter Format
+  status: '400'
+  detail: Invalid format for `depot.id`
+  source:
+    parameter: filter[depot.id]
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:010
+  title: Invalid timebased filter value
+  status: '400'
+  detail: Invalid filter value `not-a-timestamp`. Expected an ISO 8601 timestamp.
+  source:
+    parameter: filter[last_login_at:gte]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:011
+  title: Too many filter values
+  status: '400'
+  detail: 'Too many values for filter[module_subscriptions.key:include]. Maximum allowed: 50.'
+  source:
+    parameter: filter[module_subscriptions.key:include]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:012
+  title: Conflicting filters
+  status: '400'
+  detail: Cannot combine filter[name] with its :like variant. Use only one.
+  source:
+    parameter: filter[name]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:013
+  title: Invalid filter characters
+  status: '400'
+  detail: Filter value for filter[name] contains invalid characters.
+  source:
+    parameter: filter[name]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: decisiv:filters:014
+  title: Invalid filter value shape
+  status: '400'
+  detail: Filter value for filter[name] must be a string.
+  source:
+    parameter: filter[name]
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: filters
+- code: '''wrong-type'' is an invalid resource'
+  title: Invalid JSON:API Resource specified in request
+  status: '400'
+  detail: '''{{invalid_resource}}'' is an invalid resource'
+  source:
+    pointer: /data/type
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: general
+- code: attribute-001
+  title: Can't be used
+  status: '422'
+  detail: /data/attributes/attribute
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: general
+- code: decisiv::access_token:001
+  title: Access unauthorized
+  status: '401'
+  detail: Access unauthorized
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: general
+- code: vmrs-001
+  title: Must have at least one valid code
+  status: '422'
+  source:
+    pointer: /data/attributes/vmrs
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: general
+- code: decisiv:idempotency_key:001
+  title: Idempotency Key In Progress
+  status: '409'
+  detail: A request with this idempotency key is already being processed. Retry to receive the original response.
+  source:
+    header: X-DECISIV-IDEMPOTENCY-KEY
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: idempotency_key
+- code: decisiv:idempotency_key:002
+  title: Idempotency Key Length Exceeded
+  status: '400'
+  detail: X-DECISIV-IDEMPOTENCY-KEY can not exceed 128 characters
+  source:
+    header: X-DECISIV-IDEMPOTENCY-KEY
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: idempotency_key
+- code: decisiv:location:000
+  title: Country or State value missing. Both values must be provided.
+  status: '422'
+  source:
+    pointer: /data/attributes/country
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: location
+- code: decisiv:location:001
+  title: 'Invalid format for country value, must be ISO 3166-1 alpha-2. Valid values are: `{{valid_values}}`'
+  status: '422'
+  detail: 'Invalid country value. Valid values are: US, CA, EC, MX, CL, JP'
+  source:
+    pointer: /data/attributes/country
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: location
+- code: decisiv:location:002
+  title: Invalid State
+  status: '422'
+  detail: Invalid format for state value, must be ISO 3166-2
+  source:
+    pointer: /data/attributes/state
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: location
+- code: decisiv:location:004
+  title: Mismatch between State and Country
+  status: '422'
+  detail: Triggered when state does not exists in the country.
+  source:
+    pointer: /data/attributes/state
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: location
+- code: decisiv:metadata:001
+  title: Invalid Metadata key
+  status: '422'
+  source:
+    pointer: /data/attributes/metadata
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: metadata
+- code: decisiv:metadata:002
+  title: Invalid Metadata value
+  status: '422'
+  source:
+    pointer: /data/attributes/metadata
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: metadata
+- code: decisiv:metadata:003
+  title: Metadata object is too big
+  status: '422'
+  source:
+    pointer: /data/attributes/metadata
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: metadata
+- code: decisiv:metadata:004
+  title: Metadata key not found
+  status: '404'
+  detail: The metadata object must include the metadata key
+  source:
+    parameter: metadata_key
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: metadata
+- code: decisiv:meter_data:001
+  title: Invalid Meter Type
+  status: '422'
+  detail: Value provided for meter is not expected
+  source:
+    pointer: /data/attributes/meter_data
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: meter_data
+- code: decisiv:meter_data:002
+  title: Invalid Meter Unit
+  status: '422'
+  detail: Value provided for the unit of measure is not supported
+  source:
+    pointer: /data/attributes/meter_data
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: meter_data
+- code: decisiv:meter_data:003
+  title: Invalid Meter Value Type
+  status: '422'
+  detail: Value must be an integer
+  source:
+    pointer: /data/attributes/meter_data
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: meter_data
+- code: decisiv:permission:001
+  title: Precondition Required
+  status: '428'
+  detail: Required permission is missing
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: permission
+- code: decisiv:permissions:001
+  title: Missing Permission
+  status: '422'
+  detail: Provided resource does not have the required permission to complete the request.
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: permissions
+- code: decisiv:phone:001
+  title: Invalid Phone Format
+  status: '422'
+  detail: Phone number must begin with a + character per E.164 standard
+  source:
+    pointer: /data/attributes/communication/1/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: phone
+- code: decisiv:phone:002
+  title: Invalid Phone Format
+  status: '422'
+  detail: Phone number can not contain spaces
+  source:
+    pointer: /data/attributes/communication/1/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: phone
+- code: decisiv:phone:003
+  title: Invalid Phone Format
+  status: '422'
+  detail: Phone number contains an invalid country code
+  source:
+    pointer: /data/attributes/communication/1/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: phone
+- code: decisiv:phone:004
+  title: Invalid Phone Format
+  status: '422'
+  detail: Phone number length does not meet minimum length - must be 3 characters
+  source:
+    pointer: /data/attributes/communication/1/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: phone
+- code: decisiv:phone:005
+  title: Invalid Phone Format
+  status: '422'
+  detail: Phone number length exceeds maximum length - can not be longer than 15 characters
+  source:
+    pointer: /data/attributes/communication/1/value
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: phone
+- code: decisiv:registered_asset:003
+  title: Invalid Year
+  status: '422'
+  detail: Provided year value is outside of the supported range - {{range}}
+  source:
+    pointer: /data/attributes/year
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_asset
+- code: decisiv:registered_asset:009
+  title: Resource Identifier - Deactivated Asset
+  status: '409'
+  detail: Operations on deactivated assets are inaccessible through this interface.
+  source:
+    parameter: srm_account_id
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_asset
+- code: decisiv:registered_asset:010
+  title: Missinsg Required Fields
+  status: '422'
+  detail: 'At least one of the following fields should be present: vin, chassis_id, unit_number'
+  source:
+    pointer: /data/attributes
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_asset
+- code: decisiv:registered_asset:011
+  title: Required odometer_unit value.
+  status: '422'
+  detail: An odometer_unit value is required when providing an odometer reading.
+  source:
+    pointer: /data/attributes/odometer_unit
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_asset
+- code: decisiv:registered_asset:012
+  title: Invalid odometer_unit value.
+  status: '422'
+  detail: 'Invalid value for odometer_unit. Valid values: {{valid_odometer_units}}'
+  source:
+    pointer: /data/attributes/odometer_unit
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_asset
+- code: decisiv:registered_asset:100
+  title: Depot Identifier Not Found
+  status: '422'
+  detail: Depot Identifier does not exist for this Asset Management Account
+  source:
+    pointer: /data/relationships/depot/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_asset
+- code: decisiv:registered_assets:001
+  title: Failed Dependency
+  status: '424'
+  detail: Asset Contention Issue
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_assets
+- code: decisiv:registered_assets:002
+  title: Asset Already Registered
+  status: '424'
+  detail: The asset's identifying attributes are already registered in the SRM Ecosystem.
+  source:
+    pointer: /data/attributes/serial_number
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_assets
+- code: decisiv:registered_components:001
+  title: Deactivated Asset
+  status: '422'
+  detail: Asset has been deactivated and is not eligible for use
+  source:
+    pointer: /data/relationships/registered_asset/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: registered_components
+- code: decisiv:relationships:001
+  title: Invalid ID format requested
+  status: '422'
+  detail: Provided ID in relationships must be a valid UUID format
+  source:
+    pointer: /data/relationships/account_extended_attribute/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: relationships
+- code: decisiv:relationships:002
+  title: Missing required relationship
+  status: '400'
+  detail: The required relationship {{relationship_name}} is missing
+  source:
+    pointer: /data/relationships/depot
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: relationships
+- code: decisiv:request_attributes:001
+  title: Missing required attribute key
+  status: '400'
+  detail: Required key not provided in request body
+  source:
+    pointer: /data/attributes/url
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:002
+  title: Missing required attribute value
+  status: '400'
+  detail: Required key must be populated
+  source:
+    pointer: /data/attributes
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:003
+  title: Identifier not found
+  status: '422'
+  detail: Contact not found in database
+  source:
+    pointer: /data/relationships/billing_contact/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:004
+  title: Invalid Attribute Type
+  status: '422'
+  detail: Invalid type provided for the attribute
+  source:
+    pointer: /data/attributes/custom_headers/Invalid-Header
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:005
+  title: Immutable Attribute
+  status: '422'
+  detail: The resource attribute is immutable through this particular endpoint
+  source:
+    pointer: /data/attributes/ro_number
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:006
+  title: Timestamps must conform to ISO 8601 standard in the format of "YYYY-MM-DDTHH:MM:SSZ"
+  status: '422'
+  source:
+    pointer: /data/attributes/license/expiration
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:009
+  title: Attribute Not Allowed
+  status: '400'
+  detail: invalid_attribute is not allowed
+  source:
+    pointer: /data/attributes/invalid_attribute
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:010
+  title: Invalid Attribute Value
+  status: '400'
+  detail: Invalid url value provided - {{invalid_url}} is not a valid URL
+  source:
+    pointer: /data/attributes
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:011
+  title: Invalid Attribute Pattern
+  status: '400'
+  detail: Attribute value must match pattern '{{pattern}}'
+  source:
+    pointer: /data/relationships/depot/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:012
+  title: Invalid Period for Timestamp
+  status: '422'
+  detail: Timestamp can not be in the future
+  source:
+    pointer: /data/attributes/event_timestamps/stopped_at
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:014
+  title: Character Limit Exceeded
+  status: '400'
+  detail: Field length can not exceed {{limit}} characters
+  source:
+    pointer: /data/attributes/engine/serial_number
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:015
+  title: Field Length Within Limit
+  status: '422'
+  detail: Field length must be at least {{limit}} characters
+  source:
+    pointer: /data/attributes/serial_number
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_attributes:016
+  title: Invalid Year
+  status: '422'
+  detail: Provided year value is outside of the supported range - {{range}}
+  source:
+    pointer: /data/attributes/year
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: request_attributes
+- code: decisiv:request_schema:001
+  title: Schema Conflict
+  status: '400'
+  detail: Request must be validated against exactly one of the documented schemas
+  source:
+    pointer: /
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: request_schema
+- code: decisiv:resource:001
+  title: Resource Identifier - Not Found
+  status: '404'
+  detail: The parent resource could not be found
+  source:
+    parameter: id
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: resource
+- code: decisiv:resource:002
+  title: Resource type is invalid
+  status: '400'
+  detail: Resource type is invalid
+  source:
+    pointer: /data/relationships/primary_contact/data/type
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+  domain: resource
+- code: decisiv:resource:003
+  title: Forbidden
+  status: '403'
+  detail: The resource is read-only and cannot be updated or deleted
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: resource
+- code: decisiv:resource:006
+  title: Resource Identifier mismatch
+  status: '400'
+  detail: Resource Identifier must match the one provided in URL
+  source:
+    pointer: /data/id
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: resource
+- code: decisiv:resource:008
+  title: Customer asset deactivated
+  status: '422'
+  detail: The related customer asset has been deactivated and cannot be modified
+  source:
+    pointer: /data/relationships/customer_asset
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: resource
+- code: decisiv:service_requests:001
+  title: Provided Registered Asset is not enrolled for this account
+  status: '422'
+  detail: Triggered when the registered asset is not owned by any dealers on the account
+  source:
+    pointer: /data/relationships/registered_asset/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: service_requests
+- code: decisiv:service_requests:002
+  title: Service Provider is not currently available for accepting requests
+  status: '422'
+  detail: Triggered when the service provider does not have a contact to receive the request
+  source:
+    pointer: /data/relationships/service_provider/data/id
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: service_requests
+- code: decisiv:silence_webhook_events:001
+  title: Bad Request
+  status: '400'
+  detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  domain: silence_webhook_events
+- code: decisiv:sublet_associations:001
+  title: Closed case not eligible
+  status: '422'
+  detail: Cases in the closed state cannot be modified
+  source:
+    pointer: /data/relationships/'parent_case|sublet_case'/id
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_associations:002
+  title: Invalid Action Request
+  status: '422'
+  detail: Case should have been created in the last 30 days
+  source:
+    pointer: /data/relationships/sublet_case/id
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_associations:004
+  title: Invalid Action Request
+  status: '422'
+  detail: Cases must be associated with the same asset
+  source:
+    pointer: /data/relationships/sublet_case/id
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_associations:005
+  title: Invalid Action Request
+  status: '422'
+  detail: Case cannot be associated with itself
+  source:
+    pointer: /data/relationships
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_associations:006
+  title: Invalid Action Request
+  status: '422'
+  detail: Parent case and sublet case have already been associated
+  source:
+    pointer: /data/relationships
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_associations:007
+  title: Ineligible Account
+  status: '412'
+  detail: Service Provider account does not participate in any configured Sublet Association Program
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_associations:008
+  title: Parent Case Not Found
+  status: '422'
+  detail: Parent Case not found for the requested Account
+  source:
+    pointer: /data/relationships/parent_case/data/id
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_associations
+- code: decisiv:sublet_requests:004
+  title: Unprocessable record
+  status: '422'
+  detail: Only Sublet Requests with a status of 'Pending' may be canceled by the requesting account
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_requests
+- code: decisiv:sublet_requests:005
+  title: Unprocessable record
+  status: '422'
+  detail: Only Sublet Requests with a status of 'Canceled' may be reopened by the requesting account
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: sublet_requests
+- code: decisiv:sublet_requests:006
+  title: Sublet Case Not Found
+  status: '422'
+  detail: The identified sublet case can not be found
+  source:
+    pointer: /data/relationships/sublet_case/data/id
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: sublet_requests
+- code: decisiv:timeout:001
+  title: Gateway timeout error
+  status: '504'
+  detail: Gateway timeout error
+  specs:
+  - decisiv-service-management-openapi.json
+  domain: timeout
+- code: decisiv:vin_based_asset:002
+  title: Invalid Serial Number
+  status: '422'
+  detail: Provided serial number must match the last 8-9 digits of the provided vin attribute
+  source:
+    pointer: /data/attributes/serial_number
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vin_based_asset
+- code: decisiv:vins:001
+  title: Invalid check digit
+  status: '422'
+  detail: Provided VIN attribute has an invalid check digit.
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vins
+- code: decisiv:vins:002
+  title: Invalid length
+  status: '422'
+  detail: Provided VIN attribute must be 17 digits in length
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vins
+- code: decisiv:vins:003
+  title: Invalid character I
+  status: '422'
+  detail: Provided VIN attribute has an invalid character I.
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vins
+- code: decisiv:vins:004
+  title: Invalid character O
+  status: '422'
+  detail: Provided VIN attribute has an Invalid character O.
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vins
+- code: decisiv:vins:005
+  title: Invalid character Q
+  status: '422'
+  detail: Provided VIN attribute has an Invalid character Q.
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vins
+- code: decisiv:vins:006
+  title: Invalid format
+  status: '422'
+  detail: Provided VIN attribute has an invalid format.
+  source:
+    pointer: /data/attributes/vin
+  specs:
+  - decisiv-asset-management-openapi.json
+  domain: vins
+- code: decisiv:webhook_events:001
+  title: Invalid Value
+  status: '422'
+  detail: Provided webhook event is invalid or unknown for specified account
+  source:
+    pointer: /data/attributes/events
+  specs:
+  - decisiv-account-management-openapi.json
+  domain: webhook_events
+- code: decisiv:webhooks:001
+  title: Invalid Value
+  status: '422'
+  detail: Provided webhook url already configured for the specified account
+  source:
+    pointer: /data/attributes/url
+  specs:
+  - decisiv-account-management-openapi.json
+  domain: webhooks
+- code: decisiv:webhooks:002
+  title: Custom Header Not Allowed
+  status: '422'
+  detail: 'The custom header Authorization is not allowed. Unallowed headers: authorization, content-type, host,
+    user-agent, content-length'
+  source:
+    pointer: /data/attributes/custom_headers/Authorization
+  specs:
+  - decisiv-account-management-openapi.json
+  domain: webhooks
+- code: decisiv:webhooks:003
+  title: Maximum Custom Headers Exceeded
+  status: '422'
+  detail: The number of custom headers exceeds the maximum allowed (10)
+  source:
+    pointer: /data/attributes/custom_headers
+  specs:
+  - decisiv-account-management-openapi.json
+  domain: webhooks

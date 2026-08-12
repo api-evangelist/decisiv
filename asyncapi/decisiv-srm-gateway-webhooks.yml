@@ -1,0 +1,176 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  openapi/_original/decisiv-account-management-openapi.json (Webhooks + Webhooks Events operations and
+  published examples), https://api-docs.decisiv.net/docs/api/1/architecture/notifications/
+spec_type: none
+note: >-
+  Decisiv publishes NO AsyncAPI document. It does publish a real, managed webhook surface: the SRM
+  Gateway Account Management module exposes CRUD over webhook endpoints plus a signing-key rotation
+  operation and a catalog endpoint listing the events an account may subscribe to. The event names below
+  are taken verbatim from the response examples in the published OpenAPI — they are Decisiv's own
+  canonical names, not invented. The full authoritative list for a given account is only readable from
+  GET /account_management/v1/accounts/{account_id}/webhook_events, which is auth-gated; the 19 names
+  here are the ones Decisiv puts in its own documentation examples.
+
+surface: webhooks
+transport: https
+delivery: outbound HTTP POST to a subscriber-registered https URL
+security:
+  signing_key: true
+  signing_key_rotation_operation: refreshSigningKeyWebhooksbyId
+  https_required: true
+  note: >-
+    Endpoint URLs are pattern-constrained to ^https:// in the schema. Each webhook carries a signing key
+    that the subscriber can rotate via POST .../webhooks/{id}/refresh_signing_key. Decisiv does not
+    publish the signature algorithm or header name in the public spec.
+
+management_api:
+  spec: openapi/decisiv-account-management-openapi.yml
+  base: https://srm-api.decisivapps.com
+  operations:
+  - operationId: getWebhooks
+    method: GET
+    path: '/account_management/v1/accounts/{account_id}/webhooks'
+    summary: List webhook endpoints for the designated account
+  - operationId: createWebhookByAccountId
+    method: POST
+    path: '/account_management/v1/accounts/{account_id}/webhooks'
+    summary: Create new webhook for the requested account
+  - operationId: getWebhooksById
+    method: GET
+    path: '/account_management/v1/accounts/{account_id}/webhooks/{id}'
+    summary: Show details for a specific webhook
+  - operationId: updateWebhookbyId
+    method: PATCH
+    path: '/account_management/v1/accounts/{account_id}/webhooks/{id}'
+    summary: Update details for a specific webhook
+  - operationId: deleteWebhooksbyId
+    method: DELETE
+    path: '/account_management/v1/accounts/{account_id}/webhooks/{id}'
+    summary: Delete a webhook
+  - operationId: refreshSigningKeyWebhooksbyId
+    method: POST
+    path: '/account_management/v1/accounts/{account_id}/webhooks/{id}/refresh_signing_key'
+    summary: Refresh webhook signing key
+  - operationId: getWebhooksEventsbyAccountId
+    method: GET
+    path: '/account_management/v1/accounts/{account_id}/webhook_events'
+    summary: List webhook events available for subscription by the designated account
+
+subscription_object:
+  type: webhooks
+  attributes:
+    url:
+      type: string
+      format: uri
+      pattern: '^https://'
+      required: true
+    events:
+      type: array
+      minItems: 1
+      required: true
+      description: canonical event names
+    custom_headers:
+      type: object
+      description: extra headers sent with the delivery
+    enabled:
+      type: boolean
+      default: true
+    created_at:
+      type: string
+      format: date-time
+    updated_at:
+      type: string
+      format: date-time
+  constraints:
+  - code: decisiv:webhooks:001
+    rule: A webhook URL may only be configured once per account.
+  - code: decisiv:webhooks:002
+    rule: >-
+      Custom headers may not override authorization, content-type, host or user-agent.
+  - code: decisiv:webhooks:003
+    rule: Maximum 10 custom headers.
+  - code: decisiv:webhook_events:001
+    rule: The subscribed event must be valid and known for the account.
+
+events:
+- name: decisiv:asset_management:asset:registered
+  domain: asset_management
+  resource: asset
+- name: decisiv:asset_management:asset:transferred
+  domain: asset_management
+  resource: asset
+- name: decisiv:asset_management:asset:meter_updated
+  domain: asset_management
+  resource: asset
+- name: decisiv:asset_management:case:created
+  domain: asset_management
+  resource: case
+- name: decisiv:asset_management:case:closed
+  domain: asset_management
+  resource: case
+- name: decisiv:asset_management:case:reopened
+  domain: asset_management
+  resource: case
+- name: decisiv:asset_management:case:note_posted
+  domain: asset_management
+  resource: case
+- name: decisiv:asset_management:case:attachment_posted
+  domain: asset_management
+  resource: case
+- name: decisiv:asset_management:case:repair_status_changed
+  domain: asset_management
+  resource: case
+- name: decisiv:asset_management:estimate:approval_requested
+  domain: asset_management
+  resource: estimate
+- name: decisiv:asset_management:estimate:approved
+  domain: asset_management
+  resource: estimate
+- name: decisiv:asset_management:estimate:declined
+  domain: asset_management
+  resource: estimate
+- name: decisiv:asset_management:service_request:accepted
+  domain: asset_management
+  resource: service_request
+- name: decisiv:asset_management:service_request:declined
+  domain: asset_management
+  resource: service_request
+- name: decisiv:maintenance:service_event:created
+  domain: maintenance
+  resource: service_event
+- name: decisiv:maintenance:scheduled_operation:planned
+  domain: maintenance
+  resource: scheduled_operation
+- name: decisiv:maintenance:scheduled_operation:overdue
+  domain: maintenance
+  resource: scheduled_operation
+- name: decisiv:maintenance:scheduled_operation:invalidated
+  domain: maintenance
+  resource: scheduled_operation
+
+event_suppression:
+  header: X-DECISIV-SILENCE-EVENTS
+  description: >-
+    A caller may mute named webhook events for a single write transaction, so its own bulk writes do not
+    echo back as notifications. Documented on 15 operations.
+
+legacy_platform_api_notifications:
+  docs: https://api-docs.decisiv.net/docs/api/1/architecture/notifications/
+  style: thin notification — the payload is a URL pointing at the changed resource, not the resource itself
+  auth: HTTP Basic (URI-encoded token and OAuth listed as future schemes)
+  timeout_default_seconds: 5
+  retry_limit: 5
+  on_exhaustion: email to the profile user's address containing the failed message
+  ordering: >-
+    Decisiv documents explicitly that notifications may arrive out of order — both from concurrent
+    consumer processes and from retried timeouts — and describes the resulting read-consensus problem
+    and locking mitigations. This is unusually candid delivery-semantics documentation.
+
+summary:
+  asyncapi_published: false
+  webhooks_published: true
+  event_count: 18
+  manageable_via_api: true
+  signing_key: true

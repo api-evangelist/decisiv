@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/ProgramType">
+    <xs:complexType name="ProgramType">
+        <xs:all>
+            <xs:element name="description" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

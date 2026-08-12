@@ -42,5 +42,54 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Decisiv is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
+Decisiv operates the Service Relationship Management (SRM) platform for the commercial vehicle industry —
+the network where fleets, asset owners, OEMs, dealers, independent service providers and component
+suppliers work a single service event together. The APIs cover asset registration and VIN identification,
+service requests, cases, estimates, line items with VMRS coding, parts, labour, sublet work between shops,
+and telematics-driven faults and diagnostic readings.
+
+## APIs profiled here
+
+| API | Spec | Ops | Base |
+|---|---|---|---|
+| SRM Gateway — Account Management | OpenAPI 3.1.0 | 21 | `https://srm-api.decisivapps.com` |
+| SRM Gateway — Asset Management | OpenAPI 3.1.0 | 85 | `https://srm-api.decisivapps.com` |
+| SRM Gateway — Service Management | OpenAPI 3.1.0 | 139 | `https://srm-api.decisivapps.com` |
+| SRM Gateway — Telematics | OpenAPI 3.1.0 | 6 | `https://srm-api.decisivapps.com` |
+| Global Assets API | Swagger 2.0 (v2.1.5) | 10 | `https://global-assets.decisivapps.com/api/v1/` |
+| Service Provider API | Swagger 2.0 (v2.0.4) | 11 | `https://service-provider.decisivapps.com/api/v1/` |
+| Platform API (legacy XML) | XSD bundle | — | `https://api.decisiv.net/platform_api` |
+
+All specs were harvested verbatim from Decisiv's own public documentation hosts on 2026-08-12 and are in
+`openapi/_original/`.
+
+## What Decisiv publishes well
+
+- **Six machine-readable specs, 272 operations**, all JSON:API (`application/vnd.api+json`).
+- **A 112-code namespaced error registry** (`decisiv:<domain>:<nnn>`) published inside the spec examples —
+  VIN check digits, E.164 phone rules, RFC 3696 email rules, filter grammar, sublet eligibility.
+- **A managed webhook surface** with 18 named events, rotatable signing keys and an account-scoped event
+  catalog endpoint — plus `X-DECISIV-SILENCE-EVENTS` to mute your own echo during bulk writes.
+- **OAuth 2.0 with real discovery metadata** at `login.decisiv.net` (RFC 8414 + OIDC, PKCE, ES256 JWKS).
+- **ISO/IEC 27001:2022 certification** since February 2024, certificate downloadable from the Trust Center.
+
+## Where the gaps are
+
+- **No API client SDK in any language.** The only first-party packages are the `@decisiv/*` Key Design
+  System React components on npm, last released **August 2020**.
+- **No changelog for the current product.** The only dated changelog covers the legacy Platform API and
+  stops at 2021-09-30.
+- **No status page, no deprecation policy, no Sunset headers** — even though the OAuth password grant is
+  marked deprecated in the specs with no removal date.
+- **No published rate limits.** 429 is declared on 37 operations with no number, no window and no
+  `RateLimit-*`/`Retry-After` header.
+- **No pricing, no self-serve signup.** Access is provisioned per OAuth Application per module by sales.
+- **No MCP server, no A2A agent card, no AsyncAPI, no security.txt.**
+- 118 of 272 operations carry no `operationId`, almost all of them in Service Management.
+
+Links:
+- https://www.decisiv.com/
+- https://api-docs.decisiv.net/
+- https://srm-api.decisivapps.com/api-docs/v1
+- https://www.decisivmarketplace.com/solutions-center/
 - https://forgeglobal.com/decisiv_stock/

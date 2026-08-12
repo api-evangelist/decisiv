@@ -1,0 +1,46 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://www.decisivmarketplace.com/product/srm-gateway-for-service-providers/,
+  https://www.decisivmarketplace.com/product/srm-gateway-for-fleets-and-asset-managers/,
+  https://www.decisivmarketplace.com/product/srm-gateway-for-partners/,
+  https://www.decisivmarketplace.com/solutions-center/, https://api-docs.decisiv.net/
+plan_count: 0
+pricing_model: enterprise-contact-sales
+currency: null
+free_tier: false
+trial: false
+self_serve: false
+note: >-
+  Decisiv publishes NO pricing of any kind. https://www.decisiv.com/pricing returns 404, and each of the
+  three SRM Gateway listings on the Decisiv Marketplace ends in a "Fill out the form below for more
+  information or to schedule a demo" lead-capture form with a CAPTCHA rather than a price, a tier table,
+  or a quota. The API documentation site says plainly: "Contact us to enable your access to these APIs",
+  and names a single sales person with a phone extension and sales@decisiv.com. Access is provisioned per
+  OAuth Application per module by Decisiv — an unprovisioned module returns 428 with
+  decisiv:access:003 — so there is no rate card, no usage tier and no self-serve signup to record.
+packaged_offerings:
+- name: SRM Gateway for Service Providers
+  url: https://www.decisivmarketplace.com/product/srm-gateway-for-service-providers/
+  price: null
+  access: contact sales / schedule a demo
+- name: SRM Gateway for Fleets and Asset Managers
+  url: https://www.decisivmarketplace.com/product/srm-gateway-for-fleets-and-asset-managers/
+  price: null
+  access: contact sales / schedule a demo
+- name: SRM Gateway for Partners
+  url: https://www.decisivmarketplace.com/product/srm-gateway-for-partners/
+  price: null
+  access: contact sales / schedule a demo
+plans: []
+sales_contact:
+  email: sales@decisiv.com
+  phone: 804-762-4153 x1
+  published_at: https://api-docs.decisiv.net/
+x-evidence:
+- url: https://www.decisiv.com/pricing
+  http_status: 404
+- url: https://www.decisivmarketplace.com/product/srm-gateway-for-partners/
+  http_status: 200
+- url: https://api-docs.decisiv.net/
+  http_status: 200

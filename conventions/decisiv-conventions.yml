@@ -1,0 +1,197 @@
+generated: '2026-08-12'
+method: derived
+source: >-
+  openapi/_original/*.json (SRM Gateway v0.48.24 modules), https://api-docs.decisiv.net/docs/api/oauth/,
+  https://api-docs.decisiv.net/docs/api/1/architecture/versioning/,
+  https://api-docs.decisiv.net/docs/api/1/architecture/collections/
+scope: >-
+  These conventions describe the SRM Gateway APIs (Account Management, Asset Management, Service
+  Management, Telematics). The older Global Assets / Service Provider Swagger 2.0 APIs and the XML
+  Platform API follow different conventions and are called out where they differ.
+
+media_type:
+  request: application/vnd.api+json
+  response: application/vnd.api+json
+  note: >-
+    Every SRM Gateway request and response body is JSON:API. Resource objects carry {type, id,
+    attributes, relationships}; collections carry data[] plus meta. Attachments upload as
+    multipart/form-data. The legacy Platform API is XML (application/xml, versioned via the Accept
+    header) and publishes XSD schemas instead.
+
+authentication:
+  style: oauth2-bearer
+  primary_flow: authorization_code
+  legacy_flow: password
+  legacy_flow_status: deprecated
+  token_header: 'Authorization: Bearer <JWT>'
+  bearer_format: JWT
+  authorization_server: https://login.decisiv.net
+  extra_header:
+    name: X-Decisiv-Transition-Token
+    applies_to: [Global Assets API, Service Provider API, Platform API]
+    note: >-
+      Legacy transition token issued from the Case application under
+      Admin > Customize Your Database > Platform API. Required alongside the OAuth bearer token on the
+      pre-Gateway APIs during the migration to OAuth.
+  provisioning: >-
+    Access is granted per OAuth Application per module. Calling a module the application is not
+    provisioned for returns 428 Precondition Required with code decisiv:access:003.
+  docs: https://api-docs.decisiv.net/docs/api/oauth/
+  artifact: authentication/decisiv-authentication.yml
+
+idempotency:
+  supported: true
+  scope: create_case
+  request_header: X-DECISIV-IDEMPOTENCY-KEY
+  response_header: X-Decisiv-Idempotent-Replay
+  max_key_length: 128
+  key_scope: (account, key) pair
+  behavior: >-
+    The first successful create_case for a given (account, key) pair is cached briefly. A repeat request
+    with the same key replays that original response with X-Decisiv-Idempotent-Replay: true instead of
+    creating a duplicate case.
+  conflicts:
+  - status: 409
+    code: decisiv:idempotency_key:001
+    title: Idempotency Key In Progress
+    meaning: A request with this key is already in flight; retry to receive the original response.
+  - status: 400
+    code: decisiv:idempotency_key:002
+    title: Idempotency Key Length Exceeded
+    meaning: X-DECISIV-IDEMPOTENCY-KEY can not exceed 128 characters.
+  operations:
+  - POST /service_management/{srm_account_id}/v1/customer_assets/{id}/create_case
+  note: >-
+    Idempotency is real but NARROW — it is documented on case creation, the one operation where a
+    duplicate is most expensive. It is not offered across the rest of the write surface.
+
+pagination:
+  style: page-based (JSON:API)
+  params:
+  - name: page[number]
+    type: number
+    description: Sets the desired page of results
+  - name: page[size]
+    type: number
+    description: Sets the desired maximum number of results per page
+  response_field: meta
+  note: Present on 77 collection operations across the Gateway modules.
+
+filtering:
+  style: JSON:API filter family
+  params: filter[<attribute>], with operator suffixes
+  operators:
+  - ':like'
+  - ':lt'
+  - ':lte'
+  - ':gt'
+  - ':gte'
+  - ':include'
+  examples:
+  - filter[vin]
+  - filter[unit_number]
+  - filter[chassis_id]
+  - filter[serial_number]
+  - filter[state]
+  - filter[name:like]
+  - filter[event_timestamps.started_at:gte]
+  - filter[external_reference.business_system]
+  constraints:
+  - Filter values must be at least 3 characters (decisiv:filters:007) and under 4096 characters (decisiv:filters:008).
+  - A filter and its :like variant cannot be combined (decisiv:filters:012).
+  - Multi-value filters are capped (e.g. 50 values on filter[module_subscriptions.key:include], decisiv:filters:011).
+  - Time-based filters must be ISO 8601 (decisiv:filters:010); some date ranges are capped at 180 days (decisiv:filters:004).
+  - Requesting an unsupported filter returns 400 with the list of valid filters (decisiv:filters:001).
+
+sorting:
+  param: sort
+  style: JSON:API sort
+  legacy_platform_api: 'GET /customers?sortBy=companyName&sortOrder=desc'
+
+sparse_fields_and_expansion:
+  param: include
+  style: JSON:API compound documents
+  usage_count: 55
+  note: >-
+    Related resources are side-loaded with include rather than expanded in place. There is no
+    fields[type] sparse-fieldset usage observed in the published specs.
+
+metadata:
+  supported: true
+  surface: Case Metadata endpoints in Service Management
+  constraints:
+  - decisiv:metadata:001 Invalid metadata key
+  - decisiv:metadata:002 Invalid metadata value
+  - decisiv:metadata:003 Metadata object is too big
+  - decisiv:metadata:004 Metadata key not found
+  external_reference:
+    note: >-
+      Resources also carry an external_reference with a business_system discriminator, filterable via
+      filter[external_reference.business_system] — the intended hook for correlating a Decisiv record
+      with a dealer/fleet system of record.
+
+event_suppression:
+  header: X-DECISIV-SILENCE-EVENTS
+  type: array of webhook event names
+  operations: 15
+  description: >-
+    Mutes the named webhook events for a single transaction — so a bulk sync does not fan out
+    notifications back to the caller. An invalid value returns 400 decisiv:silence_webhook_events:001.
+  note: An unusual and genuinely useful convention; few APIs let the caller suppress their own echo.
+
+versioning:
+  srm_gateway:
+    scheme: uri-path
+    current: v1
+    build_version: 0.48.24
+    note: All Gateway paths are /<module>/{srm_account_id}/v1/... or /<module>/v1/...
+  platform_api:
+    scheme: header
+    application_version_header: Accept-Version
+    resource_version_header: Accept
+    current_application_version: '1'
+    default_when_absent: '0.0.7'
+    accept_values:
+    - '*/*  (defaults to application/xml)'
+    - application/xml
+    - 'application/xml; version=0.1'
+    - 'text=xml;version=0.3-beta'
+    docs: https://api-docs.decisiv.net/docs/api/1/architecture/versioning/
+
+error_envelope:
+  format: json-api-errors
+  rfc9457: false
+  shape: '{"errors": [{"title", "detail", "code", "status", "source": {"parameter"|"pointer"}}]}'
+  code_namespace: 'decisiv:<domain>:<nnn>'
+  artifact: errors/decisiv-error-codes.yml
+  problem_types: errors/decisiv-problem-types.yml
+
+rate_limiting:
+  documented_limits: false
+  exhaustion_status: 429
+  exhaustion_code: '429'
+  exhaustion_body: >-
+    {"errors":[{"code":"429","status":"429","title":"Too Many Requests","detail":"The maximum number of
+    requests for this application has been far exceeded with the given credentials."}]}
+  response_headers: []
+  note: >-
+    429 is declared on 37 operations but no numeric limit, window, or RateLimit-*/Retry-After response
+    header is published anywhere in the specs or docs. An agent cannot back off on signal — only on
+    failure. See rate-limits/decisiv-rate-limits.yml.
+  artifact: rate-limits/decisiv-rate-limits.yml
+
+request_tracing:
+  request_id_header: null
+  note: No correlation/request-id header is documented in the specs or the developer docs.
+
+webhooks:
+  supported: true
+  artifact: asyncapi/decisiv-srm-gateway-webhooks.yml
+
+related_artifacts:
+  authentication: authentication/decisiv-authentication.yml
+  scopes: scopes/decisiv-scopes.yml
+  errors: errors/decisiv-error-codes.yml
+  lifecycle: lifecycle/decisiv-lifecycle.yml
+  rate_limits: rate-limits/decisiv-rate-limits.yml
+  data_model: data-model/decisiv-data-model.yml

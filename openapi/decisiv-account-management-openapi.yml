@@ -1,0 +1,3413 @@
+openapi: 3.1.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current
+    user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+paths:
+  /account_management/v1/accounts:
+    get:
+      summary: List all Accounts the current user has access granted to
+      description: Returns the accounts the authenticated user has been granted access to, with pagination and filtering.
+        Supports `?include=roles` to sideload the user's RBAC roles on each account; when present, each account gains a `relationships.roles`
+        object and the related role resources are returned in the top-level `included` array.
+      tags:
+      - Accounts
+      operationId: getAccounts
+      parameters:
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+        description: Sideload related resources (e.g. `roles`)
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 255
+        description: List `accounts` that match the `name` attribute. Cannot be combined with `filter[name:like]`.
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 255
+        description: List `accounts` that match partially the `name` attribute. Cannot be combined with `filter[name]`. in
+          the value are matched as literal characters, not wildcards.
+      - name: filter[external_reference.decisiv]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `accounts` that match the `decisiv` attribute inside the external_reference object.
+      - name: filter[external_reference.srm_account]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `accounts` that match the `srm_account` attribute inside the external_reference object.
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `accounts` that match the `business_system` attribute inside the external_reference object.
+      - name: filter[module_subscriptions.key:include]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: '**Deprecated** — use `filter[module_subscriptions.key:includes]` instead. List `accounts` that have
+          the modules chosen in the filter. Accepts up to 50 comma-separated values.'
+      - name: filter[module_subscriptions.key:exclude]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: '**Deprecated** — use `filter[module_subscriptions.key:excludes]` instead. List `accounts` that does
+          not have the modules chosen in the filter. Accepts up to 50 comma-separated values.'
+      - name: filter[module_subscriptions.key:includes]
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: List `accounts` that have the modules chosen in the filter. Accepts up to 50 comma-separated values.
+      - name: filter[module_subscriptions.key:excludes]
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: List `accounts` that does not have the modules chosen in the filter. Accepts up to 50 comma-separated
+          values.
+      responses:
+        '200':
+          description: Returns list of accounts
+          content:
+            application/vnd.api+json:
+              examples:
+                WithoutInclude:
+                  summary: Default response (no ?include=roles)
+                  description: Accounts are returned without a `relationships.roles` object and without a top-level `included`
+                    array.
+                  value:
+                    data:
+                    - type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        address1: 1000 Little Martha Lane
+                        address2: ''''
+                        city: Macon
+                        state: GA
+                        country: US
+                        postal_code: '31204'
+                        phone: '+14157894567'
+                        fax: '+14157894567'
+                        email: southbound.trucking@example.com
+                        external_reference:
+                          business_system: ''
+                          dms: ''
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                        module_subscriptions:
+                        - key: account_management
+                          name: Account Management
+                          description: Handles user permissions, business relationships, and core account settings across
+                            the SRM platform
+                        - key: asset_management
+                          name: Asset Management
+                          description: Allows fleet / asset operators to track, manage and maintain their vehicles/assets
+                            across their entire lifecycle
+                        - key: maintenance
+                          name: Maintenance
+                          description: Helps consumers plan and execute preventive maintenance programs to reduce downtime
+                            and extend asset life
+                        - key: service_management
+                          name: Service Management
+                          description: Enables service providers to manage repairs, estimates, and workflow for commercial
+                            vehicle maintenance and repairs
+                        - key: telematics
+                          name: Telematics
+                          description: Provides real-time vehicle data, diagnostics, and location tracking to optimize asset
+                            operations and maintenance
+                WithInclude:
+                  summary: Response with ?include=roles
+                  description: Each account carries a `relationships.roles` object and the related role resources are returned
+                    in the top-level `included` array. Both public and private (account-owned) roles are reflected.
+                  value:
+                    data:
+                    - type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        external_reference:
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                      relationships:
+                        roles:
+                          data:
+                          - type: roles
+                            id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                          - type: roles
+                            id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                    included:
+                    - type: roles
+                      id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                      attributes:
+                        name: Fleet Administrator
+                        description: Full administrative access to the account
+                        public: true
+                        permissions:
+                        - assets:read
+                        - assets:write
+                    - type: roles
+                      id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                      attributes:
+                        name: Billing Approver
+                        description: Account-owned custom role
+                        public: false
+                        permissions:
+                        - invoices:approve
+              schema:
+                $ref: '#/components/schemas/accounts'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Conflicting filters:
+                  value:
+                    errors:
+                    - title: Conflicting filters
+                      detail: Cannot combine filter[name] with its :like variant. Use only one.
+                      code: decisiv:filters:012
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Too many filter values:
+                  value:
+                    errors:
+                    - title: Too many filter values
+                      detail: 'Too many values for filter[module_subscriptions.key:include]. Maximum allowed: 50.'
+                      code: decisiv:filters:011
+                      status: '400'
+                      source:
+                        parameter: filter[module_subscriptions.key:include]
+                Filter value too long:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be less than 4096 characters
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[external_reference.decisiv]
+                Invalid filter characters:
+                  value:
+                    errors:
+                    - title: Invalid filter characters
+                      detail: Filter value for filter[name] contains invalid characters.
+                      code: decisiv:filters:013
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter shape:
+                  value:
+                    errors:
+                    - title: Invalid filter value shape
+                      detail: Filter value for filter[name] must be a string.
+                      code: decisiv:filters:014
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}:
+    get:
+      summary: List details on a specific Account
+      description: Returns the details of a single account the authenticated user has access to. Supports `?include=roles`
+        to sideload the user's RBAC roles on the account; when present, the account gains a `relationships.roles` object and
+        the related role resources are returned in the top-level `included` array.
+      tags:
+      - Accounts
+      operationId: getAccountsById
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+        description: Sideload related resources (e.g. `roles`)
+      responses:
+        '200':
+          description: Show details for requested Account
+          content:
+            application/vnd.api+json:
+              examples:
+                WithoutInclude:
+                  summary: Default response (no ?include=roles)
+                  description: The account is returned without a `relationships.roles` object and without a top-level `included`
+                    array.
+                  value:
+                    data:
+                      type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        address1: 1000 Little Martha Lane
+                        address2: ''''
+                        city: Macon
+                        state: GA
+                        country: US
+                        postal_code: '31204'
+                        phone: '+14157894567'
+                        fax: '+14157894567'
+                        email: southbound.trucking@example.com
+                        external_reference:
+                          business_system: ''
+                          dms: ''
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                        module_subscriptions:
+                        - key: account_management
+                          name: Account Management
+                          description: Handles user permissions, business relationships, and core account settings across
+                            the SRM platform
+                        - key: asset_management
+                          name: Asset Management
+                          description: Allows fleet / asset operators to track, manage and maintain their vehicles/assets
+                            across their entire lifecycle
+                        - key: maintenance
+                          name: Maintenance
+                          description: Helps consumers plan and execute preventive maintenance programs to reduce downtime
+                            and extend asset life
+                        - key: service_management
+                          name: Service Management
+                          description: Enables service providers to manage repairs, estimates, and workflow for commercial
+                            vehicle maintenance and repairs
+                        - key: telematics
+                          name: Telematics
+                          description: Provides real-time vehicle data, diagnostics, and location tracking to optimize asset
+                            operations and maintenance
+                WithInclude:
+                  summary: Response with ?include=roles
+                  description: The account carries a `relationships.roles` object and the related role resources are returned
+                    in the top-level `included` array. Both public and private (account-owned) roles are reflected.
+                  value:
+                    data:
+                      type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        external_reference:
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                      relationships:
+                        roles:
+                          data:
+                          - type: roles
+                            id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                          - type: roles
+                            id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                    included:
+                    - type: roles
+                      id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                      attributes:
+                        name: Fleet Administrator
+                        description: Full administrative access to the account
+                        public: true
+                        permissions:
+                        - assets:read
+                        - assets:write
+                    - type: roles
+                      id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                      attributes:
+                        name: Billing Approver
+                        description: Account-owned custom role
+                        public: false
+                        permissions:
+                        - invoices:approve
+              schema:
+                $ref: '#/components/schemas/account_by_id'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/ecosystem_users:
+    get:
+      summary: Search ecosystem users
+      description: Search for users across the entire ecosystem, scoped to an account context. At least one filter parameter
+        is required.
+      tags:
+      - Ecosystem Users
+      operationId: listEcosystemUsers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The account's UUID
+      - name: filter[email]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by exact email address
+      - name: filter[first_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by first name (partial, case-insensitive)
+      - name: filter[last_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by last name (partial, case-insensitive)
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by the user's business-system identifier (the same value returned in `external_reference.business_system`).
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Page number for paginated results
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+          maximum: 100
+        description: Number of results per page
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ecosystem_users'
+        '400':
+          description: Missing required filter parameter
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: Invalid or expired access token
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: Forbidden — untrusted application or insufficient RBAC permissions
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: OAuth application not provisioned for this module
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create an ecosystem user
+      description: 'Provisions a new user in the Decisiv SRM ecosystem. This endpoint is **not** idempotent: a duplicate email
+        or username — including one belonging to a discarded user — is rejected with `422`, matching the legacy vendor self-registration
+        and admin-create flows. A welcome notification is sent automatically on success — either a password setup email or
+        an SSO welcome email depending on the user''s email domain.'
+      tags:
+      - Ecosystem Users
+      operationId: createEcosystemUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The account's UUID
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/ecosystem_user_create'
+            example:
+              data:
+                type: ecosystem_users
+                attributes:
+                  username: jane.smith
+                  email: jane.smith@decisiv.com
+                  first_name: Jane
+                  last_name: Smith
+                  job_role: Service Manager
+                  address1: 100 Main St
+                  city: Greensboro
+                  state: NC
+                  postal_code: '27410'
+                  country: US
+                  external_reference:
+                    business_system: BS-12345
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ecosystem_user_by_id'
+        '400':
+          description: Missing required attributes
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Validation error — invalid email format (`decisiv:email:001`–`004` syntax/length/host), reserved email
+            domain (`decisiv:email:005`), unresolvable email domain (`decisiv:email:001`), invalid country/state (`decisiv:location:001`/`002`/`004`),
+            duplicate email (`decisiv:account_user:005`), or duplicate username (`decisiv:account_user:004`). Discarded users
+            count toward duplicates.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/ecosystem_users/{id}:
+    get:
+      summary: Get an ecosystem user
+      description: Retrieve a single ecosystem user by UUID.
+      tags:
+      - Ecosystem Users
+      operationId: getEcosystemUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The account's UUID
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The user's UUID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ecosystem_user_by_id'
+        '404':
+          description: User not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/users:
+    get:
+      summary: List account users
+      description: List all users assigned to an account. Supports `?include=roles` to sideload role assignments.
+      tags:
+      - Account Users
+      operationId: listAccountUsers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+        description: Sideload related resources (e.g. `roles`)
+      - name: filter[email]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by exact email address
+      - name: filter[first_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by first name (partial, case-insensitive)
+      - name: filter[last_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by last name (partial, case-insensitive)
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by the user's business-system identifier (the same value returned in `external_reference.business_system`).
+      - name: filter[roles.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by role ID. Accepts a comma-separated list; users must have ALL listed roles on this account
+          (AND). Example: filter[roles.id]=1,2'
+      - name: filter[roles.id:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by role ID. Accepts a comma-separated list; users must have ANY of the listed roles on this account
+          (OR). Example: filter[roles.id:includes]=1,2'
+      - name: filter[roles.id:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by role ID. Accepts a comma-separated list; returns users who do NOT have ANY of the listed roles
+          on this account. Example: filter[roles.id:excludes]=1,2'
+      - name: filter[job_role]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by exact `job_role` (e.g. `Branch Manager`). Pass the same value returned in the `job_role` attribute
+          on the response.
+      - name: filter[job_role:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by partial `job_role` match (case-insensitive). Example: `Manager` matches users whose `job_role`
+          is `Branch Manager` or `Service Manager`.'
+      - name: filter[last_login_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: 'Filter to users whose most recent login is on or after the given ISO 8601 timestamp. Example: filter[last_login_at:gte]=2026-01-01T00:00:00Z'
+      - name: filter[last_login_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter to users whose most recent login is on or before the given ISO 8601 timestamp.
+      - name: filter[last_login_at:exists]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter users by whether a `last_login_at` timestamp exists. Use `true` to list only users who have logged
+          in at least once, or `false` to list only users who have never logged in.
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Sort the results. Accepts a comma-separated list of fields; prefix any field with `-` for descending.
+          The first field is the primary sort key; subsequent fields break ties. Allowed fields: `last_login_at`, `roles.name`,
+          `job_role`. Examples: `sort=last_login_at`, `sort=-job_role`, `sort=roles.name,-last_login_at`. Defaults to `last_name
+          asc, first_name asc` when omitted. For `roles.name`, multi-role users are placed by their alphabetically first role
+          (asc) or last role (desc) on this account. Empty/null values for any sortable column are always grouped at the end
+          (NULLS LAST) regardless of direction.'
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_users'
+        '400':
+          description: Returned when a filter, sort, or timestamp value is invalid (e.g. `filter[last_login_at:gte]` is not
+            a parseable ISO 8601 timestamp).
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                InvalidTimestampFilter:
+                  summary: Invalid timestamp on a last_login_at filter
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid timebased filter value
+                      detail: Invalid filter value `not-a-timestamp`. Expected an ISO 8601 timestamp.
+                      code: decisiv:filters:010
+                      source:
+                        parameter: filter[last_login_at:gte]
+    post:
+      summary: Add a user to an account
+      description: Assigns an existing ecosystem user to an account with one or more roles. If the user was previously removed,
+        their account access is reactivated.
+      tags:
+      - Account Users
+      operationId: createAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/account_user_create'
+            example:
+              data:
+                type: account_users
+                attributes:
+                  communication_preferences:
+                    visible_as_external_recipient: true
+                    visible_as_internal_recipient: true
+                    visible_as_workflow_assignee: true
+                relationships:
+                  user:
+                    data:
+                      type: users
+                      id: a1b2c3d4-e5f6-4890-abcd-ef1234567890
+                  roles:
+                    data:
+                    - type: roles
+                      id: e5f6a7b8-1234-5678-9abc-def012345678
+      responses:
+        '201':
+          description: User added to account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '400':
+          description: Invalid request body (missing `user` or `roles` relationship)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Referenced user or role could not be found for this account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/users/{id}:
+    get:
+      summary: Get an account user
+      description: Retrieve a single user within an account context.
+      tags:
+      - Account Users
+      operationId: getAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '404':
+          description: User not found in account
+    patch:
+      summary: Update an account user's communication preferences
+      description: Updates the per-account visibility flags for a user already associated with the account. Any subset of
+        `communication_preferences` keys may be supplied; omitted keys are left unchanged. Returns 404 if the user has no
+        role assignments in this account.
+      tags:
+      - Account Users
+      operationId: updateAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/account_user_update'
+            example:
+              data:
+                type: account_users
+                id: a1b2c3d4-e5f6-4890-abcd-ef1234567890
+                attributes:
+                  communication_preferences:
+                    visible_as_external_recipient: false
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '404':
+          description: Account not found, or the user has no role assignments in this account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid or empty `communication_preferences` payload (unknown key, empty object, or non-boolean value)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    delete:
+      summary: Remove a user from an account
+      description: Deactivates a user's access to an account. Removes all role assignments, group memberships, user permissions,
+        and recipient records. Cannot remove yourself.
+      tags:
+      - Account Users
+      operationId: deleteAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: User removed from account
+        '404':
+          description: User not found in account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Cannot remove yourself from the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/users/{account_user_id}/relationships/roles:
+    post:
+      summary: Add roles to an account user
+      description: Assign one or more additional roles to a user within an account.
+      tags:
+      - Account User Roles
+      operationId: addAccountUserRoles
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: account_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/add_account_user_roles_request'
+      responses:
+        '201':
+          description: Roles added successfully
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '400':
+          description: Missing required relationship (`roles`) in the request body
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account or account user not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: One or more roles could not be found for this account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/users/{account_user_id}/relationships/roles/{id}:
+    delete:
+      summary: Remove a role from an account user
+      description: Remove a single role from a user within an account. Cannot remove the last role (use DELETE /users/{id}
+        instead) or modify your own roles.
+      tags:
+      - Account User Roles
+      operationId: deleteAccountUserRole
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: account_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The role ID to remove
+      responses:
+        '204':
+          description: Role removed successfully
+        '404':
+          description: Account, account user, role, or role assignment not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Cannot remove your own roles, or cannot remove the last role from a user (use DELETE /users/{id} to
+            remove the user entirely)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/roles:
+    get:
+      summary: List account roles
+      description: List all roles available for an account, including public roles (from subscribed services) and private
+        roles owned by the account.
+      tags:
+      - Account Roles
+      operationId: listAccountRoles
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 99
+        description: List `roles` that match the `name` attribute exactly (case-insensitive). Accepts a comma-separated list
+          of values to match any of them (OR).
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 99
+        description: List `roles` that partially match the `name` attribute (case-insensitive). Accepts a comma-separated
+          list of values to match any of them (OR). Wildcard characters in the value are matched as literal characters, not
+          wildcards.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/roles'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server. The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Filter value too short:
+                  value:
+                    errors:
+                    - title: Minimum character length not met
+                      detail: Filter value must be at least 3 characters
+                      code: decisiv:filters:007
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Filter value too long:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be 99 characters or fewer
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter characters:
+                  value:
+                    errors:
+                    - title: Invalid filter characters
+                      detail: Filter value for filter[name] contains invalid characters.
+                      code: decisiv:filters:013
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter shape:
+                  value:
+                    errors:
+                    - title: Invalid filter value shape
+                      detail: Filter value for filter[name] must be a string.
+                      code: decisiv:filters:014
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/roles/{id}:
+    get:
+      summary: Get an account role
+      description: Retrieve a single role available for an account.
+      tags:
+      - Account Roles
+      operationId: getAccountRole
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/role_by_id'
+        '404':
+          description: Role not found for this account
+  /account_management/v1/accounts/{account_id}/webhooks:
+    get:
+      summary: List webhook endpoints for the designated account
+      tags:
+      - Webhooks
+      operationId: getWebhooks
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: filter[events:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter `Webhooks` which are subscribed to the listed webhook events
+      - name: filter[events:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter `Webhooks` which are **NOT** subscribed to the listed webhook events
+      - name: filter[enabled]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter `Webhooks` based upon active / inactive status
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns a list of webhooks for the requested Account
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - type: webhooks
+                  id: be510cb1-6e2f-418b-a03e-53b85bdb2ab9
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/webhooks'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create new webhook for the requested account
+      tags:
+      - Webhooks
+      operationId: createWebhookByAccountId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      description: The custom header Authorization is not allowed
+      responses:
+        '201':
+          description: Creates a webhook which may receive notification for subscribed events
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: f7f9781f-b512-4a42-9f7a-266eaa4eaf7e
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    signing_key: 1vbr7FdXzERlptLN8B1NUixF
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/webhook_by_id'
+        '400':
+          description: Invalid URL format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Webhook Event:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Value
+                      detail: Invalid url value provided - {{invalid_url}} is not a valid URL
+                      code: decisiv:request_attributes:010
+                      source:
+                        pointer: /data/attributes
+                      status: '400'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid Webhook Event / Duplicate Webhook URL / Invalid Attribute Type / Custom Header Not Allowed
+            / Maximum Custom Headers Exceeded / Duplicate Custom Header
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Webhook Event:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook event is invalid or unknown for specified account
+                      code: decisiv:webhook_events:001
+                      source:
+                        pointer: /data/attributes/events
+                      status: '422'
+                Duplicate Webhook URL:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook url already configured for the specified account
+                      code: decisiv:webhooks:001
+                      source:
+                        pointer: /data/attributes/url
+                      status: '422'
+                Invalid Attribute Type:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      code: decisiv:request_attributes:004
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Invalid-Header
+                Custom Header Not Allowed:
+                  value:
+                    errors:
+                    - title: Custom Header Not Allowed
+                      detail: 'The custom header Authorization is not allowed. Unallowed headers: authorization, content-type,
+                        host, user-agent, content-length'
+                      code: decisiv:webhooks:002
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Authorization
+                Maximum Custom Headers Exceeded:
+                  value:
+                    errors:
+                    - title: Maximum Custom Headers Exceeded
+                      detail: The number of custom headers exceeds the maximum allowed (10)
+                      code: decisiv:webhooks:003
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers
+                Duplicate Custom Header:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:webhooks:001
+                      title: Duplicate Custom Header
+                      detail: Duplicate header
+                      source:
+                        pointer: /data/attributes/custom_headers/client-id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/webhook_create'
+            examples:
+              Creates webhook:
+                value:
+                  data:
+                    type: webhooks
+                    attributes:
+                      url: https://example.com/hooked
+                      events:
+                      - decisiv:asset_management:asset:transferred
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:asset_management:asset:meter_updated
+                      - decisiv:asset_management:asset:registered
+                      - decisiv:maintenance:scheduled_operation:planned
+                      - decisiv:maintenance:scheduled_operation:overdue
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:maintenance:service_event:created
+                      - decisiv:maintenance:scheduled_operation:invalidated
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:case:repair_status_changed
+                      - decisiv:asset_management:case:attachment_posted
+                      - decisiv:asset_management:case:note_posted
+                      enabled: true
+                      custom_headers:
+                        Client-ID: 649fd16a-b14d-43e3-b4b1-31ce15d6272b
+                        client_secret: b4b6b937657e130b447b59e3b47820d6
+                        decisiv-manufacturer: HINO
+  /account_management/v1/accounts/{account_id}/webhooks/{id}:
+    get:
+      summary: Show details for a specific webhook
+      tags:
+      - Webhooks
+      operationId: getWebhooksById
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show details for requested webhook
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: be510cb1-6e2f-418b-a03e-53b85bdb2ab9
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/webhook_by_id'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Update details for a specific webhook
+      tags:
+      - Webhooks
+      operationId: updateWebhookbyId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      description: The custom header Authorization is not allowed
+      responses:
+        '200':
+          description: Updates a webhook which may receive notification for subscribed events
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: 5d1dec8d-5153-49a2-a845-dd1cd805f77e
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    created_at: '2025-02-05T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/update_webhook_response'
+        '400':
+          description: Missing required attribute key / Invalid URL format / Resource Identifier mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Missing required attribute key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/url
+                Invalid URL format:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Value
+                      detail: Invalid url value provided - {{invalid_url}} is not a valid URL
+                      code: decisiv:request_attributes:010
+                      source:
+                        pointer: /data/attributes
+                      status: '400'
+                Resource Identifier mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: Resource Identifier mismatch
+                      detail: Resource Identifier must match the one provided in URL
+                      source:
+                        pointer: /data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid Webhook Event / Duplicate Webhook URL / Invalid Attribute Type / Custom Header Not Allowed
+            / Maximum Custom Headers Exceeded / Duplicate Custom Header
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Webhook Event:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook event is invalid or unknown for specified account
+                      code: decisiv:webhook_events:001
+                      source:
+                        pointer: /data/attributes/events
+                      status: '422'
+                Duplicate Webhook URL:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook url already configured for the specified account
+                      code: decisiv:webhooks:001
+                      source:
+                        pointer: /data/attributes/url
+                      status: '422'
+                Invalid Attribute Type:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      code: decisiv:request_attributes:004
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Invalid-Header
+                Custom Header Not Allowed:
+                  value:
+                    errors:
+                    - title: Custom Header Not Allowed
+                      detail: 'The custom header Authorization is not allowed. Unallowed headers: authorization, content-type,
+                        host, user-agent, content-length, decisiv-signature, x-decisiv-signature'
+                      code: decisiv:webhooks:002
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Authorization
+                Maximum Custom Headers Exceeded:
+                  value:
+                    errors:
+                    - title: Maximum Custom Headers Exceeded
+                      detail: The number of custom headers exceeds the maximum allowed (10)
+                      code: decisiv:webhooks:003
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers
+                Duplicate Custom Header:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:webhooks:001
+                      title: Duplicate Custom Header
+                      detail: Duplicate header
+                      source:
+                        pointer: /data/attributes/custom_headers/client-id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_webhook_request'
+            examples:
+              Update webhook:
+                value:
+                  data:
+                    type: webhooks
+                    id: 29f2cf31-aed4-438a-b893-3d8d32167d9f
+                    attributes:
+                      url: https://example.com/hooked
+                      events:
+                      - decisiv:asset_management:asset:transferred
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:asset_management:asset:meter_updated
+                      - decisiv:asset_management:asset:registered
+                      - decisiv:maintenance:scheduled_operation:planned
+                      - decisiv:maintenance:scheduled_operation:overdue
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:maintenance:service_event:created
+                      - decisiv:maintenance:scheduled_operation:invalidated
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:case:repair_status_changed
+                      - decisiv:asset_management:case:attachment_posted
+                      - decisiv:asset_management:case:note_posted
+                      enabled: true
+                      custom_headers:
+                        Client-ID: 649fd16a-b14d-43e3-b4b1-31ce15d6272b
+                        client_secret: b4b6b937657e130b447b59e3b47820d6
+                        decisiv-manufacturer: HINO
+    delete:
+      summary: Delete a webhook
+      tags:
+      - Webhooks
+      operationId: deleteWebhooksbyId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deletes a webhook
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/webhooks/{id}/refresh_signing_key:
+    post:
+      summary: Refresh webhook signing key
+      tags:
+      - Webhooks
+      operationId: refreshSigningKeyWebhooksbyId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Generates new webhook signing key
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: 52c9c6cc-cf67-48d0-a452-303fa8e1598d
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    signing_key: 1vbr7FdXzERlptLN8B1NUixF
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/refresh_signing_key_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/webhook_events:
+    get:
+      summary: List webhook events which are available for subscription by the designated account
+      tags:
+      - Webhooks Events
+      operationId: getWebhooksEventsbyAccountId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns a list of webhook events available for the requested Account
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - type: webhook_events
+                  id: 5ec4100c-d5b4-417a-9002-549104b4f1cb
+                  attributes:
+                    name: asset_management:service_request_accepted
+                    description: Serivce location has accepted incoming service request from Asset Management customer resulting
+                      in the generation of a Case
+              schema:
+                $ref: '#/components/schemas/webhook_events'
+        '400':
+          description: Account filter is missing
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  status: '404'
+                  source:
+                    parameter: account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+webhooks: {}
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - accounts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the account
+            address1:
+              type: string
+              description: First line of the Address
+            address2:
+              type: string
+              description: Second line of the Address
+            city:
+              type: string
+              description: City the address is located in
+            state:
+              type: string
+              description: State or province the address is located in
+            country:
+              type: string
+              description: ISO 3166 country code for the country the address is located in
+            postal_code:
+              type: string
+              description: ZIP or Postal Code the address is located in
+            phone:
+              type: string
+              description: Phone number to reach the organization
+            fax:
+              type: string
+              description: Fax number to reach the organization
+            email:
+              type: string
+              description: Email to reach the organization
+            external_reference:
+              type: object
+              description: Identifiers available for the Account
+              properties:
+                business_system:
+                  type: string
+                  description: Business System Identifier
+                dms:
+                  type: string
+                  description: DMS Identifier
+                  deprecated: true
+                srm_account:
+                  type: string
+                  description: SRM Account Identifier
+                decisiv:
+                  type: string
+                  description: Decisiv Identifier
+            module_subscriptions:
+              type: array
+              description: A list of objects that indicate which SRM Modules the account currently participates within in
+                SRM land
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: Snake case representation of the SRM module
+                    example: account_management
+                  name:
+                    type: string
+                    description: Name of the SRM module
+                    example: Account Management
+                  description:
+                    type: string
+                    description: Detailed explanation of the SRM module
+        relationships:
+          type: object
+          description: Present only when the request includes `?include=roles`. Omitted entirely otherwise.
+          properties:
+            roles:
+              type: object
+              description: The authenticated user's RBAC roles on this account, including both public and private (account-owned)
+                roles. The full role resources are returned in the top-level `included` array.
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - roles
+                      id:
+                        type: string
+                        format: uuid
+      required:
+      - attributes
+      - type
+      - id
+    account_by_id:
+      example:
+        data:
+          type: accounts
+          id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+          attributes:
+            name: Southbound Trucking
+            address1: 1000 Little Martha Lane
+            address2: ''''
+            city: Macon
+            state: GA
+            country: US
+            postal_code: '31204'
+            phone: '+14157894567'
+            fax: '+14157894567'
+            email: southbound.trucking@example.com
+            external_reference:
+              business_system: ''
+              dms: ''
+              decisiv: EATAPEACH
+              srm_account: AB1-532
+            module_subscriptions:
+            - key: account_management
+              name: Account Management
+              description: Handles user permissions, business relationships, and core account settings across the SRM platform
+            - key: asset_management
+              name: Asset Management
+              description: Allows fleet / asset operators to track, manage and maintain their vehicles/assets across their
+                entire lifecycle
+            - key: maintenance
+              name: Maintenance
+              description: Helps consumers plan and execute preventive maintenance programs to reduce downtime and extend
+                asset life
+            - key: service_management
+              name: Service Management
+              description: Enables service providers to manage repairs, estimates, and workflow for commercial vehicle maintenance
+                and repairs
+            - key: telematics
+              name: Telematics
+              description: Provides real-time vehicle data, diagnostics, and location tracking to optimize asset operations
+                and maintenance
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - accounts
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the account
+                address1:
+                  type: string
+                  description: First line of the Address
+                address2:
+                  type: string
+                  description: Second line of the Address
+                city:
+                  type: string
+                  description: City the address is located in
+                state:
+                  type: string
+                  description: State or province the address is located in
+                country:
+                  type: string
+                  description: ISO 3166 country code for the country the address is located in
+                postal_code:
+                  type: string
+                  description: ZIP or Postal Code the address is located in
+                phone:
+                  type: string
+                  description: Phone number to reach the organization
+                fax:
+                  type: string
+                  description: Fax number to reach the organization
+                email:
+                  type: string
+                  description: Email to reach the organization
+                external_reference:
+                  type: object
+                  description: Identifiers available for the Account
+                  properties:
+                    business_system:
+                      type: string
+                      description: Business System Identifier
+                    dms:
+                      type: string
+                      description: DMS Identifier
+                      deprecated: true
+                    srm_account:
+                      type: string
+                      description: SRM Account Identifier
+                    decisiv:
+                      type: string
+                      description: Decisiv Identifier
+                module_subscriptions:
+                  type: array
+                  description: A list of objects that indicate which SRM Modules the account currently participates within
+                    in SRM land
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Snake case representation of the SRM module
+                        example: account_management
+                      name:
+                        type: string
+                        description: Name of the SRM module
+                        example: Account Management
+                      description:
+                        type: string
+                        description: Detailed explanation of the SRM module
+            relationships:
+              type: object
+              description: Present only when the request includes `?include=roles`. Omitted entirely otherwise.
+              properties:
+                roles:
+                  type: object
+                  description: The authenticated user's RBAC roles on this account, including both public and private (account-owned)
+                    roles. The full role resources are returned in the top-level `included` array.
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                            - roles
+                          id:
+                            type: string
+                            format: uuid
+          required:
+          - attributes
+          - type
+          - id
+        included:
+          type: array
+          description: Populated with the related `roles` resources when the request includes `?include=roles`.
+          items:
+            $ref: '#/components/schemas/role'
+      required:
+      - data
+    accounts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/account'
+        included:
+          type: array
+          description: Populated with the related `roles` resources when the request includes `?include=roles`.
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+    account_user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - account_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            username:
+              type: string
+              description: Username used to sign in. Mirrors `email` for users authenticated by email, and may differ for
+                users provisioned via SSO.
+            email:
+              type: string
+              format: email
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role within the account (e.g. `Branch Manager`). Returns
+                an empty string when the user has no job role set; never `null`.
+            address1:
+              type:
+              - string
+              - 'null'
+              description: First line of the user's mailing address
+            address2:
+              type:
+              - string
+              - 'null'
+              description: Second line of the user's mailing address
+            city:
+              type:
+              - string
+              - 'null'
+              description: City the address is located in
+            state:
+              type:
+              - string
+              - 'null'
+              description: State or province the address is located in
+            postal_code:
+              type:
+              - string
+              - 'null'
+              description: ZIP or postal code the address is located in
+            country:
+              type:
+              - string
+              - 'null'
+              description: ISO 3166 country code for the country the address is located in
+            last_login_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+              description: ISO 8601 timestamp of the user's most recent sign-in to this account. `null` when the user has
+                never signed in.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+            communication_preferences:
+              $ref: '#/components/schemas/communication_preferences'
+        relationships:
+          type: object
+          properties:
+            roles:
+              type: object
+              description: The roles assigned to this user within the account
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - roles
+                      id:
+                        type: string
+                        format: uuid
+      required:
+      - attributes
+      - type
+      - id
+    account_users:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/account_user'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+    account_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/account_user'
+    account_user_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - relationships
+          properties:
+            type:
+              type: string
+              enum:
+              - account_users
+            attributes:
+              type: object
+              description: Optional attributes to set when associating the user with the account.
+              properties:
+                communication_preferences:
+                  $ref: '#/components/schemas/communication_preferences'
+            relationships:
+              type: object
+              required:
+              - user
+              - roles
+              properties:
+                user:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - users
+                        id:
+                          type: string
+                          format: uuid
+                          description: The ecosystem user's UUID
+                roles:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - type
+                        - id
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                            - roles
+                          id:
+                            type: string
+                            format: uuid
+                            description: The role's UUID
+    add_account_user_roles_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            properties:
+              type:
+                type: string
+                enum:
+                - roles
+              id:
+                type: string
+                format: uuid
+    ecosystem_user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - ecosystem_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+              format: email
+              description: User's email address. Also used as the username.
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role (e.g. `Branch Manager`). Returns an empty string
+                when the user has no job role set; never `null`.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+      required:
+      - attributes
+      - type
+      - id
+    ecosystem_users:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ecosystem_user'
+        meta:
+          type: object
+        links:
+          type: object
+    ecosystem_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/ecosystem_user'
+    ecosystem_user_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - ecosystem_users
+              description: JSON:API resource type
+            attributes:
+              type: object
+              required:
+              - email
+              - first_name
+              - last_name
+              properties:
+                username:
+                  type:
+                  - string
+                  - 'null'
+                  minLength: 4
+                  maxLength: 120
+                  description: Unique login identifier for the user. Optional — defaults to the email address when omitted.
+                    Cannot be changed after creation.
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                  description: User's email address. Reserved RFC 2606 domains (example.com, *.test, *.invalid, etc.) are
+                    rejected, and the domain must resolve via DNS (MX or A record).
+                first_name:
+                  type: string
+                  maxLength: 255
+                  description: User's first name
+                last_name:
+                  type: string
+                  maxLength: 255
+                  description: User's last name
+                job_role:
+                  type: string
+                  maxLength: 255
+                  description: User's job role (optional)
+                address1:
+                  type: string
+                  maxLength: 255
+                  description: Street address line 1 (optional)
+                address2:
+                  type: string
+                  maxLength: 255
+                  description: Street address line 2 (optional)
+                city:
+                  type: string
+                  maxLength: 100
+                  description: City (optional)
+                state:
+                  type: string
+                  minLength: 2
+                  maxLength: 6
+                  description: Bare subdivision code, without the country prefix (e.g. `NC`, `NY`, `ON`). Must be valid for
+                    the supplied country.
+                postal_code:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                  description: Postal/ZIP code (optional)
+                country:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: ISO 3166-1 alpha-2 country code (optional)
+                external_reference:
+                  type: object
+                  description: Identifiers for the user from external systems
+                  properties:
+                    business_system:
+                      type: string
+                      maxLength: 100
+                      description: External business-system identifier (optional)
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
+      required:
+      - attributes
+      - type
+      - id
+    roles:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+    role_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/role'
+    webhook_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              required:
+              - url
+              - events
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                  description: URL where notifications are delivered. Must use the **https** scheme.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications.
+                    **Endpoints are enabled by default.**
+    refresh_signing_key_response:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: false
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications.
+                    **Endpoints are not enabled, by default.**
+                signing_key:
+                  type: string
+                  description: Strong unique secret key that is auto-generated and used to sign webhook payloads. Only returned
+                    at webhook creation or when refreshing the signing key.
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
+    update_webhook_request:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                  description: URL where notifications are delivered. Must use the **https** scheme.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications.
+                    **Endpoints are enabled by default.**
+          required:
+          - id
+          - type
+          - attributes
+      required:
+      - data
+    update_webhook_response:
+      example:
+        data:
+          type: webhooks
+          id: 5d1dec8d-5153-49a2-a845-dd1cd805f77e
+          attributes:
+            url: https://example.com/hooked
+            events:
+            - decisiv:asset_management:asset:transferred
+            - decisiv:asset_management:service_request:accepted
+            - decisiv:asset_management:service_request:declined
+            - decisiv:asset_management:case:created
+            - decisiv:asset_management:estimate:approval_requested
+            - decisiv:asset_management:estimate:approved
+            - decisiv:asset_management:estimate:declined
+            - decisiv:asset_management:asset:meter_updated
+            - decisiv:asset_management:asset:registered
+            - decisiv:maintenance:scheduled_operation:planned
+            - decisiv:maintenance:scheduled_operation:overdue
+            - decisiv:asset_management:estimate:approval_requested
+            - decisiv:asset_management:estimate:approved
+            - decisiv:asset_management:estimate:declined
+            - decisiv:maintenance:service_event:created
+            - decisiv:maintenance:scheduled_operation:invalidated
+            - decisiv:asset_management:case:created
+            - decisiv:asset_management:case:closed
+            - decisiv:asset_management:case:reopened
+            - decisiv:asset_management:service_request:accepted
+            - decisiv:asset_management:service_request:declined
+            - decisiv:asset_management:case:closed
+            - decisiv:asset_management:case:reopened
+            - decisiv:asset_management:case:repair_status_changed
+            - decisiv:asset_management:case:attachment_posted
+            - decisiv:asset_management:case:note_posted
+            custom_headers:
+              Client-ID: XXX72b
+              client_secret: XXX0d6
+              decisiv-manufacturer: XXXINO
+            enabled: true
+            created_at: '2025-02-05T18:58:31Z'
+            updated_at: '2025-02-06T18:58:31Z'
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications.
+                    **Endpoints are enabled by default.**
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
+          required:
+          - attributes
+          - type
+          - id
+      required:
+      - data
+    webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - webhooks
+        attributes:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              description: URL where notifications are delivered.
+              example: https://example.com/receive-webhook-notification
+            events:
+              type: array
+              description: A list of events to which the webhook is subscribed.
+              items:
+                type: string
+                description: Canonical name of the webhook event(s).
+              minItems: 1
+              example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+            custom_headers:
+              type: object
+              description: Custom headers to include in the webhook request.
+              additionalProperties:
+                type: string
+            enabled:
+              type: boolean
+              default: true
+              description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications.
+                **Endpoints are enabled by default.**
+            created_at:
+              type: string
+              format: date-time
+              description: The moment when the webhook was created.
+              example: '2022-04-12T03:04:05Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: The moment when the webhook was last updated.
+              example: '2022-04-14T05:23:45Z'
+      required:
+      - attributes
+      - type
+      - id
+    webhook_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications.
+                    **Endpoints are enabled by default.**
+                signing_key:
+                  type: string
+                  description: Strong unique secret key that is auto-generated and used to sign webhook payloads. Only returned
+                    at webhook creation or when refreshing the signing key.
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
+    webhook_event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - webhook_events
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Referential title of the webhook event; scoped to the applicable SRM module.
+              example: maintenance:scheduled_operation_due
+            description:
+              type: string
+              description: Detailed explanation of the webhook event.
+      required:
+      - attributes
+      - type
+      - id
+    webhook_events:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook_event'
+        meta:
+          type: object
+    webhooks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook'
+        meta:
+          type: object
+    communication_preferences:
+      type: object
+      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses,
+        all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      properties:
+        visible_as_external_recipient:
+          type: boolean
+          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients
+            lists. Except in cases where this account owner sends an external or a public note.
+        visible_as_internal_recipient:
+          type: boolean
+          description: When false, hide this user from Internal users within the same location, dealer group, and field managers.
+            This applies to the Notes Recipients list of cases created by this location. Except in cases where this account
+            owner sends an internal or a public note.
+        visible_as_workflow_assignee:
+          type: boolean
+          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page.
+            This account owner will be hidden from the assign to list when assigning a Case.
+      example:
+        visible_as_external_recipient: true
+        visible_as_internal_recipient: true
+        visible_as_workflow_assignee: true
+    account_user_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - account_users
+            id:
+              type: string
+              format: uuid
+              description: The account user's UUID. Must match the `:id` in the URL.
+            attributes:
+              type: object
+              required:
+              - communication_preferences
+              properties:
+                communication_preferences:
+                  $ref: '#/components/schemas/communication_preferences'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`);
+        this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

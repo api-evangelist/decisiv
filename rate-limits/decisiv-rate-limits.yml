@@ -1,0 +1,48 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  openapi/_original/*.json (429 responses), https://api-docs.decisiv.net/,
+  https://srm-api.decisivapps.com/api-docs/v1
+limit_count: 0
+note: >-
+  Decisiv publishes NO numeric rate limit. 429 Too Many Requests is declared on 37 SRM Gateway
+  operations and the response body is documented verbatim, but nowhere in the six harvested specs or on
+  the developer documentation site is there a request-per-window figure, a burst allowance, a per-key or
+  per-account scope, or a RateLimit-*/X-RateLimit-*/Retry-After response header. The only published
+  guidance is prose inside the 429 description: throttling is "associated as a result of an over
+  abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off
+  period" — which does name the three scopes the limiter uses, but attaches no number and no duration to
+  any of them. An automated consumer therefore has no runtime signal at all: it cannot see its remaining
+  budget, cannot learn when the window resets, and cannot be told how long the cool-off is. It can only
+  discover the limit by hitting it, and then must guess at the backoff.
+limits: []
+scopes_named_by_provider:
+- application
+- account
+- ip-address
+exhaustion:
+  status: 429
+  code: '429'
+  media_type: application/vnd.api+json
+  body: >-
+    {"errors":[{"code":"429","status":"429","title":"Too Many Requests","detail":"The maximum number of
+    requests for this application has been far exceeded with the given credentials."}]}
+  operations_declaring_429: 37
+response_headers:
+  rate_limit_headers: []
+  retry_after: false
+  observed: []
+  note: >-
+    The only response header declared anywhere in the Decisiv specs is X-Decisiv-Idempotent-Replay on
+    the idempotent create_case path. No rate-limit header is declared or returned.
+other_documented_ceilings:
+  note: >-
+    Decisiv does publish hard limits on request CONTENT, which are distinct from request-rate limits but
+    are the only quantified ceilings an integrator can plan against.
+  values:
+  - {limit: 'attachment file size', value: 10 MB, code: 'decisiv:attachments:002'}
+  - {limit: 'idempotency key length', value: 128 characters, code: 'decisiv:idempotency_key:002'}
+  - {limit: 'webhook custom headers', value: 10 per webhook, code: 'decisiv:webhooks:003'}
+  - {limit: 'filter value length', value: 3-4096 characters, code: 'decisiv:filters:007 / decisiv:filters:008'}
+  - {limit: 'multi-value filter cardinality', value: 50 values, code: 'decisiv:filters:011'}
+  - {limit: 'date-range filter span', value: 180 days, code: 'decisiv:filters:004'}

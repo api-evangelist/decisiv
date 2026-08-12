@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:v="http://www.decisiv.net/platform_api/0.2/Case/EstimateVersionRequest"
+  xmlns:eit="http://www.decisiv.net/platform_api/0.2/Case/EstimateItemTypes"
+  targetNamespace="http://www.decisiv.net/platform_api/0.2/Case/EstimateVersionRequest">
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/EstimateItemTypes"
+    schemaLocation="EstimateItemTypes.xsd"></xs:import>
+  <xs:element name="version">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="digest" type="xs:string" minOccurs="0"/>
+        <xs:element name="items" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="item" type="v:Item" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="Item">
+    <xs:all>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="approvalStatus" type="eit:ApprovalStatus"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

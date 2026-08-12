@@ -1,0 +1,76 @@
+generated: '2026-08-12'
+method: generated
+source: >-
+  Grounded in operationIds and paths verified verbatim in openapi/_original/*.json, plus
+  conventions/decisiv-conventions.yml, errors/decisiv-error-codes.yml and
+  asyncapi/decisiv-srm-gateway-webhooks.yml
+note: >-
+  Decisiv publishes no AGENTS.md and no provider-authored skills. These four are generated from the
+  harvested specs and cover the four marquee flows of the SRM Gateway: the fleet side of a service event,
+  the service-provider side, the telematics feed that triggers it, and the event subscription that lets
+  an integrator follow it without polling. Where an operation has no operationId in the source spec — and
+  most of Service Management does not — the skill cites method + path instead of inventing an id.
+skills:
+- file: decisiv-fleet-request-service.md
+  name: Request service on a fleet asset and respond to the estimate
+  api: openapi/decisiv-asset-management-openapi.yml
+  operations:
+  - listRegisteredAssets
+  - getRegisteredAsset
+  - getBuildInformation
+  - listServiceProviders
+  - getServiceProvider
+  - createServiceRequest
+  - getServiceRequest
+  - cancelServiceRequest
+  - listCases
+  - listCaseSummaries
+  - getCase
+  - createCaseNote
+  - sendNoteToProvider
+  - createCaseAttachment
+  - listEstimates
+  - getEstimate
+  - respondToEstimate
+  - asset_management_ra_update_meter_data
+  - asset_management_ra_meter_data_history
+- file: decisiv-service-provider-open-and-bill-a-case.md
+  name: Open a service case for a customer asset and build the repair order
+  api: openapi/decisiv-service-management-openapi.yml
+  operations:
+  - listCases
+  - getCase
+  - updateCase
+  - updateCaseMeterData
+  - listCaseLineItems
+  - createCaseLineItem
+  - getCaseLineItem
+  - updateCaseLineItem
+  - deleteCaseLineItem
+  paths:
+  - POST /service_management/{srm_account_id}/v1/customer_assets/{id}/create_case
+  - POST /service_management/{srm_account_id}/v1/cases/{case_id}/actions/open
+  - POST /service_management/{srm_account_id}/v1/cases/{case_id}/actions/close
+  - POST /service_management/{srm_account_id}/v1/sublet_requests
+  - POST /service_management/{srm_account_id}/v1/time_tasks
+- file: decisiv-telematics-fault-to-service.md
+  name: Push a telematics fault into SRM and turn it into service
+  api: openapi/decisiv-telematics-openapi.yml
+  operations:
+  - createDiagnosticReading
+  - listDiagnosticReadings
+  - getDiagnosticReading
+  - createFault
+  - listFaults
+  - getFault
+- file: decisiv-subscribe-to-service-events.md
+  name: Subscribe to Decisiv SRM webhook events
+  api: openapi/decisiv-account-management-openapi.yml
+  operations:
+  - getWebhooksEventsbyAccountId
+  - createWebhookByAccountId
+  - getWebhooks
+  - getWebhooksById
+  - updateWebhookbyId
+  - deleteWebhooksbyId
+  - refreshSigningKeyWebhooksbyId

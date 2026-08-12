@@ -1,0 +1,57 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://www.decisiv.com/decisiv-reduces-srm-ecosystem-application-development-time/,
+  https://registry.npmjs.org/@decisiv/ui-components, https://registry.npmjs.org/@decisiv/design-tokens
+name: Decisiv Key Design System
+description: >-
+  A React component library and design-token set Decisiv publishes so customers and ecosystem partners
+  can build SRM Ecosystem application front-ends that look and behave like Decisiv's own applications.
+  Decisiv positions it as removing coding time via pre-built UI building blocks — cited examples are an
+  ETA countdown clock and a real-time list of available technicians — and it covers both web and mobile.
+  This is a UI toolkit, not an API client library: it does not call the SRM Gateway for you.
+distribution: npm
+scope: '@decisiv'
+families:
+- family: components
+  package: '@decisiv/ui-components'
+  version: 2.0.0
+  published: '2020-08-10'
+  description: The React component library itself — the design system's building blocks.
+- family: tokens
+  package: '@decisiv/design-tokens'
+  version: 1.8.8
+  published: '2019-12-18'
+  description: Colour, typography, spacing and other design tokens shared by the components.
+- family: icons
+  package: '@decisiv/iconix'
+  version: 2.0.0
+  published: '2020-08-10'
+  description: Decisiv's custom icon-font builder.
+- family: responsiveness
+  package: '@decisiv/breakpoint-observer'
+  version: 1.8.8
+  published: '2020-08-04'
+  description: Component-level responsiveness utilities.
+- family: validation
+  package: '@decisiv/prop-types'
+  version: 1.6.9
+  published: '2020-08-04'
+  description: Custom React PropType validators used across the system.
+loader_libraries:
+- react
+- styled-components
+hosted_or_embeddable_surfaces: []
+hosted_note: >-
+  Decisiv publishes no hosted/prebuilt embeddable widget, no iframe/Elements-style drop-in and no
+  embedded dashboard. Everything is source-installed React.
+docs_url: null
+docs_note: >-
+  There is no public design-system documentation site, storybook, or component reference. The only
+  public evidence of the system is Decisiv's own press page describing it and the npm packages
+  themselves; none of the @decisiv packages links a repository or homepage.
+currency:
+  newest_publish: '2020-08-10'
+  finding: >-
+    The design system has not shipped a release since August 2020. A partner adopting it today is
+    adopting a six-year-old React component set with no public docs.

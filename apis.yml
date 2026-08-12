@@ -1,23 +1,265 @@
 aid: decisiv
 name: Decisiv
-description: 'Decisiv is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Decisiv is the Reston, Virginia company behind the commercial vehicle industry's Service Relationship Management
+  (SRM) platform — a cloud service that connects fleets, asset owners, OEMs, dealers, independent service providers
+  and component suppliers around a single service event. The platform orchestrates the whole repair lifecycle:
+  asset registration and VIN-based identification, service requests, case creation, estimates and line items with
+  VMRS coding, parts, labor and additional charges, technician time tasks, notes, attachments, approvals, sublet
+  work between shops, and telematics-driven fault codes and diagnostic readings. Decisiv exposes this through the
+  SRM Gateway APIs — four JSON:API-shaped OpenAPI 3.1 modules (Account Management, Asset Management, Service
+  Management, Telematics) — plus the older Global Assets and Service Provider Swagger 2.0 APIs and the XML Platform
+  API. Access is OAuth 2.0 and provisioned per account; documentation is public but credentials come through sales.
 url: https://raw.githubusercontent.com/api-evangelist/decisiv/refs/heads/main/apis.yml
+image: https://www.decisiv.com/wp-content/uploads/2019/08/cropped-decisiv-favicon-1.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment-pipeline
 specificationVersion: '0.20'
 created: '2026-08-12'
 modified: '2026-08-12'
 tags:
 - Company
-apis: []
+- commercial-vehicle
+- fleet-management
+- service-relationship-management
+- telematics
+- asset-management
+- maintenance-and-repair
+- heavy-duty-trucking
+- transportation
+- dealer-management
+- json-api
+- webhooks
+apis:
+- name: Decisiv SRM Gateway - Account Management
+  description: >-
+    Accounts, ecosystem users, account users and roles, and the webhook subscription surface for the Decisiv SRM
+    Gateway. This is the module that manages webhook endpoints (URL, subscribed events, custom headers, enabled
+    state) and rotates the webhook signing key, plus the catalog of webhook events an account may subscribe to.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - account-management
+  - webhooks
+  - users
+  - roles
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-account-management-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Overlay
+    url: overlays/decisiv-account-management-overlay.yaml
+- name: Decisiv SRM Gateway - Asset Management
+  description: >-
+    The fleet / asset-owner view of the SRM Gateway. Registered assets and components, depots, extended asset
+    attributes, contacts, service requests to service providers, cases and case summaries, case notes, attachments,
+    participants and recipients, estimates, and the VMRS coding reference.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - asset-management
+  - fleet-management
+  - service-requests
+  - estimates
+  - vmrs
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-asset-management-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Overlay
+    url: overlays/decisiv-asset-management-overlay.yaml
+- name: Decisiv SRM Gateway - Service Management
+  description: >-
+    The service-provider view of the SRM Gateway and the largest module. Cases and case actions, customers and
+    customer assets, customer requests, line items with parts, additional charges, technician stories and internal
+    labels, case metadata, time tasks, skill levels, departments, program types, repair statuses, service networks,
+    sublet cases / requests / associations between shops, diagnostic readings, faults, and VMRS.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - service-management
+  - repair-order
+  - estimates
+  - parts
+  - labor
+  - sublet
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-management-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Overlay
+    url: overlays/decisiv-service-management-overlay.yaml
+- name: Decisiv SRM Gateway - Telematics
+  description: >-
+    Ingest and read connected-asset telematics inside SRM: diagnostic readings and fault codes for registered
+    assets, so a fault on a vehicle can open or enrich a service case at the point of service.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - telematics
+  - fault-codes
+  - diagnostics
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-telematics-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Overlay
+    url: overlays/decisiv-telematics-overlay.yaml
+- name: Decisiv Global Assets API
+  description: >-
+    Global store of reference for all assets within the Decisiv ecosystem — asset lookup by id or VIN, plus
+    campaigns, recalls, warranties, service history and OEM build information where authorized and available.
+    Swagger 2.0, secured with OAuth 2.0 plus the X-Decisiv-Transition-Token header.
+  humanURL: https://global-assets.decisivapps.com/api-docs/
+  baseURL: https://global-assets.decisivapps.com/api/v1/
+  tags:
+  - assets
+  - vin
+  - recalls
+  - warranty
+  - oem
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-global-assets-openapi.yml
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Overlay
+    url: overlays/decisiv-global-assets-overlay.yaml
+- name: Decisiv Service Provider API
+  description: >-
+    Base API allowing dealers and service providers to interact with their customers and those customers' assets,
+    including group customers and group assets. Swagger 2.0, secured with OAuth 2.0 plus the transition token.
+  humanURL: https://service-provider.decisivapps.com/api-docs/
+  baseURL: https://service-provider.decisivapps.com/api/v1/
+  tags:
+  - service-provider
+  - customers
+  - assets
+  - dealer
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-provider-openapi.yml
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+  - type: Overlay
+    url: overlays/decisiv-service-provider-overlay.yaml
+- name: Decisiv Platform API
+  description: >-
+    The original XML Platform API for service providers and dealer systems, covering the lifecycle of a service
+    case — assets, cases, estimates and line items, parts, VMRS, notes, attachments and estimate approval, plus
+    service locations, users and push notifications. Versioned by Accept-Version and Accept headers; XSD schemas
+    for every version are published as a downloadable bundle.
+  humanURL: https://api-docs.decisiv.net/docs/api/1
+  baseURL: https://api.decisiv.net/platform_api
+  tags:
+  - cases
+  - estimates
+  - service-locations
+  - xml
+  - legacy
+  properties:
+  - type: Documentation
+    url: https://api-docs.decisiv.net/docs/api/1
+  - type: APIReference
+    url: https://api-docs.decisiv.net/
+  - type: ChangeLog
+    url: https://api-docs.decisiv.net/docs/api/1/changelog/
+  - type: XMLSchema
+    url: json-schema/decisiv-platform-api-schemas.zip
+  - type: Webhooks
+    url: https://api-docs.decisiv.net/docs/api/1/architecture/notifications/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/decisiv-agentic-access.yml
+- type: TrustCenter
+  url: security/decisiv-trust-center.yml
 - type: Website
-  url: https://forgeglobal.com/decisiv_stock/
+  url: https://www.decisiv.com/
+- type: DeveloperPortal
+  url: https://api-docs.decisiv.net/
+- type: Documentation
+  url: https://api-docs.decisiv.net/
+- type: APIReference
+  url: https://srm-api.decisivapps.com/api-docs/v1
+- type: GettingStarted
+  url: https://www.decisivmarketplace.com/solutions-center/
+- type: Support
+  url: https://www.decisiv.com/resources/
+- type: Blog
+  url: https://www.decisiv.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/Decisiv
+- type: TermsOfService
+  url: https://www.decisiv.com/terms-of-use/
+- type: PrivacyPolicy
+  url: https://www.decisiv.com/privacy-policy/
+- type: SignUp
+  url: https://www.decisivmarketplace.com/product/srm-gateway-for-partners/
+- type: Login
+  url: https://login.decisiv.net/
+- type: TrustCenter
+  url: https://www.decisiv.com/trust-center/
+- type: Compliance
+  url: https://www.decisiv.com/trust-center/
+- type: Marketplace
+  url: https://www.decisivmarketplace.com/solutions-center/
+- type: Authentication
+  url: authentication/decisiv-authentication.yml
+- type: OAuthScopes
+  url: scopes/decisiv-scopes.yml
+- type: Conventions
+  url: conventions/decisiv-conventions.yml
+- type: Idempotency
+  url: conventions/decisiv-conventions.yml
+- type: ErrorCatalog
+  url: errors/decisiv-problem-types.yml
+- type: ErrorCatalog
+  url: errors/decisiv-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/decisiv-lifecycle.yml
+- type: ChangeLog
+  url: changelog/decisiv-changelog.yml
+- type: Conformance
+  url: conformance/decisiv-conformance.yml
+- type: DataModel
+  url: data-model/decisiv-data-model.yml
+- type: Webhooks
+  url: asyncapi/decisiv-srm-gateway-webhooks.yml
+- type: WellKnown
+  url: well-known/decisiv-well-known.yml
+- type: LLMsTxt
+  url: llms/decisiv-llms.txt
+- type: Packages
+  url: packages/decisiv-packages.yml
+- type: Components
+  url: components/decisiv-components.yml
+- type: Plans
+  url: plans/decisiv-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/decisiv-rate-limits.yml
+- type: DomainSecurity
+  url: security/decisiv-domain-security.yml
+- type: Sandbox
+  url: sandbox/decisiv-sandbox.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 48
+  pass: local-v1

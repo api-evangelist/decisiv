@@ -1,0 +1,2496 @@
+openapi: 3.1.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Telematics
+  description: Inside of **Decisiv SRM Gateway**, the `Telematics` module represents all interactions and functionality which
+    an Account enabled with `Telematics subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+paths:
+  /telematics/{srm_account_id}/v1/diagnostic_readings:
+    get:
+      operationId: listDiagnosticReadings
+      summary: List all diagnostic readings for the requested account
+      description: Retrieve all diagnostic readings for a specific SRM account.
+      tags:
+      - Diagnostic Readings
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[asset_data.chassis_id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters diagnostic readings by exact match on `asset_data.chassis_id`
+      - name: filter[asset_data.device_id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters diagnostic readings by exact match on `asset_data.device_id`
+      - name: filter[asset_data.serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters diagnostic readings by exact match on `asset_data.serial_number`
+      - name: filter[asset_data.vin]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters diagnostic readings by exact match on `asset_data.vin`
+      - name: filter[origin]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters diagnostic readings by exact match on `origin`
+      - name: filter[triggered_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Returns diagnostic readings with `triggered_at` strictly greater than the provided `ISO8601` date-time
+      - name: filter[triggered_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Returns diagnostic readings with `triggered_at` greater than or equal to the provided `ISO8601` date-time
+      - name: filter[triggered_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Returns diagnostic readings with `triggered_at` strictly less than the provided `ISO8601` date-time
+      - name: filter[triggered_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Returns diagnostic readings with `triggered_at` less than or equal to the provided `ISO8601` date-time
+      responses:
+        '200':
+          description: Returns list of Diagnostic Readings
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+                  type: diagnostic_readings
+                  attributes:
+                    triggered_at: '2025-03-11T18:48:34Z'
+                    sensor_readings:
+                    - name: Intake NOx
+                      description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                      value: '115.8'
+                      unit_of_measure: ppm
+                      classification_header: Engine Operation
+                      key_data: false
+                      localize: false
+                    components:
+                    - name: ECU
+                      description: 'The #1 on the Engine CA is to identify that this is the first PA being used for the particular
+                        function, Engine. It may only be used for the NAME Function of 0'
+                      version: '12'
+                    origin_id: 90bd02a4-9ca6-4db6-8cba-c8a24f6ea717
+                    origin: name_of_origin
+                    location:
+                      heading: '251'
+                      altitude: '3649'
+                      latitude: '-58.28'
+                      longitude: '152.41'
+                    asset_data:
+                      vin: PHFCJ2YS9LB593266
+                      make: Make
+                      year: '2000'
+                      model: CH613
+                      device_id: '1234567890'
+                      chassis_id: '12312312'
+                      serial_number: LB593266
+                    external_resources:
+                    - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                      title: Interactive Video
+                      description: Video to accelerate repair time and uptime.
+                      classification_header: Repair Information
+                      type: video
+                  relationships:
+                    faults:
+                      data:
+                      - type: faults
+                        id: a6156681-443f-481f-9007-272b99240259
+                    source_account:
+                      data:
+                        type: srm_accounts
+                        id: dc8beef2-e304-11ea-86c2-1f9b5bc5281b
+                  links:
+                    self: https://srm-api.decisivapps.com/telematics/v1/diagnostic_readings/3cad1e59-8eed-410f-9a15-527d11cba0d0
+              schema:
+                $ref: '#/components/schemas/diagnostic_readings'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside
+            of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      operationId: createDiagnosticReading
+      summary: Create a new diagnostic reading
+      description: Create a new diagnostic reading record for a specific SRM account.
+      tags:
+      - Diagnostic Readings
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Creates a new Diagnostic Reading record
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+                  type: diagnostic_readings
+                  attributes:
+                    triggered_at: '2025-03-11T18:48:34Z'
+                    sensor_readings:
+                    - name: Intake NOx
+                      description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                      value: '115.8'
+                      unit_of_measure: ppm
+                      classification_header: Engine Operation
+                      key_data: false
+                      localize: false
+                    components:
+                    - name: ECU
+                      description: 'The #1 on the Engine CA is to identify that this is the first PA being used for the particular
+                        function, Engine. It may only be used for the NAME Function of 0'
+                      version: '12'
+                    origin_id: 90bd02a4-9ca6-4db6-8cba-c8a24f6ea717
+                    origin: name_of_origin
+                    location:
+                      heading: '251'
+                      altitude: '3649'
+                      latitude: '-58.28'
+                      longitude: '152.41'
+                    asset_data:
+                      vin: PHFCJ2YS9LB593266
+                      make: Make
+                      year: '2000'
+                      model: CH613
+                      device_id: '1234567890'
+                      chassis_id: '12312312'
+                      serial_number: LB593266
+                    external_resources:
+                    - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                      title: Interactive Video
+                      description: Video to accelerate repair time and uptime.
+                      classification_header: Repair Information
+                      type: video
+                  relationships:
+                    faults:
+                      data:
+                      - type: faults
+                        id: a6156681-443f-481f-9007-272b99240259
+                    source_account:
+                      data:
+                        type: srm_accounts
+                        id: dc8beef2-e304-11ea-86c2-1f9b5bc5281b
+                  links:
+                    self: https://srm-api.decisivapps.com/telematics/v1/diagnostic_readings/3cad1e59-8eed-410f-9a15-527d11cba0d0
+              schema:
+                $ref: '#/components/schemas/diagnostic_reading'
+        '400':
+          description: Invalid Filter / Incorrect attribute for the resource type / Missing required key / Missing required
+            value / Invalid Attribute Value on External Resources Type
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Incorrect attribute for the resource type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''{{invalid_resource}}'' is an invalid resource'
+                      source:
+                        pointer: /data/type
+                Missing required key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/content
+                Missing required value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/content
+                Invalid Attribute Value on External Resources Type:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      code: decisiv:request_attributes:010
+                      source:
+                        pointer: /data/attributes/external_resources/0/type
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application,
+            Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_diagnostic_reading'
+            examples:
+              Create diagnostic reading:
+                value:
+                  data:
+                    type: diagnostic_readings
+                    attributes:
+                      triggered_at: '2025-03-11T18:48:34Z'
+                      sensor_readings:
+                      - name: Intake NOx
+                        description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                        value: '115.8'
+                        unit_of_measure: ppm
+                        classification_header: Engine Operation
+                        key_data: false
+                        localize: false
+                      components:
+                      - name: ECU
+                        description: 'The #1 on the Engine CA is to identify that this is the first PA being used for the
+                          particular function, Engine. It may only be used for the NAME Function of 0'
+                        version: '12'
+                      origin_id: 90bd02a4-9ca6-4db6-8cba-c8a24f6ea717
+                      origin: name_of_origin
+                      location:
+                        heading: '251'
+                        altitude: '3649'
+                        latitude: '-58.28'
+                        longitude: '152.41'
+                      asset_data:
+                        vin: PHFCJ2YS9LB593266
+                        make: Make
+                        year: '2000'
+                        model: CH613
+                        device_id: '1234567890'
+                        chassis_id: '12312312'
+                        serial_number: LB593266
+                      external_resources:
+                      - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                        title: Interactive Video
+                        description: Video to accelerate repair time and uptime.
+                        classification_header: Repair Information
+                        type: video
+  /telematics/{srm_account_id}/v1/diagnostic_readings/{uuid}:
+    get:
+      operationId: getDiagnosticReading
+      summary: Get details for a specific diagnostic reading
+      description: Retrieve details for a specific diagnostic reading by UUID.
+      tags:
+      - Diagnostic Readings
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The diagnostic reading UUID
+        required: true
+      responses:
+        '200':
+          description: Returns details for the requested diagnostic reading
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+                  type: diagnostic_readings
+                  attributes:
+                    triggered_at: '2025-03-11T18:48:34Z'
+                    sensor_readings:
+                    - name: Intake NOx
+                      description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                      value: '115.8'
+                      unit_of_measure: ppm
+                      classification_header: Engine Operation
+                      key_data: false
+                      localize: false
+                    components:
+                    - name: ECU
+                      description: 'The #1 on the Engine CA is to identify that this is the first PA being used for the particular
+                        function, Engine. It may only be used for the NAME Function of 0'
+                      version: '12'
+                    origin_id: 90bd02a4-9ca6-4db6-8cba-c8a24f6ea717
+                    origin: name_of_origin
+                    location:
+                      heading: '251'
+                      altitude: '3649'
+                      latitude: '-58.28'
+                      longitude: '152.41'
+                    asset_data:
+                      vin: PHFCJ2YS9LB593266
+                      make: Make
+                      year: '2000'
+                      model: CH613
+                      device_id: '1234567890'
+                      chassis_id: '12312312'
+                      serial_number: LB593266
+                    external_resources:
+                    - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                      title: Interactive Video
+                      description: Video to accelerate repair time and uptime.
+                      classification_header: Repair Information
+                      type: video
+                  relationships:
+                    faults:
+                      data:
+                      - type: faults
+                        id: a6156681-443f-481f-9007-272b99240259
+                    source_account:
+                      data:
+                        type: srm_accounts
+                        id: dc8beef2-e304-11ea-86c2-1f9b5bc5281b
+                  links:
+                    self: https://srm-api.decisivapps.com/telematics/v1/diagnostic_readings/3cad1e59-8eed-410f-9a15-527d11cba0d0
+              schema:
+                $ref: '#/components/schemas/diagnostic_reading'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside
+            of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /telematics/{srm_account_id}/v1/faults:
+    get:
+      operationId: listFaults
+      summary: List all faults for the requested account
+      description: Retrieve all faults for a specific SRM account.
+      tags:
+      - Faults
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of Faults
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 44e10524-07a3-4008-8bcd-08950f3b00e8
+                  type: faults
+                  attributes:
+                    triggered_at: '2025-03-11T18:48:34Z'
+                    spn: '3456'
+                    fmi: '19'
+                    fault_code: '1223'
+                    sensor_readings:
+                    - name: AFTRT 1 Intake NOx
+                      description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                      value: '115.8'
+                      unit_of_measure: ppm
+                      classification_header: Engine Operation
+                      key_data: false
+                      localize: false
+                    guidance:
+                    - name: AFTRT 2 NOx
+                      description: Take to the closest dealer immediately!
+                      value: '15.8'
+                      classification_header: Engine Operation
+                    location:
+                      heading: '251'
+                      altitude: '3649'
+                      latitude: '-58.28'
+                      longitude: '152.41'
+                    details:
+                      component:
+                        name: ECU
+                        description: Component description
+                        version: Engine
+                      occurrences: 3
+                      odometer_unit: mi
+                      odometer_value: 23993123
+                      severity_level: Severe
+                      description: Fault description
+                    active: false
+                    severity: 2
+                    external_resources:
+                    - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                      title: Interactive Video
+                      description: Video to accelerate repair time and uptime.
+                      classification_header: Repair Information
+                      type: video
+                  relationships:
+                    diagnostic_reading:
+                      data:
+                        type: diagnostic_readings
+                        id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+                    source_account:
+                      data:
+                        type: srm_accounts
+                        id: dc8beef2-e304-11ea-86c2-1f9b5bc5281b
+                    asset:
+                      data:
+                        type: assets
+                        id: 73b781e9-d724-4c8c-89fe-b289abade626
+                  links:
+                    self: https://srm-api.decisivapps.com/telematics/v1/faults/44e10524-07a3-4008-8bcd-08950f3b00e8
+              schema:
+                $ref: '#/components/schemas/faults'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside
+            of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      operationId: createFault
+      summary: Create a new fault
+      description: Create a new fault record for a specific SRM account.
+      tags:
+      - Faults
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Creates a new Fault record
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 44e10524-07a3-4008-8bcd-08950f3b00e8
+                  type: faults
+                  attributes:
+                    triggered_at: '2025-03-11T18:48:34Z'
+                    spn: '3456'
+                    fmi: '19'
+                    fault_code: '1223'
+                    sensor_readings:
+                    - name: AFTRT 1 Intake NOx
+                      description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                      value: '115.8'
+                      unit_of_measure: ppm
+                      classification_header: Engine Operation
+                      key_data: false
+                      localize: false
+                    guidance:
+                    - name: AFTRT 2 NOx
+                      description: Take to the closest dealer immediately!
+                      value: '15.8'
+                      classification_header: Engine Operation
+                    location:
+                      heading: '251'
+                      altitude: '3649'
+                      latitude: '-58.28'
+                      longitude: '152.41'
+                    details:
+                      component:
+                        name: ECU
+                        description: Component description
+                        version: Engine
+                      occurrences: 3
+                      odometer_unit: mi
+                      odometer_value: 23993123
+                      severity_level: Severe
+                      description: Fault description
+                    active: false
+                    severity: 2
+                    external_resources:
+                    - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                      title: Interactive Video
+                      description: Video to accelerate repair time and uptime.
+                      classification_header: Repair Information
+                      type: video
+                  relationships:
+                    diagnostic_reading:
+                      data:
+                        type: diagnostic_readings
+                        id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+                    source_account:
+                      data:
+                        type: srm_accounts
+                        id: dc8beef2-e304-11ea-86c2-1f9b5bc5281b
+                    asset:
+                      data:
+                        type: assets
+                        id: 73b781e9-d724-4c8c-89fe-b289abade626
+                  links:
+                    self: https://srm-api.decisivapps.com/telematics/v1/faults/44e10524-07a3-4008-8bcd-08950f3b00e8
+              schema:
+                $ref: '#/components/schemas/fault'
+        '400':
+          description: Invalid Filter / Missing required key / Missing required value / Incorrect attribute for the resource
+            type / Invalid Attribute Value on External Resources Type
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Missing required key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/content
+                Missing required value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/content
+                Incorrect attribute for the resource type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''{{invalid_resource}}'' is an invalid resource'
+                      source:
+                        pointer: /data/type
+                Invalid Attribute Value on External Resources Type:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      code: decisiv:request_attributes:010
+                      source:
+                        pointer: /data/attributes/external_resources/0/type
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application,
+            Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_fault'
+            examples:
+              Create fault:
+                value:
+                  data:
+                    type: faults
+                    attributes:
+                      triggered_at: '2025-03-11T18:48:34Z'
+                      spn: '3456'
+                      fmi: '19'
+                      fault_code: '1223'
+                      sensor_readings:
+                      - name: AFTRT 1 Intake NOx
+                        description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                        value: '115.8'
+                        unit_of_measure: ppm
+                        classification_header: Engine Operation
+                        key_data: false
+                        localize: false
+                      guidance:
+                      - name: AFTRT 2 NOx
+                        description: Take to the closest dealer immediately!
+                        value: '15.8'
+                        classification_header: Engine Operation
+                      location:
+                        heading: '251'
+                        altitude: '3649'
+                        latitude: '-58.28'
+                        longitude: '152.41'
+                      details:
+                        component:
+                          name: ECU
+                          description: Component description
+                          version: Engine
+                        occurrences: 3
+                        odometer_unit: mi
+                        odometer_value: 23993123
+                        severity_level: Severe
+                        description: Fault description
+                      active: false
+                      severity: 2
+                      external_resources:
+                      - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                        title: Interactive Video
+                        description: Video to accelerate repair time and uptime.
+                        classification_header: Repair Information
+                        type: video
+                    relationships:
+                      diagnostic_reading:
+                        data:
+                          type: diagnostic_readings
+                          id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+  /telematics/{srm_account_id}/v1/faults/{uuid}:
+    get:
+      operationId: getFault
+      summary: Get details for a specific fault
+      description: Retrieve details for a specific fault by UUID.
+      tags:
+      - Faults
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The fault UUID
+        required: true
+      responses:
+        '200':
+          description: Returns details for the requested fault
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 44e10524-07a3-4008-8bcd-08950f3b00e8
+                  type: faults
+                  attributes:
+                    triggered_at: '2025-03-11T18:48:34Z'
+                    spn: '3456'
+                    fmi: '19'
+                    fault_code: '1223'
+                    sensor_readings:
+                    - name: AFTRT 1 Intake NOx
+                      description: Aftertreatment 1 Intake NOx, Range -200 to 3012.75
+                      value: '115.8'
+                      unit_of_measure: ppm
+                      classification_header: Engine Operation
+                      key_data: false
+                      localize: false
+                    guidance:
+                    - name: AFTRT 2 NOx
+                      description: Take to the closest dealer immediately!
+                      value: '15.8'
+                      classification_header: Engine Operation
+                    location:
+                      heading: '251'
+                      altitude: '3649'
+                      latitude: '-58.28'
+                      longitude: '152.41'
+                    details:
+                      component:
+                        name: ECU
+                        description: Component description
+                        version: Engine
+                      occurrences: 3
+                      odometer_unit: mi
+                      odometer_value: 23993123
+                      severity_level: Severe
+                      description: Fault description
+                    active: false
+                    severity: 2
+                    external_resources:
+                    - href: https://telematics-source.oem-system.com/videos/28972.mp4
+                      title: Interactive Video
+                      description: Video to accelerate repair time and uptime.
+                      classification_header: Repair Information
+                      type: video
+                  relationships:
+                    diagnostic_reading:
+                      data:
+                        type: diagnostic_readings
+                        id: 3cad1e59-8eed-410f-9a15-527d11cba0d0
+                    source_account:
+                      data:
+                        type: srm_accounts
+                        id: dc8beef2-e304-11ea-86c2-1f9b5bc5281b
+                    asset:
+                      data:
+                        type: assets
+                        id: 73b781e9-d724-4c8c-89fe-b289abade626
+                  links:
+                    self: https://srm-api.decisivapps.com/telematics/v1/faults/44e10524-07a3-4008-8bcd-08950f3b00e8
+              schema:
+                $ref: '#/components/schemas/fault'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be
+            corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not
+            have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside
+            of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    create_diagnostic_reading:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - diagnostic_readings
+            attributes:
+              type: object
+              properties:
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
+                sensor_readings:
+                  type: array
+                  description: Sensor readings captured at the time of the diagnostic
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the sensor
+                      description:
+                        type: string
+                        description: Description of the sensor
+                      value:
+                        type: string
+                        description: Sensor reading value
+                      unit_of_measure:
+                        type: string
+                        description: Unit of measure for the sensor reading
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the reading in the UI
+                      key_data:
+                        type: boolean
+                        description: Flag indicating whether the reading should be highlighted in the UI
+                      localize:
+                        type: boolean
+                        description: Flag indicating whether the reading should be localized in the UI
+                components:
+                  type: array
+                  description: Components reported by the diagnostic
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - version
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the component
+                      description:
+                        type: string
+                        description: Description of the component
+                      version:
+                        type: string
+                        description: Component version
+                origin_id:
+                  type: string
+                  description: Unique identifier of the diagnostic record at the source system
+                origin:
+                  type: string
+                  description: Source system that produced the diagnostic data
+                location:
+                  type: object
+                  description: Geolocation information about the asset
+                  required:
+                  - latitude
+                  - longitude
+                  properties:
+                    latitude:
+                      type: string
+                      description: Asset latitude
+                    longitude:
+                      type: string
+                      description: Asset longitude
+                    altitude:
+                      oneOf:
+                      - type: number
+                        description: Asset altitude
+                      - type: string
+                        description: Asset altitude
+                    heading:
+                      oneOf:
+                      - type: number
+                        description: Asset heading
+                      - type: string
+                        description: Asset heading
+                asset_data:
+                  type: object
+                  description: Asset information
+                  properties:
+                    chassis_id:
+                      type: string
+                      description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                    device_id:
+                      type: string
+                      description: Telematic Device ID
+                      minLength: 0
+                      maxLength: 17
+                    make:
+                      type: string
+                      description: Brand of the asset
+                      minLength: 0
+                      maxLength: 10
+                    model:
+                      type: string
+                      description: Name of the asset product from the manufacturer
+                    serial_number:
+                      type: string
+                      description: Production number of the asset, *if `vin` is present, it needs to match the last 8-9 digits
+                        of it*
+                      minLength: 6
+                      maxLength: 14
+                    vin:
+                      type: string
+                      description: 17 digit vehicle identification number
+                      minLength: 0
+                      maxLength: 17
+                    year:
+                      type: string
+                      description: The year of the vehicle
+                external_resources:
+                  type: array
+                  description: External resources related to the diagnostic reading
+                  items:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                        format: url
+                        description: Location (URL) of the external resource
+                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+                      title:
+                        type: string
+                        description: Title of the external resource
+                        minLength: 3
+                        maxLength: 75
+                      description:
+                        type: string
+                        description: Description of the resource
+                        minLength: 3
+                        maxLength: 150
+                      classification_header:
+                        type: string
+                        description: Classification of the external resource
+                        minLength: 3
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Type of the external resource
+                        enum:
+                        - document
+                        - image
+                        - video
+                        - audio
+                        - website
+                        - other
+              required:
+              - origin
+              - origin_id
+              - triggered_at
+              - asset_data
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    create_fault:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - faults
+            attributes:
+              type: object
+              properties:
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
+                spn:
+                  type: string
+                  description: SPN value. *Must be sent together with `fmi`. Either the SPN/FMI pair or `fault_code` is required.*
+                fmi:
+                  type: string
+                  description: FMI value. *Must be sent together with `spn`. Either the SPN/FMI pair or `fault_code` is required.*
+                fault_code:
+                  type: string
+                  description: Fault code value. *Required when SPN/FMI pair is not provided.*
+                severity:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 0
+                  maximum: 100
+                  description: Fault severity, ranging from `0` (lowest) to `100` (highest)
+                active:
+                  type: boolean
+                  description: Indicates whether this fault is still active
+                sensor_readings:
+                  type: array
+                  description: Sensor readings captured when the fault was triggered
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the sensor
+                      description:
+                        type: string
+                        description: Description of the sensor
+                      value:
+                        type: string
+                        description: Sensor reading value
+                      unit_of_measure:
+                        type: string
+                        description: Unit of measure for the sensor reading
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the reading in the UI
+                      key_data:
+                        type: boolean
+                        description: Flag indicating whether the reading should be highlighted in the UI
+                      localize:
+                        type: boolean
+                        description: Flag indicating whether the reading should be localized in the UI
+                guidance:
+                  type: array
+                  description: Guidance information related to the fault
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the guidance entry
+                      description:
+                        type: string
+                        description: Description of the guidance entry
+                      value:
+                        type: string
+                        description: Guidance value
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the entry in the UI
+                details:
+                  type: object
+                  description: Details of the fault
+                  required:
+                  - component
+                  properties:
+                    component:
+                      type: object
+                      description: Component on which the fault occurred
+                      required:
+                      - name
+                      - version
+                      properties:
+                        name:
+                          type: string
+                          description: Name of the component
+                        description:
+                          type: string
+                          description: Description of the component
+                        version:
+                          type: string
+                          description: Component version
+                    occurrences:
+                      type: integer
+                      description: Number of times the fault has occurred
+                    odometer_unit:
+                      type: string
+                      description: Odometer unit of measure
+                      enum:
+                      - mi
+                      - km
+                    odometer_value:
+                      type: number
+                      description: Odometer reading at the time of the fault
+                    severity_level:
+                      type: string
+                      description: Severity level label for the fault
+                    description:
+                      type: string
+                      description: Description of the Fault
+                location:
+                  type: object
+                  description: Geolocation information about the asset when the fault was triggered
+                  required:
+                  - latitude
+                  - longitude
+                  properties:
+                    latitude:
+                      type: string
+                      description: Asset latitude
+                    longitude:
+                      type: string
+                      description: Asset longitude
+                    altitude:
+                      oneOf:
+                      - type: number
+                        description: Asset altitude
+                      - type: string
+                        description: Asset altitude
+                    heading:
+                      oneOf:
+                      - type: number
+                        description: Asset heading
+                      - type: string
+                        description: Asset heading
+                external_resources:
+                  type: array
+                  description: External resources related to the fault
+                  items:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                        format: url
+                        description: Location (URL) of the external resource
+                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+                      title:
+                        type: string
+                        description: Title of the external resource
+                        minLength: 3
+                        maxLength: 75
+                      description:
+                        type: string
+                        description: Description of the resource
+                        minLength: 3
+                        maxLength: 150
+                      classification_header:
+                        type: string
+                        description: Classification of the external resource
+                        minLength: 3
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Type of the external resource
+                        enum:
+                        - document
+                        - image
+                        - video
+                        - audio
+                        - website
+                        - other
+              required:
+              - triggered_at
+              - active
+              - details
+            relationships:
+              type: object
+              properties:
+                diagnostic_reading:
+                  $ref: '#/components/schemas/relationship_object'
+                source_account:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - diagnostic_reading
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    diagnostic_reading:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - diagnostic_readings
+            attributes:
+              type: object
+              properties:
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
+                sensor_readings:
+                  type: array
+                  description: Sensor readings captured at the time of the diagnostic
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the sensor
+                      description:
+                        type: string
+                        description: Description of the sensor
+                      value:
+                        type: string
+                        description: Sensor reading value
+                      unit_of_measure:
+                        type:
+                        - string
+                        - 'null'
+                        description: Unit of measure for the sensor reading
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the reading in the UI
+                      key_data:
+                        type: boolean
+                        description: Flag indicating whether the reading should be highlighted in the UI
+                      localize:
+                        type: boolean
+                        description: Flag indicating whether the reading should be localized in the UI
+                components:
+                  type: array
+                  description: Components reported by the diagnostic
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the component
+                      description:
+                        type:
+                        - string
+                        - 'null'
+                        description: Description of the component
+                      version:
+                        type:
+                        - string
+                        - 'null'
+                        description: Component version
+                origin_id:
+                  type: string
+                  description: Unique identifier of the diagnostic record at the source system
+                origin:
+                  type: string
+                  description: Source system that produced the diagnostic data
+                location:
+                  type:
+                  - object
+                  - 'null'
+                  description: Geolocation information about the asset
+                  properties:
+                    latitude:
+                      type:
+                      - string
+                      - 'null'
+                      description: Asset latitude
+                    longitude:
+                      type:
+                      - string
+                      - 'null'
+                      description: Asset longitude
+                    altitude:
+                      type:
+                      - number
+                      - string
+                      - 'null'
+                      description: Asset altitude
+                    heading:
+                      type:
+                      - number
+                      - string
+                      - 'null'
+                      description: Asset heading
+                asset_data:
+                  type: object
+                  description: Asset information
+                  properties:
+                    chassis_id:
+                      type: string
+                      description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                    device_id:
+                      type: string
+                      description: Telematic Device ID
+                      minLength: 0
+                      maxLength: 17
+                    make:
+                      type: string
+                      description: Brand of the asset
+                      minLength: 0
+                      maxLength: 10
+                    model:
+                      type: string
+                      description: Name of the asset product from the manufacturer
+                    serial_number:
+                      type: string
+                      description: Production number of the asset, *if `vin` is present, it needs to match the last 8-9 digits
+                        of it*
+                      minLength: 8
+                      maxLength: 9
+                    vin:
+                      type: string
+                      description: 17 digit vehicle identification number
+                      minLength: 0
+                      maxLength: 17
+                    year:
+                      type: string
+                      description: The year of the vehicle
+                external_resources:
+                  type: array
+                  description: External resources related to the diagnostic reading
+                  items:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                        format: url
+                        description: Location (URL) of the external resource
+                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+                      title:
+                        type: string
+                        description: Title of the external resource
+                        minLength: 3
+                        maxLength: 75
+                      description:
+                        type: string
+                        description: Description of the resource
+                        minLength: 3
+                        maxLength: 150
+                      classification_header:
+                        type: string
+                        description: Classification of the external resource
+                        minLength: 3
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Type of the external resource
+                        enum:
+                        - document
+                        - image
+                        - video
+                        - audio
+                        - website
+                        - other
+            relationships:
+              type: object
+              properties:
+                faults:
+                  $ref: '#/components/schemas/relationship_objects'
+                source_account:
+                  $ref: '#/components/schemas/relationship_object'
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  format: uri
+                  description: Canonical URL of the diagnostic reading resource
+    diagnostic_readings:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - diagnostic_readings
+              attributes:
+                $ref: '#/components/schemas/attributes'
+              relationships:
+                type: object
+                properties:
+                  faults:
+                    $ref: '#/components/schemas/relationship_objects'
+                  source_account:
+                    $ref: '#/components/schemas/relationship_object'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    format: uri
+                    description: Canonical URL of the diagnostic reading resource
+        meta:
+          type: object
+    fault:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          - relationships
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - faults
+            attributes:
+              type: object
+              properties:
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
+                spn:
+                  type:
+                  - string
+                  - 'null'
+                  description: SPN value. *Must be sent together with `fmi`. Either the SPN/FMI pair or `fault_code` is required.*
+                fmi:
+                  type:
+                  - string
+                  - 'null'
+                  description: FMI value. *Must be sent together with `spn`. Either the SPN/FMI pair or `fault_code` is required.*
+                fault_code:
+                  type:
+                  - string
+                  - 'null'
+                  description: Fault code value. *Required when SPN/FMI pair is not provided.*
+                severity:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 0
+                  maximum: 100
+                  description: Fault severity, ranging from `0` (lowest) to `100` (highest)
+                active:
+                  type: boolean
+                  description: Indicates whether this fault is still active
+                sensor_readings:
+                  type: array
+                  description: Sensor readings captured when the fault was triggered
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the sensor
+                      description:
+                        type: string
+                        description: Description of the sensor
+                      value:
+                        type: string
+                        description: Sensor reading value
+                      unit_of_measure:
+                        type:
+                        - string
+                        - 'null'
+                        description: Unit of measure for the sensor reading
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the reading in the UI
+                      key_data:
+                        type: boolean
+                        description: Flag indicating whether the reading should be highlighted in the UI
+                      localize:
+                        type: boolean
+                        description: Flag indicating whether the reading should be localized in the UI
+                guidance:
+                  type: array
+                  description: Guidance information related to the fault
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the guidance entry
+                      description:
+                        type: string
+                        description: Description of the guidance entry
+                      value:
+                        type: string
+                        description: Guidance value
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the entry in the UI
+                details:
+                  type: object
+                  description: Details of the fault
+                  properties:
+                    component:
+                      type: object
+                      description: Component on which the fault occurred
+                      properties:
+                        name:
+                          type: string
+                          description: Name of the component
+                        description:
+                          type:
+                          - string
+                          - 'null'
+                          description: Description of the component
+                        version:
+                          type:
+                          - string
+                          - 'null'
+                          description: Component version
+                    occurrences:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Number of times the fault has occurred
+                    odometer_unit:
+                      type:
+                      - string
+                      - 'null'
+                      description: Odometer unit of measure
+                      enum:
+                      - mi
+                      - km
+                      - null
+                    odometer_value:
+                      type:
+                      - number
+                      - 'null'
+                      description: Odometer reading at the time of the fault
+                    severity_level:
+                      type:
+                      - string
+                      - 'null'
+                      description: Human-readable severity tier of the fault (e.g. `Needs Attention`, `Moderate`, `Severe`)
+                    description:
+                      type:
+                      - string
+                      - 'null'
+                      description: Description of the fault
+                location:
+                  type:
+                  - object
+                  - 'null'
+                  description: Geolocation information about the asset when the fault was triggered
+                  properties:
+                    latitude:
+                      type:
+                      - string
+                      - 'null'
+                      description: Asset latitude
+                    longitude:
+                      type:
+                      - string
+                      - 'null'
+                      description: Asset longitude
+                    altitude:
+                      type:
+                      - number
+                      - string
+                      - 'null'
+                      description: Asset altitude
+                    heading:
+                      type:
+                      - number
+                      - string
+                      - 'null'
+                      description: Asset heading
+                external_resources:
+                  type: array
+                  description: External resources related to the fault
+                  items:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                        format: url
+                        description: Location (URL) of the external resource
+                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+                      title:
+                        type: string
+                        description: Title of the external resource
+                        minLength: 3
+                        maxLength: 75
+                      description:
+                        type: string
+                        description: Description of the resource
+                        minLength: 3
+                        maxLength: 150
+                      classification_header:
+                        type: string
+                        description: Classification of the external resource
+                        minLength: 3
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Type of the external resource
+                        enum:
+                        - document
+                        - image
+                        - video
+                        - audio
+                        - website
+                        - other
+              required:
+              - triggered_at
+              - active
+              - details
+            relationships:
+              type: object
+              properties:
+                diagnostic_reading:
+                  $ref: '#/components/schemas/relationship_object'
+                source_account:
+                  $ref: '#/components/schemas/relationship_object'
+                asset:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - diagnostic_reading
+              - source_account
+              - asset
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  format: uri
+                  description: Canonical URL of the fault resource
+    faults:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - faults
+              attributes:
+                $ref: '#/components/schemas/properties-attributes'
+              relationships:
+                type: object
+                properties:
+                  diagnostic_reading:
+                    $ref: '#/components/schemas/relationship_object'
+                  source_account:
+                    $ref: '#/components/schemas/relationship_object'
+                  asset:
+                    $ref: '#/components/schemas/relationship_object'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    format: uri
+                    description: Canonical URL of the fault resource
+        meta:
+          type: object
+    attributes:
+      type: object
+      properties:
+        triggered_at:
+          type: string
+          format: date-time
+          description: Date / Time when the diagnostic was triggered in `ISO8601` format
+        sensor_readings:
+          type: array
+          description: Sensor readings captured at the time of the diagnostic
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the sensor
+              description:
+                type: string
+                description: Description of the sensor
+              value:
+                type: string
+                description: Sensor reading value
+              unit_of_measure:
+                type:
+                - string
+                - 'null'
+                description: Unit of measure for the sensor reading
+              classification_header:
+                type: string
+                description: Header group used to classify the reading in the UI
+              key_data:
+                type: boolean
+                description: Flag indicating whether the reading should be highlighted in the UI
+              localize:
+                type: boolean
+                description: Flag indicating whether the reading should be localized in the UI
+        components:
+          type: array
+          description: Components reported by the diagnostic
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the component
+              description:
+                type:
+                - string
+                - 'null'
+                description: Description of the component
+              version:
+                type:
+                - string
+                - 'null'
+                description: Component version
+        origin_id:
+          type: string
+          description: Unique identifier of the diagnostic record at the source system
+        origin:
+          type: string
+          description: Source system that produced the diagnostic data
+        location:
+          type:
+          - object
+          - 'null'
+          description: Geolocation information about the asset
+          properties:
+            latitude:
+              type:
+              - string
+              - 'null'
+              description: Asset latitude
+            longitude:
+              type:
+              - string
+              - 'null'
+              description: Asset longitude
+            altitude:
+              type:
+              - number
+              - string
+              - 'null'
+              description: Asset altitude
+            heading:
+              type:
+              - number
+              - string
+              - 'null'
+              description: Asset heading
+        asset_data:
+          type: object
+          description: Asset information
+          properties:
+            chassis_id:
+              type: string
+              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+            device_id:
+              type: string
+              description: Telematic Device ID
+              minLength: 0
+              maxLength: 17
+            make:
+              type: string
+              description: Brand of the asset
+              minLength: 0
+              maxLength: 10
+            model:
+              type: string
+              description: Name of the asset product from the manufacturer
+            serial_number:
+              type: string
+              description: Production number of the asset, *if `vin` is present, it needs to match the last 8-9 digits of
+                it*
+              minLength: 8
+              maxLength: 9
+            vin:
+              type: string
+              description: 17 digit vehicle identification number
+              minLength: 0
+              maxLength: 17
+            year:
+              type: string
+              description: The year of the vehicle
+        external_resources:
+          type: array
+          description: External resources related to the diagnostic reading
+          items:
+            type: object
+            properties:
+              href:
+                type: string
+                format: url
+                description: Location (URL) of the external resource
+                pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+              title:
+                type: string
+                description: Title of the external resource
+                minLength: 3
+                maxLength: 75
+              description:
+                type: string
+                description: Description of the resource
+                minLength: 3
+                maxLength: 150
+              classification_header:
+                type: string
+                description: Classification of the external resource
+                minLength: 3
+                maxLength: 50
+              type:
+                type: string
+                description: Type of the external resource
+                enum:
+                - document
+                - image
+                - video
+                - audio
+                - website
+                - other
+    properties-attributes:
+      type: object
+      properties:
+        triggered_at:
+          type: string
+          format: date-time
+          description: Date / Time when the diagnostic was triggered in `ISO8601` format
+        spn:
+          type:
+          - string
+          - 'null'
+          description: SPN value. *Must be sent together with `fmi`. Either the SPN/FMI pair or `fault_code` is required.*
+        fmi:
+          type:
+          - string
+          - 'null'
+          description: FMI value. *Must be sent together with `spn`. Either the SPN/FMI pair or `fault_code` is required.*
+        fault_code:
+          type:
+          - string
+          - 'null'
+          description: Fault code value. *Required when SPN/FMI pair is not provided.*
+        severity:
+          type:
+          - integer
+          - 'null'
+          minimum: 0
+          maximum: 100
+          description: Fault severity, ranging from `0` (lowest) to `100` (highest)
+        active:
+          type: boolean
+          description: Indicates whether this fault is still active
+        sensor_readings:
+          type: array
+          description: Sensor readings captured when the fault was triggered
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the sensor
+              description:
+                type: string
+                description: Description of the sensor
+              value:
+                type: string
+                description: Sensor reading value
+              unit_of_measure:
+                type:
+                - string
+                - 'null'
+                description: Unit of measure for the sensor reading
+              classification_header:
+                type: string
+                description: Header group used to classify the reading in the UI
+              key_data:
+                type: boolean
+                description: Flag indicating whether the reading should be highlighted in the UI
+              localize:
+                type: boolean
+                description: Flag indicating whether the reading should be localized in the UI
+        guidance:
+          type: array
+          description: Guidance information related to the fault
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the guidance entry
+              description:
+                type: string
+                description: Description of the guidance entry
+              value:
+                type: string
+                description: Guidance value
+              classification_header:
+                type: string
+                description: Header group used to classify the entry in the UI
+        details:
+          type: object
+          description: Details of the fault
+          properties:
+            component:
+              type: object
+              description: Component on which the fault occurred
+              properties:
+                name:
+                  type: string
+                  description: Name of the component
+                description:
+                  type:
+                  - string
+                  - 'null'
+                  description: Description of the component
+                version:
+                  type:
+                  - string
+                  - 'null'
+                  description: Component version
+            occurrences:
+              type:
+              - integer
+              - 'null'
+              description: Number of times the fault has occurred
+            odometer_unit:
+              type:
+              - string
+              - 'null'
+              description: Odometer unit of measure
+              enum:
+              - mi
+              - km
+              - null
+            odometer_value:
+              type:
+              - number
+              - 'null'
+              description: Odometer reading at the time of the fault
+            severity_level:
+              type:
+              - string
+              - 'null'
+              description: Human-readable severity tier of the fault (e.g. `Needs Attention`, `Moderate`, `Severe`)
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the fault
+        location:
+          type:
+          - object
+          - 'null'
+          description: Geolocation information about the asset when the fault was triggered
+          properties:
+            latitude:
+              type:
+              - string
+              - 'null'
+              description: Asset latitude
+            longitude:
+              type:
+              - string
+              - 'null'
+              description: Asset longitude
+            altitude:
+              type:
+              - number
+              - string
+              - 'null'
+              description: Asset altitude
+            heading:
+              type:
+              - number
+              - string
+              - 'null'
+              description: Asset heading
+        external_resources:
+          type: array
+          description: External resources related to the fault
+          items:
+            type: object
+            properties:
+              href:
+                type: string
+                format: url
+                description: Location (URL) of the external resource
+                pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+              title:
+                type: string
+                description: Title of the external resource
+                minLength: 3
+                maxLength: 75
+              description:
+                type: string
+                description: Description of the resource
+                minLength: 3
+                maxLength: 150
+              classification_header:
+                type: string
+                description: Classification of the external resource
+                minLength: 3
+                maxLength: 50
+              type:
+                type: string
+                description: Type of the external resource
+                enum:
+                - document
+                - image
+                - video
+                - audio
+                - website
+                - other
+      required:
+      - triggered_at
+      - active
+      - details
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`);
+        this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

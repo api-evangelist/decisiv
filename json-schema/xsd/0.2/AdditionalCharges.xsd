@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  targetNamespace="http://www.decisiv.net/platform_api/0.2/Case/AdditionalCharges"
+  xmlns:ct="http://www.decisiv.net/platform_api/0.2/Case/CaseTypes">
+  <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/CaseTypes" schemaLocation="CaseTypes.xsd"/>
+  <xs:complexType name="AdditionalCharge">
+    <xs:all>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="category" type="xs:string"/>
+      <xs:element name="code" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="amount" type="ct:Currency"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="AdditionalChargeTotal">
+    <xs:all>
+      <xs:element name="category" type="xs:string"/>
+      <xs:element name="amount" type="ct:Currency"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

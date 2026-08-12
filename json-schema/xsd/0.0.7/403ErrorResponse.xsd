@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  xmlns:e="http://www.decisiv.net/platform_api/0.0.7/Case/403ErrorResponse"
+  targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/403ErrorResponse">
+  <xs:element name="ForbiddenErrorResponse" type="e:ForbiddenErrorResponse"/>
+  <xs:complexType name="ForbiddenErrorResponse">
+    <xs:all>
+      <xs:element name="message" type="xs:string" minOccurs="1"/>
+      <xs:element name="status" type="e:HttpStatus"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:simpleType name="HttpStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="403 Forbidden"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

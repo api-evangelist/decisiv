@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:pn="http://www.decisiv.net/platform_api/0.1/Case/PushNotification"
+           targetNamespace="http://www.decisiv.net/platform_api/0.1/Case/PushNotification">
+    <xs:element name="pushNotification" type="pn:PushNotification"/>
+    <xs:complexType name="PushNotification">
+        <xs:all>
+          <xs:element name="resourceURL" type="xs:string"/>
+          <xs:element name="resourceIdentifier" type="xs:string"/>
+          <xs:element name="resourceType" type="pn:ResourceTypes"/>
+          <xs:element name="eventType" type="xs:string" minOccurs="0"/>
+          <xs:element name="generatedAt" type="xs:dateTime"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="ResourceTypes">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Case"/>
+            <xs:enumeration value="Attachment"/>
+            <xs:enumeration value="CaseNote"/>
+            <xs:enumeration value="Customer"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

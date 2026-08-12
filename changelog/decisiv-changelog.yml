@@ -1,0 +1,89 @@
+generated: '2026-08-12'
+method: searched
+source: https://api-docs.decisiv.net/docs/api/1/changelog/
+scheme: date-based
+applies_to: Decisiv Platform API (legacy XML API) — version 1
+current_version: '1'
+current_build: null
+stale: true
+stale_note: >-
+  This is the only dated public changelog Decisiv publishes, and its last entry is 2021-09-30 — nearly
+  five years before this harvest. The current product, the SRM Gateway (build 0.48.24, four OpenAPI 3.1
+  modules), publishes no changelog whatsoever, so there is no public record of what changed between
+  Gateway builds. An integrator watching for breaking changes has nothing to watch.
+entry_count: 14
+first_entry: '2015-11-17'
+last_entry: '2021-09-30'
+entries:
+- date: '2021-09-30'
+  breaking: false
+  changes:
+  - fix typo in total on estimates line_items labor
+- date: '2021-09-27'
+  breaking: true
+  changes:
+  - adds additional info for total on estimates line_items labor
+  - removes fixedPriceTotal attributes for estimates line_items
+- date: '2021-03-31'
+  breaking: false
+  changes:
+  - expose List Program Types endpoint for service_location
+- date: '2020-02-27'
+  breaking: false
+  changes:
+  - expose Get Department endpoint for service_location
+  - expose List Departments endpoint for service_location
+- date: '2019-04-25'
+  breaking: false
+  changes:
+  - adds asset_id filter to cases endpoint
+  - adds created_after filter to cases endpoint
+  - adds created_before filter to cases endpoint
+  - adds customer_id filter to cases endpoint
+  - adds ro_number filter to cases endpoint
+  - adds service_location_id filter to cases endpoint
+  - adds updated_after filter to cases endpoint
+  - adds updated_before filter to cases endpoint
+- date: '2018-11-15'
+  breaking: false
+  changes:
+  - adds closed filter to cases endpoint
+- date: '2018-11-08'
+  breaking: false
+  changes:
+  - adds pagination to cases endpoint
+  - adds assignee_id filter to cases endpoint
+- date: '2017-01-30'
+  breaking: false
+  changes:
+  - adds severity and originationEvent fields to cases
+- date: '2016-03-01'
+  breaking: false
+  changes:
+  - adds support for additional charges on estimate items
+- date: '2016-02-23'
+  breaking: false
+  changes:
+  - reduce required fields for case update
+- date: '2016-02-19'
+  breaking: false
+  changes:
+  - allows estimate item versions to be updated with approval status
+  - provides ability to upload an estimate PDF when creating a new estimate version
+- date: '2016-01-15'
+  breaking: false
+  changes:
+  - fixed scoping bug in /service_locations when filtering by externalId
+- date: '2015-12-16'
+  breaking: true
+  changes:
+  - provides access to estimate versions
+  - adds approvalGroupTag to estimate line items
+  - renames approvalStatus to soldStatus for estimates
+  - moves approvalStatus to estimate versions and extends it to allow reason and reason_description with the decision
+- date: '2015-11-17'
+  breaking: false
+  changes:
+  - Initial release
+  - Updated versioning strategy
+  - Extended cases to support high-level VMRS coding

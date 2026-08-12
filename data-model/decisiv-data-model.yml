@@ -1,0 +1,351 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/_original/*.json — JSON:API resource `type` discriminators and `relationships` blocks
+style: json-api
+note: 'Derived mechanically from the JSON:API resource objects in the published specs: every schema whose properties.type
+  carries a single-value enum is a resource type, and its relationships block names the edges. The graph centres
+  on `cases` — the service event — which is the join between an asset (registered_asset / customer_asset), the parties
+  (customer, service_provider, contacts, assignee, driver, department), the money (estimates, line_items, line_item_parts,
+  line_item_additional_charges), the labour (time_tasks, technician_stories, skill_levels) and the telematics that
+  triggered it (faults, diagnostic_readings). VMRS reference vocabularies (decisiv_vmrs_*) are the shared coding
+  system that makes repair data comparable across the ecosystem. `sublet_*` models one shop subcontracting work
+  to another — the cross-account edge that makes this a network rather than a single-tenant shop system.'
+entity_count: 53
+root_entity: cases
+reference_vocabularies:
+- decisiv_case_repair_statuses
+- decisiv_vmrs_asset_types
+- decisiv_vmrs_components
+- decisiv_vmrs_operator_reports
+- decisiv_vmrs_positions
+- decisiv_vmrs_reasons_for_repair
+- decisiv_vmrs_repair_priorities
+- decisiv_vmrs_repair_sites
+- decisiv_vmrs_technician_part_failure_codes
+- decisiv_vmrs_work_accomplished
+entities:
+- type: account_users
+  modules:
+  - account-management
+  relationships:
+  - name: roles
+    kind: has_many
+  - name: user
+    kind: has_one
+- type: accounts
+  modules:
+  - account-management
+  relationships:
+  - name: roles
+    kind: has_many
+- type: additional_charge_categories
+  modules:
+  - service-management
+- type: case_metadata
+  modules:
+  - service-management
+- type: cases
+  modules:
+  - asset-management
+  - service-management
+  relationships:
+  - name: assignee
+    kind: has_one
+  - name: billing_contact
+    kind: has_one
+  - name: billing_customer
+    kind: has_one
+  - name: customer
+    kind: has_one
+  - name: customer_asset
+    kind: has_one
+  - name: department
+    kind: has_one
+  - name: driver
+    kind: has_one
+  - name: estimates
+    kind: has_one
+  - name: primary_contact
+    kind: has_one
+  - name: program_type
+    kind: has_one
+  - name: registered_asset
+    kind: has_one
+  - name: service_provider
+    kind: has_one
+  - name: shipping_customer
+    kind: has_one
+- type: contacts
+  modules:
+  - asset-management
+  - service-management
+  relationships:
+  - name: depot
+    kind: has_one
+- type: customer_assets
+  modules:
+  - service-management
+  relationships:
+  - name: customer
+    kind: has_one
+  - name: registered_asset
+    kind: has_one
+- type: customer_request_responses
+  modules:
+  - service-management
+  relationships:
+  - name: customer_request
+    kind: has_one
+- type: customer_requests
+  modules:
+  - service-management
+  relationships:
+  - name: case
+    kind: has_one
+  - name: customer
+    kind: has_one
+- type: customers
+  modules:
+  - service-management
+- type: decisiv_case_repair_statuses
+  modules:
+  - service-management
+- type: decisiv_vmrs_asset_types
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_components
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_operator_reports
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_positions
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_reasons_for_repair
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_repair_priorities
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_repair_sites
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_technician_part_failure_codes
+  modules:
+  - asset-management
+  - service-management
+- type: decisiv_vmrs_work_accomplished
+  modules:
+  - asset-management
+  - service-management
+- type: departments
+  modules:
+  - service-management
+- type: depots
+  modules:
+  - asset-management
+- type: diagnostic_readings
+  modules:
+  - service-management
+  - telematics
+  relationships:
+  - name: faults
+    kind: has_one
+  - name: source_account
+    kind: has_one
+- type: ecosystem_users
+  modules:
+  - account-management
+- type: estimates
+  modules:
+  - asset-management
+  relationships:
+  - name: case
+    kind: has_one
+  - name: reviewer
+    kind: has_one
+  - name: service_writer
+    kind: has_one
+- type: extended_asset_attributes
+  modules:
+  - service-management
+  relationships:
+  - name: account_extended_attribute
+    kind: has_one
+  - name: customer_asset
+    kind: has_one
+- type: extended_attributes
+  modules:
+  - service-management
+- type: faults
+  modules:
+  - service-management
+  - telematics
+  relationships:
+  - name: asset
+    kind: has_one
+  - name: assets
+    kind: has_one
+  - name: diagnostic_reading
+    kind: has_one
+  - name: diagnostic_readings
+    kind: has_one
+  - name: source_account
+    kind: has_one
+- type: in_network_cases
+  modules:
+  - service-management
+  relationships:
+  - name: service_provider
+    kind: has_one
+- type: internal_users
+  modules:
+  - asset-management
+  - service-management
+- type: line_item_additional_charges
+  modules:
+  - service-management
+  relationships:
+  - name: category
+    kind: has_one
+- type: line_item_internal_labels
+  modules:
+  - service-management
+- type: line_item_parts
+  modules:
+  - service-management
+  relationships:
+  - name: salesperson
+    kind: has_one
+- type: line_items
+  modules:
+  - service-management
+  relationships:
+  - name: assignee
+    kind: has_one
+  - name: case
+    kind: has_one
+  - name: parts
+    kind: has_one
+  - name: technician_stories
+    kind: has_one
+- type: notes
+  modules:
+  - asset-management
+  - service-management
+  relationships:
+  - name: participants
+    kind: has_one
+  - name: recipients
+    kind: has_many
+  - name: sender
+    kind: has_one
+  - name: srm_account
+    kind: has_one
+  - name: subject
+    kind: has_one
+- type: participants
+  modules:
+  - asset-management
+  - service-management
+- type: program_types
+  modules:
+  - service-management
+- type: registered_assets
+  modules:
+  - asset-management
+  - service-management
+  relationships:
+  - name: depot
+    kind: has_one
+  - name: extended_asset_attributes
+    kind: has_one
+  - name: srm_verified_asset
+    kind: has_one
+- type: registered_customers
+  modules:
+  - service-management
+- type: roles
+  modules:
+  - account-management
+- type: service_networks
+  modules:
+  - service-management
+- type: service_providers
+  modules:
+  - service-management
+  relationships:
+  - name: service_networks
+    kind: has_one
+- type: service_requests
+  modules:
+  - asset-management
+  relationships:
+  - name: case
+    kind: has_one
+  - name: primary_contact
+    kind: has_one
+  - name: registered_asset
+    kind: has_one
+  - name: service_provider
+    kind: has_one
+- type: skill_levels
+  modules:
+  - service-management
+- type: sublet_associations
+  modules:
+  - service-management
+  relationships:
+  - name: parent_case
+    kind: has_one
+  - name: sublet_case
+    kind: has_one
+- type: sublet_case_line_items
+  modules:
+  - service-management
+- type: sublet_cases
+  modules:
+  - service-management
+  relationships:
+  - name: parent_case
+    kind: has_one
+  - name: service_provider
+    kind: has_one
+- type: sublet_requests
+  modules:
+  - service-management
+  relationships:
+  - name: parent_case
+    kind: has_one
+  - name: service_provider
+    kind: has_one
+  - name: sublet_case
+    kind: has_one
+- type: technician_stories
+  modules:
+  - service-management
+- type: time_tasks
+  modules:
+  - service-management
+  relationships:
+  - name: employee
+    kind: has_one
+  - name: subject
+    kind: has_one
+- type: users
+  modules:
+  - account-management
+- type: webhook_events
+  modules:
+  - account-management
+- type: webhooks
+  modules:
+  - account-management

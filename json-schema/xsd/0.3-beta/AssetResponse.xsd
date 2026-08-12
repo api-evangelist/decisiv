@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           xmlns:ar="http://www.decisiv.net/platform_api/0.3-beta/Case/AssetResponse"
+           targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/AssetResponse">
+    <xs:element name="asset" type="ar:Asset"/>
+    <xs:element name="assets">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="asset" type="ar:Asset" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="Asset">
+        <xs:all>
+            <xs:element name="URL" type="xs:string"/>
+            <xs:element name="casesURL" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="VIN" type="xs:string"/>
+            <xs:element name="serialNumber" type="xs:string"/>
+            <xs:element name="year" type="xs:string"/>
+            <xs:element name="make">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="model">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="engine">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="engineDisplacement" type="xs:string"/>
+            <xs:element name="engineFuel" type="xs:string"/>
+            <xs:element name="engineHorsepower" type="xs:string"/>
+            <xs:element name="engineMake" type="xs:string"/>
+            <xs:element name="engineSerialNumber" type="xs:string"/>
+            <xs:element name="owner">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="chassisID" type="xs:string"/>
+            <xs:element name="mileage" type="xs:int"/>
+            <xs:element name="engineHours" type="xs:int"/>
+            <xs:element name="unitNumber" type="xs:string" />
+            <xs:element name="warrantyStartDate" type="xs:date" nillable="true"/>
+            <xs:element name="recallPending" type="xs:boolean"/>
+            <xs:element name="assetType" type="xs:string"/>
+            <xs:element name="createdAt" type="xs:dateTime"/>
+            <xs:element name="updatedAt" type="xs:dateTime"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

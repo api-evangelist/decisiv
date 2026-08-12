@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           xmlns:cts="http://www.decisiv.net/platform_api/0.3-beta/Case/CreateTechnicianStoryRequest"
+           targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/CreateTechnicianStoryRequest">
+  <xs:element name="technicianStory" type="cts:TechnicianStory"/>
+  <xs:complexType name="TechnicianStory">
+    <xs:all>
+      <xs:element name="content">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="5000"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

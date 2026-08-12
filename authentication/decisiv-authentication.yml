@@ -1,0 +1,70 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/decisiv-account-management-openapi.yml, openapi/decisiv-asset-management-openapi.yml,
+  openapi/decisiv-global-assets-openapi.yml, openapi/decisiv-service-management-openapi.yml,
+  openapi/decisiv-service-provider-openapi.yml, openapi/decisiv-telematics-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - authorizationCode
+  - password
+schemes:
+- name: AccessToken
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  sources:
+  - openapi/decisiv-account-management-openapi.yml
+  - openapi/decisiv-asset-management-openapi.yml
+  - openapi/decisiv-service-management-openapi.yml
+  - openapi/decisiv-telematics-openapi.yml
+- name: OAuth2AuthorizationCode
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.decisiv.net/auth/api_gateway
+    tokenUrl: https://login.decisiv.net/oauth/token
+    scopes: 0
+  description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations.
+    See https://api-docs.decisiv.net/docs/api/oauth/
+  sources:
+  - openapi/decisiv-account-management-openapi.yml
+  - openapi/decisiv-asset-management-openapi.yml
+  - openapi/decisiv-service-management-openapi.yml
+  - openapi/decisiv-telematics-openapi.yml
+- name: OAuth2Password
+  type: oauth2
+  flows:
+  - flow: password
+    tokenUrl: https://login.decisiv.net/oauth/token
+    scopes: 0
+  description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization
+    Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration
+    window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+  sources:
+  - openapi/decisiv-account-management-openapi.yml
+  - openapi/decisiv-asset-management-openapi.yml
+  - openapi/decisiv-global-assets-openapi.yml
+  - openapi/decisiv-service-management-openapi.yml
+  - openapi/decisiv-service-provider-openapi.yml
+  - openapi/decisiv-telematics-openapi.yml
+- name: TransitionToken
+  type: apiKey
+  in: header
+  parameter: X-Decisiv-Transition-Token
+  description: The transition token must be specified when using OAuth. Please see https://api-docs.decisiv.net/docs/api/oauth/
+  sources:
+  - openapi/decisiv-global-assets-openapi.yml
+  - openapi/decisiv-service-provider-openapi.yml
+- name: Bearer
+  type: apiKey
+  in: header
+  parameter: Authorization
+  sources:
+  - openapi/decisiv-global-assets-openapi.yml
+  - openapi/decisiv-service-provider-openapi.yml

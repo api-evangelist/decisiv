@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:case="http://www.decisiv.net/platform_api/0.2/Case/CaseRequest"
+    xmlns:g="http://www.decisiv.net/platform_api/0.2/Case/GroupedUser"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.2/Case/CaseTypes"
+    xmlns:vmrs="http://www.decisiv.net/platform_api/0.2/Case/VMRS"
+    targetNamespace="http://www.decisiv.net/platform_api/0.2/Case/CaseRequest">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/CaseTypes"
+      schemaLocation="CaseTypes.xsd"></xs:import>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/GroupedUser"
+        schemaLocation="GroupedUser.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.2/Case/VMRS"
+        schemaLocation="../0.2/vmrs.xsd"/>
+    <xs:element name="case" type="case:CaseRequestType"></xs:element>
+    <xs:complexType name="CaseRequestType">
+        <xs:all>
+            <xs:element ref="ct:assetIdentifier" minOccurs="0"/>
+            <xs:element name="assignee" type="g:GroupedUser" minOccurs="0"/>
+            <xs:element name="primaryContact" type="ct:Contact" minOccurs="0"/>
+            <xs:element name="breakdown" type="ct:Breakdown" minOccurs="0"/>
+            <xs:element name="assetInformation" type="ct:AssetInformation" minOccurs="0"/>
+            <xs:element name="cause" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="correction" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="complaint" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="severity" type="xs:decimal" nillable="true" minOccurs="0"/>
+            <xs:element ref="ct:customComplaintCodes" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="downtime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="uptime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="customerRequestedAppointmentTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="serviceLocationSuggestedAppointmentTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="confirmedAppointmentTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="customerRequestedCompletionTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="followupTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="assetArrived" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="assetCheckInTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="etr" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element name="atr" type="xs:dateTime" nillable="true" minOccurs="0"/>
+            <xs:element ref="ct:status" minOccurs="0"/>
+            <xs:element name="poNumber" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="roNumber" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="invoiceAmount" type="ct:Currency" nillable="true" minOccurs="0"/>
+            <xs:element name="invoiceNumber" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="invoiceDate" type="xs:date" nillable="true" minOccurs="0"/>
+            <xs:element name="authNumber" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="tagNumber" type="xs:string" nillable="true" minOccurs="0"/>
+            <xs:element name="vmrs" type="vmrs:caseVMRS" nillable="true" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

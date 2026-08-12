@@ -1,0 +1,147 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/_original/*.json 4xx/5xx responses
+format: json-api-errors
+rfc9457: false
+note: 'Derived from every 4xx/5xx response declared across the six harvested specs. Decisiv does NOT use RFC 9457
+  application/problem+json — every error body is a JSON:API errors[] array served as application/vnd.api+json against
+  a single errors_response schema. Two statuses are worth an integrator''s attention because they are unusual: 428
+  Precondition Required means the OAuth Application is not provisioned for that module (a configuration problem,
+  not a request problem), and 424 Failed Dependency means an unresolved data dependency inside the Decisiv platform.
+  Neither is retryable by the caller. The per-code registry is in errors/decisiv-error-codes.yml.'
+problems:
+- status: 400
+  title: Bad Request
+  description: This response may occur when an invalid request has been provided to the server.  The request may
+    be corrected by the consumer and resubmitted.
+  operations: 156
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-global-assets-swagger.json
+  - decisiv-service-management-openapi.json
+  - decisiv-service-provider-swagger.json
+  - decisiv-telematics-openapi.json
+- status: 401
+  title: Unauthorized
+  description: This response may occur when the access token provided within the Authorization token has expired.
+  operations: 222
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+- status: 403
+  title: Forbidden
+  description: This response may occur when the authenticated user embedded within the Authorization header does
+    not have access to the requested resource.
+  operations: 219
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+- status: 404
+  title: Not Found
+  description: This response may occur when the requested resource is not found.
+  operations: 215
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-global-assets-swagger.json
+  - decisiv-service-management-openapi.json
+  - decisiv-service-provider-swagger.json
+  - decisiv-telematics-openapi.json
+- status: 409
+  title: Conflict
+  description: This response may occur when the request conflict with the current state of the target resource.
+  operations: 16
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+- status: 412
+  title: Precondition Failed
+  description: Association not allowed
+  operations: 7
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-global-assets-swagger.json
+  - decisiv-service-management-openapi.json
+  - decisiv-service-provider-swagger.json
+- status: 422
+  title: Unprocessable Entity
+  description: Invalid uuid format error / Identifier not found
+  operations: 68
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-global-assets-swagger.json
+  - decisiv-service-management-openapi.json
+  - decisiv-service-provider-swagger.json
+- status: 424
+  title: Failed Dependency
+  description: This response may occur when there is an unresolved data dependency or configuration required inside
+    of the Decisiv Platform preventing access to the requested action.
+  operations: 98
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json
+- status: 428
+  title: Precondition Required
+  description: This response represents requests to a module or endpoint which can not immediately be accessed due
+    to the Account permissions and subscriptions in the Decisiv Platform.
+  operations: 69
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-service-management-openapi.json
+- status: 429
+  title: Too Many Requests
+  description: Too Many Requests
+  operations: 37
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-asset-management-openapi.json
+  - decisiv-global-assets-swagger.json
+  - decisiv-service-management-openapi.json
+  - decisiv-service-provider-swagger.json
+  - decisiv-telematics-openapi.json
+- status: 502
+  title: Bad Gateway
+  description: null
+  operations: 1
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-global-assets-swagger.json
+- status: 504
+  title: Gateway Timeout
+  description: This response may occur when there is an unexpected system timeout.
+  operations: 184
+  media_type: application/vnd.api+json
+  schema: '#/components/schemas/errors_response'
+  specs:
+  - decisiv-account-management-openapi.json
+  - decisiv-asset-management-openapi.json
+  - decisiv-global-assets-swagger.json
+  - decisiv-service-management-openapi.json
+  - decisiv-telematics-openapi.json

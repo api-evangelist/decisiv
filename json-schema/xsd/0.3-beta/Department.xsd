@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.decisiv.net/platform_api/0.3-beta/Case/Department">
+    <xs:complexType name="Department">
+        <xs:all>
+            <xs:element name="code" type="xs:string"/>
+            <xs:element name="description" type="xs:string" nillable="true" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

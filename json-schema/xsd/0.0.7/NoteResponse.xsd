@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.0.7/Case/CaseTypes"
+    xmlns:r="http://www.decisiv.net/platform_api/0.0.7/Case/RecipientResponse"
+    xmlns:s="http://www.decisiv.net/platform_api/0.0.7/Case/SenderResponse"
+    xmlns:n="http://www.decisiv.net/platform_api/0.0.7/Case/NoteResponse"
+    targetNamespace="http://www.decisiv.net/platform_api/0.0.7/Case/NoteResponse">
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/CaseTypes"
+        schemaLocation="CaseTypes.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/RecipientResponse"
+        schemaLocation="RecipientResponse.xsd"/>
+    <xs:import namespace="http://www.decisiv.net/platform_api/0.0.7/Case/SenderResponse"
+        schemaLocation="SenderResponse.xsd"/>
+    <xs:element name="notes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="note" type="n:Note" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="note" type="n:Note"/>
+    <xs:complexType name="Note">
+        <xs:all>
+          <xs:element name="URL" type="xs:string"/>
+          <xs:element name="subjectURL" type="xs:string"/>
+          <xs:element name="id" type="xs:string"/>
+          <xs:element name="message" type="xs:string"/>
+          <xs:element name="public" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="createdAt" type="xs:dateTime"/>
+          <xs:element name="updatedAt" type="xs:dateTime"/>
+          <xs:element ref="s:sender"/>
+          <xs:element ref="r:recipients"/>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

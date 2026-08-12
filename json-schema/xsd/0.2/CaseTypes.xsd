@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://www.decisiv.net/platform_api/0.2/Case/CaseTypes"
+    xmlns:ct="http://www.decisiv.net/platform_api/0.2/Case/CaseTypes">
+    <xs:complexType name="User">
+        <xs:all>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="Currency">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="breakdown" type="ct:Breakdown"/>
+    <xs:complexType name="Breakdown">
+        <xs:all>
+            <xs:element name="driverName" type="xs:string" nillable="true"/>
+            <xs:element name="driverPhone" type="xs:string" nillable="true"/>
+            <xs:element name="location" type="xs:string" nillable="true"/>
+            <xs:element name="city" type="xs:string" nillable="true"/>
+            <xs:element name="state" type="xs:string" nillable="true"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="primaryContact" type="ct:Contact" />
+    <xs:complexType name="Contact">
+        <xs:all>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="phone" type="xs:string"/>
+            <xs:element name="email" type="xs:string" minOccurs="0" />
+            <xs:element name="relation" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="assetInformation" type="ct:AssetInformation"/>
+    <xs:complexType name="AssetInformation">
+        <xs:all>
+            <xs:element name="mileage" type="xs:unsignedInt" nillable="true"/>
+            <xs:element name="trailer" type="ct:Trailer"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="trailer" type="ct:Trailer"/>
+    <xs:complexType name="Trailer">
+        <xs:all>
+            <xs:element name="unitNumber" type="xs:string" nillable="true"/>
+            <xs:element name="loaded" type="xs:boolean" nillable="true"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="status" type="ct:Status"/>
+    <xs:complexType name="Status">
+        <xs:all>
+            <xs:element name="name" type="xs:string" minOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="assetType" type="ct:AssetType"/>
+    <xs:complexType name="AssetType">
+        <xs:all>
+            <xs:element name="id" type="xs:string" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="customComplaintCodes" nillable="true">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="code" type="xs:string" maxOccurs="unbounded" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="assetIdentifier" nillable="true">
+      <xs:complexType>
+        <xs:all>
+          <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+      </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,1223 @@
+swagger: '2.0'
+info:
+  version: 2.0.4
+  title: Service Provider API
+  description: Base API allowing Dealers to interact with Customers and Assets
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+basePath: /api/v1/
+schemes:
+- https
+consumes:
+- application/vnd.api+json
+produces:
+- application/vnd.api+json
+security:
+- Bearer: []
+- OAuth2Password: []
+  TransitionToken: []
+paths:
+  /customers:
+    get:
+      tags:
+      - customers
+      description: Returns all Customers in the system for the authenticated Service Location
+      operationId: getCustomers
+      parameters:
+      - $ref: '#/parameters/createdBeforeParam'
+      - $ref: '#/parameters/createdAfterParam'
+      - $ref: '#/parameters/updatedBeforeParam'
+      - $ref: '#/parameters/updatedAfterParam'
+      - $ref: '#/parameters/serviceLocationIdParam'
+      - $ref: '#/parameters/customerNameParam'
+      - $ref: '#/parameters/dmsIdParam'
+      responses:
+        '200':
+          description: List of customers in the ecosystem
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/jsonapiCustomersResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+    post:
+      tags:
+      - customers
+      description: Creates a new Customer for use within the ecosystem
+      operationId: addCustomer
+      parameters:
+      - name: body
+        in: body
+        description: Customer object that will be added to the ecosystem
+        required: true
+        schema:
+          $ref: '#/definitions/jsonapiCustomerObject'
+      responses:
+        '201':
+          description: Customer Creation Success
+          schema:
+            $ref: '#/definitions/jsonapiCustomerResponse'
+        '400':
+          description: Asset Error
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+  /group_customers:
+    get:
+      tags:
+      - group_customers
+      description: Returns all Group Customers in the system for the authenticated Service Location
+      operationId: getGroupCustomers
+      parameters:
+      - $ref: '#/parameters/dmsIdRequiredParam'
+      responses:
+        '200':
+          description: List of group customers in the ecosystem
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/jsonapiCustomersResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/badRequestDmsIdFilterMissingResponseError'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+  /customers/{id}:
+    get:
+      tags:
+      - customers
+      description: Returns a Customer based on the provided ID
+      operationId: findCustomerById
+      parameters:
+      - name: id
+        in: path
+        description: Customer ID or UUID to fetch
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Customer details
+          schema:
+            $ref: '#/definitions/jsonapiCustomerResponse'
+        '404':
+          description: Customer not found
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+    put:
+      tags:
+      - customers
+      description: Updates a Customer record
+      operationId: updateCustomer
+      parameters:
+      - name: id
+        in: path
+        description: Customer ID or UUID to update
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: Updated Customer object
+        required: true
+        schema:
+          $ref: '#/definitions/jsonapiCustomerUpdateObject'
+      responses:
+        '200':
+          description: Customer updated
+          schema:
+            $ref: '#/definitions/jsonapiCustomerResponse'
+        '404':
+          description: Customer not found
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+  /assets:
+    get:
+      tags:
+      - assets
+      description: Returns a listing of assets for all a Dealers' Customers
+      operationId: assets
+      parameters:
+      - $ref: '#/parameters/vinParam'
+      - $ref: '#/parameters/serialParam'
+      - $ref: '#/parameters/customerIdParam'
+      - $ref: '#/parameters/unitNumberParam'
+      responses:
+        '200':
+          description: List of assets in the ecosystem for a Dealers' Customers
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/jsonapiCustomerAssetsResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+    post:
+      tags:
+      - assets
+      description: Assigns an asset to a customer based upon the id
+      operationId: AssignAssetToCustomer
+      parameters:
+      - name: body
+        in: body
+        description: Asset id that will be added to Customers' Asset list
+        required: true
+        schema:
+          $ref: '#/definitions/jsonapiAssetCustomerObject'
+      responses:
+        '201':
+          description: Customer Asset details
+          schema:
+            $ref: '#/definitions/jsonapiCustomerAssetResponse'
+        '412':
+          $ref: '#/responses/PreconditionFailed'
+        '422':
+          $ref: '#/responses/UnprocessableEntityFleetOwned'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+  /assets/{asset_id}:
+    get:
+      tags:
+      - assets
+      description: Returns a Customer Asset record based upon a particular ID
+      operationId: GetCustomerAssetById
+      parameters:
+      - $ref: '#/parameters/assetId'
+      responses:
+        '200':
+          description: Customer details
+          schema:
+            $ref: '#/definitions/jsonapiCustomerAssetResponse'
+        '404':
+          description: Customer Asset not found
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+    delete:
+      tags:
+      - assets
+      description: Removes a Customer Asset from a Customers' inventory based upon ID
+      operationId: RemoveCustomerAssetById
+      parameters:
+      - $ref: '#/parameters/assetId'
+      responses:
+        '204':
+          description: Asset Removed
+        '404':
+          description: Asset not found
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+  /group_assets:
+    get:
+      tags:
+      - group_assets
+      description: Returns a listing of group assets for all a Dealers' Customers
+      operationId: groupAssets
+      parameters:
+      - $ref: '#/parameters/requiredVinParam'
+      responses:
+        '200':
+          description: List of group assets in the ecosystem for a Dealers' Customers
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/jsonapiCustomerAssetsResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/badRequestVINFilterMissingResponseError'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+  /group_assets/{asset_id}:
+    delete:
+      tags:
+      - group_assets
+      description: Removes a Group Customer Asset from a Customer's inventory based upon ID
+      operationId: RemoveGroupCustomerAssetById
+      parameters:
+      - $ref: '#/parameters/assetId'
+      responses:
+        '204':
+          description: Group Asset Removed
+        '404':
+          description: Group Asset not found
+          schema:
+            $ref: '#/definitions/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          schema:
+            $ref: '#/definitions/tooManyRequestsResponse'
+responses:
+  PreconditionFailed:
+    description: 412 Precondition Failed
+    schema:
+      $ref: '#/definitions/PreconditionFailedError'
+  UnprocessableEntityFleetOwned:
+    description: Assets owned by fleets can not currently be assigned to Local Customers
+    schema:
+      $ref: '#/definitions/UnprocessableEntityErrorFleetOwned'
+definitions:
+  assetCustomerId:
+    type: object
+    properties:
+      asset_id:
+        type: string
+        description: UUID of Asset from Assets API
+        example: c441e9ee-d990-4759-b6ab-00230ab6647e
+      customer_id:
+        type: integer
+        description: ID of Customer from /customers
+  customer:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+        maxLength: 35
+        description: Name of company
+        example: Runaway Jim Trucking
+      address1:
+        type: string
+        maxLength: 40
+        description: Main address - Line 1
+        example: 100 Famous Mockingbird Lane
+      address2:
+        type: string
+        maxLength: 40
+        description: Main address - Line 2
+        example: 2410 Sloan Street
+      city:
+        type: string
+        maxLength: 25
+        description: City name
+        example: Gamehendge
+      state:
+        type: string
+        maxLength: 2
+        description: Postal abbreviation for the state or province
+        example: VT
+      postal_code:
+        type: string
+        maxLength: 10
+        example: '25610'
+        description: USPS zip code or Canadian postal code
+      country:
+        type: string
+        maxLength: 20
+        description: Country in which the state or province is located
+        example: US
+      phone:
+        type: string
+        maxLength: 10
+        description: Main office telephone number
+        example: 555-5555
+      fax:
+        type: string
+        maxLength: 10
+        description: Main office fax telephone number
+        example: 555-5555
+      email:
+        type: string
+        maxLength: 128
+        description: Main email address to be used for communication with the customer during estimating and repair processes
+        example: contact@decisiv.net
+      note:
+        type: string
+        maxLength: 300
+        description: Special instructions and / or any other information which will be useful to Service Network CSR while
+          using DSRM
+        example: Note for contact
+      dms_id:
+        type: string
+        maxLength: 40
+        example: '12345'
+        description: Dealer Management System id
+  jsonapiCustomerResponse:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 35
+        description: Name of company
+        example: Runaway Jim Trucking
+      address1:
+        type: string
+        maxLength: 40
+        description: Main address - Line 1
+        example: 100 Famous Mockingbird Lane
+      address2:
+        type: string
+        maxLength: 40
+        description: Main address - Line 2
+        example: 2410 Sloan Street
+      city:
+        type: string
+        maxLength: 25
+        description: City name
+        example: Gamehendge
+      state:
+        type: string
+        maxLength: 2
+        description: Postal abbreviation for the state or province
+        example: VT
+      postal_code:
+        type: string
+        maxLength: 10
+        example: '25610'
+        description: USPS zip code or Canadian postal code
+      country:
+        type: string
+        maxLength: 20
+        description: Country in which the state or province is located
+        example: US
+      phone:
+        type: string
+        maxLength: 10
+        description: Main office telephone number
+        example: 555-5555
+      fax:
+        type: string
+        maxLength: 10
+        description: Main office fax telephone number
+        example: 555-5555
+      email:
+        type: string
+        maxLength: 128
+        description: Main email address to be used for communication with the customer during estimating and repair processes
+        example: contact@decisiv.net
+      note:
+        type: string
+        maxLength: 300
+        description: Special instructions and / or any other information which will be useful to Service Network CSR while
+          using DSRM
+        example: Note for contact
+      dms_id:
+        type: string
+        maxLength: 40
+        example: '12345'
+        description: Dealer Management System id
+      created_at:
+        type: string
+        example: '2023-10-17T15:50:52.133Z'
+      updated_at:
+        type: string
+        example: '2023-10-17T15:50:52.133Z'
+      created_by:
+        type: string
+        example: current_user
+      updated_by:
+        type: string
+        example: current_user
+  jsonapiCustomersResponse:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 35
+        description: Name of company
+        example: Runaway Jim Trucking
+      address1:
+        type: string
+        maxLength: 40
+        description: Main address - Line 1
+        example: 100 Famous Mockingbird Lane
+      address2:
+        type: string
+        maxLength: 40
+        description: Main address - Line 2
+        example: 2410 Sloan Street
+      city:
+        type: string
+        maxLength: 25
+        description: City name
+        example: Gamehendge
+      state:
+        type: string
+        maxLength: 2
+        description: Postal abbreviation for the state or province
+        example: VT
+      postal_code:
+        type: string
+        maxLength: 10
+        example: '25610'
+        description: USPS zip code or Canadian postal code
+      country:
+        type: string
+        maxLength: 20
+        description: Country in which the state or province is located
+        example: US
+      phone:
+        type: string
+        maxLength: 10
+        description: Main office telephone number
+        example: 555-5555
+      fax:
+        type: string
+        maxLength: 10
+        description: Main office fax telephone number
+        example: 555-5555
+      email:
+        type: string
+        maxLength: 128
+        description: Main email address to be used for communication with the customer during estimating and repair processes
+        example: contact@decisiv.net
+      note:
+        type: string
+        maxLength: 300
+        description: Special instructions and / or any other information which will be useful to Service Network CSR while
+          using DSRM
+        example: Note for contact
+      dms_id:
+        type: string
+        maxLength: 40
+        example: '12345'
+        description: Dealer Management System id
+      created_at:
+        type: string
+        example: '2023-10-17T15:50:52.133Z'
+      updated_at:
+        type: string
+        example: '2023-10-17T15:50:52.133Z'
+      created_by:
+        type: string
+        example: current_user
+      updated_by:
+        type: string
+        example: current_user
+  jsonapiCustomerObject:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+        maxLength: 35
+        description: Name of company
+        example: Runaway Jim Trucking
+      address1:
+        type: string
+        maxLength: 40
+        description: Main address - Line 1
+        example: 100 Famous Mockingbird Lane
+      address2:
+        type: string
+        maxLength: 40
+        description: Main address - Line 2
+        example: 2410 Sloan Street
+      city:
+        type: string
+        maxLength: 25
+        description: City name
+        example: Gamehendge
+      state:
+        type: string
+        maxLength: 2
+        description: Postal abbreviation for the state or province
+        example: VT
+      postal_code:
+        type: string
+        maxLength: 10
+        example: '25610'
+        description: USPS zip code or Canadian postal code
+      country:
+        type: string
+        maxLength: 20
+        description: Country in which the state or province is located
+        example: US
+      phone:
+        type: string
+        maxLength: 10
+        description: Main office telephone number
+        example: 555-5555
+      fax:
+        type: string
+        maxLength: 10
+        description: Main office fax telephone number
+        example: 555-5555
+      email:
+        type: string
+        maxLength: 128
+        description: Main email address to be used for communication with the customer during estimating and repair processes
+        example: contact@decisiv.net
+      note:
+        type: string
+        maxLength: 300
+        description: Special instructions and / or any other information which will be useful to Service Network CSR while
+          using DSRM
+        example: Note for contact
+      dms_id:
+        type: string
+        maxLength: 40
+        example: '12345'
+        description: Dealer Management System id
+  jsonapiCustomerUpdateObject:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 42
+      name:
+        type: string
+        maxLength: 35
+        description: Name of company
+        example: Runaway Jim Trucking
+      address1:
+        type: string
+        maxLength: 40
+        description: Main address - Line 1
+        example: 100 Famous Mockingbird Lane
+      address2:
+        type: string
+        maxLength: 40
+        description: Main address - Line 2
+        example: 2410 Sloan Street
+      city:
+        type: string
+        maxLength: 25
+        description: City name
+        example: Gamehendge
+      state:
+        type: string
+        maxLength: 2
+        description: Postal abbreviation for the state or province
+        example: VT
+      postal_code:
+        type: string
+        maxLength: 10
+        example: '25610'
+        description: USPS zip code or Canadian postal code
+      country:
+        type: string
+        maxLength: 20
+        description: Country in which the state or province is located
+        example: US
+      phone:
+        type: string
+        maxLength: 10
+        description: Main office telephone number
+        example: 555-5555
+      fax:
+        type: string
+        maxLength: 10
+        description: Main office fax telephone number
+        example: 555-5555
+      email:
+        type: string
+        maxLength: 128
+        description: Main email address to be used for communication with the customer during estimating and repair processes
+        example: contact@decisiv.net
+      note:
+        type: string
+        maxLength: 300
+        description: Special instructions and / or any other information which will be useful to Service Network CSR while
+          using DSRM
+        example: Note for contact
+      dms_id:
+        type: string
+        maxLength: 40
+        example: '12345'
+        description: Dealer Management System id
+  jsonapiAssetCustomerObject:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: object
+        properties:
+          type:
+            type: string
+            example: assets
+          attributes:
+            allOf:
+            - $ref: '#/definitions/assetCustomerId'
+  customerAsset:
+    type: object
+    properties:
+      customer_id:
+        type: integer
+        description: Customer ID
+        example: 42
+      asset_id:
+        type: string
+        description: Asset UUID
+        example: c441e9ee-d990-4759-b6ab-00230ab6647e
+      vin:
+        type: string
+        minLength: 17
+        maxLength: 17
+        example: 1C4RJFATXDC591345
+      serial_number:
+        type: string
+        example: DC591345
+      unit_number:
+        type: string
+        description: Unit Number
+        example: VT84
+  jsonapiCustomerAssetResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        required:
+        - attributes
+        - id
+        - type
+        properties:
+          attributes:
+            allOf:
+            - $ref: '#/definitions/customerAsset'
+            - $ref: '#/definitions/audit_details'
+          id:
+            type: integer
+            example: 88
+          type:
+            type: string
+            example: assets
+          links:
+            type: object
+            properties:
+              self:
+                type: string
+                format: url
+  jsonapiCustomerAssetsResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          type: object
+          required:
+          - attributes
+          - id
+          - type
+          properties:
+            attributes:
+              allOf:
+              - $ref: '#/definitions/customerAsset'
+              - $ref: '#/definitions/audit_details'
+            id:
+              type: integer
+              example: 88
+            type:
+              type: string
+              example: assets
+      links:
+        allOf:
+        - $ref: '#/definitions/JSONAPI_Links'
+  audit_details:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp record was created
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp record was last updated
+      created_by:
+        type: string
+        description: Username of user which created the record
+        example: current_user
+      updated_by:
+        type: string
+        description: Username of user which last updated the record
+        example: current_user
+  badRequestDmsIdFilterMissingErrorWithExample:
+    title: badRequestFilterMissingErrorWithExample
+    type: object
+    description: 'Error objects provide additional information about problems encountered while performing an operation. Error
+      objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+      An error object MAY have the following members.
+
+      '
+    properties:
+      status:
+        type: string
+        description: the HTTP status code applicable to this problem, expressed as a string value.
+        example: '400'
+      code:
+        type: string
+        description: an application-specific error code, expressed as a string value.
+        example: decisiv:filters:106
+      title:
+        type: string
+        description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of
+          the problem, except for purposes of localization.
+        example: Required filter is missing
+      detail:
+        type: string
+        description: 'A human-readable explanation specific to this occurrence of the problem.
+
+          Like `title`, this field''s value can be localized.
+
+          '
+        example: 'Required filter must be provided. Valid required filters: dms_id'
+      source:
+        type: object
+        properties:
+          parameter:
+            type: string
+            example: filter
+  badRequestDmsIdFilterMissingResponseError:
+    title: Bad Request
+    type: array
+    description: 'Request is not sent as expected
+
+      '
+    items:
+      $ref: '#/definitions/badRequestDmsIdFilterMissingErrorWithExample'
+  badRequestDmsIdFilterMissingResponse:
+    type: object
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/badRequestDmsIdFilterMissingErrorWithExample'
+        type: array
+        allOf:
+        - $ref: '#/definitions/badRequestDmsIdFilterMissingResponseError'
+  badRequestVINFilterMissingErrorWithExample:
+    title: badRequestFilterMissingErrorWithExample
+    type: object
+    description: 'Error objects provide additional information about problems encountered while performing an operation. Error
+      objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+      An error object MAY have the following members.
+
+      '
+    properties:
+      status:
+        type: string
+        description: the HTTP status code applicable to this problem, expressed as a string value.
+        example: '400'
+      code:
+        type: string
+        description: an application-specific error code, expressed as a string value.
+        example: decisiv:filters:106
+      title:
+        type: string
+        description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of
+          the problem, except for purposes of localization.
+        example: Required filter is missing
+      detail:
+        type: string
+        description: 'A human-readable explanation specific to this occurrence of the problem.
+
+          Like `title`, this field''s value can be localized.
+
+          '
+        example: 'Required filter must be provided. Valid required filters: vin'
+      source:
+        type: object
+        properties:
+          parameter:
+            type: string
+            example: filter
+  badRequestVINFilterMissingResponseError:
+    title: Bad Request
+    type: array
+    description: 'Request is not sent as expected
+
+      '
+    items:
+      $ref: '#/definitions/badRequestVINFilterMissingErrorWithExample'
+  badRequestVINFilterMissingResponse:
+    type: object
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/badRequestVINFilterMissingErrorWithExample'
+        type: array
+        allOf:
+        - $ref: '#/definitions/badRequestVINFilterMissingResponseError'
+  tooManyRequestsResponseErrorWithExample:
+    title: tooManyRequestsResponseErrorWithExample
+    type: object
+    description: 'Error objects provide additional information about problems encountered while performing an operation. Error
+      objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+      An error object MAY have the following members.
+
+      '
+    properties:
+      code:
+        type: string
+        description: an application-specific error code, expressed as a string value.
+        example: '429'
+      detail:
+        type: string
+        description: 'A human-readable explanation specific to this occurrence of the problem.
+
+          Like `title`, this field''s value can be localized.
+
+          '
+        example: The maximum number of requests for this application has been far exceeded with the given credentials. Please
+          refer to the Retry-After header for additional information about when requests may be successfully processed again.
+      status:
+        type: string
+        description: the HTTP status code applicable to this problem, expressed as a string value.
+        example: '429'
+      title:
+        type: string
+        description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of
+          the problem, except for purposes of localization.
+        example: Too Many Requests
+  tooManyRequestsResponseError:
+    title: Too Many Requests
+    type: array
+    description: 'Access restricted for a given user or application due to undesired behavior
+
+      '
+    items:
+      $ref: '#/definitions/tooManyRequestsResponseErrorWithExample'
+  tooManyRequestsResponse:
+    type: object
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/tooManyRequestsResponseErrorWithExample'
+        type: array
+        allOf:
+        - $ref: '#/definitions/tooManyRequestsResponseError'
+  jsonapiErrorResponse:
+    type: object
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/JSONAPI_Errors'
+        type: array
+        allOf:
+        - $ref: '#/definitions/JSONAPI_Errors'
+  JSONAPI_DocumentLink:
+    title: JSONAPI_DocumentLink
+    type: string
+    description: 'A "JSON API" document link.
+
+      '
+    example: http://link.to/resource
+  JSONAPI_Included:
+    title: JSONAPI_Included
+    description: 'An array of resource objects that are related to the primary data and/or each other (“included resources”).
+
+      '
+    type: array
+    items:
+      type: object
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+        attributes:
+          type: object
+  JSONAPI_jsonapi:
+    title: JSONAPI_jsonapi
+    type: object
+    description: An object describing the server's implementation.
+    properties:
+      version:
+        type: string
+        description: the highest JSON API supported.
+        example: '1.0'
+  JSONAPI_Errors:
+    title: JSONAPI_Errors
+    type: array
+    description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing
+      and encounter multiple problems.
+
+
+      When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD
+      be used in the response.
+
+
+      For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be
+      appropriate for multiple 5xx errors.
+
+      '
+    items:
+      $ref: '#/definitions/JSONAPI_Error'
+  JSONAPI_Error:
+    title: JSONAPI_Error
+    type: object
+    description: 'Error objects provide additional information about problems encountered while performing an operation. Error
+      objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+      An error object MAY have the following members.
+
+      '
+    properties:
+      code:
+        type: string
+        description: an application-specific error code, expressed as a string value.
+      detail:
+        type: string
+        description: 'A human-readable explanation specific to this occurrence of the problem.
+
+          Like `title`, this field''s value can be localized.
+
+          '
+      id:
+        description: a unique identifier for this particular ocurrence of the problem.
+        type: string
+      links:
+        description: a links object containing the following members.
+        type: object
+        properties:
+          about:
+            type: string
+            description: a link that leads to further details about this particular occurrence of the problem.
+      meta:
+        type: object
+        description: a meta object containing non-standard meta-information about the error.
+      status:
+        type: string
+        description: the HTTP status code applicable to this problem, expressed as a string value.
+      source:
+        type: object
+        description: an object containing references to the source of the error, optionally including any of the following
+          members.
+        properties:
+          parameter:
+            type: string
+            description: a string indicating which URI query parameter caused the error.
+          pointer:
+            type: string
+            description: a JSON pointer (RFC6901) to the associated entity in the request document.
+      title:
+        type: string
+        description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of
+          the problem, except for purposes of localization.
+  JSONAPI_Links:
+    title: JSONAPI_Links
+    type: object
+    description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be
+      a `links` object.
+
+      '
+    properties:
+      self:
+        $ref: '#/definitions/JSONAPI_DocumentLink'
+      related:
+        $ref: '#/definitions/JSONAPI_DocumentLink'
+  JSONAPI_meta:
+    title: JSONAPI_meta
+    type: object
+    description: A meta object that contains non-standard meta-information.
+    properties:
+      authors:
+        type: array
+        items:
+          type: string
+      copyright:
+        type: string
+  PreconditionFailedError:
+    type: object
+    properties:
+      title:
+        type: string
+        example: Precondition Failed
+      detail:
+        type: string
+        example: An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail
+      code:
+        type: string
+        example: '412'
+      status:
+        type: string
+        example: '412'
+      meta:
+        type: object
+        properties:
+          retry_after:
+            type: integer
+            default: 5
+            example: 5
+            description: how long the user agent should wait (in seconds) before making a follow-up request
+    required:
+    - title
+    - detail
+    - code
+    - status
+    - meta
+  UnprocessableEntityErrorFleetOwned:
+    type: object
+    properties:
+      title:
+        type: string
+        example: Asset not available for assignment to this account
+      detail:
+        type: string
+        example: asset_id - Asset not available forassignment to this account
+      code:
+        type: string
+        example: '100'
+      source:
+        type: object
+        properties:
+          pointer:
+            type: string
+            example: /data/attributes/asset_id
+      status:
+        type: string
+        example: '422'
+    required:
+    - title
+    - detail
+    - code
+    - status
+parameters:
+  vinParam:
+    name: filter[vin]
+    in: query
+    description: 'Partial match for a VIN, ex: JN1AR5XXXXXX*'
+    required: false
+    type: string
+    minLength: 12
+    maxLength: 17
+  requiredVinParam:
+    name: filter[vin]
+    in: query
+    description: 'Exact match for a VIN, ex: JN1AR5XXXXXX*'
+    required: true
+    type: string
+    minLength: 12
+    maxLength: 17
+  serialParam:
+    name: filter[serial_number]
+    in: query
+    description: 'Partial match for a serial number, ex: 2112*'
+    required: false
+    type: string
+    minLength: 3
+    maxLength: 9
+  dmsIdParam:
+    name: filter[dms_id]
+    in: query
+    description: Dealer Management System id to filter collection by
+    required: false
+    type: string
+  dmsIdRequiredParam:
+    name: filter[dms_id]
+    in: query
+    description: Dealer Management System id to filter collection by
+    required: true
+    type: string
+  assetId:
+    name: asset_id
+    in: path
+    description: ID of Customer Asset to fetch
+    required: true
+    type: integer
+  customerId:
+    name: customer_id
+    in: path
+    description: ID of Customer
+    required: true
+    type: integer
+  customerNameParam:
+    name: filter[name]
+    in: query
+    description: 'Partial match for Customer Name, ex: Pens*'
+    required: false
+    minLength: 4
+    type: string
+  createdBeforeParam:
+    name: filter[created_before]
+    in: query
+    description: 'Return records created before date, ex: 20170101 (YYYYMMDD)'
+    required: false
+    type: string
+    format: YYYYYYDD
+  createdAfterParam:
+    name: filter[created_after]
+    in: query
+    description: 'Return records created after date, ex: 20170101 (YYYYMMDD)'
+    required: false
+    type: string
+    format: YYYYYYDD
+  customerIdParam:
+    name: filter[customer_id]
+    in: query
+    required: false
+    description: ID of Customer to filter by
+    type: string
+  unitNumberParam:
+    name: filter[unit_number]
+    in: query
+    required: false
+    minLength: 3
+    description: Unit Number to filter collection by
+    type: string
+  serviceLocationIdParam:
+    name: filter[service_location_id]
+    in: query
+    required: false
+    description: ID of Service Location
+    type: string
+  updatedBeforeParam:
+    name: filter[updated_before]
+    in: query
+    description: 'Return records updated before date, ex: 20170101 (YYYYMMDD)'
+    required: false
+    type: string
+    format: YYYYYYDD
+  updatedAfterParam:
+    name: filter[updated_after]
+    in: query
+    description: 'Return records updated after date, ex: 20170101 (YYYYMMDD)'
+    required: false
+    type: string
+    format: YYYYYYDD
+securityDefinitions:
+  TransitionToken:
+    type: apiKey
+    in: header
+    name: X-Decisiv-Transition-Token
+    description: The transition token must be specified when using OAuth. Please see https://api-docs.decisiv.net/docs/api/oauth/
+  OAuth2Password:
+    type: oauth2
+    flow: password
+    tokenUrl: https://login.decisiv.net/oauth/token
+    description: Oauth flow with Transition Token. See https://api-docs.decisiv.net/docs/api/oauth/
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
