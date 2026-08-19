@@ -1,0 +1,3186 @@
+{
+  "item": [
+    {
+      "id": "7b4da4ee-0326-49a4-b83e-4b4d9524704a",
+      "name": "assets",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "dc54ac50-6efd-4161-a446-47b60d6e0890",
+          "name": "get Assets",
+          "request": {
+            "name": "get Assets",
+            "description": {
+              "content": "Returns all assets in the system. Search is restricted to VIN only",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter[vin]",
+                  "value": "<string>",
+                  "description": "(Required) 17 character VIN number"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "432b79ea-a482-4a71-a5ab-ca1cd79e71fe",
+              "name": "List of assets in the ecosystem",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"data\": [\n      {\n        \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n        \"type\": \"assets\",\n        \"attributes\": {\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"make\": \"Mack\",\n          \"model\": \"CV713\",\n          \"odometer_unit\": \"kilometers\",\n          \"serial_number\": \"DC591345\",\n          \"engine_make\": \"Mack\",\n          \"engine_name\": \"C7\",\n          \"year\": 1986,\n          \"odometer_value\": 25321,\n          \"notes\": \"sample note\",\n          \"unit_number\": \"Omaha\",\n          \"vmrs_asset_type\": \"3\",\n          \"created_at\": \"2013-05-19T10:57:45.991Z\",\n          \"updated_at\": \"1983-04-27T12:21:23.891Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"relationships\": {\n          \"build_information\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"campaigns\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"recalls\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"service_history\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"warranties\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          }\n        },\n        \"links\": {\n          \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n          \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n        }\n      },\n      {\n        \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n        \"type\": \"assets\",\n        \"attributes\": {\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"make\": \"Mack\",\n          \"model\": \"CV713\",\n          \"odometer_unit\": \"miles\",\n          \"serial_number\": \"DC591345\",\n          \"engine_make\": \"Mack\",\n          \"engine_name\": \"C7\",\n          \"year\": 1986,\n          \"odometer_value\": 25321,\n          \"notes\": \"sample note\",\n          \"unit_number\": \"Omaha\",\n          \"vmrs_asset_type\": \"U\",\n          \"created_at\": \"2020-03-09T10:42:33.228Z\",\n          \"updated_at\": \"2012-08-24T09:20:49.984Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"relationships\": {\n          \"build_information\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"campaigns\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"recalls\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"service_history\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"warranties\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          }\n        },\n        \"links\": {\n          \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n          \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n        }\n      }\n    ],\n    \"links\": {\n      \"first\": \"https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=1&page%5Bsize%5D=20\",\n      \"next\": \"https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=2&page%5Bsize%5D=20\"\n    }\n  },\n  {\n    \"data\": [\n      {\n        \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n        \"type\": \"assets\",\n        \"attributes\": {\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"make\": \"Mack\",\n          \"model\": \"CV713\",\n          \"odometer_unit\": \"kilometers\",\n          \"serial_number\": \"DC591345\",\n          \"engine_make\": \"Mack\",\n          \"engine_name\": \"C7\",\n          \"year\": 1986,\n          \"odometer_value\": 25321,\n          \"notes\": \"sample note\",\n          \"unit_number\": \"Omaha\",\n          \"vmrs_asset_type\": \"6\",\n          \"created_at\": \"2011-01-25T08:23:31.616Z\",\n          \"updated_at\": \"1981-04-20T05:12:55.467Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"relationships\": {\n          \"build_information\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"campaigns\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"recalls\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"service_history\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"warranties\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          }\n        },\n        \"links\": {\n          \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n          \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n        }\n      },\n      {\n        \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n        \"type\": \"assets\",\n        \"attributes\": {\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"make\": \"Mack\",\n          \"model\": \"CV713\",\n          \"odometer_unit\": \"miles\",\n          \"serial_number\": \"DC591345\",\n          \"engine_make\": \"Mack\",\n          \"engine_name\": \"C7\",\n          \"year\": 1986,\n          \"odometer_value\": 25321,\n          \"notes\": \"sample note\",\n          \"unit_number\": \"Omaha\",\n          \"vmrs_asset_type\": \"N\",\n          \"created_at\": \"1977-11-09T14:26:45.015Z\",\n          \"updated_at\": \"1995-09-23T20:53:23.914Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"relationships\": {\n          \"build_information\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"campaigns\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"recalls\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"service_history\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"warranties\": {\n            \"links\": {\n              \"self\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"related\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          }\n        },\n        \"links\": {\n          \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n          \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n        }\n      }\n    ],\n    \"links\": {\n      \"first\": \"https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=1&page%5Bsize%5D=20\",\n      \"next\": \"https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=2&page%5Bsize%5D=20\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "df1e4207-1df8-49ea-b3ce-ab8ba91be1ca",
+              "name": "400 Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bbc19f0b-7edb-4d5b-85d8-b8a80822ba8b",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec8a8128-7dff-439f-907b-13bcb9de5150",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3fbe1d8b-6e7a-4fbc-ba7c-d7ab93835f99",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    [\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      }\n    ],\n    [\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      }\n    ]\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e313b89-b105-432c-9c6b-2d3698e7d81c",
+          "name": "add Asset",
+          "request": {
+            "name": "add Asset",
+            "description": {
+              "content": "Creates a new Asset for use within the ecosystem",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"<string>\",\n    \"attributes\": {\n      \"vin\": \"<string>\",\n      \"make\": \"<string>\",\n      \"model\": \"<string>\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"<string>\",\n      \"engine_make\": \"<string>\",\n      \"engine_name\": \"<string>\",\n      \"year\": \"<integer>\",\n      \"odometer_value\": \"<integer>\",\n      \"notes\": \"<string>\",\n      \"unit_number\": \"<string>\",\n      \"vmrs_asset_type\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8f2579e7-3226-41ae-b043-84291f301d96",
+              "name": "Asset Creation Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\",\n      \"created_at\": \"1988-03-19T19:38:15.944Z\",\n      \"updated_at\": \"2026-01-18T10:53:19.646Z\",\n      \"created_by\": \"current_user\",\n      \"updated_by\": \"current_user\"\n    },\n    \"relationships\": {\n      \"build_information\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information\"\n        }\n      },\n      \"campaigns\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns\"\n        }\n      },\n      \"recalls\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls\"\n        }\n      },\n      \"service_history\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history\"\n        }\n      },\n      \"warranties\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n      \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d61541a9-416c-477e-9be1-41e749a13cf9",
+              "name": "400 Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a65d779a-e24d-4570-9c82-2f4c04ea25ac",
+              "name": "422 Unprocessable Entity",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b825b2dd-6064-47f5-be4d-ab5397bb3b65",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "446677d8-0f9f-4150-a6b5-4a366867736d",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "810a2f64-f4e9-4d6d-88ca-d94173c69447",
+          "name": "find Asset By Id",
+          "request": {
+            "name": "find Asset By Id",
+            "description": {
+              "content": "Returns an asset based on the provided ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2ee7bb99-f80b-4424-9d5e-1e2ad9f0cbc0",
+              "name": "Asset details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\",\n      \"created_at\": \"1988-03-19T19:38:15.944Z\",\n      \"updated_at\": \"2026-01-18T10:53:19.646Z\",\n      \"created_by\": \"current_user\",\n      \"updated_by\": \"current_user\"\n    },\n    \"relationships\": {\n      \"build_information\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information\"\n        }\n      },\n      \"campaigns\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns\"\n        }\n      },\n      \"recalls\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls\"\n        }\n      },\n      \"service_history\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history\"\n        }\n      },\n      \"warranties\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n      \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0038a070-96c2-427a-91cc-04ef91a09633",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    [\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      }\n    ],\n    [\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      }\n    ]\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba968963-9523-4f28-8830-491335fea8c3",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "57d7c4cc-e6d5-4092-b004-e19e9deea348",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "80f7984c-1c53-45a7-9f02-821e581a8e00",
+          "name": "update Asset",
+          "request": {
+            "name": "update Asset",
+            "description": {
+              "content": "Updates an Asset record",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"<string>\",\n    \"id\": \"<string>\",\n    \"attributes\": {\n      \"odometer_value\": \"<integer>\",\n      \"notes\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d6fcca4c-330d-42a5-8c24-4d1a0b99d6fe",
+              "name": "Asset updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"attributes\": {\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"make\": \"Mack\",\n      \"model\": \"CV713\",\n      \"odometer_unit\": \"<string>\",\n      \"serial_number\": \"DC591345\",\n      \"engine_make\": \"Mack\",\n      \"engine_name\": \"C7\",\n      \"year\": 1986,\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\",\n      \"unit_number\": \"Omaha\",\n      \"vmrs_asset_type\": \"<string>\",\n      \"created_at\": \"1988-03-19T19:38:15.944Z\",\n      \"updated_at\": \"2026-01-18T10:53:19.646Z\",\n      \"created_by\": \"current_user\",\n      \"updated_by\": \"current_user\"\n    },\n    \"relationships\": {\n      \"build_information\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information\"\n        }\n      },\n      \"campaigns\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns\"\n        }\n      },\n      \"recalls\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls\"\n        }\n      },\n      \"service_history\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history\"\n        }\n      },\n      \"warranties\": {\n        \"links\": {\n          \"self\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties\",\n          \"related\": \"https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n      \"platform_api\": \"https://api.preview.decisivapps.com/platform_api/assets/2112\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b5176eda-79ab-41f5-9718-e18dadb37894",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"attributes\": {\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "084554ee-7c7e-4649-b5aa-297a12d7b6d4",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"attributes\": {\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3cf7e686-34cc-4276-8b41-76176a737084",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"attributes\": {\n      \"odometer_value\": 25321,\n      \"notes\": \"sample note\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ad87c154-c7a5-4aeb-8a94-e3055bbcf459",
+          "name": "asset Campaigns",
+          "request": {
+            "name": "asset Campaigns",
+            "description": {
+              "content": "Campaign information for an asset",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id",
+                "campaigns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6b916aa1-02a6-43b7-bc3f-aec0f05ffd36",
+              "name": "Asset Campaign Information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"attributes\": {\n        \"oem_id\": \"THX1138\",\n        \"name\": \"WHEEL BEARING INSPECTION\",\n        \"category\": \"string\",\n        \"start_date\": \"1960-05-19T19:43:51.548Z\",\n        \"end_date\": \"1989-05-30T18:18:28.387Z\"\n      },\n      \"id\": \"88\",\n      \"type\": \"campaigns\"\n    },\n    {\n      \"attributes\": {\n        \"oem_id\": \"THX1138\",\n        \"name\": \"WHEEL BEARING INSPECTION\",\n        \"category\": \"string\",\n        \"start_date\": \"2001-12-15T23:28:11.413Z\",\n        \"end_date\": \"1957-02-10T17:01:46.525Z\"\n      },\n      \"id\": \"88\",\n      \"type\": \"campaigns\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4eb816aa-e918-4529-9d5c-64ce2c19f95d",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ba627818-7af2-4013-aa9f-eea35a3817d3",
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Precondition Failed\",\n  \"detail\": \"An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail\",\n  \"code\": \"412\",\n  \"status\": \"412\",\n  \"meta\": {\n    \"retry_after\": 5\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff8a2a00-2535-4df2-a48c-d25af9b76f95",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9a1e00a3-bb41-47f9-a4f1-ffc0f23083c3",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "25a1c7dc-6e76-4d7a-b7bc-0956c7d88aff",
+          "name": "asset Recalls",
+          "request": {
+            "name": "asset Recalls",
+            "description": {
+              "content": "Recall information for an asset",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id",
+                "recalls"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0e993222-e1f9-4533-a427-f9d45c19f84a",
+              "name": "Asset Recall Information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "recalls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"attributes\": {\n        \"oem_id\": \"THX1138\",\n        \"name\": \"WHEEL BEARING INSPECTION\",\n        \"category\": \"string\",\n        \"start_date\": \"2019-01-20T15:35:33.404Z\",\n        \"end_date\": \"1972-11-26T12:43:32.218Z\"\n      },\n      \"id\": \"VLV-RC-000-X1111\",\n      \"type\": \"recalls\"\n    },\n    {\n      \"attributes\": {\n        \"oem_id\": \"THX1138\",\n        \"name\": \"WHEEL BEARING INSPECTION\",\n        \"category\": \"string\",\n        \"start_date\": \"2013-10-22T00:03:22.442Z\",\n        \"end_date\": \"1953-03-07T20:39:15.153Z\"\n      },\n      \"id\": \"VLV-RC-000-X1111\",\n      \"type\": \"recalls\"\n    }\n  ],\n  \"links\": {\n    \"self\": \"string\",\n    \"related\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef3e9d0e-4c95-4bc2-a405-554e56640ab5",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "recalls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c9c4a819-3daa-468b-883b-6d8aa9f6a4b7",
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "recalls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Precondition Failed\",\n  \"detail\": \"An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail\",\n  \"code\": \"412\",\n  \"status\": \"412\",\n  \"meta\": {\n    \"retry_after\": 5\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1c8006e5-6a52-4caf-a377-2a0fefa05bb2",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "recalls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a76fc0e2-c7d2-49ec-9412-ee742478fe40",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "recalls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2dd389de-aad1-415a-87e2-e8171832a2f9",
+          "name": "asset Warranties",
+          "request": {
+            "name": "asset Warranties",
+            "description": {
+              "content": "Waranty information for an asset",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id",
+                "warranties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5d453c2c-429e-4595-ae82-bede8d683db0",
+              "name": "Asset Warranty Information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "warranties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"attributes\": {\n        \"oem_id\": \"THX1138\",\n        \"name\": \"WHEEL BEARING INSPECTION\",\n        \"category\": \"string\",\n        \"start_date\": \"2007-04-08T06:13:48.017Z\",\n        \"end_date\": \"2002-03-07T21:23:46.595Z\"\n      },\n      \"id\": \"88\",\n      \"type\": \"warranties\"\n    },\n    {\n      \"attributes\": {\n        \"oem_id\": \"THX1138\",\n        \"name\": \"WHEEL BEARING INSPECTION\",\n        \"category\": \"string\",\n        \"start_date\": \"1951-11-11T08:26:04.380Z\",\n        \"end_date\": \"2004-01-13T17:37:09.100Z\"\n      },\n      \"id\": \"88\",\n      \"type\": \"warranties\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "152b0f9e-d0c8-40ac-a13a-4083a9b90c3d",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "warranties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "008755b6-e560-457c-9c25-c196ff4e38e6",
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "warranties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Precondition Failed\",\n  \"detail\": \"An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail\",\n  \"code\": \"412\",\n  \"status\": \"412\",\n  \"meta\": {\n    \"retry_after\": 5\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "00173820-94e3-4c49-9edc-5dc22d6c0376",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "warranties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "90f04a42-e0e5-4fb5-bc68-7d4904ad55e4",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "warranties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "46504129-83ee-4f64-a64d-fcb3b05bd355",
+          "name": "find Service History By Id",
+          "request": {
+            "name": "find Service History By Id",
+            "description": {
+              "content": "Returns the Service History for an Asset by ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id",
+                "service_history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "Return records ordered by specified attribute, in ascending order. For descending order the sort attribute is prepended by a '-'. "
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[occurred_before]",
+                  "value": "<YYYYMMDD>",
+                  "description": "Return records occurred before date, ex: 20170101 (YYYYMMDD)"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[occurred_after]",
+                  "value": "<YYYYMMDD>",
+                  "description": "Return records occurred after date, ex: 20170101 (YYYYMMDD)"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[case_id]",
+                  "value": "<string>",
+                  "description": "Return records based on the given case_id, ex: 3243"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b04797aa-e603-48d6-9404-6cf34c32ecce",
+              "name": "Service History details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "service_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[occurred_before]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[occurred_after]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[case_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"attributes\": {\n        \"case_id\": 1001001,\n        \"created_by\": \"Wilson\",\n        \"occurred_at\": \"1957-01-19T11:21:52.965Z\",\n        \"service_provider\": \"Hood Trucking\",\n        \"customer\": \"Harpua Nationwide\",\n        \"complaint\": \"leaking oil\",\n        \"cause\": \"broken seal\",\n        \"correction\": \"replaced bolt\",\n        \"operations\": [\n          {\n            \"operation_name\": \"string\",\n            \"parts\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"operation_name\": \"string\",\n            \"parts\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"notes\": [\n          {\n            \"note\": \"string\",\n            \"date\": \"2013-03-26T07:55:51.364Z\",\n            \"from\": \"string\"\n          },\n          {\n            \"note\": \"string\",\n            \"date\": \"1953-12-10T09:44:40.840Z\",\n            \"from\": \"string\"\n          }\n        ],\n        \"customer_id\": 1138,\n        \"service_provider_id\": 2112,\n        \"user_id\": 19,\n        \"vmrs_repair_priority\": {\n          \"code\": \"3\",\n          \"description\": \"Emergency\"\n        },\n        \"vmrs_complaints\": [\n          {\n            \"code\": \"054\",\n            \"description\": \"Hesitation/Surges/Bucks/ Jerks on Acceleration\"\n          },\n          {\n            \"code\": \"054\",\n            \"description\": \"Hesitation/Surges/Bucks/ Jerks on Acceleration\"\n          }\n        ],\n        \"vmrs_reason_for_repair\": {\n          \"code\": \"01\",\n          \"description\": \"Breakdown\"\n        },\n        \"vmrs_component\": {\n          \"code\": \"011-001-013\",\n          \"description\": \"Plug - Grease, King Pin\"\n        },\n        \"vmrs_position\": {\n          \"code\": \"63\",\n          \"description\": \"Rear Left Top/Upper\"\n        }\n      },\n      \"id\": 87,\n      \"type\": \"service_history\"\n    },\n    {\n      \"attributes\": {\n        \"case_id\": 1001001,\n        \"created_by\": \"Wilson\",\n        \"occurred_at\": \"1986-02-26T23:35:11.119Z\",\n        \"service_provider\": \"Hood Trucking\",\n        \"customer\": \"Harpua Nationwide\",\n        \"complaint\": \"leaking oil\",\n        \"cause\": \"broken seal\",\n        \"correction\": \"replaced bolt\",\n        \"operations\": [\n          {\n            \"operation_name\": \"string\",\n            \"parts\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"operation_name\": \"string\",\n            \"parts\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"notes\": [\n          {\n            \"note\": \"string\",\n            \"date\": \"2024-06-05T22:22:34.576Z\",\n            \"from\": \"string\"\n          },\n          {\n            \"note\": \"string\",\n            \"date\": \"1958-12-10T14:09:10.726Z\",\n            \"from\": \"string\"\n          }\n        ],\n        \"customer_id\": 1138,\n        \"service_provider_id\": 2112,\n        \"user_id\": 19,\n        \"vmrs_repair_priority\": {\n          \"code\": \"3\",\n          \"description\": \"Emergency\"\n        },\n        \"vmrs_complaints\": [\n          {\n            \"code\": \"054\",\n            \"description\": \"Hesitation/Surges/Bucks/ Jerks on Acceleration\"\n          },\n          {\n            \"code\": \"054\",\n            \"description\": \"Hesitation/Surges/Bucks/ Jerks on Acceleration\"\n          }\n        ],\n        \"vmrs_reason_for_repair\": {\n          \"code\": \"01\",\n          \"description\": \"Breakdown\"\n        },\n        \"vmrs_component\": {\n          \"code\": \"011-001-013\",\n          \"description\": \"Plug - Grease, King Pin\"\n        },\n        \"vmrs_position\": {\n          \"code\": \"63\",\n          \"description\": \"Rear Left Top/Upper\"\n        }\n      },\n      \"id\": 87,\n      \"type\": \"service_history\"\n    }\n  ],\n  \"links\": {\n    \"self\": \"string\",\n    \"related\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f35d908-7bbc-4f55-950f-322c2043ef2a",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "service_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[occurred_before]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[occurred_after]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[case_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0753b6ff-47b8-4257-ba89-27f129f2b6d0",
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "service_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[occurred_before]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[occurred_after]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[case_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Precondition Failed\",\n  \"detail\": \"An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail\",\n  \"code\": \"412\",\n  \"status\": \"412\",\n  \"meta\": {\n    \"retry_after\": 5\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4a9f8bbb-0176-49cb-b6fb-94578d513d65",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "service_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[occurred_before]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[occurred_after]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[case_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "89d86319-3c12-48aa-97ca-3676a9771fc6",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "service_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "sort",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[occurred_before]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[occurred_after]",
+                      "value": "<YYYYMMDD>"
+                    },
+                    {
+                      "key": "filter[case_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eec4e367-516f-486c-856a-0cc9cfec2517",
+          "name": "find Build Information By Id",
+          "request": {
+            "name": "find Build Information By Id",
+            "description": {
+              "content": "Returns the Build Information for an Asset by ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id",
+                "build_information"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "asset_id",
+                  "description": "(Required) UUID of Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1abf16dd-6517-4997-a0df-875b71c9d1ba",
+              "name": "Build Information details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "build_information"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"attributes\": {\n      \"body_style_description\": \"string\",\n      \"chassis_division_code\": \"string\",\n      \"chassis_number\": \"string\",\n      \"dealer_code\": \"string\",\n      \"dealer_division_code\": \"string\",\n      \"dpf_make\": \"string\",\n      \"dpf_model\": \"string\",\n      \"dpf_serial_number\": \"string\",\n      \"engine_brake_type_code\": \"string\",\n      \"engine_brake_type_description\": \"string\",\n      \"engine_family\": \"string\",\n      \"engine_make\": \"string\",\n      \"engine_model\": \"string\",\n      \"engine_model_number\": \"string\",\n      \"engine_model_year\": \"string\",\n      \"engine_serial_number\": \"string\",\n      \"engine_size\": \"string\",\n      \"engine_type\": \"string\",\n      \"error_code\": \"string\",\n      \"error_description\": \"string\",\n      \"exhaust_type_code\": \"string\",\n      \"exhaust_type_description\": \"string\",\n      \"exterior_color_description\": \"string\",\n      \"fifth_wheel_type_code\": \"string\",\n      \"fifth_wheel_type_description\": \"string\",\n      \"fleet\": \"string\",\n      \"front_axle_manufacturer_code\": \"string\",\n      \"front_axle_manufacturer_name\": \"string\",\n      \"front_axle_model_number\": \"string\",\n      \"front_axle_serial_number\": \"string\",\n      \"front_of_rear_axle_manufacturer_code\": \"string\",\n      \"front_of_rear_axle_manufacturer_name\": \"string\",\n      \"front_of_rear_axle_model_number\": \"string\",\n      \"front_of_rear_axle_serial_number\": \"string\",\n      \"front_wheel_type_code\": \"string\",\n      \"front_wheel_type_description\": \"string\",\n      \"fuel_capacity_total\": \"string\",\n      \"fuel_tanks_count\": \"string\",\n      \"gross_vehicle_weight\": \"string\",\n      \"horsepower\": \"string\",\n      \"in_service_date\": \"string\",\n      \"interior_color_description\": \"string\",\n      \"model_series_code\": \"string\",\n      \"model_year\": \"string\",\n      \"order_year\": \"string\",\n      \"rear_axle_manufacturer_code\": \"string\",\n      \"rear_axle_manufacturer_name\": \"string\",\n      \"rear_axle_model_number\": \"string\",\n      \"rear_axle_ratio\": \"string\",\n      \"rear_axle_serial_number\": \"string\",\n      \"rear_wheel_type_code\": \"string\",\n      \"rear_wheel_type_description\": \"string\",\n      \"recall\": \"string\",\n      \"region\": \"string\",\n      \"select_date\": \"string\",\n      \"sleeper_box_length\": \"string\",\n      \"state\": \"string\",\n      \"suspension_type_code\": \"string\",\n      \"suspension_type_description\": \"string\",\n      \"transmission_manufacturer_code\": \"string\",\n      \"transmission_manufacturer_name\": \"string\",\n      \"transmission_model\": \"string\",\n      \"transmission_model_number\": \"string\",\n      \"transmission_serial_number\": \"string\",\n      \"vehicle_assembly_date\": \"string\",\n      \"vehicle_base_model_number\": \"string\",\n      \"vehicle_configuration_code\": \"string\",\n      \"vehicle_identification_number\": \"string\",\n      \"vehicle_make\": \"string\",\n      \"vehicle_model_number\": \"string\"\n    },\n    \"id\": \"37ef3f02-2098-4fd3-b4e1-b2faa8e79057\",\n    \"type\": \"build_information\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d6f11399-0de2-4e28-b49a-2f1b645c4860",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "build_information"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3b3f2ee5-980e-4a97-a2ff-44a12eac60f0",
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "build_information"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Precondition Failed\",\n  \"detail\": \"An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail\",\n  \"code\": \"412\",\n  \"status\": \"412\",\n  \"meta\": {\n    \"retry_after\": 5\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "383c18a2-54f4-453c-bfaa-2d29933b1a06",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "build_information"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f0d2b6cc-4dd4-4428-ab21-60866c09da75",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id",
+                    "build_information"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "asset_id",
+                      "description": "(Required) UUID of Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "908bb151-aa4d-4533-9586-cae9138ef139",
+      "name": "OEM info",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "83c8e62c-e272-4056-b9ec-98482fea11b5",
+          "name": "get Vin Information",
+          "request": {
+            "name": "get Vin Information",
+            "description": {
+              "content": "Returns OEM information for given VIN number",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "vins",
+                ":vin"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vin",
+                  "description": "(Required) 17 character VIN number"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2cb50cd3-2c91-4bad-b392-38ad4f1c9d37",
+              "name": "OEM vin information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vins",
+                    ":vin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vin",
+                      "description": "(Required) 17 character VIN number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"attributes\": {\n        \"engine_make\": \"Cummins\",\n        \"engine_name\": \"ISX12G\",\n        \"make\": \"Kenworth\",\n        \"model\": \"T680\",\n        \"year\": \"string\"\n      },\n      \"id\": \"1C4RJFATXDC591345\",\n      \"type\": \"vins\",\n      \"links\": {\n        \"self\": \"string\"\n      }\n    },\n    {\n      \"attributes\": {\n        \"engine_make\": \"Cummins\",\n        \"engine_name\": \"ISX12G\",\n        \"make\": \"Kenworth\",\n        \"model\": \"T680\",\n        \"year\": \"string\"\n      },\n      \"id\": \"1C4RJFATXDC591345\",\n      \"type\": \"vins\",\n      \"links\": {\n        \"self\": \"string\"\n      }\n    }\n  ],\n  \"links\": {\n    \"self\": \"string\",\n    \"related\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "65840743-b7a9-4e4e-8be6-3c3e8abe8ad6",
+              "name": "400 Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vins",
+                    ":vin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vin",
+                      "description": "(Required) 17 character VIN number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Invalid format\",\n  \"detail\": \"vin - invalid format\",\n  \"code\": \"100\",\n  \"meta\": {\n    \"decisiv_code\": \"100:vins:06\"\n  },\n  \"status\": \"400\",\n  \"source\": {\n    \"pointer\": \"/data/attributes/vin\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a1554f73-2688-40bb-a7f0-f53c4b0a4c97",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vins",
+                    ":vin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vin",
+                      "description": "(Required) 17 character VIN number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e232eef-50e1-4626-afbf-54efee515ca1",
+              "name": "502 Bad Gateway Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vins",
+                    ":vin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vin",
+                      "description": "(Required) 17 character VIN number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b1fb276c-d3d2-42bd-b035-ff67654a3a3d",
+              "name": "504 Gateway Timeout Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vins",
+                    ":vin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vin",
+                      "description": "(Required) 17 character VIN number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"string\",\n  \"detail\": \"string\",\n  \"code\": \"string\",\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "825e558e-f13a-4aef-ae4f-cbec73ac9e04",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vins",
+                    ":vin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vin",
+                      "description": "(Required) 17 character VIN number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    [\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      }\n    ],\n    [\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      },\n      {\n        \"code\": \"string\",\n        \"detail\": \"string\",\n        \"id\": \"string\",\n        \"links\": {\n          \"about\": \"string\"\n        },\n        \"meta\": {},\n        \"status\": \"string\",\n        \"source\": {\n          \"parameter\": \"string\",\n          \"pointer\": \"string\"\n        },\n        \"title\": \"string\"\n      }\n    ]\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/api/v1/",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "205a3ab9-c631-4a04-ac87-ae887cc7627b",
+    "name": "Global Assets API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Global Store of reference for all assets within the Decisiv ecosystem\n\nContact Support:\n Name: Decisiv Support\n Email: support@decisiv.com",
+      "type": "text/plain"
+    }
+  }
+}

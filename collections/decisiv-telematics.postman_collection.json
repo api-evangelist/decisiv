@@ -1,0 +1,2940 @@
+{
+  "item": [
+    {
+      "id": "b0e98c3f-b540-4d73-a31a-d2c2f1c74080",
+      "name": "Diagnostic Readings",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9618c0c6-57e1-431d-ab18-f59cd418de54",
+          "name": "List all diagnostic readings for the requested account",
+          "request": {
+            "name": "List all diagnostic readings for the requested account",
+            "description": {
+              "content": "Retrieve all diagnostic readings for a specific SRM account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "telematics",
+                ":srm_account_id",
+                "v1",
+                "diagnostic_readings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter[asset_data.chassis_id]",
+                  "value": "<string>",
+                  "description": "Filters diagnostic readings by exact match on `asset_data.chassis_id`"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[asset_data.device_id]",
+                  "value": "<string>",
+                  "description": "Filters diagnostic readings by exact match on `asset_data.device_id`"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[asset_data.serial_number]",
+                  "value": "<string>",
+                  "description": "Filters diagnostic readings by exact match on `asset_data.serial_number`"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[asset_data.vin]",
+                  "value": "<string>",
+                  "description": "Filters diagnostic readings by exact match on `asset_data.vin`"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[origin]",
+                  "value": "<string>",
+                  "description": "Filters diagnostic readings by exact match on `origin`"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[triggered_at:gt]",
+                  "value": "<dateTime>",
+                  "description": "Returns diagnostic readings with `triggered_at` strictly greater than the provided `ISO8601` date-time"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[triggered_at:gte]",
+                  "value": "<dateTime>",
+                  "description": "Returns diagnostic readings with `triggered_at` greater than or equal to the provided `ISO8601` date-time"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[triggered_at:lt]",
+                  "value": "<dateTime>",
+                  "description": "Returns diagnostic readings with `triggered_at` strictly less than the provided `ISO8601` date-time"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[triggered_at:lte]",
+                  "value": "<dateTime>",
+                  "description": "Returns diagnostic readings with `triggered_at` less than or equal to the provided `ISO8601` date-time"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "srm_account_id",
+                  "description": "(Required) The account ID for SRM"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0b7d5936-8b7e-4cbe-a6fd-353748e44c16",
+              "name": "Returns list of Diagnostic Readings",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\",\n      \"type\": \"diagnostic_readings\",\n      \"attributes\": {\n        \"triggered_at\": \"2025-03-11T18:48:34Z\",\n        \"sensor_readings\": [\n          {\n            \"name\": \"Intake NOx\",\n            \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n            \"value\": \"115.8\",\n            \"unit_of_measure\": \"ppm\",\n            \"classification_header\": \"Engine Operation\",\n            \"key_data\": false,\n            \"localize\": false\n          }\n        ],\n        \"components\": [\n          {\n            \"name\": \"ECU\",\n            \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n            \"version\": \"12\"\n          }\n        ],\n        \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n        \"origin\": \"name_of_origin\",\n        \"location\": {\n          \"heading\": \"251\",\n          \"altitude\": \"3649\",\n          \"latitude\": \"-58.28\",\n          \"longitude\": \"152.41\"\n        },\n        \"asset_data\": {\n          \"vin\": \"PHFCJ2YS9LB593266\",\n          \"make\": \"Make\",\n          \"year\": \"2000\",\n          \"model\": \"CH613\",\n          \"device_id\": \"1234567890\",\n          \"chassis_id\": \"12312312\",\n          \"serial_number\": \"LB593266\"\n        },\n        \"external_resources\": [\n          {\n            \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n            \"title\": \"Interactive Video\",\n            \"description\": \"Video to accelerate repair time and uptime.\",\n            \"classification_header\": \"Repair Information\",\n            \"type\": \"video\"\n          }\n        ]\n      },\n      \"relationships\": {\n        \"faults\": {\n          \"data\": [\n            {\n              \"type\": \"faults\",\n              \"id\": \"a6156681-443f-481f-9007-272b99240259\"\n            }\n          ]\n        },\n        \"source_account\": {\n          \"data\": {\n            \"type\": \"srm_accounts\",\n            \"id\": \"dc8beef2-e304-11ea-86c2-1f9b5bc5281b\"\n          }\n        }\n      },\n      \"links\": {\n        \"self\": \"https://srm-api.decisivapps.com/telematics/v1/diagnostic_readings/3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b6bdb1ad-7ab5-4d5a-a50d-03ed525d8624",
+              "name": "This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Filter not allowed\",\n      \"detail\": \"'{{filter_name}}' is not allowed. Valid filters: {{filters_list}}\",\n      \"code\": \"decisiv:filters:001\",\n      \"status\": \"400\",\n      \"source\": {\n        \"parameter\": \"filter[filter_name]\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "46d74c29-76e5-4444-bb15-e56f21a8e94e",
+              "name": "This response may occur when the access token provided within the Authorization token has expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Access unauthorized\",\n      \"detail\": \"Access unauthorized\",\n      \"code\": \"decisiv::access_token:001\",\n      \"status\": \"401\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "91293bac-a8df-4253-bdf3-9fa4b370e92b",
+              "name": "This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Forbidden\",\n      \"detail\": \"User does not have permission to perform this action on the requested resource(s)\",\n      \"code\": \"decisiv:access:001\",\n      \"status\": \"403\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bfd93d53-acf3-4af0-bb87-7edbc88253a3",
+              "name": "This response may occur when the requested resource is not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Record not found\",\n      \"detail\": \"The requested record or one of its relationships could not be found\",\n      \"code\": \"404\",\n      \"status\": \"404\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9817d175-3a35-4a35-94a6-ed09b70f423d",
+              "name": "This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Failed Dependency (WebDAV) (RFC 4918)",
+              "code": 424,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Failed Dependency\",\n      \"detail\": \"Failed Dependency\",\n      \"code\": \"424\",\n      \"status\": \"424\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "27f13ca3-7857-463f-9331-04ccab5cb8e2",
+              "name": "This response may occur when there is an unexpected system timeout.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[asset_data.chassis_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.device_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[asset_data.vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[origin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:gte]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lt]",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "filter[triggered_at:lte]",
+                      "value": "<dateTime>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"504\",\n      \"detail\": \"Gateway timeout error\",\n      \"status\": \"504\",\n      \"title\": \"Gateway timeout error\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7793b962-7695-44b5-ab70-c03f0674eafd",
+          "name": "Create a new diagnostic reading",
+          "request": {
+            "name": "Create a new diagnostic reading",
+            "description": {
+              "content": "Create a new diagnostic reading record for a specific SRM account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "telematics",
+                ":srm_account_id",
+                "v1",
+                "diagnostic_readings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "srm_account_id",
+                  "description": "(Required) The account ID for SRM"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"<string>\",\n    \"attributes\": {\n      \"origin\": \"<string>\",\n      \"origin_id\": \"<string>\",\n      \"triggered_at\": \"<dateTime>\",\n      \"asset_data\": {\n        \"chassis_id\": \"<string>\",\n        \"device_id\": \"<string>\",\n        \"make\": \"<string>\",\n        \"model\": \"<string>\",\n        \"serial_number\": \"<string>\",\n        \"vin\": \"<string>\",\n        \"year\": \"<string>\"\n      },\n      \"sensor_readings\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\",\n          \"description\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"key_data\": \"<boolean>\",\n          \"localize\": \"<boolean>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\",\n          \"description\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"key_data\": \"<boolean>\",\n          \"localize\": \"<boolean>\"\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"<string>\",\n          \"version\": \"<string>\",\n          \"description\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"version\": \"<string>\",\n          \"description\": \"<string>\"\n        }\n      ],\n      \"location\": {\n        \"latitude\": \"<string>\",\n        \"longitude\": \"<string>\",\n        \"altitude\": \"<number>\",\n        \"heading\": \"<number>\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"<url>\",\n          \"title\": \"<string>\",\n          \"description\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"type\": \"<string>\"\n        },\n        {\n          \"href\": \"<url>\",\n          \"title\": \"<string>\",\n          \"description\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"type\": \"<string>\"\n        }\n      ]\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5b90facf-fde2-4801-a240-168e974e9f46",
+              "name": "Creates a new Diagnostic Reading record",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\",\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"faults\": {\n        \"data\": [\n          {\n            \"type\": \"faults\",\n            \"id\": \"a6156681-443f-481f-9007-272b99240259\"\n          }\n        ]\n      },\n      \"source_account\": {\n        \"data\": {\n          \"type\": \"srm_accounts\",\n          \"id\": \"dc8beef2-e304-11ea-86c2-1f9b5bc5281b\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://srm-api.decisivapps.com/telematics/v1/diagnostic_readings/3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e671563-86e0-4ab6-8fab-f7d378a357bd",
+              "name": "Invalid Filter / Incorrect attribute for the resource type / Missing required key / Missing required value / Invalid Attribute Value on External Resources Type",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Filter not allowed\",\n      \"detail\": \"'{{filter_name}}' is not allowed. Valid filters: {{filters_list}}\",\n      \"code\": \"decisiv:filters:001\",\n      \"status\": \"400\",\n      \"source\": {\n        \"parameter\": \"filter[filter_name]\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "53ab73d3-4f46-4990-a853-5444d1320b16",
+              "name": "This response may occur when the access token provided within the Authorization token has expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Access unauthorized\",\n      \"detail\": \"Access unauthorized\",\n      \"code\": \"decisiv::access_token:001\",\n      \"status\": \"401\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e8ae7f6-1551-4b19-9571-0b6a3f11c6ed",
+              "name": "This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Forbidden\",\n      \"detail\": \"User does not have permission to perform this action on the requested resource(s)\",\n      \"code\": \"decisiv:access:001\",\n      \"status\": \"403\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25695b90-5753-44e1-8f85-ebd14f200b6e",
+              "name": "This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4bbd42b5-5600-4093-96d0-5f111082cce6",
+          "name": "Get details for a specific diagnostic reading",
+          "request": {
+            "name": "Get details for a specific diagnostic reading",
+            "description": {
+              "content": "Retrieve details for a specific diagnostic reading by UUID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "telematics",
+                ":srm_account_id",
+                "v1",
+                "diagnostic_readings",
+                ":uuid"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "srm_account_id",
+                  "description": "(Required) The account ID for SRM"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "uuid",
+                  "description": "(Required) The diagnostic reading UUID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "556096ff-22d9-4c3f-ba60-4cd07fe2284a",
+              "name": "Returns details for the requested diagnostic reading",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\",\n    \"type\": \"diagnostic_readings\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"components\": [\n        {\n          \"name\": \"ECU\",\n          \"description\": \"The #1 on the Engine CA is to identify that this is the first PA being used for the particular function, Engine. It may only be used for the NAME Function of 0\",\n          \"version\": \"12\"\n        }\n      ],\n      \"origin_id\": \"90bd02a4-9ca6-4db6-8cba-c8a24f6ea717\",\n      \"origin\": \"name_of_origin\",\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"asset_data\": {\n        \"vin\": \"PHFCJ2YS9LB593266\",\n        \"make\": \"Make\",\n        \"year\": \"2000\",\n        \"model\": \"CH613\",\n        \"device_id\": \"1234567890\",\n        \"chassis_id\": \"12312312\",\n        \"serial_number\": \"LB593266\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"faults\": {\n        \"data\": [\n          {\n            \"type\": \"faults\",\n            \"id\": \"a6156681-443f-481f-9007-272b99240259\"\n          }\n        ]\n      },\n      \"source_account\": {\n        \"data\": {\n          \"type\": \"srm_accounts\",\n          \"id\": \"dc8beef2-e304-11ea-86c2-1f9b5bc5281b\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://srm-api.decisivapps.com/telematics/v1/diagnostic_readings/3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "61455abd-837c-43b7-866e-99590bb2b01a",
+              "name": "This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Filter not allowed\",\n      \"detail\": \"'{{filter_name}}' is not allowed. Valid filters: {{filters_list}}\",\n      \"code\": \"decisiv:filters:001\",\n      \"status\": \"400\",\n      \"source\": {\n        \"parameter\": \"filter[filter_name]\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96346549-4f74-400a-a17d-48d07ab87260",
+              "name": "This response may occur when the access token provided within the Authorization token has expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Access unauthorized\",\n      \"detail\": \"Access unauthorized\",\n      \"code\": \"decisiv::access_token:001\",\n      \"status\": \"401\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf07eed5-cb51-4ed3-a16a-91a78ea59688",
+              "name": "This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Forbidden\",\n      \"detail\": \"User does not have permission to perform this action on the requested resource(s)\",\n      \"code\": \"decisiv:access:001\",\n      \"status\": \"403\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cad968c1-1a40-43b8-8cf0-a1f8e93da0f9",
+              "name": "This response may occur when the requested resource is not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Record not found\",\n      \"detail\": \"The requested record or one of its relationships could not be found\",\n      \"code\": \"404\",\n      \"status\": \"404\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "20cdf396-d157-40eb-93d7-05f71a984e1b",
+              "name": "This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Failed Dependency (WebDAV) (RFC 4918)",
+              "code": 424,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Failed Dependency\",\n      \"detail\": \"Failed Dependency\",\n      \"code\": \"424\",\n      \"status\": \"424\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef33bedf-2ecb-402f-944e-51d1d6a0f81c",
+              "name": "This response may occur when there is an unexpected system timeout.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "diagnostic_readings",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The diagnostic reading UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"504\",\n      \"detail\": \"Gateway timeout error\",\n      \"status\": \"504\",\n      \"title\": \"Gateway timeout error\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "72115341-31e4-4c11-ad4a-fda6c101d0ce",
+      "name": "Faults",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0ecdb2df-01cc-47c9-af79-cfb46f4b5d1b",
+          "name": "List all faults for the requested account",
+          "request": {
+            "name": "List all faults for the requested account",
+            "description": {
+              "content": "Retrieve all faults for a specific SRM account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "telematics",
+                ":srm_account_id",
+                "v1",
+                "faults"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "srm_account_id",
+                  "description": "(Required) The account ID for SRM"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bdb216e9-2cbb-46e6-8f63-233029986b4c",
+              "name": "Returns list of Faults",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"44e10524-07a3-4008-8bcd-08950f3b00e8\",\n      \"type\": \"faults\",\n      \"attributes\": {\n        \"triggered_at\": \"2025-03-11T18:48:34Z\",\n        \"spn\": \"3456\",\n        \"fmi\": \"19\",\n        \"fault_code\": \"1223\",\n        \"sensor_readings\": [\n          {\n            \"name\": \"AFTRT 1 Intake NOx\",\n            \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n            \"value\": \"115.8\",\n            \"unit_of_measure\": \"ppm\",\n            \"classification_header\": \"Engine Operation\",\n            \"key_data\": false,\n            \"localize\": false\n          }\n        ],\n        \"guidance\": [\n          {\n            \"name\": \"AFTRT 2 NOx\",\n            \"description\": \"Take to the closest dealer immediately!\",\n            \"value\": \"15.8\",\n            \"classification_header\": \"Engine Operation\"\n          }\n        ],\n        \"location\": {\n          \"heading\": \"251\",\n          \"altitude\": \"3649\",\n          \"latitude\": \"-58.28\",\n          \"longitude\": \"152.41\"\n        },\n        \"details\": {\n          \"component\": {\n            \"name\": \"ECU\",\n            \"description\": \"Component description\",\n            \"version\": \"Engine\"\n          },\n          \"occurrences\": 3,\n          \"odometer_unit\": \"mi\",\n          \"odometer_value\": 23993123,\n          \"severity_level\": \"Severe\",\n          \"description\": \"Fault description\"\n        },\n        \"active\": false,\n        \"severity\": 2,\n        \"external_resources\": [\n          {\n            \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n            \"title\": \"Interactive Video\",\n            \"description\": \"Video to accelerate repair time and uptime.\",\n            \"classification_header\": \"Repair Information\",\n            \"type\": \"video\"\n          }\n        ]\n      },\n      \"relationships\": {\n        \"diagnostic_reading\": {\n          \"data\": {\n            \"type\": \"diagnostic_readings\",\n            \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n          }\n        },\n        \"source_account\": {\n          \"data\": {\n            \"type\": \"srm_accounts\",\n            \"id\": \"dc8beef2-e304-11ea-86c2-1f9b5bc5281b\"\n          }\n        },\n        \"asset\": {\n          \"data\": {\n            \"type\": \"assets\",\n            \"id\": \"73b781e9-d724-4c8c-89fe-b289abade626\"\n          }\n        }\n      },\n      \"links\": {\n        \"self\": \"https://srm-api.decisivapps.com/telematics/v1/faults/44e10524-07a3-4008-8bcd-08950f3b00e8\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a3a11f33-070e-4d6c-b788-4f7a127f8c8f",
+              "name": "This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Filter not allowed\",\n      \"detail\": \"'{{filter_name}}' is not allowed. Valid filters: {{filters_list}}\",\n      \"code\": \"decisiv:filters:001\",\n      \"status\": \"400\",\n      \"source\": {\n        \"parameter\": \"filter[filter_name]\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "31555735-27df-4e58-a0ed-af589b0c4a87",
+              "name": "This response may occur when the access token provided within the Authorization token has expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Access unauthorized\",\n      \"detail\": \"Access unauthorized\",\n      \"code\": \"decisiv::access_token:001\",\n      \"status\": \"401\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6d45fbd6-74ad-42b2-a6ca-0b988cc53506",
+              "name": "This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Forbidden\",\n      \"detail\": \"User does not have permission to perform this action on the requested resource(s)\",\n      \"code\": \"decisiv:access:001\",\n      \"status\": \"403\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8c0aec81-7099-4bf6-9c8f-db7b81a7080e",
+              "name": "This response may occur when the requested resource is not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Record not found\",\n      \"detail\": \"The requested record or one of its relationships could not be found\",\n      \"code\": \"404\",\n      \"status\": \"404\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f962ce8e-8dcb-48bd-8119-085f76c461c1",
+              "name": "This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Failed Dependency (WebDAV) (RFC 4918)",
+              "code": 424,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Failed Dependency\",\n      \"detail\": \"Failed Dependency\",\n      \"code\": \"424\",\n      \"status\": \"424\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3efe2416-40c7-4ffc-b54c-60c3448e4581",
+              "name": "This response may occur when there is an unexpected system timeout.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"504\",\n      \"detail\": \"Gateway timeout error\",\n      \"status\": \"504\",\n      \"title\": \"Gateway timeout error\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "33a3c70f-4906-40ee-bb84-625e037126ac",
+          "name": "Create a new fault",
+          "request": {
+            "name": "Create a new fault",
+            "description": {
+              "content": "Create a new fault record for a specific SRM account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "telematics",
+                ":srm_account_id",
+                "v1",
+                "faults"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "srm_account_id",
+                  "description": "(Required) The account ID for SRM"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"<string>\",\n    \"attributes\": {\n      \"triggered_at\": \"<dateTime>\",\n      \"active\": \"<boolean>\",\n      \"details\": {\n        \"component\": {\n          \"name\": \"<string>\",\n          \"version\": \"<string>\",\n          \"description\": \"<string>\"\n        },\n        \"occurrences\": \"<integer>\",\n        \"odometer_unit\": \"<string>\",\n        \"odometer_value\": \"<number>\",\n        \"severity_level\": \"<string>\",\n        \"description\": \"<string>\"\n      },\n      \"spn\": \"<string>\",\n      \"fmi\": \"<string>\",\n      \"fault_code\": \"<string>\",\n      \"severity\": \"<integer,null>\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\",\n          \"description\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"key_data\": \"<boolean>\",\n          \"localize\": \"<boolean>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\",\n          \"description\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"key_data\": \"<boolean>\",\n          \"localize\": \"<boolean>\"\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\",\n          \"description\": \"<string>\",\n          \"classification_header\": \"<string>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"value\": \"<string>\",\n          \"description\": \"<string>\",\n          \"classification_header\": \"<string>\"\n        }\n      ],\n      \"location\": {\n        \"latitude\": \"<string>\",\n        \"longitude\": \"<string>\",\n        \"altitude\": \"<number>\",\n        \"heading\": \"<number>\"\n      },\n      \"external_resources\": [\n        {\n          \"href\": \"<url>\",\n          \"title\": \"<string>\",\n          \"description\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"type\": \"<string>\"\n        },\n        {\n          \"href\": \"<url>\",\n          \"title\": \"<string>\",\n          \"description\": \"<string>\",\n          \"classification_header\": \"<string>\",\n          \"type\": \"<string>\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"id\": \"<string>\",\n          \"type\": \"<string>\"\n        }\n      },\n      \"source_account\": {\n        \"data\": {\n          \"id\": \"<string>\",\n          \"type\": \"<string>\"\n        }\n      }\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "802497d8-c00e-4b1b-be6b-d60180337a68",
+              "name": "Creates a new Fault record",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"44e10524-07a3-4008-8bcd-08950f3b00e8\",\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      },\n      \"source_account\": {\n        \"data\": {\n          \"type\": \"srm_accounts\",\n          \"id\": \"dc8beef2-e304-11ea-86c2-1f9b5bc5281b\"\n        }\n      },\n      \"asset\": {\n        \"data\": {\n          \"type\": \"assets\",\n          \"id\": \"73b781e9-d724-4c8c-89fe-b289abade626\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://srm-api.decisivapps.com/telematics/v1/faults/44e10524-07a3-4008-8bcd-08950f3b00e8\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b67d01a-bf8d-4902-b898-5ed76aa80921",
+              "name": "Invalid Filter / Missing required key / Missing required value / Incorrect attribute for the resource type / Invalid Attribute Value on External Resources Type",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Filter not allowed\",\n      \"detail\": \"'{{filter_name}}' is not allowed. Valid filters: {{filters_list}}\",\n      \"code\": \"decisiv:filters:001\",\n      \"status\": \"400\",\n      \"source\": {\n        \"parameter\": \"filter[filter_name]\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05367023-5fca-4512-9e2e-98e028c6fd7f",
+              "name": "This response may occur when the access token provided within the Authorization token has expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Access unauthorized\",\n      \"detail\": \"Access unauthorized\",\n      \"code\": \"decisiv::access_token:001\",\n      \"status\": \"401\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a5a007e9-6874-4c56-8d82-bdd2f195888c",
+              "name": "This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Forbidden\",\n      \"detail\": \"User does not have permission to perform this action on the requested resource(s)\",\n      \"code\": \"decisiv:access:001\",\n      \"status\": \"403\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "da549785-4a98-4d3d-abf8-47baa5bf544a",
+              "name": "This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5372fc8b-174c-44b7-add9-860d9ba5224c",
+          "name": "Get details for a specific fault",
+          "request": {
+            "name": "Get details for a specific fault",
+            "description": {
+              "content": "Retrieve details for a specific fault by UUID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "telematics",
+                ":srm_account_id",
+                "v1",
+                "faults",
+                ":uuid"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "srm_account_id",
+                  "description": "(Required) The account ID for SRM"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "uuid",
+                  "description": "(Required) The fault UUID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6c2605b5-f318-4c98-8f0b-ccf304e53675",
+              "name": "Returns details for the requested fault",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"44e10524-07a3-4008-8bcd-08950f3b00e8\",\n    \"type\": \"faults\",\n    \"attributes\": {\n      \"triggered_at\": \"2025-03-11T18:48:34Z\",\n      \"spn\": \"3456\",\n      \"fmi\": \"19\",\n      \"fault_code\": \"1223\",\n      \"sensor_readings\": [\n        {\n          \"name\": \"AFTRT 1 Intake NOx\",\n          \"description\": \"Aftertreatment 1 Intake NOx, Range -200 to 3012.75\",\n          \"value\": \"115.8\",\n          \"unit_of_measure\": \"ppm\",\n          \"classification_header\": \"Engine Operation\",\n          \"key_data\": false,\n          \"localize\": false\n        }\n      ],\n      \"guidance\": [\n        {\n          \"name\": \"AFTRT 2 NOx\",\n          \"description\": \"Take to the closest dealer immediately!\",\n          \"value\": \"15.8\",\n          \"classification_header\": \"Engine Operation\"\n        }\n      ],\n      \"location\": {\n        \"heading\": \"251\",\n        \"altitude\": \"3649\",\n        \"latitude\": \"-58.28\",\n        \"longitude\": \"152.41\"\n      },\n      \"details\": {\n        \"component\": {\n          \"name\": \"ECU\",\n          \"description\": \"Component description\",\n          \"version\": \"Engine\"\n        },\n        \"occurrences\": 3,\n        \"odometer_unit\": \"mi\",\n        \"odometer_value\": 23993123,\n        \"severity_level\": \"Severe\",\n        \"description\": \"Fault description\"\n      },\n      \"active\": false,\n      \"severity\": 2,\n      \"external_resources\": [\n        {\n          \"href\": \"https://telematics-source.oem-system.com/videos/28972.mp4\",\n          \"title\": \"Interactive Video\",\n          \"description\": \"Video to accelerate repair time and uptime.\",\n          \"classification_header\": \"Repair Information\",\n          \"type\": \"video\"\n        }\n      ]\n    },\n    \"relationships\": {\n      \"diagnostic_reading\": {\n        \"data\": {\n          \"type\": \"diagnostic_readings\",\n          \"id\": \"3cad1e59-8eed-410f-9a15-527d11cba0d0\"\n        }\n      },\n      \"source_account\": {\n        \"data\": {\n          \"type\": \"srm_accounts\",\n          \"id\": \"dc8beef2-e304-11ea-86c2-1f9b5bc5281b\"\n        }\n      },\n      \"asset\": {\n        \"data\": {\n          \"type\": \"assets\",\n          \"id\": \"73b781e9-d724-4c8c-89fe-b289abade626\"\n        }\n      }\n    },\n    \"links\": {\n      \"self\": \"https://srm-api.decisivapps.com/telematics/v1/faults/44e10524-07a3-4008-8bcd-08950f3b00e8\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "396a787c-892a-4c46-afe3-20f03bd834f4",
+              "name": "This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Filter not allowed\",\n      \"detail\": \"'{{filter_name}}' is not allowed. Valid filters: {{filters_list}}\",\n      \"code\": \"decisiv:filters:001\",\n      \"status\": \"400\",\n      \"source\": {\n        \"parameter\": \"filter[filter_name]\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cfefc85d-d438-4b30-b95f-10707cc3fa65",
+              "name": "This response may occur when the access token provided within the Authorization token has expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Access unauthorized\",\n      \"detail\": \"Access unauthorized\",\n      \"code\": \"decisiv::access_token:001\",\n      \"status\": \"401\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "687401b3-2f1c-462a-8ab6-4d28f459edc0",
+              "name": "This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Forbidden\",\n      \"detail\": \"User does not have permission to perform this action on the requested resource(s)\",\n      \"code\": \"decisiv:access:001\",\n      \"status\": \"403\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0ffadf7c-2563-4ea5-8021-3c492b0372dc",
+              "name": "This response may occur when the requested resource is not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Record not found\",\n      \"detail\": \"The requested record or one of its relationships could not be found\",\n      \"code\": \"404\",\n      \"status\": \"404\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05699e12-046f-4a9a-bdc9-d66433beaa45",
+              "name": "This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Failed Dependency (WebDAV) (RFC 4918)",
+              "code": 424,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"title\": \"Failed Dependency\",\n      \"detail\": \"Failed Dependency\",\n      \"code\": \"424\",\n      \"status\": \"424\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "999af521-b2ea-4177-b231-e46bfe2203fb",
+              "name": "This response may occur when there is an unexpected system timeout.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "telematics",
+                    ":srm_account_id",
+                    "v1",
+                    "faults",
+                    ":uuid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "srm_account_id",
+                      "description": "(Required) The account ID for SRM"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "uuid",
+                      "description": "(Required) The fault UUID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"504\",\n      \"detail\": \"Gateway timeout error\",\n      \"status\": \"504\",\n      \"title\": \"Gateway timeout error\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://srm-api.staging.decisivapps.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "redirect_uri",
+        "value": "https://login.decisiv.net/oauth/token"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://login.decisiv.net/oauth/token"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://login.decisiv.net/auth/api_gateway"
+      },
+      {
+        "key": "grant_type",
+        "value": "authorization_code"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4512437e-fe3d-4e45-ab7c-06a17d2810a0",
+    "name": "Telematics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Inside of **Decisiv SRM Gateway**, the `Telematics` module represents all interactions and functionality which an Account enabled with `Telematics subscription` can perform through an API interface.\n\nContact Support:\n Name: Decisiv Support\n Email: support@decisiv.com",
+      "type": "text/plain"
+    }
+  }
+}

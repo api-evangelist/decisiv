@@ -1,0 +1,289 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Service Provider API",
+    "version": "2.0.4"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getCustomers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/customers",
+            "params": [
+              {
+                "name": "filter[created_before]",
+                "value": "",
+                "type": "query",
+                "description": "Return records created before date, ex: 20170101 (YYYYMMDD)"
+              },
+              {
+                "name": "filter[created_after]",
+                "value": "",
+                "type": "query",
+                "description": "Return records created after date, ex: 20170101 (YYYYMMDD)"
+              },
+              {
+                "name": "filter[updated_before]",
+                "value": "",
+                "type": "query",
+                "description": "Return records updated before date, ex: 20170101 (YYYYMMDD)"
+              },
+              {
+                "name": "filter[updated_after]",
+                "value": "",
+                "type": "query",
+                "description": "Return records updated after date, ex: 20170101 (YYYYMMDD)"
+              },
+              {
+                "name": "filter[service_location_id]",
+                "value": "",
+                "type": "query",
+                "description": "ID of Service Location"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "Partial match for Customer Name, ex: Pens*"
+              },
+              {
+                "name": "filter[dms_id]",
+                "value": "",
+                "type": "query",
+                "description": "Dealer Management System id to filter collection by"
+              }
+            ]
+          },
+          "docs": "Returns all Customers in the system for the authenticated Service Location"
+        },
+        {
+          "info": {
+            "name": "addCustomer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/customers"
+          },
+          "docs": "Creates a new Customer for use within the ecosystem"
+        },
+        {
+          "info": {
+            "name": "findCustomerById",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/customers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Customer ID or UUID to fetch"
+              }
+            ]
+          },
+          "docs": "Returns a Customer based on the provided ID"
+        },
+        {
+          "info": {
+            "name": "updateCustomer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/customers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Customer ID or UUID to update"
+              }
+            ]
+          },
+          "docs": "Updates a Customer record"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "group_customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getGroupCustomers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/group_customers",
+            "params": [
+              {
+                "name": "filter[dms_id]",
+                "value": "",
+                "type": "query",
+                "description": "Dealer Management System id to filter collection by"
+              }
+            ]
+          },
+          "docs": "Returns all Group Customers in the system for the authenticated Service Location"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets",
+            "params": [
+              {
+                "name": "filter[vin]",
+                "value": "",
+                "type": "query",
+                "description": "Partial match for a VIN, ex: JN1AR5XXXXXX*"
+              },
+              {
+                "name": "filter[serial_number]",
+                "value": "",
+                "type": "query",
+                "description": "Partial match for a serial number, ex: 2112*"
+              },
+              {
+                "name": "filter[customer_id]",
+                "value": "",
+                "type": "query",
+                "description": "ID of Customer to filter by"
+              },
+              {
+                "name": "filter[unit_number]",
+                "value": "",
+                "type": "query",
+                "description": "Unit Number to filter collection by"
+              }
+            ]
+          },
+          "docs": "Returns a listing of assets for all a Dealers' Customers"
+        },
+        {
+          "info": {
+            "name": "AssignAssetToCustomer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/assets"
+          },
+          "docs": "Assigns an asset to a customer based upon the id"
+        },
+        {
+          "info": {
+            "name": "GetCustomerAssetById",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of Customer Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Returns a Customer Asset record based upon a particular ID"
+        },
+        {
+          "info": {
+            "name": "RemoveCustomerAssetById",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/assets/:asset_id",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of Customer Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Removes a Customer Asset from a Customers' inventory based upon ID"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "group_assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "groupAssets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/group_assets",
+            "params": [
+              {
+                "name": "filter[vin]",
+                "value": "",
+                "type": "query",
+                "description": "Exact match for a VIN, ex: JN1AR5XXXXXX*"
+              }
+            ]
+          },
+          "docs": "Returns a listing of group assets for all a Dealers' Customers"
+        },
+        {
+          "info": {
+            "name": "RemoveGroupCustomerAssetById",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/group_assets/:asset_id",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "ID of Customer Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Removes a Group Customer Asset from a Customer's inventory based upon ID"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

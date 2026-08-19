@@ -1,0 +1,5653 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Service Management",
+    "version": "0.48.24"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.decisiv.net/auth/api_gateway",
+      "accessTokenUrl": "https://login.decisiv.net/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List cases for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[service_provider.external_reference.srm_account]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases by the service provider's SRM account ID."
+              },
+              {
+                "name": "filter[customer_asset.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases matching the exact `customer_asset.id`."
+              },
+              {
+                "name": "filter[customer_asset.vin]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases matching the exact `customer_asset.vin`. Must be exactly 17 characters."
+              },
+              {
+                "name": "filter[customer_asset.serial_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases matching the exact `customer_asset.serial_number`. Must be between 6 and 17 characters."
+              },
+              {
+                "name": "filter[ro_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases matching the exact repair order number."
+              },
+              {
+                "name": "filter[reference_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases matching the exact case reference number."
+              },
+              {
+                "name": "filter[repair_status:include]",
+                "value": "",
+                "type": "query",
+                "description": "**Deprecated** — use `filter[repair_status:includes]` instead. Filter cases to only those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values."
+              },
+              {
+                "name": "filter[repair_status:exclude]",
+                "value": "",
+                "type": "query",
+                "description": "**Deprecated** — use `filter[repair_status:excludes]` instead. Filter cases to exclude those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values."
+              },
+              {
+                "name": "filter[repair_status:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases to only those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values."
+              },
+              {
+                "name": "filter[repair_status:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases to exclude those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values."
+              },
+              {
+                "name": "filter[assignee.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases assigned to the user with the given assignee id (the id segment of the assignee's user URI)."
+              },
+              {
+                "name": "filter[assignee.id:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases assigned to any of the given assignee ids. Accepts a comma-separated list of up to 50 ids."
+              },
+              {
+                "name": "filter[assignee.id:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases excluding those assigned to any of the given assignee ids. Accepts a comma-separated list of up to 50 ids."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases started _before_ the specified `ISO 8601` datetime."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases started _on or before_ the specified `ISO 8601` datetime."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases started _after_ the specified `ISO 8601` datetime."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases started _on or after_ the specified `ISO 8601` datetime."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:exists]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases by whether a `closed_at` timestamp exists. Use `true` to list only closed cases, or `false` to list only open cases."
+              },
+              {
+                "name": "filter[customer_asset.customer.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases matching the exact `customer_asset.customer.id`."
+              },
+              {
+                "name": "filter[customer.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases by the case's primary customer, matching the exact `customer.id` (the customer's UUID). Applies to both local (`customers`) and registered (`registered_customers`) customers."
+              },
+              {
+                "name": "filter[updated_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases last updated _on or after_ the specified `ISO 8601` datetime."
+              },
+              {
+                "name": "filter[updated_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter cases last updated _on or before_ the specified `ISO 8601` datetime."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets. The response `meta.metadata.record-count` may be `null` (intentionally not computed to avoid expensive COUNT queries on large datasets). Paginate until a page returns fewer items than `page[size]`.\n"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page. The response `meta.metadata.record-count` may be `null` (intentionally not computed to avoid expensive COUNT queries on large datasets). Paginate until a page returns fewer items than `page[size]`.\n"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of cases for the requested SRM account. Supports filtering by service provider, customer asset, customer, repair status, repair order number, and event timestamps.\n"
+        },
+        {
+          "info": {
+            "name": "List details on a specific case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Returns full detail for a single case, including attributes, VMRS codes, invoice fields, and all relationships associated with the case."
+        },
+        {
+          "info": {
+            "name": "Updates a case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a case. Any subset of the attributes and relationships listed in the request body schema may be supplied; omitted fields are not modified. Immutable attributes (such as `ro_number` once set) cannot be changed and will return a 422 error."
+        },
+        {
+          "info": {
+            "name": "Updates Meter Data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:id/update_meter_data",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Appends meter readings (odometer, engine hours, stand-by hours, or switch-on hours) to a case. Each entry specifies the meter type, unit, and value; multiple entries may be submitted in a single request."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Close a specific case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/actions/close",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ]
+          },
+          "docs": "Close a specific case"
+        },
+        {
+          "info": {
+            "name": "Open (re-open) a specific case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/actions/open",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ]
+          },
+          "docs": "Open (re-open) a specific case"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Attachments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List attachments for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/attachments",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List attachments for the requested case"
+        },
+        {
+          "info": {
+            "name": "Create an attachment for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/attachments",
+            "headers": [
+              {
+                "name": "X-DECISIV-SILENCE-EVENTS",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "body",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Create an attachment for the requested case"
+        },
+        {
+          "info": {
+            "name": "Retrieve an attachment for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/attachments/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "Retrieve an attachment for the requested case"
+        },
+        {
+          "info": {
+            "name": "Delete an attachment for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/attachments/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case uuid"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource uuid"
+              }
+            ]
+          },
+          "docs": "Delete an attachment for the requested case"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Line Items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List line items across the account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/line_items",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[case.id]",
+                "value": "",
+                "type": "query",
+                "description": "Restrict to a single case (estimate) UUID. Returns the same set as the nested `GET /cases/{case_id}/line_items` endpoint for that case.\n"
+              },
+              {
+                "name": "filter[assignee.id]",
+                "value": "",
+                "type": "query",
+                "description": "Restrict to line items assigned to the given internal user id(s). Accepts a comma-separated list. Equivalent to `filter[assignee.id:includes]`.\n"
+              },
+              {
+                "name": "filter[assignee.id:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated internal user id(s); returns items assigned to any of them."
+              },
+              {
+                "name": "filter[assignee.id:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated internal user id(s); returns items NOT assigned to any of them. Unassigned items are excluded (SQL `NOT IN` semantics, mirroring the case-level assignee filter).\n"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Returns line items for the authenticated account, sourced directly from EstimateItem rather than a single case. Soft-deleted items are excluded.\n\nThis collection can be large, so it is always paginated and the response does not compute a total `record-count` (the `meta.record-count` value is `null`); use `page[number]`/`page[size]` to traverse results.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a single line item by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/line_items/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "Retrieve a single line item scoped to the authenticated account, without needing to know its case.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List line items for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "filter[assignee.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter line items assigned to the user with the given assignee id (the id segment of the assignee's user URI)."
+              },
+              {
+                "name": "filter[assignee.id:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter line items assigned to any of the given assignee ids. Accepts a comma-separated list of up to 50 ids."
+              },
+              {
+                "name": "filter[assignee.id:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter line items excluding those assigned to any of the given assignee ids. Accepts a comma-separated list of up to 50 ids."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "A line item represents a single operation on the case — the atomic complaint/cause/correction unit billed against it, carrying labor, parts, and VMRS coding.\n"
+        },
+        {
+          "info": {
+            "name": "Create a line item for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "A line item represents a single operation on the case; multiple may exist per case.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a line item for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "Retrieve a single line item."
+        },
+        {
+          "info": {
+            "name": "Update a line item for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reassigning the line item's `assignee` is not supported on this endpoint.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a line item for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Related parts and technician stories are deleted transitively.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Items - Additional Charges",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Additional Charges for the requested line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_uuid/line_items/:line_item_uuid/additional_charges",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              }
+            ]
+          },
+          "docs": "List all Additional Charges for the requested line item"
+        },
+        {
+          "info": {
+            "name": "Creates an additional charge for the line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_uuid/line_items/:line_item_uuid/additional_charges",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an additional charge for the line item"
+        },
+        {
+          "info": {
+            "name": "Show an Additional Charges for the requested line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_uuid/line_items/:line_item_uuid/additional_charges/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "Show an Additional Charges for the requested line item"
+        },
+        {
+          "info": {
+            "name": "Update an additional charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_uuid/line_items/:line_item_uuid/additional_charges/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an additional charge"
+        },
+        {
+          "info": {
+            "name": "Delete an additional charge",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_uuid/line_items/:line_item_uuid/additional_charges/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Delete an additional charge"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Items - Additional Charges - Relationships",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Update an additional charge category",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_uuid/line_items/:line_item_uuid/additional_charges/:id/relationships/category",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an additional charge category"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Items - Additional Charges Categories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Additional Charge Categories for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/additional_charge_categories",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ]
+          },
+          "docs": "List all Additional Charge Categories for the requested account"
+        },
+        {
+          "info": {
+            "name": "Retrieves a specific Additional Charge Category",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/additional_charge_categories/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Retrieves a specific Additional Charge Category"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Items Relationships Assignee",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Update an assignee from line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/relationships/assignee",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an assignee from line item"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Item Internal Labels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all the line item internal labels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/line_item_internal_labels",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ]
+          },
+          "docs": "List all the line item internal labels"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Items Technician Stories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all the technician stories for the selected line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/technician_stories",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all the technician stories for the selected line item"
+        },
+        {
+          "info": {
+            "name": "Creates a technician story for the line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/technician_stories",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a technician story for the line item"
+        },
+        {
+          "info": {
+            "name": "List all the technician stories for the selected line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/technician_stories/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "List all the technician stories for the selected line item"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Item Parts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all parts for the requested line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/parts",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "List all parts for the requested line item"
+        },
+        {
+          "info": {
+            "name": "Create a estimate item part",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/parts",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a estimate item part"
+        },
+        {
+          "info": {
+            "name": "List details on a specific part for the requested line item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/parts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "List details on a specific part for the requested line item"
+        },
+        {
+          "info": {
+            "name": "Update a specific part",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/parts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a specific part"
+        },
+        {
+          "info": {
+            "name": "Delete an estimate item part",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/parts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Delete an estimate item part"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Line Item Parts Relationships SalesPerson",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add, Update or Remove a Salesperson from part",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/line_items/:line_item_id/parts/:part_id/relationships/salesperson",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "line_item_id",
+                "value": "",
+                "type": "path",
+                "description": "The line item UUID"
+              },
+              {
+                "name": "part_id",
+                "value": "",
+                "type": "path",
+                "description": "The part UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add, Update or Remove a Salesperson from part"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Creates new metadata for a selected case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/metadata",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates new metadata for a selected case"
+        },
+        {
+          "info": {
+            "name": "Updates a specific metadata key",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/metadata/:metadata_key",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "metadata_key",
+                "value": "",
+                "type": "path",
+                "description": "The metadata key"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a specific metadata key"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Notes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List notes for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/notes",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List notes for the requested case"
+        },
+        {
+          "info": {
+            "name": "Create a note for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/notes",
+            "headers": [
+              {
+                "name": "X-DECISIV-SILENCE-EVENTS",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a note for the requested case"
+        },
+        {
+          "info": {
+            "name": "Retrieve a note for the requested case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/notes/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "Retrieve a note for the requested case"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Participants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the participants for a selected case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/participants",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ]
+          },
+          "docs": "Lists the participants for a selected case"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Participant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/participants/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "List details on a specific Participant"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Participant Recipients",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the recipients for a selected case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/participants/:participant_id/recipients",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "participant_id",
+                "value": "",
+                "type": "path",
+                "description": "The participant UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Lists the recipients for a selected case"
+        },
+        {
+          "info": {
+            "name": "List details on a specific recipient",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/participants/:participant_id/recipients/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "participant_id",
+                "value": "",
+                "type": "path",
+                "description": "The participant UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource ID"
+              }
+            ]
+          },
+          "docs": "List details on a specific recipient"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Case Relationships",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Modify shipping customer of a Case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/relationships/shipping_customer",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify shipping customer of a Case"
+        },
+        {
+          "info": {
+            "name": "Modify billing customer of a Case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/relationships/billing_customer",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify billing customer of a Case"
+        },
+        {
+          "info": {
+            "name": "Modify program type of a Case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/relationships/program_type",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify program type of a Case"
+        },
+        {
+          "info": {
+            "name": "Modify primary contact of a Case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/relationships/primary_contact",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify primary contact of a Case"
+        },
+        {
+          "info": {
+            "name": "Modify driver of a Case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/relationships/driver",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify driver of a Case"
+        },
+        {
+          "info": {
+            "name": "Modify billing contact of a Case",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/relationships/billing_contact",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify billing contact of a Case"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customer Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all customer assets for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_assets",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[serial_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `serial_number` attribute."
+              },
+              {
+                "name": "filter[unit_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `unit_number` attribute."
+              },
+              {
+                "name": "filter[vin]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `vin` attribute."
+              },
+              {
+                "name": "filter[chassis_id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `chassis_id` attribute."
+              },
+              {
+                "name": "filter[customer.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `customer.id` attribute."
+              },
+              {
+                "name": "filter[service_status]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `service_status` attribute."
+              },
+              {
+                "name": "filter[service_status:includes]",
+                "value": "",
+                "type": "query",
+                "description": "List `customer_assets` whose `service_status` is in the supplied comma-separated list. Accepted values are `active`, `inactive`, `archived`."
+              },
+              {
+                "name": "filter[service_status:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "List `customer_assets` whose `service_status` is **NOT** in the supplied comma-separated list. Accepted values are `active`, `inactive`, `archived`."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort `customer_assets` by a single attribute; prefix with `-` for descending order. Valid attributes: `year`, `make`, `model`"
+              }
+            ]
+          },
+          "docs": "List all customer assets for the requested account"
+        },
+        {
+          "info": {
+            "name": "Create a new Customer Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_assets",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new Customer Asset"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Customer Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_assets/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request"
+              }
+            ]
+          },
+          "docs": "List details on a specific Customer Asset"
+        },
+        {
+          "info": {
+            "name": "Create a case for the specific Customer Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_assets/:id/create_case",
+            "headers": [
+              {
+                "name": "X-DECISIV-IDEMPOTENCY-KEY",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a case for the specific Customer Asset"
+        },
+        {
+          "info": {
+            "name": "List Service History for the specific Customer Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_assets/:id/service_history",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "filter[service_provider.id]",
+                "value": "",
+                "type": "query",
+                "description": "List `service histories` matching the *exact* `service_prodiver.id` attribute."
+              },
+              {
+                "name": "filter[reference_number]",
+                "value": "",
+                "type": "query",
+                "description": "List `service histories` matching the *exact* `reference_number` attribute."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:blank]",
+                "value": "",
+                "type": "query",
+                "description": "List `service histories` matching if `closed_at` attribute is blank."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _less than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _less than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _greater than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _greater than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _less than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _less than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _greater than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _greater than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List Service History for the specific Customer Asset"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customer Requests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of customer requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_requests",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "filter[case.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the customer requests for the given case.id, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the customer requests for the given event_timestamps.requested_at:gt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the customer requests for the given event_timestamps.requested_at:lt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the customer requests for the given event_timestamps.requested_at:gte, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the customer requests for the given event_timestamps.requested_at:lte, using exact matching search"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filters the customer requests for the given status, using exact matching search"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of customer requests"
+        },
+        {
+          "info": {
+            "name": "Retrieves a customer request",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_request/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Retrieves a customer request"
+        },
+        {
+          "info": {
+            "name": "Retrieves a customer request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_request/:id/accept",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a customer request"
+        },
+        {
+          "info": {
+            "name": "Retrieves a customer request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customer_request/:id/decline",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a customer request"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `name` attribute."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` that match partially the `name` attribute."
+              },
+              {
+                "name": "filter[city]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `city` attribute."
+              },
+              {
+                "name": "filter[state]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `state` attribute."
+              },
+              {
+                "name": "filter[external_reference.business_system]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `business_system` attribute."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort `customers` by a single attribute; prefix with `-` for descending order. Valid attributes: `name`"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request"
+              }
+            ]
+          },
+          "docs": "List all Customers"
+        },
+        {
+          "info": {
+            "name": "Create a new Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new Customer"
+        },
+        {
+          "info": {
+            "name": "Show details for a specific Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request"
+              }
+            ]
+          },
+          "docs": "Show details for a specific Customer"
+        },
+        {
+          "info": {
+            "name": "Updates a customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a customer"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Contacts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Contacts for the requested Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:customer_id/contacts",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `contacts` matching the *exact* `name` attribute."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `contacts` matching the *partial* `name` attribute."
+              },
+              {
+                "name": "filter[email]",
+                "value": "",
+                "type": "query",
+                "description": "List `contacts` matching the *exact* `email` attribute."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort `contacts` by one or more attributes separated by commas; prefix with `-` for descending order. Valid attributes: `first_name`, `last_name`"
+              }
+            ]
+          },
+          "docs": "List all Contacts for the requested Customer"
+        },
+        {
+          "info": {
+            "name": "Create a Contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:customer_id/contacts",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a Contact"
+        },
+        {
+          "info": {
+            "name": "Retrieves a Contact from the requested Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:customer_id/contacts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Retrieves a Contact from the requested Customer"
+        },
+        {
+          "info": {
+            "name": "Updates Contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:customer_id/contacts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates Contact"
+        },
+        {
+          "info": {
+            "name": "Deletes a Contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/customers/:customer_id/contacts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Deletes a Contact"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Departments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all departments for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/departments",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Departments are dealer-defined categories identified by a dealer-scoped string code. Requires the `service_management:ReadDepartments` permission and is only available when the `Departments` feature is enabled for the account. Results are ordered by the department's configured position."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Diagnostic Readings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Diagnostic Reading for a specific Case in the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/diagnostic_readings",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all Diagnostic Reading for a specific Case in the requested account"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Extended Attributes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Extended Attributes from the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_attributes",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all Extended Attributes from the requested account"
+        },
+        {
+          "info": {
+            "name": "Retrieves an Extended Attribute from the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_attributes/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource uuid"
+              }
+            ]
+          },
+          "docs": "Retrieves an Extended Attribute from the requested account"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Extended Asset Attributes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Extended Asset Attributes for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_asset_attributes",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              }
+            ]
+          },
+          "docs": "List all Extended Asset Attributes for the requested account"
+        },
+        {
+          "info": {
+            "name": "Create an Extended Asset Attribute",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_asset_attributes",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an Extended Asset Attribute"
+        },
+        {
+          "info": {
+            "name": "Retrieves an Extended Asset Attribute from the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_asset_attributes/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves an Extended Asset Attribute from the requested account"
+        },
+        {
+          "info": {
+            "name": "Updates an Extended Asset Attribute",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_asset_attributes/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an Extended Asset Attribute"
+        },
+        {
+          "info": {
+            "name": "Deletes an Extended Asset Attribute",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/extended_asset_attributes/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deletes an Extended Asset Attribute"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Faults",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Faults for a specific Case in the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/faults",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all Faults for a specific Case in the requested account"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Operations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all applicable operations for a specific case in the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/cases/:case_id/applicable_operations",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "case_id",
+                "value": "",
+                "type": "path",
+                "description": "The case UUID"
+              },
+              {
+                "name": "filter[opcode]",
+                "value": "",
+                "type": "query",
+                "description": "Filters operations for the given opcode, using exact matching search"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all applicable operations for a specific case in the requested account"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Internal Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List details all Internal Users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/internal_users",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[permissions:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Filters users for the given permission assigned, using exact matching search"
+              },
+              {
+                "name": "filter[external_reference.business_system]",
+                "value": "",
+                "type": "query",
+                "description": "Filters users by the exact match of the external reference business system"
+              }
+            ]
+          },
+          "docs": "List details all Internal Users"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Internal User",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/internal_users/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "List details on a specific Internal User"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Program Types",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all program types for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/program_types",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all program types for the requested account"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Program Type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/program_types/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "List details on a specific Program Type"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Registered Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all registered assets filtered by vin or serial number or unit number",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/registered_assets",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[serial_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `registered_assets` matching the *exact* `serial_number` attribute."
+              },
+              {
+                "name": "filter[unit_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `registered_assets` matching the *exact* `unit_number` attribute."
+              },
+              {
+                "name": "filter[vin]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `registered_assets` matching the *exact* `vin` attribute."
+              },
+              {
+                "name": "filter[chassis_id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `registered_assets` matching the *exact* `chassis_id` attribute."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all registered assets filtered by vin or serial number or unit number"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Repair Statuses",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all the repair statuses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/repair_statuses",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ]
+          },
+          "docs": "List all the repair statuses"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Service Group - Customer Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Customer Assets from Service group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customer_assets",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[vin]",
+                "value": "",
+                "type": "query",
+                "description": "List `customer_assets` matching the *exact* `vin` attribute."
+              },
+              {
+                "name": "filter[unit_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `unit_number` attribute."
+              },
+              {
+                "name": "filter[serial_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `serial_number` attribute."
+              },
+              {
+                "name": "filter[chassis_id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `chassis_id` attribute."
+              },
+              {
+                "name": "filter[customer.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `customer.id` attribute."
+              },
+              {
+                "name": "filter[service_status]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `customer_assets` matching the *exact* `service_status` attribute."
+              },
+              {
+                "name": "filter[service_status:includes]",
+                "value": "",
+                "type": "query",
+                "description": "List `customer_assets` whose `service_status` is in the supplied comma-separated list. Accepted values are `active`, `inactive`, `archived`."
+              },
+              {
+                "name": "filter[service_status:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "List `customer_assets` whose `service_status` is **NOT** in the supplied comma-separated list. Accepted values are `active`, `inactive`, `archived`."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request"
+              }
+            ]
+          },
+          "docs": "List all Customer Assets from Service group"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Customer Asset from Service group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customer_assets/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request"
+              }
+            ]
+          },
+          "docs": "List details on a specific Customer Asset from Service group"
+        },
+        {
+          "info": {
+            "name": "Create a case for the specific Customer Asset from Service Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customer_assets/:id/create_case",
+            "headers": [
+              {
+                "name": "X-DECISIV-IDEMPOTENCY-KEY",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a case for the specific Customer Asset from Service Group"
+        },
+        {
+          "info": {
+            "name": "List Service History for the specific Customer Asset from Service Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customer_assets/:id/service_history",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "filter[service_provider.id]",
+                "value": "",
+                "type": "query",
+                "description": "List `service histories` matching the *exact* `service_prodiver.id` attribute."
+              },
+              {
+                "name": "filter[reference_number]",
+                "value": "",
+                "type": "query",
+                "description": "List `service histories` matching the *exact* `reference_number` attribute."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:blank]",
+                "value": "",
+                "type": "query",
+                "description": "List `service histories` matching if `closed_at` attribute is blank."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _less than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _less than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _greater than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories started _greater than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _less than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _less than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _greater than_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "filter[event_timestamps.closed_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Timebased filter to list service histories closed _greater than or equal to_ a specified `ISO 8601` timestamp."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List Service History for the specific Customer Asset from Service Group"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Service Group - Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Customers from Service group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[external_reference.business_system]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `business_system` attribute."
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `name` attribute."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` that match partially the `name` attribute."
+              },
+              {
+                "name": "filter[city]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `city` attribute."
+              },
+              {
+                "name": "filter[state]",
+                "value": "",
+                "type": "query",
+                "description": "List `customers` matching the *exact* `state` attribute."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List all Customers from Service group"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Customer from Service group",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "List details on a specific Customer from Service group"
+        },
+        {
+          "info": {
+            "name": "Updates a Customer from Service group",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a Customer from Service group"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Service Group - Customer Contacts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Contacts for the requested Service Group Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:customer_id/contacts",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `contacts` whose full name (`first_name` and `last_name` joined by a single space) exactly matches the provided value."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `contacts` matching a partial-token search across `first_name` and `last_name`. Whitespace-separated tokens in the provided value are matched as prefixes against either name field."
+              },
+              {
+                "name": "filter[email]",
+                "value": "",
+                "type": "query",
+                "description": "List `contacts` whose `attributes.communication[]` entry with `method_type` of `email` has a `value` exactly matching the provided value."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Page number"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Page size"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort `contacts` by one or more attributes separated by commas; prefix with `-` for descending order. Valid attributes: `first_name`, `last_name`"
+              }
+            ]
+          },
+          "docs": "List all Contacts for the requested Service Group Customer"
+        },
+        {
+          "info": {
+            "name": "Create a Contact for Service Group Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:customer_id/contacts",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a Contact for Service Group Customer"
+        },
+        {
+          "info": {
+            "name": "Retrieves a Contact from the requested Service Group Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:customer_id/contacts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The contact UUID"
+              }
+            ]
+          },
+          "docs": "Retrieves a Contact from the requested Service Group Customer"
+        },
+        {
+          "info": {
+            "name": "Updates a Contact for Service Group Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:customer_id/contacts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The contact UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a Contact for Service Group Customer"
+        },
+        {
+          "info": {
+            "name": "Deletes a Contact from Service Group Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_group/customers/:customer_id/contacts/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "path",
+                "description": "The customer UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The contact UUID"
+              }
+            ]
+          },
+          "docs": "Deletes a Contact from Service Group Customer"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Service Networks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Service Networks for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_networks",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_network` matching the *exact* `name` attribute."
+              }
+            ]
+          },
+          "docs": "List all Service Networks for the requested account"
+        },
+        {
+          "info": {
+            "name": "List details on a specific service network",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_networks/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List details on a specific service network"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Service Providers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Service Providers for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_providers",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Return specified included relationships upon request. Valid relationships are: `service_networks`"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_provider` matching the *exact* `name` attribute. Cannot be combined with `filter[name:like]`."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_provider` that match partially the `name` attribute. Cannot be combined with `filter[name]`."
+              },
+              {
+                "name": "filter[geolocation.point]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_provider` for the given geolocation.point, using geolocation search. Format: `lat,lon`"
+              },
+              {
+                "name": "filter[geolocation.radius]",
+                "value": "",
+                "type": "query",
+                "description": "Used combined with `geolocation.point filter`. Maximum value of 100"
+              },
+              {
+                "name": "filter[geolocation.radius_unit]",
+                "value": "",
+                "type": "query",
+                "description": "Used combined with `geolocation.point` and `geolocation.radius` filters. Valid values: `mi` and `km`"
+              },
+              {
+                "name": "filter[state]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_provider` matching the *exact* `state` attribute."
+              },
+              {
+                "name": "filter[service_networks.name]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_provider` matching the *exact* `service_networks.name` attribute."
+              },
+              {
+                "name": "filter[service_networks.id]",
+                "value": "",
+                "type": "query",
+                "description": "List `service_provider` matching the *exact* `service_networks.id` attribute."
+              }
+            ]
+          },
+          "docs": "You need to use at least one of the filters: filter[name], filter[name:like], filter[geolocation.point] or filter[state]."
+        },
+        {
+          "info": {
+            "name": "List details on a specific service provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/service_providers/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List details on a specific service provider"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Skill Levels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of skill levels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/skill_levels",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of skill levels"
+        },
+        {
+          "info": {
+            "name": "Retrieves a skill level",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/skill_levels/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource ID example A"
+              }
+            ]
+          },
+          "docs": "Retrieves a skill level"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Associations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of sublet associations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_associations",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of sublet associations"
+        },
+        {
+          "info": {
+            "name": "Create a sublet association for two cases",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_associations",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a sublet association for two cases"
+        },
+        {
+          "info": {
+            "name": "List details on a specific sublet associations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_associations/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List details on a specific sublet associations"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Cases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of sublet cases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "filter[ro_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given ro_number, using exact matching search"
+              },
+              {
+                "name": "filter[reference_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given reference_number, using exact matching search"
+              },
+              {
+                "name": "filter[parent_case.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given parent_case.id, using exact matching search"
+              },
+              {
+                "name": "filter[service_provider.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given service_provider.id, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given event_timestamps.started_at:gt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given event_timestamps.started_at:lt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given event_timestamps.started_at:gte, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_cases for the given event_timestamps.started_at:lte, using exact matching search"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of sublet cases"
+        },
+        {
+          "info": {
+            "name": "List details on a specific sublet case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List details on a specific sublet case"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Cases Attachments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of sublet cases attachments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/attachments",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of sublet cases attachments"
+        },
+        {
+          "info": {
+            "name": "Creates an attachment for the requested sublet case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/attachments",
+            "headers": [
+              {
+                "name": "X-DECISIV-SILENCE-EVENTS",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "body",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Creates an attachment for the requested sublet case"
+        },
+        {
+          "info": {
+            "name": "Retrieves a sublet cases attachment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/attachments/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Retrieves a sublet cases attachment"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Case Participants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the participants for a selected sublet case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_id/participants",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_id",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              }
+            ]
+          },
+          "docs": "Lists the participants for a selected sublet case"
+        },
+        {
+          "info": {
+            "name": "List details on a specific Participant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_id/participants/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_id",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource ID"
+              }
+            ]
+          },
+          "docs": "List details on a specific Participant"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Case Recipients",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the recipients for a selected sublet case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_id/participants/:participant_id/recipients",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_id",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "participant_id",
+                "value": "",
+                "type": "path",
+                "description": "The participant UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Lists the recipients for a selected sublet case"
+        },
+        {
+          "info": {
+            "name": "List details on a specific recipient",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_id/participants/:participant_id/recipients/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_id",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "participant_id",
+                "value": "",
+                "type": "path",
+                "description": "The participant UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource ID"
+              }
+            ]
+          },
+          "docs": "List details on a specific recipient"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Cases Notes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of sublet cases notes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/notes",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of sublet cases notes"
+        },
+        {
+          "info": {
+            "name": "Creates a note for the requested sublet case",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/notes",
+            "headers": [
+              {
+                "name": "X-DECISIV-SILENCE-EVENTS",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a note for the requested sublet case"
+        },
+        {
+          "info": {
+            "name": "List details on a specific note for the requested sublet case",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/notes/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "List details on a specific note for the requested sublet case"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Cases Line Items",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of sublet cases line items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_cases/:sublet_case_uuid/line_items",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "sublet_case_uuid",
+                "value": "",
+                "type": "path",
+                "description": "The sublet case UUID"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of sublet cases line items"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sublet Requests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of sublet requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_requests",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "filter[status]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given status, using exact matching search"
+              },
+              {
+                "name": "filter[service_provider.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given service_provider.id, using exact matching search"
+              },
+              {
+                "name": "filter[parent_case.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given parent_case.id, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given event_timestamps.requested_at:gt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given event_timestamps.requested_at:lt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given event_timestamps.requested_at:gte, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.requested_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the sublet_requests for the given event_timestamps.requested_at:lte, using exact matching search"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of sublet requests"
+        },
+        {
+          "info": {
+            "name": "Create a new sublet request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_requests",
+            "headers": [
+              {
+                "name": "X-DECISIV-SILENCE-EVENTS",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new sublet request"
+        },
+        {
+          "info": {
+            "name": "Retrieves a sublet request",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_requests/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Retrieves a sublet request"
+        },
+        {
+          "info": {
+            "name": "Updates a sublet request",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_requests/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a sublet request"
+        },
+        {
+          "info": {
+            "name": "Cancel sublet request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/sublet_requests/:id/cancel",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ]
+          },
+          "docs": "Cancel sublet request"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Time Tasks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a list of time tasks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/time_tasks",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              },
+              {
+                "name": "filter[event_timestamps.stopped_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.stopped_at:gt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.stopped_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.stopped_at:lt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.stopped_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.stopped_at:gte, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.stopped_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.stopped_at:lte, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.stopped_at:blank]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.stopped_at:blank, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.started_at:gt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.started_at:lt, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.started_at:gte, using exact matching search"
+              },
+              {
+                "name": "filter[event_timestamps.started_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given event_timestamps.started_at:lte, using exact matching search"
+              },
+              {
+                "name": "filter[employee.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given employee.id, using exact matching search"
+              },
+              {
+                "name": "filter[subject.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given subject.id, using exact matching search"
+              },
+              {
+                "name": "subject.type",
+                "value": "",
+                "type": "query",
+                "description": "Filters the time tasks for the given subject.type, using exact matching search"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of time tasks"
+        },
+        {
+          "info": {
+            "name": "Create a new time task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/time_tasks",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new time task"
+        },
+        {
+          "info": {
+            "name": "Retrieves a time task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/time_tasks/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "The relationships to be included."
+              }
+            ]
+          },
+          "docs": "Retrieves a time task"
+        },
+        {
+          "info": {
+            "name": "Updates a Time task",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/time_tasks/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a Time task"
+        },
+        {
+          "info": {
+            "name": "Deletes a time task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/time_tasks/:id",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The resource uuid"
+              }
+            ]
+          },
+          "docs": "Deletes a time task"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "VMRS",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all VMRS Asset Types (Code Key 2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/asset_types",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 2 (\"Equipment Category\" / asset type)\nreference values. Use this to populate dropdowns and validate\n`vmrs_asset_type` values before sending them on asset write endpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted alphabetically by `code` (ascending),\nwith `description` as a deterministic tiebreaker.\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Reasons for Repair (Code Key 14)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/reasons_for_repair",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 14 (\"Reason for Repair\") reference\nvalues. Use this to populate dropdowns and validate reason-for-repair\nvalues before sending them on case/line item write endpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted by `code` (ascending), with `reason` as a\ndeterministic tiebreaker. Each record also carries a `category` attribute\n(the VMRS `repair"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Repair Priorities (Code Key 16)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/repair_priorities",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 16 (\"Repair Priority Class\")\nreference values. Use this to populate dropdowns and validate\nrepair-priority values before sending them on case/line item write\nendpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted by `code` (ascending).\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Repair Sites (Code Key 17)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/repair_sites",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 17 (\"Repair Site\") reference values.\nUse this to populate dropdowns and validate repair-site values before\nsending them on case/line item write endpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted by `code` (ascending).\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Components (Code Key 33)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/components",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 33 (\"Component\") reference values.\nUse this to populate dropdowns and validate `component` values before\nsending them on case/line item write endpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted by `code` (ascending).\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Operator Reports (Code Key 82)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/operator_reports",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 82 (\"Operator Vehicle/Equipment\nCondition Report\") reference values. Use this to populate dropdowns and\nvalidate `operator_reports` values before sending them on line item /\nestimate write endpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted by `code` (ascending).\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Positions (Code Key 79)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/positions",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 79 (\"Position\") reference values.\nUse this to populate dropdowns and validate `positions` values before\nsending them on line item / estimate write endpoints.\n\nResults are sorted by `code` (ascending).\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Work Accomplished values (Code Key 15)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/work_accomplished",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 15 (\"Work Accomplished\") reference\nvalues. Use this to populate dropdowns and validate `work_accomplished`\nvalues before sending them on line item / estimate write endpoints.\n\nResults are sorted by `code` (ascending).\n"
+        },
+        {
+          "info": {
+            "name": "List all VMRS Technician Part Failure Codes (Code Key 18)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/service_management/:srm_account_id/v1/vmrs/technician_part_failure_codes",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The SRM Account ID."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets."
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page."
+              }
+            ]
+          },
+          "docs": "Returns the catalog of VMRS Code Key 18 (\"Technician Part Failure Code\")\nreference values. Use this to populate dropdowns and validate\n`technician_part_failure_codes` values before sending them on line item /\nestimate write endpoints.\n\nThe response payload is byte-identical to the equivalent route under\n`asset_management` — both URLs are served by the same backend\ncontroller. Results are sorted by `code` (ascending).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

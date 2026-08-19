@@ -1,0 +1,226 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Telematics",
+    "version": "0.48.24"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.decisiv.net/auth/api_gateway",
+      "accessTokenUrl": "https://login.decisiv.net/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Diagnostic Readings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all diagnostic readings for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/telematics/:srm_account_id/v1/diagnostic_readings",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "filter[asset_data.chassis_id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters diagnostic readings by exact match on `asset_data.chassis_id`"
+              },
+              {
+                "name": "filter[asset_data.device_id]",
+                "value": "",
+                "type": "query",
+                "description": "Filters diagnostic readings by exact match on `asset_data.device_id`"
+              },
+              {
+                "name": "filter[asset_data.serial_number]",
+                "value": "",
+                "type": "query",
+                "description": "Filters diagnostic readings by exact match on `asset_data.serial_number`"
+              },
+              {
+                "name": "filter[asset_data.vin]",
+                "value": "",
+                "type": "query",
+                "description": "Filters diagnostic readings by exact match on `asset_data.vin`"
+              },
+              {
+                "name": "filter[origin]",
+                "value": "",
+                "type": "query",
+                "description": "Filters diagnostic readings by exact match on `origin`"
+              },
+              {
+                "name": "filter[triggered_at:gt]",
+                "value": "",
+                "type": "query",
+                "description": "Returns diagnostic readings with `triggered_at` strictly greater than the provided `ISO8601` date-time"
+              },
+              {
+                "name": "filter[triggered_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Returns diagnostic readings with `triggered_at` greater than or equal to the provided `ISO8601` date-time"
+              },
+              {
+                "name": "filter[triggered_at:lt]",
+                "value": "",
+                "type": "query",
+                "description": "Returns diagnostic readings with `triggered_at` strictly less than the provided `ISO8601` date-time"
+              },
+              {
+                "name": "filter[triggered_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Returns diagnostic readings with `triggered_at` less than or equal to the provided `ISO8601` date-time"
+              }
+            ]
+          },
+          "docs": "Retrieve all diagnostic readings for a specific SRM account."
+        },
+        {
+          "info": {
+            "name": "Create a new diagnostic reading",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/telematics/:srm_account_id/v1/diagnostic_readings",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new diagnostic reading record for a specific SRM account."
+        },
+        {
+          "info": {
+            "name": "Get details for a specific diagnostic reading",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/telematics/:srm_account_id/v1/diagnostic_readings/:uuid",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "uuid",
+                "value": "",
+                "type": "path",
+                "description": "The diagnostic reading UUID"
+              }
+            ]
+          },
+          "docs": "Retrieve details for a specific diagnostic reading by UUID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Faults",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all faults for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/telematics/:srm_account_id/v1/faults",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ]
+          },
+          "docs": "Retrieve all faults for a specific SRM account."
+        },
+        {
+          "info": {
+            "name": "Create a new fault",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/telematics/:srm_account_id/v1/faults",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new fault record for a specific SRM account."
+        },
+        {
+          "info": {
+            "name": "Get details for a specific fault",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/telematics/:srm_account_id/v1/faults/:uuid",
+            "params": [
+              {
+                "name": "srm_account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account ID for SRM"
+              },
+              {
+                "name": "uuid",
+                "value": "",
+                "type": "path",
+                "description": "The fault UUID"
+              }
+            ]
+          },
+          "docs": "Retrieve details for a specific fault by UUID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

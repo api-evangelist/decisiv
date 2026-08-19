@@ -1,0 +1,2454 @@
+{
+  "item": [
+    {
+      "id": "aac84b57-5d7e-4a6e-9837-535dce2944b4",
+      "name": "customers",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8202de25-fafd-4bb6-8678-79bcf95eba1f",
+          "name": "get Customers",
+          "request": {
+            "name": "get Customers",
+            "description": {
+              "content": "Returns all Customers in the system for the authenticated Service Location",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter[created_before]",
+                  "value": "<YYYYYYDD>",
+                  "description": "Return records created before date, ex: 20170101 (YYYYMMDD)"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[created_after]",
+                  "value": "<YYYYYYDD>",
+                  "description": "Return records created after date, ex: 20170101 (YYYYMMDD)"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[updated_before]",
+                  "value": "<YYYYYYDD>",
+                  "description": "Return records updated before date, ex: 20170101 (YYYYMMDD)"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[updated_after]",
+                  "value": "<YYYYYYDD>",
+                  "description": "Return records updated after date, ex: 20170101 (YYYYMMDD)"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[service_location_id]",
+                  "value": "<string>",
+                  "description": "ID of Service Location"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[name]",
+                  "value": "<string>",
+                  "description": "Partial match for Customer Name, ex: Pens*"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[dms_id]",
+                  "value": "<string>",
+                  "description": "Dealer Management System id to filter collection by"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "206cb6f6-b0c4-4bc7-910d-2220b2de3e80",
+              "name": "List of customers in the ecosystem",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[created_before]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[created_after]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[updated_before]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[updated_after]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[service_location_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[name]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"Runaway Jim Trucking\",\n    \"address1\": \"100 Famous Mockingbird Lane\",\n    \"address2\": \"2410 Sloan Street\",\n    \"city\": \"Gamehendge\",\n    \"state\": \"VT\",\n    \"postal_code\": \"25610\",\n    \"country\": \"US\",\n    \"phone\": \"555-5555\",\n    \"fax\": \"555-5555\",\n    \"email\": \"contact@decisiv.net\",\n    \"note\": \"Note for contact\",\n    \"dms_id\": \"12345\",\n    \"created_at\": \"2023-10-17T15:50:52.133Z\",\n    \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n    \"created_by\": \"current_user\",\n    \"updated_by\": \"current_user\"\n  },\n  {\n    \"name\": \"Runaway Jim Trucking\",\n    \"address1\": \"100 Famous Mockingbird Lane\",\n    \"address2\": \"2410 Sloan Street\",\n    \"city\": \"Gamehendge\",\n    \"state\": \"VT\",\n    \"postal_code\": \"25610\",\n    \"country\": \"US\",\n    \"phone\": \"555-5555\",\n    \"fax\": \"555-5555\",\n    \"email\": \"contact@decisiv.net\",\n    \"note\": \"Note for contact\",\n    \"dms_id\": \"12345\",\n    \"created_at\": \"2023-10-17T15:50:52.133Z\",\n    \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n    \"created_by\": \"current_user\",\n    \"updated_by\": \"current_user\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e434a621-3d03-49e2-a528-5484a7cc6f36",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[created_before]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[created_after]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[updated_before]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[updated_after]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[service_location_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[name]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9ad8f675-50a0-4611-9db3-782451b44d75",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[created_before]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[created_after]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[updated_before]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[updated_after]",
+                      "value": "<YYYYYYDD>"
+                    },
+                    {
+                      "key": "filter[service_location_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[name]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ae6b753-224e-4ed7-b385-1ff2dc676082",
+          "name": "add Customer",
+          "request": {
+            "name": "add Customer",
+            "description": {
+              "content": "Creates a new Customer for use within the ecosystem",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"address1\": \"<string>\",\n  \"address2\": \"<string>\",\n  \"city\": \"<string>\",\n  \"state\": \"<string>\",\n  \"postal_code\": \"<string>\",\n  \"country\": \"<string>\",\n  \"phone\": \"<string>\",\n  \"fax\": \"<string>\",\n  \"email\": \"<string>\",\n  \"note\": \"<string>\",\n  \"dms_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "80f557c8-c3d6-4570-b60f-94506b70eea2",
+              "name": "Customer Creation Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\",\n  \"created_at\": \"2023-10-17T15:50:52.133Z\",\n  \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n  \"created_by\": \"current_user\",\n  \"updated_by\": \"current_user\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3f5992b-b36e-41a3-bd51-4f6d387957a5",
+              "name": "Asset Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0012119e-440d-4f04-bb6a-d26b7acdc80f",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "62eeac3e-953a-43ae-bb1c-c4e7c8e87d65",
+          "name": "find Customer By Id",
+          "request": {
+            "name": "find Customer By Id",
+            "description": {
+              "content": "Returns a Customer based on the provided ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) Customer ID or UUID to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8ec83c07-9f9e-4761-8448-05b350b668b9",
+              "name": "Customer details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Customer ID or UUID to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\",\n  \"created_at\": \"2023-10-17T15:50:52.133Z\",\n  \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n  \"created_by\": \"current_user\",\n  \"updated_by\": \"current_user\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "93d41b9e-1ec6-464a-9817-7f0d01c65740",
+              "name": "Customer not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Customer ID or UUID to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c980f4d7-06db-4aab-89b3-dda02e3efe10",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Customer ID or UUID to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a35bf52c-3b3c-454f-84a0-68c8fb51cf71",
+          "name": "update Customer",
+          "request": {
+            "name": "update Customer",
+            "description": {
+              "content": "Updates a Customer record",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) Customer ID or UUID to update"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"address1\": \"<string>\",\n  \"address2\": \"<string>\",\n  \"city\": \"<string>\",\n  \"state\": \"<string>\",\n  \"postal_code\": \"<string>\",\n  \"country\": \"<string>\",\n  \"phone\": \"<string>\",\n  \"fax\": \"<string>\",\n  \"email\": \"<string>\",\n  \"note\": \"<string>\",\n  \"dms_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9dcd449c-1dc5-4059-8a50-9b51572c40fa",
+              "name": "Customer updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Customer ID or UUID to update"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 42,\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\",\n  \"created_at\": \"2023-10-17T15:50:52.133Z\",\n  \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n  \"created_by\": \"current_user\",\n  \"updated_by\": \"current_user\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7010c5f2-e561-4493-b843-b75714216dca",
+              "name": "Customer not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Customer ID or UUID to update"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 42,\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "022b392f-91a2-4181-869c-0ce721fde24a",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) Customer ID or UUID to update"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": 42,\n  \"name\": \"Runaway Jim Trucking\",\n  \"address1\": \"100 Famous Mockingbird Lane\",\n  \"address2\": \"2410 Sloan Street\",\n  \"city\": \"Gamehendge\",\n  \"state\": \"VT\",\n  \"postal_code\": \"25610\",\n  \"country\": \"US\",\n  \"phone\": \"555-5555\",\n  \"fax\": \"555-5555\",\n  \"email\": \"contact@decisiv.net\",\n  \"note\": \"Note for contact\",\n  \"dms_id\": \"12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "0cdaf3a0-9115-4043-a184-34868f22c747",
+      "name": "group_customers",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e24d7f36-7bed-4e5a-a955-f82e08d370a1",
+          "name": "get Group Customers",
+          "request": {
+            "name": "get Group Customers",
+            "description": {
+              "content": "Returns all Group Customers in the system for the authenticated Service Location",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "group_customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter[dms_id]",
+                  "value": "<string>",
+                  "description": "(Required) Dealer Management System id to filter collection by"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f9d65d44-62db-47a4-bd65-658adaf7a892",
+              "name": "List of group customers in the ecosystem",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"Runaway Jim Trucking\",\n    \"address1\": \"100 Famous Mockingbird Lane\",\n    \"address2\": \"2410 Sloan Street\",\n    \"city\": \"Gamehendge\",\n    \"state\": \"VT\",\n    \"postal_code\": \"25610\",\n    \"country\": \"US\",\n    \"phone\": \"555-5555\",\n    \"fax\": \"555-5555\",\n    \"email\": \"contact@decisiv.net\",\n    \"note\": \"Note for contact\",\n    \"dms_id\": \"12345\",\n    \"created_at\": \"2023-10-17T15:50:52.133Z\",\n    \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n    \"created_by\": \"current_user\",\n    \"updated_by\": \"current_user\"\n  },\n  {\n    \"name\": \"Runaway Jim Trucking\",\n    \"address1\": \"100 Famous Mockingbird Lane\",\n    \"address2\": \"2410 Sloan Street\",\n    \"city\": \"Gamehendge\",\n    \"state\": \"VT\",\n    \"postal_code\": \"25610\",\n    \"country\": \"US\",\n    \"phone\": \"555-5555\",\n    \"fax\": \"555-5555\",\n    \"email\": \"contact@decisiv.net\",\n    \"note\": \"Note for contact\",\n    \"dms_id\": \"12345\",\n    \"created_at\": \"2023-10-17T15:50:52.133Z\",\n    \"updated_at\": \"2023-10-17T15:50:52.133Z\",\n    \"created_by\": \"current_user\",\n    \"updated_by\": \"current_user\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "043c9242-cc3f-4436-9327-90407bfbc6d1",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"status\": \"400\",\n    \"code\": \"decisiv:filters:106\",\n    \"title\": \"Required filter is missing\",\n    \"detail\": \"Required filter must be provided. Valid required filters: dms_id\",\n    \"source\": {\n      \"parameter\": \"filter\"\n    }\n  },\n  {\n    \"status\": \"400\",\n    \"code\": \"decisiv:filters:106\",\n    \"title\": \"Required filter is missing\",\n    \"detail\": \"Required filter must be provided. Valid required filters: dms_id\",\n    \"source\": {\n      \"parameter\": \"filter\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "199e745d-e02c-40e0-a8d5-270117397374",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad5900f0-4f6f-4eb3-9255-616ebed20715",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[dms_id]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "8e1370f5-74ff-4817-af18-7909d1f93de5",
+      "name": "assets",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "022041e1-3d6a-40af-b34a-d332e9c53d2d",
+          "name": "assets",
+          "request": {
+            "name": "assets",
+            "description": {
+              "content": "Returns a listing of assets for all a Dealers' Customers",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter[vin]",
+                  "value": "<string>",
+                  "description": "Partial match for a VIN, ex: JN1AR5XXXXXX*"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[serial_number]",
+                  "value": "<string>",
+                  "description": "Partial match for a serial number, ex: 2112*"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[customer_id]",
+                  "value": "<string>",
+                  "description": "ID of Customer to filter by"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter[unit_number]",
+                  "value": "<string>",
+                  "description": "Unit Number to filter collection by"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "34e78804-cd4a-44e0-94ed-7e62ebda34c5",
+              "name": "List of assets in the ecosystem for a Dealers' Customers",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[customer_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[unit_number]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"data\": [\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"1952-07-14T20:33:01.987Z\",\n          \"updated_at\": \"2000-03-29T08:56:41.608Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      },\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"2022-08-11T02:18:38.986Z\",\n          \"updated_at\": \"1985-02-13T07:34:18.190Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      }\n    ],\n    \"links\": {\n      \"self\": \"http://link.to/resource\",\n      \"related\": \"http://link.to/resource\"\n    }\n  },\n  {\n    \"data\": [\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"2002-03-28T20:54:52.980Z\",\n          \"updated_at\": \"1971-06-23T21:31:53.596Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      },\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"1962-06-13T06:41:21.342Z\",\n          \"updated_at\": \"1966-08-05T18:57:45.856Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      }\n    ],\n    \"links\": {\n      \"self\": \"http://link.to/resource\",\n      \"related\": \"http://link.to/resource\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "86ba3300-f666-4e6e-8b7c-1ac01d07469d",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[serial_number]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[customer_id]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter[unit_number]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ac058a14-d078-4856-ba81-162816e8ef17",
+          "name": "Assign Asset To Customer",
+          "request": {
+            "name": "Assign Asset To Customer",
+            "description": {
+              "content": "Assigns an asset to a customer based upon the id",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/vnd.api+json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"type\": \"<string>\",\n    \"attributes\": {\n      \"asset_id\": \"<string>\",\n      \"customer_id\": \"<integer>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cae7020f-b8ff-443f-a455-09ec7a8c6c68",
+              "name": "Customer Asset details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n      \"customer_id\": \"<integer>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"attributes\": {\n      \"customer_id\": 42,\n      \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"serial_number\": \"DC591345\",\n      \"unit_number\": \"VT84\",\n      \"created_at\": \"1950-04-01T13:50:54.461Z\",\n      \"updated_at\": \"1987-12-17T19:49:16.194Z\",\n      \"created_by\": \"current_user\",\n      \"updated_by\": \"current_user\"\n    },\n    \"id\": 88,\n    \"type\": \"assets\",\n    \"links\": {\n      \"self\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f598ed46-de03-4f67-92be-bedf6040b604",
+              "name": "412 Precondition Failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n      \"customer_id\": \"<integer>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Precondition Failed\",\n  \"detail\": \"An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail\",\n  \"code\": \"412\",\n  \"status\": \"412\",\n  \"meta\": {\n    \"retry_after\": 5\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fa1c652d-c7f0-4e9c-a440-29c555b90337",
+              "name": "Assets owned by fleets can not currently be assigned to Local Customers",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n      \"customer_id\": \"<integer>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"title\": \"Asset not available for assignment to this account\",\n  \"detail\": \"asset_id - Asset not available forassignment to this account\",\n  \"code\": \"100\",\n  \"status\": \"422\",\n  \"source\": {\n    \"pointer\": \"/data/attributes/asset_id\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ab6f32b-f359-4508-b02f-70f9c53833c3",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data\": {\n    \"type\": \"assets\",\n    \"attributes\": {\n      \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n      \"customer_id\": \"<integer>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "786323a4-efe6-4c21-9572-d6f6921cc40d",
+          "name": "Get Customer Asset By Id",
+          "request": {
+            "name": "Get Customer Asset By Id",
+            "description": {
+              "content": "Returns a Customer Asset record based upon a particular ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "asset_id",
+                  "description": "(Required) ID of Customer Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5ad7eb2f-9d19-4d8e-a20f-83c3028cc9df",
+              "name": "Customer details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"attributes\": {\n      \"customer_id\": 42,\n      \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n      \"vin\": \"1C4RJFATXDC591345\",\n      \"serial_number\": \"DC591345\",\n      \"unit_number\": \"VT84\",\n      \"created_at\": \"1950-04-01T13:50:54.461Z\",\n      \"updated_at\": \"1987-12-17T19:49:16.194Z\",\n      \"created_by\": \"current_user\",\n      \"updated_by\": \"current_user\"\n    },\n    \"id\": 88,\n    \"type\": \"assets\",\n    \"links\": {\n      \"self\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6afe7274-55d3-48f9-ad42-2f8c804af2d0",
+              "name": "Customer Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0e6ed45d-3d8e-4b92-bae0-61902b73c5eb",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f96b1f9-58f7-4a0f-8dd2-121e142a531c",
+          "name": "Remove Customer Asset By Id",
+          "request": {
+            "name": "Remove Customer Asset By Id",
+            "description": {
+              "content": "Removes a Customer Asset from a Customers' inventory based upon ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "assets",
+                ":asset_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "asset_id",
+                  "description": "(Required) ID of Customer Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "707ead36-9b26-4924-9251-6fbc5f551d0e",
+              "name": "Asset Removed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "02497584-ea79-4e90-99d8-3cd93733caec",
+              "name": "Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc3a41fc-8303-44b9-adfb-ecbcdfb733ee",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "654126e5-e132-440a-8177-d9cc77f9a941",
+      "name": "group_assets",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2293886f-d4bd-438f-a73d-db8faa6efc40",
+          "name": "group Assets",
+          "request": {
+            "name": "group Assets",
+            "description": {
+              "content": "Returns a listing of group assets for all a Dealers' Customers",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "group_assets"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "filter[vin]",
+                  "value": "<string>",
+                  "description": "(Required) Exact match for a VIN, ex: JN1AR5XXXXXX*"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3e54bc17-eda5-4c3e-b30b-6cd2a2f37046",
+              "name": "List of group assets in the ecosystem for a Dealers' Customers",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"data\": [\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"1985-04-05T12:36:53.953Z\",\n          \"updated_at\": \"1971-02-10T11:23:16.354Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      },\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"2003-08-05T21:54:13.869Z\",\n          \"updated_at\": \"1990-04-03T06:56:15.184Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      }\n    ],\n    \"links\": {\n      \"self\": \"http://link.to/resource\",\n      \"related\": \"http://link.to/resource\"\n    }\n  },\n  {\n    \"data\": [\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"1997-02-27T00:06:17.730Z\",\n          \"updated_at\": \"1951-11-27T23:10:22.592Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      },\n      {\n        \"attributes\": {\n          \"customer_id\": 42,\n          \"asset_id\": \"c441e9ee-d990-4759-b6ab-00230ab6647e\",\n          \"vin\": \"1C4RJFATXDC591345\",\n          \"serial_number\": \"DC591345\",\n          \"unit_number\": \"VT84\",\n          \"created_at\": \"1999-04-02T04:47:24.678Z\",\n          \"updated_at\": \"2012-09-29T11:29:53.340Z\",\n          \"created_by\": \"current_user\",\n          \"updated_by\": \"current_user\"\n        },\n        \"id\": 88,\n        \"type\": \"assets\"\n      }\n    ],\n    \"links\": {\n      \"self\": \"http://link.to/resource\",\n      \"related\": \"http://link.to/resource\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "014ebaa3-8713-47bc-8fa0-08e9244cb6ec",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "[\n  {\n    \"status\": \"400\",\n    \"code\": \"decisiv:filters:106\",\n    \"title\": \"Required filter is missing\",\n    \"detail\": \"Required filter must be provided. Valid required filters: vin\",\n    \"source\": {\n      \"parameter\": \"filter\"\n    }\n  },\n  {\n    \"status\": \"400\",\n    \"code\": \"decisiv:filters:106\",\n    \"title\": \"Required filter is missing\",\n    \"detail\": \"Required filter must be provided. Valid required filters: vin\",\n    \"source\": {\n      \"parameter\": \"filter\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "655f0822-f27a-4a17-b439-8c2c87f0c6d4",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_assets"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "filter[vin]",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a3d651a0-7374-4b1a-bb95-d55758f8de4f",
+          "name": "Remove Group Customer Asset By Id",
+          "request": {
+            "name": "Remove Group Customer Asset By Id",
+            "description": {
+              "content": "Removes a Group Customer Asset from a Customer's inventory based upon ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "group_assets",
+                ":asset_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "asset_id",
+                  "description": "(Required) ID of Customer Asset to fetch"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.api+json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3e76c25e-9ea3-437b-9abc-a9cf4c320eeb",
+              "name": "Group Asset Removed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d9607b3a-e93b-4b72-a42f-f4ea839df944",
+              "name": "Group Asset not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": {\n    \"value\": \"<Error: Could not resolve allOf schema\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c59a224b-13ad-4d0a-954b-035d4c5f6d05",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "group_assets",
+                    ":asset_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "asset_id",
+                      "description": "(Required) ID of Customer Asset to fetch"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/vnd.api+json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.api+json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    },\n    {\n      \"code\": \"429\",\n      \"detail\": \"The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.\",\n      \"status\": \"429\",\n      \"title\": \"Too Many Requests\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/api/v1/",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Authorization"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "42e0bd51-7f73-4bb8-8dad-fb3b46e23a81",
+    "name": "Service Provider API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Base API allowing Dealers to interact with Customers and Assets\n\nContact Support:\n Name: Decisiv Support\n Email: support@decisiv.com",
+      "type": "text/plain"
+    }
+  }
+}

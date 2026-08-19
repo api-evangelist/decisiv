@@ -1,0 +1,232 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Global Assets API",
+    "version": "2.1.5"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getAssets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets",
+            "params": [
+              {
+                "name": "filter[vin]",
+                "value": "",
+                "type": "query",
+                "description": "17 character VIN number"
+              }
+            ]
+          },
+          "docs": "Returns all assets in the system. Search is restricted to VIN only"
+        },
+        {
+          "info": {
+            "name": "addAsset",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/assets"
+          },
+          "docs": "Creates a new Asset for use within the ecosystem"
+        },
+        {
+          "info": {
+            "name": "findAssetById",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Returns an asset based on the provided ID"
+        },
+        {
+          "info": {
+            "name": "updateAsset",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/assets/:asset_id",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Updates an Asset record"
+        },
+        {
+          "info": {
+            "name": "assetCampaigns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id/campaigns",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Campaign information for an asset"
+        },
+        {
+          "info": {
+            "name": "assetRecalls",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id/recalls",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Recall information for an asset"
+        },
+        {
+          "info": {
+            "name": "assetWarranties",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id/warranties",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Waranty information for an asset"
+        },
+        {
+          "info": {
+            "name": "findServiceHistoryById",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id/service_history",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Return records ordered by specified attribute, in ascending order. For descending order the sort attribute is prepended by a '-'. "
+              },
+              {
+                "name": "filter[occurred_before]",
+                "value": "",
+                "type": "query",
+                "description": "Return records occurred before date, ex: 20170101 (YYYYMMDD)"
+              },
+              {
+                "name": "filter[occurred_after]",
+                "value": "",
+                "type": "query",
+                "description": "Return records occurred after date, ex: 20170101 (YYYYMMDD)"
+              },
+              {
+                "name": "filter[case_id]",
+                "value": "",
+                "type": "query",
+                "description": "Return records based on the given case_id, ex: 3243"
+              }
+            ]
+          },
+          "docs": "Returns the Service History for an Asset by ID"
+        },
+        {
+          "info": {
+            "name": "findBuildInformationById",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assets/:asset_id/build_information",
+            "params": [
+              {
+                "name": "asset_id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of Asset to fetch"
+              }
+            ]
+          },
+          "docs": "Returns the Build Information for an Asset by ID"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "OEM info",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getVinInformation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/vins/:vin",
+            "params": [
+              {
+                "name": "vin",
+                "value": "",
+                "type": "path",
+                "description": "17 character VIN number"
+              }
+            ]
+          },
+          "docs": "Returns OEM information for given VIN number"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

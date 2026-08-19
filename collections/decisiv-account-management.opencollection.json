@@ -1,0 +1,817 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Account Management",
+    "version": "0.48.24"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "authorization_code",
+      "authorizationUrl": "https://login.decisiv.net/auth/api_gateway",
+      "accessTokenUrl": "https://login.decisiv.net/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Accounts the current user has access granted to",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts",
+            "params": [
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Sideload related resources (e.g. `roles`)"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that match the `name` attribute. Cannot be combined with `filter[name:like]`."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that match partially the `name` attribute. Cannot be combined with `filter[name]`. in the value are matched as literal characters, not wildcards."
+              },
+              {
+                "name": "filter[external_reference.decisiv]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that match the `decisiv` attribute inside the external_reference object."
+              },
+              {
+                "name": "filter[external_reference.srm_account]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that match the `srm_account` attribute inside the external_reference object."
+              },
+              {
+                "name": "filter[external_reference.business_system]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that match the `business_system` attribute inside the external_reference object."
+              },
+              {
+                "name": "filter[module_subscriptions.key:include]",
+                "value": "",
+                "type": "query",
+                "description": "**Deprecated** — use `filter[module_subscriptions.key:includes]` instead. List `accounts` that have the modules chosen in the filter. Accepts up to 50 comma-separated values."
+              },
+              {
+                "name": "filter[module_subscriptions.key:exclude]",
+                "value": "",
+                "type": "query",
+                "description": "**Deprecated** — use `filter[module_subscriptions.key:excludes]` instead. List `accounts` that does not have the modules chosen in the filter. Accepts up to 50 comma-separated values."
+              },
+              {
+                "name": "filter[module_subscriptions.key:includes]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that have the modules chosen in the filter. Accepts up to 50 comma-separated values."
+              },
+              {
+                "name": "filter[module_subscriptions.key:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "List `accounts` that does not have the modules chosen in the filter. Accepts up to 50 comma-separated values."
+              }
+            ]
+          },
+          "docs": "Returns the accounts the authenticated user has been granted access to, with pagination and filtering. Supports `?include=roles` to sideload the user's RBAC roles on each account; when present, each account gains a `relationships.roles` object and the related role resources are returned in the top-level `included` array."
+        },
+        {
+          "info": {
+            "name": "List details on a specific Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Sideload related resources (e.g. `roles`)"
+              }
+            ]
+          },
+          "docs": "Returns the details of a single account the authenticated user has access to. Supports `?include=roles` to sideload the user's RBAC roles on the account; when present, the account gains a `relationships.roles` object and the related role resources are returned in the top-level `included` array."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Ecosystem Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search ecosystem users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/ecosystem_users",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account's UUID"
+              },
+              {
+                "name": "filter[email]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by exact email address"
+              },
+              {
+                "name": "filter[first_name:like]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by first name (partial, case-insensitive)"
+              },
+              {
+                "name": "filter[last_name:like]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by last name (partial, case-insensitive)"
+              },
+              {
+                "name": "filter[external_reference.business_system]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the user's business-system identifier (the same value returned in `external_reference.business_system`)."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Number of results per page"
+              }
+            ]
+          },
+          "docs": "Search for users across the entire ecosystem, scoped to an account context. At least one filter parameter is required."
+        },
+        {
+          "info": {
+            "name": "Create an ecosystem user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/ecosystem_users",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account's UUID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provisions a new user in the Decisiv SRM ecosystem. This endpoint is **not** idempotent: a duplicate email or username — including one belonging to a discarded user — is rejected with `422`, matching the legacy vendor self-registration and admin-create flows. A welcome notification is sent automatically on success — either a password setup email or an SSO welcome email depending on the user's email domain."
+        },
+        {
+          "info": {
+            "name": "Get an ecosystem user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/ecosystem_users/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "The account's UUID"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The user's UUID"
+              }
+            ]
+          },
+          "docs": "Retrieve a single ecosystem user by UUID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List account users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Sideload related resources (e.g. `roles`)"
+              },
+              {
+                "name": "filter[email]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by exact email address"
+              },
+              {
+                "name": "filter[first_name:like]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by first name (partial, case-insensitive)"
+              },
+              {
+                "name": "filter[last_name:like]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by last name (partial, case-insensitive)"
+              },
+              {
+                "name": "filter[external_reference.business_system]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the user's business-system identifier (the same value returned in `external_reference.business_system`)."
+              },
+              {
+                "name": "filter[roles.id]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by role ID. Accepts a comma-separated list; users must have ALL listed roles on this account (AND). Example: filter[roles.id]=1,2"
+              },
+              {
+                "name": "filter[roles.id:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by role ID. Accepts a comma-separated list; users must have ANY of the listed roles on this account (OR). Example: filter[roles.id:includes]=1,2"
+              },
+              {
+                "name": "filter[roles.id:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by role ID. Accepts a comma-separated list; returns users who do NOT have ANY of the listed roles on this account. Example: filter[roles.id:excludes]=1,2"
+              },
+              {
+                "name": "filter[job_role]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by exact `job_role` (e.g. `Branch Manager`). Pass the same value returned in the `job_role` attribute on the response."
+              },
+              {
+                "name": "filter[job_role:like]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by partial `job_role` match (case-insensitive). Example: `Manager` matches users whose `job_role` is `Branch Manager` or `Service Manager`."
+              },
+              {
+                "name": "filter[last_login_at:gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter to users whose most recent login is on or after the given ISO 8601 timestamp. Example: filter[last_login_at:gte]=2026-01-01T00:00:00Z"
+              },
+              {
+                "name": "filter[last_login_at:lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter to users whose most recent login is on or before the given ISO 8601 timestamp."
+              },
+              {
+                "name": "filter[last_login_at:exists]",
+                "value": "",
+                "type": "query",
+                "description": "Filter users by whether a `last_login_at` timestamp exists. Use `true` to list only users who have logged in at least once, or `false` to list only users who have never logged in."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort the results. Accepts a comma-separated list of fields; prefix any field with `-` for descending. The first field is the primary sort key; subsequent fields break ties. Allowed fields: `last_login_at`, `roles.name`, `job_role`. Examples: `sort=last_login_at`, `sort=-job_role`, `sort=roles.name,-last_login_at`. Defaults to `last_name asc, first_name asc` when omitted. For `roles.name`, multi-role users are placed by their alphabetically first role (asc) or last role (desc) on this account. Empty/null values for any sortable column are always grouped at the end (NULLS LAST) regardless of direction."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List all users assigned to an account. Supports `?include=roles` to sideload role assignments."
+        },
+        {
+          "info": {
+            "name": "Add a user to an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns an existing ecosystem user to an account with one or more roles. If the user was previously removed, their account access is reactivated."
+        },
+        {
+          "info": {
+            "name": "Get an account user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieve a single user within an account context."
+        },
+        {
+          "info": {
+            "name": "Update an account user's communication preferences",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the per-account visibility flags for a user already associated with the account. Any subset of `communication_preferences` keys may be supplied; omitted keys are left unchanged. Returns 404 if the user has no role assignments in this account."
+        },
+        {
+          "info": {
+            "name": "Remove a user from an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deactivates a user's access to an account. Removes all role assignments, group memberships, user permissions, and recipient records. Cannot remove yourself."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account User Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add roles to an account user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users/:account_user_id/relationships/roles",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_user_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assign one or more additional roles to a user within an account."
+        },
+        {
+          "info": {
+            "name": "Remove a role from an account user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/users/:account_user_id/relationships/roles/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_user_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The role ID to remove"
+              }
+            ]
+          },
+          "docs": "Remove a single role from a user within an account. Cannot remove the last role (use DELETE /users/{id} instead) or modify your own roles."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List account roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/roles",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "filter[name]",
+                "value": "",
+                "type": "query",
+                "description": "List `roles` that match the `name` attribute exactly (case-insensitive). Accepts a comma-separated list of values to match any of them (OR)."
+              },
+              {
+                "name": "filter[name:like]",
+                "value": "",
+                "type": "query",
+                "description": "List `roles` that partially match the `name` attribute (case-insensitive). Accepts a comma-separated list of values to match any of them (OR). Wildcard characters in the value are matched as literal characters, not wildcards."
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List all roles available for an account, including public roles (from subscribed services) and private roles owned by the account."
+        },
+        {
+          "info": {
+            "name": "Get an account role",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/roles/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a single role available for an account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List webhook endpoints for the designated account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhooks",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "filter[events:includes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `Webhooks` which are subscribed to the listed webhook events"
+              },
+              {
+                "name": "filter[events:excludes]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `Webhooks` which are **NOT** subscribed to the listed webhook events"
+              },
+              {
+                "name": "filter[enabled]",
+                "value": "",
+                "type": "query",
+                "description": "Filter `Webhooks` based upon active / inactive status"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List webhook endpoints for the designated account"
+        },
+        {
+          "info": {
+            "name": "Create new webhook for the requested account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhooks",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The custom header Authorization is not allowed"
+        },
+        {
+          "info": {
+            "name": "Show details for a specific webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhooks/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Show details for a specific webhook"
+        },
+        {
+          "info": {
+            "name": "Update details for a specific webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhooks/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The custom header Authorization is not allowed"
+        },
+        {
+          "info": {
+            "name": "Delete a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhooks/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a webhook"
+        },
+        {
+          "info": {
+            "name": "Refresh webhook signing key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhooks/:id/refresh_signing_key",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Refresh webhook signing key"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Webhooks Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List webhook events which are available for subscription by the designated account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://srm-api.staging.decisivapps.com/account_management/v1/accounts/:account_id/webhook_events",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "page[number]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired `page` when encountering larger result sets"
+              },
+              {
+                "name": "page[size]",
+                "value": "",
+                "type": "query",
+                "description": "Sets the desired maximum number of results per page"
+              }
+            ]
+          },
+          "docs": "List webhook events which are available for subscription by the designated account"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
