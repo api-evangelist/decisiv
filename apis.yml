@@ -22,6 +22,19 @@ modified: '2026-08-12'
 tags:
 - Company
 - commercial-vehicle
+- Fleet Management
+- service-relationship-management
+- Telematics
+- Asset Management
+- maintenance-and-repair
+- Heavy Duty Trucking
+- Transportation
+- Dealer Management
+- JSON:API
+- Webhook
+tags_raw:
+- Company
+- commercial-vehicle
 - fleet-management
 - service-relationship-management
 - telematics
@@ -41,6 +54,11 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Account Management
+  - Webhook
+  - User
+  - Roles
+  tags_raw:
   - account-management
   - webhooks
   - users
@@ -64,6 +82,12 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Asset Management
+  - Fleet Management
+  - Service Requests
+  - Estimates
+  - vmrs
+  tags_raw:
   - asset-management
   - fleet-management
   - service-requests
@@ -85,6 +109,13 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Service Management
+  - repair-order
+  - Estimates
+  - Parts
+  - Labor
+  - sublet
+  tags_raw:
   - service-management
   - repair-order
   - estimates
@@ -105,6 +136,10 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Telematics
+  - fault-codes
+  - Diagnostics
+  tags_raw:
   - telematics
   - fault-codes
   - diagnostics
@@ -123,6 +158,12 @@ apis:
   humanURL: https://global-assets.decisivapps.com/api-docs/
   baseURL: https://global-assets.decisivapps.com/api/v1/
   tags:
+  - Assets
+  - VIN
+  - Recalls
+  - Warranty
+  - OEM
+  tags_raw:
   - assets
   - vin
   - recalls
@@ -142,6 +183,11 @@ apis:
   humanURL: https://service-provider.decisivapps.com/api-docs/
   baseURL: https://service-provider.decisivapps.com/api/v1/
   tags:
+  - Service Provider
+  - Customers
+  - Assets
+  - Dealer
+  tags_raw:
   - service-provider
   - customers
   - assets
@@ -162,6 +208,12 @@ apis:
   humanURL: https://api-docs.decisiv.net/docs/api/1
   baseURL: https://api.decisiv.net/platform_api
   tags:
+  - Cases
+  - Estimates
+  - Service Locations
+  - XML
+  - Legacy
+  tags_raw:
   - cases
   - estimates
   - service-locations
