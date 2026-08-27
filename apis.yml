@@ -46,165 +46,12 @@ tags_raw:
 - json-api
 - webhooks
 apis:
-- name: Decisiv SRM Gateway - Account Management
-  description: >-
-    Accounts, ecosystem users, account users and roles, and the webhook subscription surface for the Decisiv SRM
-    Gateway. This is the module that manages webhook endpoints (URL, subscribed events, custom headers, enabled
-    state) and rotates the webhook signing key, plus the catalog of webhook events an account may subscribe to.
-  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
-  baseURL: https://srm-api.decisivapps.com
-  tags:
-  - Account Management
-  - Webhook
-  - User
-  - Roles
-  tags_raw:
-  - account-management
-  - webhooks
-  - users
-  - roles
-  properties:
-  - type: OpenAPI
-    url: openapi/decisiv-account-management-openapi.yml
-  - type: Documentation
-    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
-  - type: APIReference
-    url: https://srm-api.decisivapps.com/api-docs/v1
-  - type: Webhooks
-    url: asyncapi/decisiv-srm-gateway-webhooks.yml
-  - type: Overlay
-    url: overlays/decisiv-account-management-overlay.yaml
-- name: Decisiv SRM Gateway - Asset Management
-  description: >-
-    The fleet / asset-owner view of the SRM Gateway. Registered assets and components, depots, extended asset
-    attributes, contacts, service requests to service providers, cases and case summaries, case notes, attachments,
-    participants and recipients, estimates, and the VMRS coding reference.
-  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
-  baseURL: https://srm-api.decisivapps.com
-  tags:
-  - Asset Management
-  - Fleet Management
-  - Service Requests
-  - Estimates
-  - vmrs
-  tags_raw:
-  - asset-management
-  - fleet-management
-  - service-requests
-  - estimates
-  - vmrs
-  properties:
-  - type: OpenAPI
-    url: openapi/decisiv-asset-management-openapi.yml
-  - type: Documentation
-    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
-  - type: Overlay
-    url: overlays/decisiv-asset-management-overlay.yaml
-- name: Decisiv SRM Gateway - Service Management
-  description: >-
-    The service-provider view of the SRM Gateway and the largest module. Cases and case actions, customers and
-    customer assets, customer requests, line items with parts, additional charges, technician stories and internal
-    labels, case metadata, time tasks, skill levels, departments, program types, repair statuses, service networks,
-    sublet cases / requests / associations between shops, diagnostic readings, faults, and VMRS.
-  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
-  baseURL: https://srm-api.decisivapps.com
-  tags:
-  - Service Management
-  - repair-order
-  - Estimates
-  - Parts
-  - Labor
-  - sublet
-  tags_raw:
-  - service-management
-  - repair-order
-  - estimates
-  - parts
-  - labor
-  - sublet
-  properties:
-  - type: OpenAPI
-    url: openapi/decisiv-service-management-openapi.yml
-  - type: Documentation
-    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
-  - type: Overlay
-    url: overlays/decisiv-service-management-overlay.yaml
-- name: Decisiv SRM Gateway - Telematics
-  description: >-
-    Ingest and read connected-asset telematics inside SRM: diagnostic readings and fault codes for registered
-    assets, so a fault on a vehicle can open or enrich a service case at the point of service.
-  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
-  baseURL: https://srm-api.decisivapps.com
-  tags:
-  - Telematics
-  - fault-codes
-  - Diagnostics
-  tags_raw:
-  - telematics
-  - fault-codes
-  - diagnostics
-  properties:
-  - type: OpenAPI
-    url: openapi/decisiv-telematics-openapi.yml
-  - type: Documentation
-    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
-  - type: Overlay
-    url: overlays/decisiv-telematics-overlay.yaml
-- name: Decisiv Global Assets API
-  description: >-
-    Global store of reference for all assets within the Decisiv ecosystem — asset lookup by id or VIN, plus
-    campaigns, recalls, warranties, service history and OEM build information where authorized and available.
-    Swagger 2.0, secured with OAuth 2.0 plus the X-Decisiv-Transition-Token header.
-  humanURL: https://global-assets.decisivapps.com/api-docs/
-  baseURL: https://global-assets.decisivapps.com/api/v1/
-  tags:
-  - Assets
-  - VIN
-  - Recalls
-  - Warranty
-  - OEM
-  tags_raw:
-  - assets
-  - vin
-  - recalls
-  - warranty
-  - oem
-  properties:
-  - type: OpenAPI
-    url: openapi/decisiv-global-assets-openapi.yml
-  - type: Documentation
-    url: https://global-assets.decisivapps.com/api-docs/
-  - type: Overlay
-    url: overlays/decisiv-global-assets-overlay.yaml
-- name: Decisiv Service Provider API
-  description: >-
-    Base API allowing dealers and service providers to interact with their customers and those customers' assets,
-    including group customers and group assets. Swagger 2.0, secured with OAuth 2.0 plus the transition token.
-  humanURL: https://service-provider.decisivapps.com/api-docs/
-  baseURL: https://service-provider.decisivapps.com/api/v1/
-  tags:
-  - Service Provider
-  - Customers
-  - Assets
-  - Dealer
-  tags_raw:
-  - service-provider
-  - customers
-  - assets
-  - dealer
-  properties:
-  - type: OpenAPI
-    url: openapi/decisiv-service-provider-openapi.yml
-  - type: Documentation
-    url: https://service-provider.decisivapps.com/api-docs/
-  - type: Overlay
-    url: overlays/decisiv-service-provider-overlay.yaml
 - name: Decisiv Platform API
   description: >-
-    The original XML Platform API for service providers and dealer systems, covering the lifecycle of a service
-    case — assets, cases, estimates and line items, parts, VMRS, notes, attachments and estimate approval, plus
-    service locations, users and push notifications. Versioned by Accept-Version and Accept headers; XSD schemas
-    for every version are published as a downloadable bundle.
+    The original XML Platform API for service providers and dealer systems, covering the lifecycle of
+    a service case — assets, cases, estimates and line items, parts, VMRS, notes, attachments and estimate
+    approval, plus service locations, users and push notifications. Versioned by Accept-Version and Accept
+    headers; XSD schemas for every version are published as a downloadable bundle.
   humanURL: https://api-docs.decisiv.net/docs/api/1
   baseURL: https://api.decisiv.net/platform_api
   tags:
@@ -230,12 +77,1844 @@ apis:
     url: json-schema/decisiv-platform-api-schemas.zip
   - type: Webhooks
     url: https://api-docs.decisiv.net/docs/api/1/architecture/notifications/
+- aid: decisiv:decisiv-account-roles-api
+  name: Decisiv Account Roles API
+  description: The Account Roles API from Decisiv — 2 operation(s) for account roles.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Account Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-account-roles-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-account-user-roles-api
+  name: Decisiv Account User Roles API
+  description: The Account User Roles API from Decisiv — 2 operation(s) for account user roles.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Account User Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-account-user-roles-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-account-users-api
+  name: Decisiv Account Users API
+  description: The Account Users API from Decisiv — 2 operation(s) for account users.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Account Users
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-account-users-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-accounts-api
+  name: Decisiv Accounts API
+  description: The Accounts API from Decisiv — 2 operation(s) for accounts.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-assets-api
+  name: Decisiv Assets API
+  description: The assets API from Decisiv — 7 operation(s) for assets.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - assets
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-assets-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-actions-api
+  name: Decisiv Case Actions API
+  description: The Case Actions API from Decisiv — 2 operation(s) for case actions.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-actions-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-attachments-api
+  name: Decisiv Case Attachments API
+  description: The Case Attachments API from Decisiv — 4 operation(s) for case attachments.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Attachments
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-attachments-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-item-internal-labels-api
+  name: Decisiv Case Line Item Internal Labels API
+  description: >-
+    The Case Line Item Internal Labels API from Decisiv — 1 operation(s) for case line item internal labels.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Item Internal Labels
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-item-internal-labels-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-item-parts-api
+  name: Decisiv Case Line Item Parts API
+  description: The Case Line Item Parts API from Decisiv — 2 operation(s) for case line item parts.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Item Parts
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-item-parts-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-item-parts-relationships-salesperson-api
+  name: Decisiv Case Line Item Parts Relationships SalesPerson API
+  description: >-
+    The Case Line Item Parts Relationships SalesPerson API from Decisiv — 1 operation(s) for case line
+    item parts relationships salesperson.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Item Parts Relationships SalesPerson
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-item-parts-relationships-salesperson-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-items-additional-charges-api
+  name: Decisiv Case Line Items - Additional Charges API
+  description: >-
+    The Case Line Items - Additional Charges API from Decisiv — 2 operation(s) for case line items - additional
+    charges.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Items - Additional Charges
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-items-additional-charges-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-items-additional-charges-categories-api
+  name: Decisiv Case Line Items - Additional Charges Categories API
+  description: >-
+    The Case Line Items - Additional Charges Categories API from Decisiv — 2 operation(s) for case line
+    items - additional charges categories.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Items - Additional Charges Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-items-additional-charges-categories-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-items-additional-charges-relationships-api
+  name: Decisiv Case Line Items - Additional Charges - Relationships API
+  description: >-
+    The Case Line Items - Additional Charges - Relationships API from Decisiv — 1 operation(s) for case
+    line items - additional charges - relationships.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Items - Additional Charges - Relationships
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-items-additional-charges-relationships-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-items-api
+  name: Decisiv Case Line Items API
+  description: The Case Line Items API from Decisiv — 2 operation(s) for case line items.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Items
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-items-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-items-relationships-assignee-api
+  name: Decisiv Case Line Items Relationships Assignee API
+  description: >-
+    The Case Line Items Relationships Assignee API from Decisiv — 1 operation(s) for case line items relationships
+    assignee.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Items Relationships Assignee
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-items-relationships-assignee-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-line-items-technician-stories-api
+  name: Decisiv Case Line Items Technician Stories API
+  description: >-
+    The Case Line Items Technician Stories API from Decisiv — 2 operation(s) for case line items technician
+    stories.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Line Items Technician Stories
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-line-items-technician-stories-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-metadata-api
+  name: Decisiv Case Metadata API
+  description: The Case Metadata API from Decisiv — 2 operation(s) for case metadata.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-metadata-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-notes-api
+  name: Decisiv Case Notes API
+  description: The Case Notes API from Decisiv — 5 operation(s) for case notes.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Notes
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-notes-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-participant-recipients-api
+  name: Decisiv Case Participant Recipients API
+  description: >-
+    The Case Participant Recipients API from Decisiv — 4 operation(s) for case participant recipients.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Participant Recipients
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-participant-recipients-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-participants-api
+  name: Decisiv Case Participants API
+  description: The Case Participants API from Decisiv — 4 operation(s) for case participants.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Participants
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-participants-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-recipients-api
+  name: Decisiv Case Recipients API
+  description: The Case Recipients API from Decisiv — 2 operation(s) for case recipients.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Recipients
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-recipients-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-relationships-api
+  name: Decisiv Case Relationships API
+  description: The Case Relationships API from Decisiv — 8 operation(s) for case relationships.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Relationships
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-relationships-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-case-summaries-api
+  name: Decisiv Case Summaries API
+  description: The Case Summaries API from Decisiv — 1 operation(s) for case summaries.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Case Summaries
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-case-summaries-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-cases-api
+  name: Decisiv Cases API
+  description: The Cases API from Decisiv — 5 operation(s) for cases.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Cases
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-cases-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-contacts-api
+  name: Decisiv Contacts API
+  description: The Contacts API from Decisiv — 4 operation(s) for contacts.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-contacts-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-customer-assets-api
+  name: Decisiv Customer Assets API
+  description: The Customer Assets API from Decisiv — 4 operation(s) for customer assets.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Customer Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-customer-assets-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-customer-requests-api
+  name: Decisiv Customer Requests API
+  description: The Customer Requests API from Decisiv — 4 operation(s) for customer requests.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Customer Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-customer-requests-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-customers-api
+  name: Decisiv Customers API
+  description: The Customers API from Decisiv — 4 operation(s) for customers.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-customers-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-deactivated-assets-api
+  name: Decisiv Deactivated Assets API
+  description: The Deactivated Assets API from Decisiv — 3 operation(s) for deactivated assets.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Deactivated Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-deactivated-assets-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-deactivated-depots-api
+  name: Decisiv Deactivated Depots API
+  description: The Deactivated Depots API from Decisiv — 3 operation(s) for deactivated depots.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Deactivated Depots
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-deactivated-depots-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-departments-api
+  name: Decisiv Departments API
+  description: The Departments API from Decisiv — 1 operation(s) for departments.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Departments
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-departments-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-depots-api
+  name: Decisiv Depots API
+  description: The Depots API from Decisiv — 3 operation(s) for depots.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Depots
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-depots-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-diagnostic-readings-api
+  name: Decisiv Diagnostic Readings API
+  description: The Diagnostic Readings API from Decisiv — 3 operation(s) for diagnostic readings.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Diagnostic Readings
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-diagnostic-readings-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-ecosystem-users-api
+  name: Decisiv Ecosystem Users API
+  description: The Ecosystem Users API from Decisiv — 2 operation(s) for ecosystem users.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Ecosystem Users
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-ecosystem-users-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-estimates-api
+  name: Decisiv Estimates API
+  description: The Estimates API from Decisiv — 3 operation(s) for estimates.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Estimates
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-estimates-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-extended-asset-attributes-api
+  name: Decisiv Extended Asset Attributes API
+  description: >-
+    The Extended Asset Attributes API from Decisiv — 4 operation(s) for extended asset attributes.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Extended Asset Attributes
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-extended-asset-attributes-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-extended-attributes-api
+  name: Decisiv Extended Attributes API
+  description: The Extended Attributes API from Decisiv — 4 operation(s) for extended attributes.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Extended Attributes
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-extended-attributes-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-faults-api
+  name: Decisiv Faults API
+  description: The Faults API from Decisiv — 3 operation(s) for faults.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Faults
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-faults-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-group-assets-api
+  name: Decisiv Group Assets API
+  description: The group_assets API from Decisiv — 2 operation(s) for group_assets.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - group_assets
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-group-assets-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-group-customers-api
+  name: Decisiv Group Customers API
+  description: The group_customers API from Decisiv — 1 operation(s) for group_customers.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - group_customers
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-group-customers-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-internal-users-api
+  name: Decisiv Internal Users API
+  description: The Internal Users API from Decisiv — 4 operation(s) for internal users.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Internal Users
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-internal-users-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-line-items-api
+  name: Decisiv Line Items API
+  description: The Line Items API from Decisiv — 2 operation(s) for line items.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Line Items
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-line-items-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-oem-info-api
+  name: Decisiv OEM info API
+  description: The OEM info API from Decisiv — 1 operation(s) for oem info.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - OEM info
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-oem-info-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-operations-api
+  name: Decisiv Operations API
+  description: The Operations API from Decisiv — 1 operation(s) for operations.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Operations
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-operations-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-program-types-api
+  name: Decisiv Program Types API
+  description: The Program Types API from Decisiv — 2 operation(s) for program types.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Program Types
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-program-types-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-registered-asset-attachments-api
+  name: Decisiv Registered Asset Attachments API
+  description: >-
+    The Registered Asset Attachments API from Decisiv — 2 operation(s) for registered asset attachments.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Registered Asset Attachments
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-registered-asset-attachments-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-registered-assets-api
+  name: Decisiv Registered Assets API
+  description: The Registered Assets API from Decisiv — 10 operation(s) for registered assets.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Registered Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-registered-assets-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-registered-components-api
+  name: Decisiv Registered Components API
+  description: The Registered Components API from Decisiv — 2 operation(s) for registered components.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Registered Components
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-registered-components-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-registered-components-relationships-api
+  name: Decisiv Registered Components Relationships API
+  description: >-
+    The Registered Components Relationships API from Decisiv — 1 operation(s) for registered components
+    relationships.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Registered Components Relationships
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-registered-components-relationships-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-repair-statuses-api
+  name: Decisiv Repair Statuses API
+  description: The Repair Statuses API from Decisiv — 1 operation(s) for repair statuses.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Repair Statuses
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-repair-statuses-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-service-group-customer-assets-api
+  name: Decisiv Service Group - Customer Assets API
+  description: >-
+    The Service Group - Customer Assets API from Decisiv — 4 operation(s) for service group - customer
+    assets.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Service Group - Customer Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-group-customer-assets-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-service-group-customer-contacts-api
+  name: Decisiv Service Group - Customer Contacts API
+  description: >-
+    The Service Group - Customer Contacts API from Decisiv — 2 operation(s) for service group - customer
+    contacts.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Service Group - Customer Contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-group-customer-contacts-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-service-group-customers-api
+  name: Decisiv Service Group - Customers API
+  description: >-
+    The Service Group - Customers API from Decisiv — 2 operation(s) for service group - customers.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Service Group - Customers
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-group-customers-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-service-networks-api
+  name: Decisiv Service Networks API
+  description: The Service Networks API from Decisiv — 2 operation(s) for service networks.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Service Networks
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-networks-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-service-providers-api
+  name: Decisiv Service Providers API
+  description: The Service Providers API from Decisiv — 4 operation(s) for service providers.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Service Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-providers-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-service-requests-api
+  name: Decisiv Service Requests API
+  description: The Service Requests API from Decisiv — 3 operation(s) for service requests.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Service Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-service-requests-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-skill-levels-api
+  name: Decisiv Skill Levels API
+  description: The Skill Levels API from Decisiv — 2 operation(s) for skill levels.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Skill Levels
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-skill-levels-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-associations-api
+  name: Decisiv Sublet Associations API
+  description: The Sublet Associations API from Decisiv — 2 operation(s) for sublet associations.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Associations
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-associations-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-case-participants-api
+  name: Decisiv Sublet Case Participants API
+  description: >-
+    The Sublet Case Participants API from Decisiv — 2 operation(s) for sublet case participants.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Case Participants
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-case-participants-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-case-recipients-api
+  name: Decisiv Sublet Case Recipients API
+  description: The Sublet Case Recipients API from Decisiv — 2 operation(s) for sublet case recipients.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Case Recipients
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-case-recipients-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-cases-api
+  name: Decisiv Sublet Cases API
+  description: The Sublet Cases API from Decisiv — 2 operation(s) for sublet cases.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Cases
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-cases-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-cases-attachments-api
+  name: Decisiv Sublet Cases Attachments API
+  description: >-
+    The Sublet Cases Attachments API from Decisiv — 2 operation(s) for sublet cases attachments.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Cases Attachments
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-cases-attachments-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-cases-line-items-api
+  name: Decisiv Sublet Cases Line Items API
+  description: >-
+    The Sublet Cases Line Items API from Decisiv — 1 operation(s) for sublet cases line items.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Cases Line Items
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-cases-line-items-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-cases-notes-api
+  name: Decisiv Sublet Cases Notes API
+  description: The Sublet Cases Notes API from Decisiv — 2 operation(s) for sublet cases notes.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Cases Notes
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-cases-notes-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-sublet-requests-api
+  name: Decisiv Sublet Requests API
+  description: The Sublet Requests API from Decisiv — 3 operation(s) for sublet requests.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Sublet Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-sublet-requests-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-time-tasks-api
+  name: Decisiv Time Tasks API
+  description: The Time Tasks API from Decisiv — 2 operation(s) for time tasks.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Time Tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-time-tasks-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-vmrs-api
+  name: Decisiv VMRS API
+  description: The VMRS API from Decisiv — 18 operation(s) for vmrs.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - VMRS
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-vmrs-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-webhooks-api
+  name: Decisiv Webhooks API
+  description: The Webhooks API from Decisiv — 3 operation(s) for webhooks.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
+- aid: decisiv:decisiv-webhooks-events-api
+  name: Decisiv Webhooks Events API
+  description: The Webhooks Events API from Decisiv — 1 operation(s) for webhooks events.
+  humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  baseURL: https://srm-api.decisivapps.com
+  tags:
+  - Webhooks Events
+  properties:
+  - type: OpenAPI
+    url: openapi/decisiv-webhooks-events-api-openapi.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
+  - type: APIReference
+    url: https://srm-api.decisivapps.com/api-docs/v1
+  - type: Webhooks
+    url: asyncapi/decisiv-srm-gateway-webhooks.yml
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Asset%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Service%20Management
+  - type: Documentation
+    url: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Telematics
+  - type: Documentation
+    url: https://global-assets.decisivapps.com/api-docs/
+  - type: Documentation
+    url: https://service-provider.decisivapps.com/api-docs/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/decisiv-account-management-overlay.yaml
+- type: Overlay
+  url: overlays/decisiv-asset-management-overlay.yaml
+- type: Overlay
+  url: overlays/decisiv-service-management-overlay.yaml
+- type: Overlay
+  url: overlays/decisiv-telematics-overlay.yaml
+- type: Overlay
+  url: overlays/decisiv-global-assets-overlay.yaml
+- type: Overlay
+  url: overlays/decisiv-service-provider-overlay.yaml
 - type: AgenticAccess
   url: agentic-access/decisiv-agentic-access.yml
 - type: TrustCenter
