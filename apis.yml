@@ -11,6 +11,18 @@ description: >-
   Management, Telematics) — plus the older Global Assets and Service Provider Swagger 2.0 APIs and the XML Platform
   API. Access is OAuth 2.0 and provisioned per account; documentation is public but credentials come through sales.
 url: https://raw.githubusercontent.com/api-evangelist/decisiv/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.decisiv.com/wp-content/uploads/2019/08/cropped-decisiv-favicon-1.png
 x-type: company
 x-source: harvest:secondary-market
