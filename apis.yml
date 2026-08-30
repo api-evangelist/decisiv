@@ -34,15 +34,15 @@ modified: '2026-08-12'
 tags:
 - Company
 - commercial-vehicle
-- Fleet Management
+- fleet-management
 - service-relationship-management
-- Telematics
-- Asset Management
+- telematics
+- asset-management
 - maintenance-and-repair
-- Heavy Duty Trucking
+- heavy-duty-trucking
 - Transportation
-- Dealer Management
-- JSON:API
+- dealer-management
+- json-api
 - Webhook
 tags_raw:
 - Company
@@ -69,8 +69,8 @@ apis:
   tags:
   - Cases
   - Estimates
-  - Service Locations
-  - XML
+  - service-locations
+  - xml
   - Legacy
   tags_raw:
   - cases
@@ -173,6 +173,8 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -199,6 +201,8 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Assets
+  tags_raw:
   - assets
   properties:
   - type: OpenAPI
@@ -387,7 +391,8 @@ apis:
     items - additional charges categories.
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
-  tags:
+  tags: []
+  tags_raw:
   - Case Line Items - Additional Charges Categories
   properties:
   - type: OpenAPI
@@ -415,7 +420,8 @@ apis:
     line items - additional charges - relationships.
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
-  tags:
+  tags: []
+  tags_raw:
   - Case Line Items - Additional Charges - Relationships
   properties:
   - type: OpenAPI
@@ -1097,7 +1103,8 @@ apis:
   description: The group_assets API from Decisiv — 2 operation(s) for group_assets.
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
-  tags:
+  tags: []
+  tags_raw:
   - group_assets
   properties:
   - type: OpenAPI
@@ -1123,7 +1130,8 @@ apis:
   description: The group_customers API from Decisiv — 1 operation(s) for group_customers.
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
-  tags:
+  tags: []
+  tags_raw:
   - group_customers
   properties:
   - type: OpenAPI
@@ -1227,7 +1235,8 @@ apis:
   description: The Operations API from Decisiv — 1 operation(s) for operations.
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
-  tags:
+  tags: []
+  tags_raw:
   - Operations
   properties:
   - type: OpenAPI
@@ -1863,6 +1872,8 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
@@ -1889,6 +1900,8 @@ apis:
   humanURL: https://srm-api.decisivapps.com/api-docs/v1?urls.primaryName=Account%20Management
   baseURL: https://srm-api.decisivapps.com
   tags:
+  - Webhooks-Events
+  tags_raw:
   - Webhooks Events
   properties:
   - type: OpenAPI
