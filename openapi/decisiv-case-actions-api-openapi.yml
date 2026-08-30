@@ -1,0 +1,263 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Case Actions API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Actions
+paths:
+  /service_management/{srm_account_id}/v1/cases/{case_id}/actions/close:
+    post:
+      summary: Close a specific case
+      tags:
+      - Case Actions
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      responses:
+        '202':
+          description: This response may occur when the requested resource is closed.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: cases
+                  attributes: {}
+              schema:
+                $ref: '#/components/schemas/close_case'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the requested resource is already closed before the request.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:cases:001
+                  title: Invalid Action Request
+                  detail: Cases in the closed state of the Service Event lifecycle can not be closed again
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/cases/{case_id}/actions/open:
+    post:
+      summary: Open (re-open) a specific case
+      tags:
+      - Case Actions
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      responses:
+        '202':
+          description: This response may occur when the requested resource is opened.
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the requested resource is already opened before the request.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:cases:002
+                  title: Invalid Action Request
+                  detail: Cases in the opened state of the Service Event lifecycle can not be opened again
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    close_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

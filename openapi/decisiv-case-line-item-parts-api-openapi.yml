@@ -1,0 +1,1588 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Case Line Item Parts API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Line Item Parts
+paths:
+  /service_management/{srm_account_id}/v1/cases/{case_id}/line_items/{line_item_id}/parts:
+    get:
+      summary: List all parts for the requested line item
+      tags:
+      - Case Line Item Parts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - salesman
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of line items for the case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                  type: line_item_parts
+                  attributes:
+                    name: Part123
+                    quantity: '2.00'
+                    quantity_shipped: '2'
+                    quantity_backordered: '0'
+                    number: '2132'
+                    unit_price: '1.2000'
+                    core:
+                      price: '1.2000'
+                      quantity: 2
+                  relationships:
+                    salesperson:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/parts'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a estimate item part
+      tags:
+      - Case Line Item Parts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      responses:
+        '201':
+          description: Successful creation of line item
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                  type: line_item_parts
+                  attributes:
+                    name: Part123
+                    quantity: '2.00'
+                    quantity_shipped: '2'
+                    quantity_backordered: '0'
+                    number: '2132'
+                    unit_price: '1.2000'
+                    core:
+                      price: '1.2000'
+                      quantity: 2
+                  relationships:
+                    salesperson:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/part'
+        '400':
+          description: Missing required key / Missing required value / Invalid Attribute Type / Attribute Not Allowed / Invalid Attribute Pattern
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Missing required key:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/name
+                Missing required value:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/name
+                Invalid Attribute Type:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:004
+                      title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      source:
+                        pointer: /data/attributes/name
+                Attribute Not Allowed:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: '{{attribute}} is not allowed'
+                      source:
+                        pointer: /data/attributes/name
+                Invalid Attribute Pattern:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:011
+                      title: Invalid Attribute Pattern
+                      detail: Attribute value must match pattern '{{pattern}}'
+                      source:
+                        pointer: /data/attributes/unit_price
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_estimate_item_part'
+            examples:
+              Create Line Item Part:
+                value:
+                  data:
+                    type: line_item_parts
+                    attributes:
+                      name: Valve
+                      quantity: '4'
+                      quantity_shipped: '2'
+                      quantity_backordered: '0'
+                      number: '1'
+                      unit_price: '12.50'
+                      core:
+                        price: '12.50'
+                        quantity: '1.0'
+                    relationships:
+                      salesperson:
+                        data:
+                          type: internal_users
+                          id: 6383dc89-05b6-4572-8979-a6257f3597ec
+  /service_management/{srm_account_id}/v1/cases/{case_id}/line_items/{line_item_id}/parts/{id}:
+    get:
+      summary: List details on a specific part for the requested line item
+      tags:
+      - Case Line Item Parts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - salesman
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Show details for requested Line Item
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                  type: line_item_parts
+                  attributes:
+                    name: Part123
+                    quantity: '2.00'
+                    quantity_shipped: '2'
+                    quantity_backordered: '0'
+                    number: '2132'
+                    unit_price: '1.2000'
+                    core:
+                      price: '1.2000'
+                      quantity: 2
+                  relationships:
+                    salesperson:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/part'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Update a specific part
+      tags:
+      - Case Line Item Parts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update of line item part
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                  type: line_item_parts
+                  attributes:
+                    name: Part123
+                    quantity: '2.00'
+                    quantity_shipped: '2'
+                    quantity_backordered: '0'
+                    number: '2132'
+                    unit_price: '1.2000'
+                    core:
+                      price: '1.2000'
+                      quantity: 2
+                  relationships:
+                    salesperson:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/case'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Missing required value / Invalid Attribute Type / Attribute Not Allowed / Invalid Attribute Pattern
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Missing required value:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/name
+                Invalid Attribute Type:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:004
+                      title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      source:
+                        pointer: /data/attributes/name
+                Attribute Not Allowed:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: '{{attribute}} is not allowed'
+                      source:
+                        pointer: /data/attributes/name
+                Invalid Attribute Pattern:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:011
+                      title: Invalid Attribute Pattern
+                      detail: Attribute value must match pattern '{{pattern}}'
+                      source:
+                        pointer: /data/attributes/unit_price
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_estimate_item_part'
+            examples:
+              Update Line Item Part:
+                value:
+                  data:
+                    type: line_item_parts
+                    id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                    attributes:
+                      name: Valve
+                      quantity: '4'
+                      quantity_shipped: '2'
+                      quantity_backordered: '0'
+                      number: '1'
+                      unit_price: '12.50'
+                      core:
+                        price: '12.50'
+                        quantity: '1.0'
+                    relationships:
+                      salesperson:
+                        data:
+                          type: internal_users
+                          id: 6383dc89-05b6-4572-8979-a6257f3597ec
+    delete:
+      summary: Delete an estimate item part
+      tags:
+      - Case Line Item Parts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '204':
+          description: Deletes an estimate item part
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    create_estimate_item_part:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - name
+              - unit_price
+              properties:
+                name:
+                  type: string
+                  description: Part name of materials associated with the item
+                  maxLength: 510
+                quantity:
+                  type: string
+                  description: Count of specific parts associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,9}\.[0-9]{2}$
+                quantity_shipped:
+                  type: string
+                  description: Count of parts that have been shipped, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                  maxLength: 9
+                  pattern: ^[0-9]{1,9}$
+                quantity_backordered:
+                  type: string
+                  description: Count of parts that are backordered, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                  maxLength: 9
+                  pattern: ^[0-9]{1,9}$
+                number:
+                  type: string
+                  description: Part number of material associated with the item
+                  maxLength: 100
+                unit_price:
+                  type: string
+                  description: Unit cost of each part associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
+                core:
+                  type: object
+                  description: Information about the core parts
+                  properties:
+                    quantity:
+                      type: string
+                      description: Quantity for the core charge as a decimal-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                      maxLength: 11
+                      pattern: ^-?[0-9]{1,9}(\.[0-9]{1,2})?$
+                    price:
+                      type: string
+                      description: Unit cost of each core part associated with the item
+                      maxLength: 11
+                      pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            relationships:
+              type: object
+              properties:
+                salesperson:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+          required:
+          - type
+          - attributes
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    part_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - line_item_parts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Part name of materials associated with the item
+              maxLength: 510
+            quantity:
+              type: string
+              description: Count of specific parts associated with the item
+              maxLength: 11
+              pattern: ^[0-9]{1,9}\.[0-9]{2}$
+            quantity_shipped:
+              type:
+              - string
+              - 'null'
+              description: Count of parts that have been shipped for the item, emitted as an integer-formatted string for consistency with quantity
+            quantity_backordered:
+              type:
+              - string
+              - 'null'
+              description: Count of parts that are backordered for the item, emitted as an integer-formatted string for consistency with quantity
+            number:
+              type: string
+              description: Part number of material associated with the item
+              maxLength: 100
+            unit_price:
+              type: string
+              description: Unit cost of each part associated with the item
+              maxLength: 11
+              pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            core:
+              type: object
+              description: Information about the core parts
+              properties:
+                quantity:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Count of specific core parts associated with the item
+                price:
+                  type: string
+                  description: Unit cost of each core part associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
+        relationships:
+          type: object
+          properties:
+            salesperson:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  maxLength: 40
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                reference_number:
+                  type: integer
+                  description: Integer representation of the Case ID as shown in the UI
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                  maxLength: 6000
+                repair_status:
+                  type: string
+                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
+                  examples:
+                  - appointment
+                tag_number:
+                  type: string
+                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+                  maxLength: 40
+                asset_information:
+                  type: object
+                  description: Information about the asset
+                  properties:
+                    odometer_value:
+                      type: integer
+                      description: Odometer reading of the asset
+                    odometer_unit:
+                      type: string
+                      description: 'Abbreviation for the odometer unit: `mi` for miles or `km` for kilometers'
+                      enum:
+                      - mi
+                      - km
+                    engine_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Engine hours of the asset
+                    stand_by_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Stand-by hours of the asset
+                    switch_on_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Switch-on hours of the asset
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes reflecting key events surrounding the case
+                  required:
+                  - started_at
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time requested by the Customer'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time requested by the Customer'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      examples:
+                      - '2025-04-10T13:00:41Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      examples:
+                      - '2025-04-10T13:10:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2025-04-10T13:15:41Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      examples:
+                      - '2025-04-10T12:30:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      examples:
+                      - '2025-04-10T12:00:41Z'
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was last updated. Pairs with the `filter[updated_at:gte]` / `filter[updated_at:lte]` filters for incremental sync.'
+                      examples:
+                      - '2025-04-10T13:20:41Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      examples:
+                      - '2025-04-10T11:30:41Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2025-04-10T10:30:41Z'
+                    asset_departed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      maximum: 999999.99
+                      examples:
+                      - 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      maxLength: 255
+                      examples:
+                      - TR3847
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` date format (not datetime).
+                      examples:
+                      - '2025-06-19'
+                pricing:
+                  type: object
+                  description: Financial totals for the case, sourced directly from the Estimate
+                  properties:
+                    parts_total:
+                      type: number
+                      description: Total cost of parts
+                      examples:
+                      - 432.5
+                    labor_total:
+                      type: number
+                      description: Total cost of labor
+                      examples:
+                      - 250
+                    core_total:
+                      type: number
+                      description: Total cost of cores
+                      examples:
+                      - 75
+                    tax:
+                      type: number
+                      description: Total tax amount
+                      examples:
+                      - 32.18
+                    haz_waste:
+                      type: number
+                      description: Total hazardous waste charge
+                      examples:
+                      - 15
+                vmrs:
+                  type: object
+                  description: 'Vehicle Maintenance Reporting Standards (VMRS) coding for the case, exposing nine VMRS code categories: asset type (CK02), repair priority (CK16), repair site (CK17), reason for repair (CK14), operator report (CK82), component code (CK33), position (CK79), technician failure (CK18), and work accomplished (CK15). Each category outside `asset_type` is null when no code is assigned; `asset_type` is always present.'
+                  properties:
+                    asset_type:
+                      type: object
+                      description: Identifies the asset type. Useful for non-VIN assets.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '2'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - R
+                    repair_priority:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the priority assigned to the repair.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '16'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '1'
+                    repair_site:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the relative location where the repair is taking place.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '17'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '7'
+                    reason_for_repair:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies what caused a piece of equipment to come in for repair.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '14'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '01'
+                    operator_report:
+                      type:
+                      - array
+                      - 'null'
+                      description: Identifies what the operator reports as being the issue.
+                      items:
+                        type: object
+                        properties:
+                          code_key:
+                            type:
+                            - string
+                            - 'null'
+                            description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                            examples:
+                            - '82'
+                          code:
+                            type:
+                            - string
+                            - 'null'
+                            description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                            examples:
+                            - '001'
+                    component:
+                      type:
+                      - object
+                      - 'null'
+                      description: Provides universal identifiers or generic terms for parts.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '33'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - 023-000-000
+                    position:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies position based on industry-accepted conventions.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '79'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '03'
+                    technician_failure:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the technical failure diagnosed by the mechanic.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '18'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - B1
+                    work_accomplished:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the work accomplished by the mechanic.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '15'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - A
+                breakdown:
+                  type: object
+                  description: Information about the location of the Service Provider
+                  properties:
+                    location:
+                      type: string
+                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                      maxLength: 255
+                    city:
+                      type: string
+                      description: Breakdown City name
+                      maxLength: 255
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                metadata:
+                  type: object
+                  additionalProperties: true
+              required:
+              - reference_number
+            relationships:
+              type: object
+              properties:
+                customer_asset:
+                  $ref: '#/components/schemas/relationship_object'
+                customer:
+                  type: object
+                  description: The case's primary customer. `data.type` is `customers` for local customers or `registered_customers` for registered (fleet) customers.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      required:
+                      - id
+                      - type
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                          - registered_customers
+                billing_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                billing_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                shipping_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+                program_type:
+                  $ref: '#/components/schemas/relationship_object'
+                driver:
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                assignee:
+                  $ref: '#/components/schemas/relationship_object'
+                department:
+                  allOf:
+                  - $ref: '#/components/schemas/relationship_object'
+                  - description: 'Note: `department.data.id` is a dealer-scoped string code (e.g. "SERVICE"), not a UUID.'
+              required:
+              - customer_asset
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  description: URL of the case resource
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    parts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/part_properties-data'
+        meta:
+          type: object
+    update_estimate_item_part:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Part name of materials associated with the item
+                  maxLength: 510
+                quantity:
+                  type: string
+                  description: Count of specific parts associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,9}\.[0-9]{2}$
+                quantity_shipped:
+                  type: string
+                  description: Count of parts that have been shipped, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                  maxLength: 9
+                  pattern: ^[0-9]{1,9}$
+                quantity_backordered:
+                  type: string
+                  description: Count of parts that are backordered, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                  maxLength: 9
+                  pattern: ^[0-9]{1,9}$
+                number:
+                  type: string
+                  description: Part number of material associated with the item
+                  maxLength: 100
+                unit_price:
+                  type: string
+                  description: Unit cost of each part associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
+                core:
+                  type: object
+                  description: Information about the core parts
+                  properties:
+                    quantity:
+                      type: string
+                      description: Quantity for the core charge as a decimal-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                      maxLength: 11
+                      pattern: ^-?[0-9]{1,9}(\.[0-9]{1,2})?$
+                    price:
+                      type: string
+                      description: Unit cost of each core part associated with the item
+                      maxLength: 11
+                      pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            relationships:
+              type: object
+              properties:
+                salesperson:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+          required:
+          - type
+          - attributes
+    part:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_item_parts
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Part name of materials associated with the item
+                  maxLength: 510
+                quantity:
+                  type: string
+                  description: Count of specific parts associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,9}\.[0-9]{2}$
+                quantity_shipped:
+                  type:
+                  - string
+                  - 'null'
+                  description: Count of parts that have been shipped for the item, emitted as an integer-formatted string for consistency with quantity
+                quantity_backordered:
+                  type:
+                  - string
+                  - 'null'
+                  description: Count of parts that are backordered for the item, emitted as an integer-formatted string for consistency with quantity
+                number:
+                  type: string
+                  description: Part number of material associated with the item
+                  maxLength: 100
+                unit_price:
+                  type: string
+                  description: Unit cost of each part associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
+                core:
+                  type: object
+                  description: Information about the core parts
+                  properties:
+                    quantity:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Count of specific core parts associated with the item
+                    price:
+                      type: string
+                      description: Unit cost of each core part associated with the item
+                      maxLength: 11
+                      pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            relationships:
+              type: object
+              properties:
+                salesperson:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

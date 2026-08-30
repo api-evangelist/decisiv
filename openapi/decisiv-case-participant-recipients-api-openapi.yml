@@ -1,0 +1,885 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Case Participant Recipients API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Case Participant Recipients across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Participant Recipients
+paths:
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/participants/{participant_id}/recipients:
+    get:
+      operationId: listCaseParticipantRecipients
+      description: Lists all recipients for the specified participant within the requested case.
+      summary: List all recipients for the requested case
+      tags:
+      - Case Participant Recipients
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case ID
+        required: true
+        schema:
+          type: string
+      - name: participant_id
+        in: path
+        description: The participant ID
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of recipients
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: a6fd3ea8-36b1-410a-9bc4-eca6ac654f3b
+                  type: recipients
+                  attributes:
+                    name: Recipient Full Name
+                    phone: '12345678910'
+                    email: recipient@email.com
+                  relationships:
+                    affiliation:
+                      data:
+                        type: participants
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/participant_recipients'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/participants/{participant_id}/recipients/{id}:
+    get:
+      operationId: getCaseParticipantRecipient
+      description: Retrieves a specific recipient for the specified participant within the requested case.
+      summary: Get a recipient for the requested case
+      tags:
+      - Case Participant Recipients
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case ID
+        required: true
+        schema:
+          type: string
+      - name: participant_id
+        in: path
+        description: The participant ID
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of recipient
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: a6fd3ea8-36b1-410a-9bc4-eca6ac654f3b
+                  type: recipients
+                  attributes:
+                    name: Recipient Full Name
+                    phone: '12345678910'
+                    email: recipient@email.com
+                  relationships:
+                    affiliation:
+                      data:
+                        type: participants
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/participant_recipient'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{case_id}/participants/{participant_id}/recipients:
+    get:
+      summary: Lists the recipients for a selected case
+      tags:
+      - Case Participant Recipients
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: participant_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The participant UUID
+        required: true
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of recipients for the case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                  type: recipients
+                  attributes:
+                    name: John Doe
+                    phone: '12345678910'
+                    email: recipient@email.com
+                    first_name: John
+                    last_name: Doe
+                    communication:
+                    - method_type: email
+                      value: recipient@email.com
+                      notify: true
+                    - method_type: mobile
+                      value: '12345678910'
+                      notify: false
+                  relationships:
+                    affiliation:
+                      data:
+                        type: participants
+                        id: cb967209-0c68-42cc-ad8d-8413554b507f
+                  links:
+                    self: https://srm-api.example.com/service_management/ABC-123/v1/cases/719d44af-b0f5-4e3c-98f7-baa16cedea98/participants/cb967209-0c68-42cc-ad8d-8413554b507f/recipients/bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                meta:
+                  record-count: 73
+              schema:
+                $ref: '#/components/schemas/recipients'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{case_id}/participants/{participant_id}/recipients/{id}:
+    get:
+      summary: List details on a specific recipient
+      tags:
+      - Case Participant Recipients
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: participant_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The participant UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource ID
+        required: true
+      responses:
+        '200':
+          description: Show details for requested recipient
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                  type: recipients
+                  attributes:
+                    name: John Doe
+                    phone: '12345678910'
+                    email: recipient@email.com
+                    first_name: John
+                    last_name: Doe
+                    communication:
+                    - method_type: email
+                      value: recipient@email.com
+                      notify: true
+                    - method_type: mobile
+                      value: '12345678910'
+                      notify: false
+                  relationships:
+                    affiliation:
+                      data:
+                        type: participants
+                        id: cb967209-0c68-42cc-ad8d-8413554b507f
+                  links:
+                    self: https://srm-api.example.com/service_management/ABC-123/v1/cases/719d44af-b0f5-4e3c-98f7-baa16cedea98/participants/cb967209-0c68-42cc-ad8d-8413554b507f/recipients/bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+              schema:
+                $ref: '#/components/schemas/recipient'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    participant_recipient:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Full recipient name
+                  example: John Doe
+                email:
+                  type: string
+                  description: Recipient email
+                  example: support@support.com
+                phone:
+                  type: string
+                  description: Recipient mobile phone
+                  example: '12345678910'
+            relationships:
+              type: object
+              properties:
+                affiliation:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    participant_recipients:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/participant_recipient_properties-data'
+        meta:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    participant_recipient_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Full recipient name
+              example: John Doe
+            email:
+              type: string
+              description: Recipient email
+              example: support@support.com
+            phone:
+              type: string
+              description: Recipient mobile phone
+              example: '12345678910'
+        relationships:
+          type: object
+          properties:
+            affiliation:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    recipients:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/recipient_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    recipient:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          description: A participant recipient — the addressable identity used to deliver case notifications. The `type` indicates which underlying record provides the contact details (a directly-attached recipient, a registered contact, an ad-hoc contact, or a service-group contact).
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              description: Discriminator for the recipient's underlying source record.
+              enum:
+              - recipients
+              - registered_contacts
+              - contacts
+              - service_group_contacts
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  example: support@support.com
+                phone:
+                  type: string
+                  example: '12345678910'
+                first_name:
+                  type: string
+                  example: John
+                  maxLength: 100
+                last_name:
+                  type: string
+                  example: Doe
+                  maxLength: 100
+                communication:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        example: email
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        example: 123-456-7890
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Whether to notify via this method
+                        example: true
+            relationships:
+              type: object
+              properties:
+                affiliation:
+                  allOf:
+                  - $ref: '#/components/schemas/relationship_object'
+                  - description: The affiliated participant.
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - attributes
+          - type
+          - id
+    recipient_properties-data:
+      type: object
+      description: A participant recipient — the addressable identity used to deliver case notifications. The `type` indicates which underlying record provides the contact details (a directly-attached recipient, a registered contact, an ad-hoc contact, or a service-group contact).
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          description: Discriminator for the recipient's underlying source record.
+          enum:
+          - recipients
+          - registered_contacts
+          - contacts
+          - service_group_contacts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              example: support@support.com
+            phone:
+              type: string
+              example: '12345678910'
+            first_name:
+              type: string
+              example: John
+              maxLength: 100
+            last_name:
+              type: string
+              example: Doe
+              maxLength: 100
+            communication:
+              type: array
+              items:
+                type: object
+                properties:
+                  method_type:
+                    type: string
+                    example: email
+                    enum:
+                    - email
+                    - mobile
+                  value:
+                    type: string
+                    example: 123-456-7890
+                    maxLength: 128
+                  notify:
+                    type: boolean
+                    description: Whether to notify via this method
+                    example: true
+        relationships:
+          type: object
+          properties:
+            affiliation:
+              allOf:
+              - $ref: '#/components/schemas/relationship_object'
+              - description: The affiliated participant.
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - attributes
+      - type
+      - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

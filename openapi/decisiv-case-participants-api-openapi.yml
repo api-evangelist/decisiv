@@ -1,0 +1,694 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Case Participants API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Case Participants across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Participants
+paths:
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/participants:
+    get:
+      operationId: listCaseParticipants
+      description: Lists all participants associated with the specified case.
+      summary: Lists the participants for a selected case
+      tags:
+      - Case Participants
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of participants for the case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+                  type: participants
+                  attributes:
+                    name: Dealer Name
+                    scopes:
+                    - service_provider
+                    - billing_customer
+                    - shipping_customer
+              schema:
+                $ref: '#/components/schemas/participants'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/participants/{id}:
+    get:
+      operationId: getCaseParticipant
+      description: Retrieves details for a specific participant associated with the specified case.
+      summary: List details on a specific Participant
+      tags:
+      - Case Participants
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Show details for requested Participant
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+                  type: participants
+                  attributes:
+                    name: Dealer Name
+                    scopes:
+                    - service_provider
+                    - billing_customer
+                    - shipping_customer
+              schema:
+                $ref: '#/components/schemas/participant'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{case_id}/participants:
+    get:
+      summary: Lists the participants for a selected case
+      tags:
+      - Case Participants
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      responses:
+        '200':
+          description: Returns list of participants for the case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                  type: participants
+                  attributes:
+                    name: Dealer Name
+                    scopes:
+                    - service_provider
+                    - billing_customer
+                    - shipping_customer
+                - id: 5a07d6a9-3f60-4d9b-9df1-2b8b9e9a6c41
+                  type: participants
+                  attributes:
+                    name: Acme Logistics
+                    scopes:
+                    - external_advisor
+              schema:
+                $ref: '#/components/schemas/participants'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{case_id}/participants/{id}:
+    get:
+      summary: List details on a specific Participant
+      tags:
+      - Case Participants
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Show details for requested Participant
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                  type: participants
+                  attributes:
+                    name: Dealer Name
+                    scopes:
+                    - service_provider
+                    - billing_customer
+                    - shipping_customer
+              schema:
+                $ref: '#/components/schemas/participant_2'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    participants:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/participant_properties-data'
+        meta:
+          type: object
+    participant:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Participant name
+                  example: Pilot Travel Centers
+                scopes:
+                  type: array
+                  description: A list of scopes to which the participant belongs.
+                  items:
+                    type: string
+                    description: Name of the scope
+                  minItems: 1
+                  example:
+                  - service_provider
+                  - billing_customer
+                  - customer
+                  - originator
+                  - other
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    participant_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Participant name
+              example: Pilot Travel Centers
+            scopes:
+              type: array
+              description: A list of scopes to which the participant belongs.
+              items:
+                type: string
+                description: Name of the scope
+              minItems: 1
+              example:
+              - service_provider
+              - billing_customer
+              - customer
+              - originator
+              - other
+      required:
+      - attributes
+      - type
+      - id
+    participant_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - participants
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Participant name
+                  example: Pilot Travel Centers
+                scopes:
+                  type: array
+                  description: A list of scopes to which the participant belongs.
+                  items:
+                    type: string
+                    description: Name of the scope
+                    enum:
+                    - customer
+                    - billing_customer
+                    - shipping_customer
+                    - service_provider
+                    - originator
+                    - external_advisor
+                  minItems: 1
+                  example:
+                  - service_provider
+                  - billing_customer
+                  - shipping_customer
+          required:
+          - attributes
+          - type
+          - id
+    participant_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - participants
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Participant name
+              example: Pilot Travel Centers
+            scopes:
+              type: array
+              description: A list of scopes to which the participant belongs.
+              items:
+                type: string
+                description: Name of the scope
+                enum:
+                - customer
+                - billing_customer
+                - shipping_customer
+                - service_provider
+                - originator
+                - external_advisor
+              minItems: 1
+              example:
+              - service_provider
+              - billing_customer
+              - shipping_customer
+      required:
+      - attributes
+      - type
+      - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

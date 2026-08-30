@@ -1,0 +1,1646 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Extended Asset Attributes API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Extended Asset Attributes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Extended Asset Attributes
+paths:
+  /asset_management/{srm_account_id}/v1/extended_asset_attributes:
+    get:
+      operationId: listExtendedAssetAttributes
+      description: Lists all extended asset attributes for the requested account.
+      summary: List all Extended Asset Attributes for the requested account
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Page number
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Page size
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_extended_attribute
+            - registered_asset
+        description: The relationships to be included.
+      - name: filter[account_extended_attribute.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the extended asset attribute for the given account_extended_attribute.id, using exact matching search
+      - name: filter[registered_asset.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the extended asset attribute for the given registered_asset.id, using exact matching search
+      responses:
+        '200':
+          description: Returns list of extended asset attributes
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attributes'
+        '400':
+          description: Account filter is missing
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Required filter is missing
+                  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                  code: decisiv:filters:006
+                  status: '400'
+                  source:
+                    parameter: filter[srm_account_id]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      operationId: createExtendedAssetAttribute
+      description: Creates a new extended asset attribute for the requested account.
+      summary: Create an Extended Asset Attribute
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: The request has been fulfilled and a new resource is available.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attribute'
+        '400':
+          description: Account filter is missing / Required key not provided / Invalid Attribute Value / Required value not provided / Invalid ID format for account extended attribute relationship / Invalid ID format for registered_asset relationship
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/value
+                Invalid Attribute Value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/value
+                      links:
+                        about: https://decisiv.net/asset_management/srm_account/v1/
+                Required value not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/value
+                Invalid ID format for account extended attribute relationship:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/account_extended_attribute/data/id
+                Invalid ID format for registered_asset relationship:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Account Extended Attribute not found / Registered asset not found / Extended Asset Attribute Association Exists
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account Extended Attribute not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/account_extended_attribute/data/id
+                Registered asset not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Extended Asset Attribute Association Exists:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Extended Asset Attribute Association Exists
+                      detail: The extended asset attribute must be unique for the Extended Attribute and Customer Asset within your Account
+                      code: decisiv:extended_asset_attributes:001
+                      source:
+                        pointer: /data/relationships
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/extended_asset_attribute'
+            examples:
+              Example:
+                value:
+                  data:
+                    id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    type: extended_asset_attributes
+                    attributes:
+                      value: values
+                    relationships:
+                      account_extended_attribute:
+                        data:
+                          type: extended_attributes
+                          id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                      registered_asset:
+                        data:
+                          type: registered_assets
+                          id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/extended_asset_attributes/{id}:
+    get:
+      operationId: getExtendedAssetAttribute
+      description: Retrieves a specific extended asset attribute from the requested account by its ID.
+      summary: Retrieves an Extended Asset Attribute from the requested account
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_extended_attribute
+            - registered_asset
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns an extended asset attribute
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attribute'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Required filter is missing
+                  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                  code: decisiv:filters:006
+                  status: '400'
+                  source:
+                    parameter: filter[srm_account_id]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      operationId: updateExtendedAssetAttribute
+      description: Updates an existing extended asset attribute for the requested account.
+      summary: Updates an Extended Asset Attribute
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show the updated extended asset attribute
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attribute'
+        '400':
+          description: Path ID mismatch / This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Path ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''79327cde-d5ce-4ce6-bdba-eebab125ae2d'' is an invalid resource'
+                      source:
+                        pointer: /data/id
+                ? This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+                : value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Extended Asset Attribute Association Exists
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '422'
+                  title: Extended Asset Attribute Association Exists
+                  detail: The extended asset attribute must be unique for the Extended Attribute and Customer Asset within your Account
+                  code: decisiv:extended_asset_attributes:001
+                  source:
+                    pointer: /data/relationships
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_extended_asset_attribute'
+            examples:
+              Example:
+                value:
+                  data:
+                    id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    type: extended_asset_attributes
+                    attributes:
+                      value: values
+    delete:
+      operationId: deleteExtendedAssetAttribute
+      description: Deletes a specific extended asset attribute by its ID.
+      summary: Deletes an Extended Asset Attribute
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful deletion
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/extended_asset_attributes:
+    get:
+      summary: List all Extended Asset Attributes for the requested account
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Page number
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Page size
+      responses:
+        '200':
+          description: Returns list of extended asset attributes
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attributes'
+        '400':
+          description: Account filter is missing
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Required filter is missing
+                  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                  code: decisiv:filters:006
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create an Extended Asset Attribute
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: The request has been fulfilled and a new resource is available.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attribute_2'
+        '400':
+          description: Account filter is missing / Required key not provided / Invalid Attribute Value / Required value not provided / Invalid ID format for account extended attribute relationship / Invalid ID format for registered_asset relationship
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/value
+                Invalid Attribute Value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/value
+                      links:
+                        about: https://decisiv.net/asset_management/srm_account/v1/
+                Required value not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/value
+                Invalid ID format for account extended attribute relationship:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/account_extended_attribute/data/id
+                Invalid ID format for registered_asset relationship:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Account Extended Attribute not found / Registered asset not found / Extended Asset Attribute Association Exists
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account Extended Attribute not found:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/account_extended_attribute/data/id
+                Registered asset not found:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Extended Asset Attribute Association Exists:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Extended Asset Attribute Association Exists
+                      detail: The extended asset attribute must be unique for the Extended Attribute and Customer Asset within your Account
+                      code: decisiv:extended_asset_attributes:001
+                      source:
+                        pointer: /data/relationships
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/extended_asset_attribute_2'
+            examples:
+              Example:
+                value:
+                  data:
+                    type: extended_asset_attributes
+                    attributes:
+                      value: values
+                    relationships:
+                      account_extended_attribute:
+                        data:
+                          type: extended_attributes
+                          id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                      customer_asset:
+                        data:
+                          type: customer_assets
+                          id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/extended_asset_attributes/{id}:
+    get:
+      summary: Retrieves an Extended Asset Attribute from the requested account
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns an extended asset attribute
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attribute_2'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Required filter is missing
+                  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                  code: decisiv:filters:006
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates an Extended Asset Attribute
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show the updated extended asset attribute
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: extended_asset_attributes
+                  attributes:
+                    value: values
+                  relationships:
+                    account_extended_attribute:
+                      data:
+                        type: extended_attributes
+                        id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/extended_asset_attribute_2'
+        '400':
+          description: Path ID mismatch / This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Path ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''79327cde-d5ce-4ce6-bdba-eebab125ae2d'' is an invalid resource'
+                      source:
+                        pointer: /data/id
+                ? This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+                : value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Extended Asset Attribute Association Exists
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '422'
+                  title: Extended Asset Attribute Association Exists
+                  detail: The extended asset attribute must be unique for the Extended Attribute and Customer Asset within your Account
+                  code: decisiv:extended_asset_attributes:001
+                  source:
+                    pointer: /data/relationships
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_extended_asset_attribute'
+            examples:
+              Example:
+                value:
+                  data:
+                    id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    type: extended_asset_attributes
+                    attributes:
+                      value: values
+                    relationships:
+                      account_extended_attribute:
+                        data:
+                          type: extended_attributes
+                          id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                      customer_asset:
+                        data:
+                          type: customer_assets
+                          id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+    delete:
+      summary: Deletes an Extended Asset Attribute
+      tags:
+      - Extended Asset Attributes
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful deletion
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    update_extended_asset_attribute:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - value
+              properties:
+                value:
+                  type: string
+                  description: Value of extended attribute for the asset
+    extended_asset_attribute_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the extended asset attribute
+            value:
+              type: string
+              description: Value of extended attribute for the asset
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the extended asset attribute was created'
+              example: '2022-04-14T05:23:45Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the extended asset attribute was updated'
+              example: '2022-04-14T05:23:45Z'
+          required:
+          - value
+        relationships:
+          type: object
+          properties:
+            account_extended_attribute:
+              $ref: '#/components/schemas/relationship_object'
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - account_extended_attribute
+          - registered_asset
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    extended_asset_attributes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
+        meta:
+          type: object
+    extended_asset_attribute:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the extended asset attribute
+                value:
+                  type: string
+                  description: Value of extended attribute for the asset
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the extended asset attribute was created'
+                  example: '2022-04-14T05:23:45Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the extended asset attribute was updated'
+                  example: '2022-04-14T05:23:45Z'
+              required:
+              - value
+            relationships:
+              type: object
+              properties:
+                account_extended_attribute:
+                  $ref: '#/components/schemas/relationship_object'
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - account_extended_attribute
+              - registered_asset
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    extended_asset_attribute_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - extended_asset_attributes
+        attributes:
+          type: object
+          properties:
+            value:
+              type: string
+              description: Value of extended attribute for the asset
+            name:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+              example: '2022-04-14T05:23:45Z'
+            updated_at:
+              type: string
+              format: date-time
+              example: '2022-04-14T05:23:45Z'
+          required:
+          - value
+        relationships:
+          type: object
+          properties:
+            account_extended_attribute:
+              $ref: '#/components/schemas/relationship_object'
+            customer_asset:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - account_extended_attribute
+          - customer_asset
+      required:
+      - type
+      - attributes
+      - relationships
+    extended_asset_attribute_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - extended_asset_attributes
+            attributes:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: Value of extended attribute for the asset
+                name:
+                  type: string
+                created_at:
+                  type: string
+                  format: date-time
+                  example: '2022-04-14T05:23:45Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: '2022-04-14T05:23:45Z'
+              required:
+              - value
+            relationships:
+              type: object
+              properties:
+                account_extended_attribute:
+                  $ref: '#/components/schemas/relationship_object'
+                customer_asset:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - account_extended_attribute
+              - customer_asset
+          required:
+          - type
+          - attributes
+          - relationships
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

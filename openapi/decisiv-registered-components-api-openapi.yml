@@ -1,0 +1,1306 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Registered Components API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Registered Components
+paths:
+  /asset_management/{srm_account_id}/v1/registered_components:
+    get:
+      summary: List all Registered Components from the requested account
+      operationId: listRegisteredComponents
+      description: Lists all registered components for the requested account.
+      tags:
+      - Registered Components
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 9
+        description: List `registered components` matching the *exact* `serial_number` attribute.
+      - name: filter[registered_asset.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: List `registered components` matching the *exact* `registered_asset.id` attribute.
+      - name: filter[registered_asset.type]
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_assets
+            - deactivated_assets
+        description: List `registered components` matching the `registered_asset` type
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_asset
+        description: The relationships to be included.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of registered components
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: registered_components
+                  attributes:
+                    name: Rear View Safety RVS-770613
+                    make: Rear View Safety
+                    model: RVS-770613
+                    year: 2011
+                    serial_number: 33CA97CF
+                    event_timestamps:
+                      installed_on: '2025-04-07T18:58:31Z'
+                    metadata:
+                      series: 24SK
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+              schema:
+                $ref: '#/components/schemas/registered_components'
+        '400':
+          description: Account filter is missing / Filter not allowed / Invalid Filter with uuid type value / Invalid Filter value for registered_asset type
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid Filter with uuid type value:
+                  value:
+                    errors:
+                    - code: decisiv:filters:002
+                      title: Invalid filter value
+                      detail: '''aaa-113j-uuid'' is not a valid value for filter. Expected values: uuid'
+                      status: '400'
+                      source:
+                        parameter: filter[registered_asset.id]
+                Invalid Filter value for registered_asset type:
+                  value:
+                    errors:
+                    - code: decisiv:filters:002
+                      title: Invalid filter value
+                      detail: '''type'' is not a valid value for filter. Expected values: uuid'
+                      status: '400'
+                      source:
+                        parameter: filter[registered_asset.type]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a new Registered Component
+      operationId: createRegisteredComponent
+      description: Creates a new Registered Component for the requested account.
+      tags:
+      - Registered Components
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the created registered component
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: registered_components
+                  attributes:
+                    name: Rear View Safety RVS-770613
+                    make: Rear View Safety
+                    model: RVS-770613
+                    year: 2011
+                    serial_number: 33CA97CF
+                    event_timestamps:
+                      installed_on: '2025-04-07T18:58:31Z'
+                    metadata:
+                      series: 24SK
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+              schema:
+                $ref: '#/components/schemas/registered_component'
+        '400':
+          description: Account filter is missing / Required key not provided / Required key must be populated / Schema conflict / Missing Registered Asset relationship / Registered Asset type is not valid
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/name
+                Required key must be populated:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/name
+                Schema conflict:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_schema:001
+                      title: Schema Conflict
+                      detail: Request must be validated against exactly one of the documented schemas
+                      source:
+                        pointer: /
+                Missing Registered Asset relationship:
+                  value:
+                    errors:
+                    - code: decisiv:relationships:002
+                      source:
+                        pointer: /data/relationships/registered_asset
+                      status: '400'
+                      title: Missing required relationship
+                      detail: The required relationship registered_asset is missing
+                Registered Asset type is not valid:
+                  value:
+                    errors:
+                    - code: decisiv:resource:002
+                      source:
+                        pointer: /data/relationships/registered_asset/data/type
+                      status: '400'
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''assets'' is an invalid resource'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid year / Invalid timestamp / Identifier not found / Deactivated Asset / Registered Asset uuid is not valid
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid year:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:016
+                      title: Provided attribute value is outside of the supported range - 1000..9999
+                      source:
+                        pointer: /data/attributes/year
+                Invalid timestamp:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:006
+                      title: Invalid Timestamp Format
+                      detail: Timestamps must conform to ISO 8601 standard in the format of "YYYY-MM-DDTHH:MM:SSZ"
+                      source:
+                        pointer: /data/attributes/event_timestamps/installed_on
+                Identifier not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Deactivated Asset:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_components:001
+                      title: Deactivated Asset
+                      detail: Asset has been deactivated and is not eligible for use
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Registered Asset uuid is not valid:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/registered_component_create'
+            examples:
+              Registered Component:
+                value:
+                  data:
+                    type: registered_components
+                    attributes:
+                      name: Rear View Safety RVS-770613
+                      make: Rear View Safety
+                      model: RVS-770613
+                      year: 2011
+                      serial_number: 33CA97CF
+                      event_timestamps:
+                        installed_on: '2025-04-07T18:58:31Z'
+                      metadata:
+                        series: 24SK
+                    relationships:
+                      registered_asset:
+                        data:
+                          type: registered_assets
+                          id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+  /asset_management/{srm_account_id}/v1/registered_components/{id}:
+    get:
+      summary: Retrieves a Registered Components from the requested account
+      operationId: getRegisteredComponent
+      description: Returns details for a specific Registered Component by ID.
+      tags:
+      - Registered Components
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_asset
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns a registered components
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: registered_components
+                  attributes:
+                    name: Rear View Safety RVS-770613
+                    make: Rear View Safety
+                    model: RVS-770613
+                    year: 2011
+                    serial_number: 33CA97CF
+                    event_timestamps:
+                      installed_on: '2025-04-07T18:58:31Z'
+                    metadata:
+                      series: 24SK
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+              schema:
+                $ref: '#/components/schemas/registered_component'
+        '400':
+          description: Account filter is missing
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Required filter is missing
+                  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                  code: decisiv:filters:006
+                  status: '400'
+                  source:
+                    parameter: filter[srm_account_id]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates a Registered Components from the requested account
+      operationId: updateRegisteredComponent
+      description: Updates an existing Registered Component for the requested account.
+      tags:
+      - Registered Components
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show the updated registered component
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: registered_components
+                  attributes:
+                    name: Rear View Safety RVS-770613
+                    make: Rear View Safety
+                    model: RVS-770613
+                    year: 2011
+                    serial_number: 33CA97CF
+                    event_timestamps:
+                      installed_on: '2025-04-07T18:58:31Z'
+                    metadata:
+                      series: 24SK
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+              schema:
+                $ref: '#/components/schemas/registered_component'
+        '400':
+          description: Account filter is missing / Required key not provided / Required key must be populated / Schema conflict / Missing Registered Asset relationship / Registered Asset type is not valid
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/name
+                Required key must be populated:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/name
+                Schema conflict:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_schema:001
+                      title: Schema Conflict
+                      detail: Request must be validated against exactly one of the documented schemas
+                      source:
+                        pointer: /
+                Missing Registered Asset relationship:
+                  value:
+                    errors:
+                    - code: decisiv:relationships:002
+                      source:
+                        pointer: /data/relationships/registered_asset
+                      status: '400'
+                      title: Missing required relationship
+                      detail: The required relationship registered_asset is missing
+                Registered Asset type is not valid:
+                  value:
+                    errors:
+                    - code: decisiv:resource:002
+                      source:
+                        pointer: /data/relationships/registered_asset/data/type
+                      status: '400'
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''assets'' is an invalid resource'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid year / Invalid timestamp / Identifier not found / Deactivated Asset / Registered Asset uuid is not valid
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid year:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:016
+                      title: Provided attribute value is outside of the supported range - 1000..9999
+                      source:
+                        pointer: /data/attributes/year
+                Invalid timestamp:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:006
+                      title: Invalid Timestamp Format
+                      detail: Timestamps must conform to ISO 8601 standard in the format of "YYYY-MM-DDTHH:MM:SSZ"
+                      source:
+                        pointer: /data/attributes/event_timestamps/installed_on
+                Identifier not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Deactivated Asset:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_components:001
+                      title: Deactivated Asset
+                      detail: Asset has been deactivated and is not eligible for use
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Registered Asset uuid is not valid:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/registered_component_patch'
+            examples:
+              Registered Component:
+                value:
+                  data:
+                    id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                    type: registered_components
+                    attributes:
+                      name: Rear View Safety RVS-770613
+                      make: Rear View Safety
+                      model: RVS-770613
+                      year: 2011
+                      serial_number: 33CA97CF
+                      event_timestamps:
+                        installed_on: '2025-04-07T18:58:31Z'
+                      metadata:
+                        series: 24SK
+                    relationships:
+                      registered_asset:
+                        data:
+                          type: registered_assets
+                          id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+    delete:
+      summary: Deletes a Registered Components from the requested account
+      operationId: deleteRegisteredComponent
+      description: Deletes an existing Registered Component for the requested account.
+      tags:
+      - Registered Components
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: The request has been successfully fulfilled but there is no additional content to return.
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    registered_component_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: registered_components
+            attributes:
+              type: object
+              required:
+              - name
+              - serial_number
+              properties:
+                name:
+                  type: string
+                  description: Description of component
+                  minLength: 1
+                  maxLength: 255
+                serial_number:
+                  type: string
+                  description: Production number of the component
+                  minLength: 1
+                  maxLength: 255
+                make:
+                  type: string
+                  description: Brand of the component
+                  minLength: 1
+                  maxLength: 255
+                model:
+                  type: string
+                  description: Name of the component product from the manufacturer
+                  minLength: 1
+                  maxLength: 255
+                year:
+                  type: integer
+                  description: Calendar year the component model was released
+                  minLength: 4
+                  maxLength: 4
+                  minimum: 1000
+                  maximum: 9999
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the component
+                  properties:
+                    installed_on:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the component was installed'
+                      example: '2022-04-14T05:23:45Z'
+                metadata:
+                  type: object
+                  additionalProperties: true
+            relationships:
+              type: object
+              required:
+              - registered_asset
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - type
+          - attributes
+          - relationships
+    registered_component_patch:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              example: registered_components
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Description of component
+                  minLength: 1
+                  maxLength: 255
+                serial_number:
+                  type: string
+                  description: Production number of the component
+                  minLength: 1
+                  maxLength: 255
+                make:
+                  type:
+                  - string
+                  - 'null'
+                  description: Brand of the component
+                  minLength: 1
+                  maxLength: 255
+                model:
+                  type:
+                  - string
+                  - 'null'
+                  description: Name of the component product from the manufacturer
+                  minLength: 1
+                  maxLength: 255
+                year:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Calendar year the component model was released
+                  minLength: 4
+                  maxLength: 4
+                  minimum: 1000
+                  maximum: 9999
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the component
+                  properties:
+                    installed_on:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the component was installed'
+                      example: '2022-04-14T05:23:45Z'
+                metadata:
+                  type: object
+                  additionalProperties: true
+            relationships:
+              type: object
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - id
+          - type
+          - attributes
+    registered_components:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/registered_component_properties-data'
+        meta:
+          type: object
+    registered_component:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              example: registered_components
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Description of component
+                  minLength: 1
+                  maxLength: 255
+                serial_number:
+                  type: string
+                  description: Production number of the component
+                  minLength: 1
+                  maxLength: 255
+                make:
+                  type: string
+                  description: Brand of the component
+                  minLength: 1
+                  maxLength: 255
+                model:
+                  type: string
+                  description: Name of the component product from the manufacturer
+                  minLength: 1
+                  maxLength: 255
+                year:
+                  type: integer
+                  description: Calendar year the component model was released
+                  minLength: 4
+                  maxLength: 4
+                  minimum: 1000
+                  maximum: 9999
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the component
+                  properties:
+                    installed_on:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the component was installed'
+                      example: '2022-04-14T05:23:45Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the component was created'
+                  example: '2022-04-14T05:23:45Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the component was updated'
+                  example: '2022-04-14T05:23:45Z'
+                metadata:
+                  type: object
+                  additionalProperties: true
+            relationships:
+              type: object
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+    registered_component_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          example: registered_components
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Description of component
+              minLength: 1
+              maxLength: 255
+            serial_number:
+              type: string
+              description: Production number of the component
+              minLength: 1
+              maxLength: 255
+            make:
+              type: string
+              description: Brand of the component
+              minLength: 1
+              maxLength: 255
+            model:
+              type: string
+              description: Name of the component product from the manufacturer
+              minLength: 1
+              maxLength: 255
+            year:
+              type: integer
+              description: Calendar year the component model was released
+              minLength: 4
+              maxLength: 4
+              minimum: 1000
+              maximum: 9999
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the component
+              properties:
+                installed_on:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the component was installed'
+                  example: '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the component was created'
+              example: '2022-04-14T05:23:45Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the component was updated'
+              example: '2022-04-14T05:23:45Z'
+            metadata:
+              type: object
+              additionalProperties: true
+        relationships:
+          type: object
+          properties:
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

@@ -1,0 +1,673 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management Account Users API
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Account Users
+paths:
+  /account_management/v1/accounts/{account_id}/users:
+    get:
+      summary: List account users
+      description: List all users assigned to an account. Supports `?include=roles` to sideload role assignments.
+      tags:
+      - Account Users
+      operationId: listAccountUsers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+        description: Sideload related resources (e.g. `roles`)
+      - name: filter[email]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by exact email address
+      - name: filter[first_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by first name (partial, case-insensitive)
+      - name: filter[last_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by last name (partial, case-insensitive)
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by the user's business-system identifier (the same value returned in `external_reference.business_system`).
+      - name: filter[roles.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by role ID. Accepts a comma-separated list; users must have ALL listed roles on this account (AND). Example: filter[roles.id]=1,2'
+      - name: filter[roles.id:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by role ID. Accepts a comma-separated list; users must have ANY of the listed roles on this account (OR). Example: filter[roles.id:includes]=1,2'
+      - name: filter[roles.id:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by role ID. Accepts a comma-separated list; returns users who do NOT have ANY of the listed roles on this account. Example: filter[roles.id:excludes]=1,2'
+      - name: filter[job_role]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by exact `job_role` (e.g. `Branch Manager`). Pass the same value returned in the `job_role` attribute on the response.
+      - name: filter[job_role:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filter by partial `job_role` match (case-insensitive). Example: `Manager` matches users whose `job_role` is `Branch Manager` or `Service Manager`.'
+      - name: filter[last_login_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: 'Filter to users whose most recent login is on or after the given ISO 8601 timestamp. Example: filter[last_login_at:gte]=2026-01-01T00:00:00Z'
+      - name: filter[last_login_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter to users whose most recent login is on or before the given ISO 8601 timestamp.
+      - name: filter[last_login_at:exists]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter users by whether a `last_login_at` timestamp exists. Use `true` to list only users who have logged in at least once, or `false` to list only users who have never logged in.
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Sort the results. Accepts a comma-separated list of fields; prefix any field with `-` for descending. The first field is the primary sort key; subsequent fields break ties. Allowed fields: `last_login_at`, `roles.name`, `job_role`. Examples: `sort=last_login_at`, `sort=-job_role`, `sort=roles.name,-last_login_at`. Defaults to `last_name asc, first_name asc` when omitted. For `roles.name`, multi-role users are placed by their alphabetically first role (asc) or last role (desc) on this account. Empty/null values for any sortable column are always grouped at the end (NULLS LAST) regardless of direction.'
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_users'
+        '400':
+          description: Returned when a filter, sort, or timestamp value is invalid (e.g. `filter[last_login_at:gte]` is not a parseable ISO 8601 timestamp).
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                InvalidTimestampFilter:
+                  summary: Invalid timestamp on a last_login_at filter
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid timebased filter value
+                      detail: Invalid filter value `not-a-timestamp`. Expected an ISO 8601 timestamp.
+                      code: decisiv:filters:010
+                      source:
+                        parameter: filter[last_login_at:gte]
+    post:
+      summary: Add a user to an account
+      description: Assigns an existing ecosystem user to an account with one or more roles. If the user was previously removed, their account access is reactivated.
+      tags:
+      - Account Users
+      operationId: createAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/account_user_create'
+            example:
+              data:
+                type: account_users
+                attributes:
+                  communication_preferences:
+                    visible_as_external_recipient: true
+                    visible_as_internal_recipient: true
+                    visible_as_workflow_assignee: true
+                relationships:
+                  user:
+                    data:
+                      type: users
+                      id: a1b2c3d4-e5f6-4890-abcd-ef1234567890
+                  roles:
+                    data:
+                    - type: roles
+                      id: e5f6a7b8-1234-5678-9abc-def012345678
+      responses:
+        '201':
+          description: User added to account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '400':
+          description: Invalid request body (missing `user` or `roles` relationship)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Referenced user or role could not be found for this account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/users/{id}:
+    get:
+      summary: Get an account user
+      description: Retrieve a single user within an account context.
+      tags:
+      - Account Users
+      operationId: getAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '404':
+          description: User not found in account
+    patch:
+      summary: Update an account user's communication preferences
+      description: Updates the per-account visibility flags for a user already associated with the account. Any subset of `communication_preferences` keys may be supplied; omitted keys are left unchanged. Returns 404 if the user has no role assignments in this account.
+      tags:
+      - Account Users
+      operationId: updateAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/account_user_update'
+            example:
+              data:
+                type: account_users
+                id: a1b2c3d4-e5f6-4890-abcd-ef1234567890
+                attributes:
+                  communication_preferences:
+                    visible_as_external_recipient: false
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '404':
+          description: Account not found, or the user has no role assignments in this account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid or empty `communication_preferences` payload (unknown key, empty object, or non-boolean value)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    delete:
+      summary: Remove a user from an account
+      description: Deactivates a user's access to an account. Removes all role assignments, group memberships, user permissions, and recipient records. Cannot remove yourself.
+      tags:
+      - Account Users
+      operationId: deleteAccountUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: User removed from account
+        '404':
+          description: User not found in account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Cannot remove yourself from the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    account_users:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/account_user'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    account_user_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - relationships
+          properties:
+            type:
+              type: string
+              enum:
+              - account_users
+            attributes:
+              type: object
+              description: Optional attributes to set when associating the user with the account.
+              properties:
+                communication_preferences:
+                  $ref: '#/components/schemas/communication_preferences'
+            relationships:
+              type: object
+              required:
+              - user
+              - roles
+              properties:
+                user:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - users
+                        id:
+                          type: string
+                          format: uuid
+                          description: The ecosystem user's UUID
+                roles:
+                  type: object
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - type
+                        - id
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                            - roles
+                          id:
+                            type: string
+                            format: uuid
+                            description: The role's UUID
+    account_user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - account_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            username:
+              type: string
+              description: Username used to sign in. Mirrors `email` for users authenticated by email, and may differ for users provisioned via SSO.
+            email:
+              type: string
+              format: email
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role within the account (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
+            address1:
+              type:
+              - string
+              - 'null'
+              description: First line of the user's mailing address
+            address2:
+              type:
+              - string
+              - 'null'
+              description: Second line of the user's mailing address
+            city:
+              type:
+              - string
+              - 'null'
+              description: City the address is located in
+            state:
+              type:
+              - string
+              - 'null'
+              description: State or province the address is located in
+            postal_code:
+              type:
+              - string
+              - 'null'
+              description: ZIP or postal code the address is located in
+            country:
+              type:
+              - string
+              - 'null'
+              description: ISO 3166 country code for the country the address is located in
+            last_login_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+              description: ISO 8601 timestamp of the user's most recent sign-in to this account. `null` when the user has never signed in.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+            communication_preferences:
+              $ref: '#/components/schemas/communication_preferences'
+        relationships:
+          type: object
+          properties:
+            roles:
+              type: object
+              description: The roles assigned to this user within the account
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - roles
+                      id:
+                        type: string
+                        format: uuid
+      required:
+      - attributes
+      - type
+      - id
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
+      required:
+      - attributes
+      - type
+      - id
+    account_user_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - account_users
+            id:
+              type: string
+              format: uuid
+              description: The account user's UUID. Must match the `:id` in the URL.
+            attributes:
+              type: object
+              required:
+              - communication_preferences
+              properties:
+                communication_preferences:
+                  $ref: '#/components/schemas/communication_preferences'
+    communication_preferences:
+      type: object
+      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      properties:
+        visible_as_external_recipient:
+          type: boolean
+          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
+        visible_as_internal_recipient:
+          type: boolean
+          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
+        visible_as_workflow_assignee:
+          type: boolean
+          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
+      example:
+        visible_as_external_recipient: true
+        visible_as_internal_recipient: true
+        visible_as_workflow_assignee: true
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    account_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/account_user'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

@@ -1,0 +1,847 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management Accounts API
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Accounts
+paths:
+  /account_management/v1/accounts:
+    get:
+      summary: List all Accounts the current user has access granted to
+      description: Returns the accounts the authenticated user has been granted access to, with pagination and filtering. Supports `?include=roles` to sideload the user's RBAC roles on each account; when present, each account gains a `relationships.roles` object and the related role resources are returned in the top-level `included` array.
+      tags:
+      - Accounts
+      operationId: getAccounts
+      parameters:
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+        description: Sideload related resources (e.g. `roles`)
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 255
+        description: List `accounts` that match the `name` attribute. Cannot be combined with `filter[name:like]`.
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 255
+        description: List `accounts` that match partially the `name` attribute. Cannot be combined with `filter[name]`. in the value are matched as literal characters, not wildcards.
+      - name: filter[external_reference.decisiv]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `accounts` that match the `decisiv` attribute inside the external_reference object.
+      - name: filter[external_reference.srm_account]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `accounts` that match the `srm_account` attribute inside the external_reference object.
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `accounts` that match the `business_system` attribute inside the external_reference object.
+      - name: filter[module_subscriptions.key:include]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: '**Deprecated** — use `filter[module_subscriptions.key:includes]` instead. List `accounts` that have the modules chosen in the filter. Accepts up to 50 comma-separated values.'
+      - name: filter[module_subscriptions.key:exclude]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: '**Deprecated** — use `filter[module_subscriptions.key:excludes]` instead. List `accounts` that does not have the modules chosen in the filter. Accepts up to 50 comma-separated values.'
+      - name: filter[module_subscriptions.key:includes]
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: List `accounts` that have the modules chosen in the filter. Accepts up to 50 comma-separated values.
+      - name: filter[module_subscriptions.key:excludes]
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - account_management
+            - asset_management
+            - maintenance
+            - service_management
+            - telematics
+        description: List `accounts` that does not have the modules chosen in the filter. Accepts up to 50 comma-separated values.
+      responses:
+        '200':
+          description: Returns list of accounts
+          content:
+            application/vnd.api+json:
+              examples:
+                WithoutInclude:
+                  summary: Default response (no ?include=roles)
+                  description: Accounts are returned without a `relationships.roles` object and without a top-level `included` array.
+                  value:
+                    data:
+                    - type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        address1: 1000 Little Martha Lane
+                        address2: ''''
+                        city: Macon
+                        state: GA
+                        country: US
+                        postal_code: '31204'
+                        phone: '+14157894567'
+                        fax: '+14157894567'
+                        email: southbound.trucking@example.com
+                        external_reference:
+                          business_system: ''
+                          dms: ''
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                        module_subscriptions:
+                        - key: account_management
+                          name: Account Management
+                          description: Handles user permissions, business relationships, and core account settings across the SRM platform
+                        - key: asset_management
+                          name: Asset Management
+                          description: Allows fleet / asset operators to track, manage and maintain their vehicles/assets across their entire lifecycle
+                        - key: maintenance
+                          name: Maintenance
+                          description: Helps consumers plan and execute preventive maintenance programs to reduce downtime and extend asset life
+                        - key: service_management
+                          name: Service Management
+                          description: Enables service providers to manage repairs, estimates, and workflow for commercial vehicle maintenance and repairs
+                        - key: telematics
+                          name: Telematics
+                          description: Provides real-time vehicle data, diagnostics, and location tracking to optimize asset operations and maintenance
+                WithInclude:
+                  summary: Response with ?include=roles
+                  description: Each account carries a `relationships.roles` object and the related role resources are returned in the top-level `included` array. Both public and private (account-owned) roles are reflected.
+                  value:
+                    data:
+                    - type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        external_reference:
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                      relationships:
+                        roles:
+                          data:
+                          - type: roles
+                            id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                          - type: roles
+                            id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                    included:
+                    - type: roles
+                      id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                      attributes:
+                        name: Fleet Administrator
+                        description: Full administrative access to the account
+                        public: true
+                        permissions:
+                        - assets:read
+                        - assets:write
+                    - type: roles
+                      id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                      attributes:
+                        name: Billing Approver
+                        description: Account-owned custom role
+                        public: false
+                        permissions:
+                        - invoices:approve
+              schema:
+                $ref: '#/components/schemas/accounts'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Conflicting filters:
+                  value:
+                    errors:
+                    - title: Conflicting filters
+                      detail: Cannot combine filter[name] with its :like variant. Use only one.
+                      code: decisiv:filters:012
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Too many filter values:
+                  value:
+                    errors:
+                    - title: Too many filter values
+                      detail: 'Too many values for filter[module_subscriptions.key:include]. Maximum allowed: 50.'
+                      code: decisiv:filters:011
+                      status: '400'
+                      source:
+                        parameter: filter[module_subscriptions.key:include]
+                Filter value too long:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be less than 4096 characters
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[external_reference.decisiv]
+                Invalid filter characters:
+                  value:
+                    errors:
+                    - title: Invalid filter characters
+                      detail: Filter value for filter[name] contains invalid characters.
+                      code: decisiv:filters:013
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter shape:
+                  value:
+                    errors:
+                    - title: Invalid filter value shape
+                      detail: Filter value for filter[name] must be a string.
+                      code: decisiv:filters:014
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}:
+    get:
+      summary: List details on a specific Account
+      description: Returns the details of a single account the authenticated user has access to. Supports `?include=roles` to sideload the user's RBAC roles on the account; when present, the account gains a `relationships.roles` object and the related role resources are returned in the top-level `included` array.
+      tags:
+      - Accounts
+      operationId: getAccountsById
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - roles
+        description: Sideload related resources (e.g. `roles`)
+      responses:
+        '200':
+          description: Show details for requested Account
+          content:
+            application/vnd.api+json:
+              examples:
+                WithoutInclude:
+                  summary: Default response (no ?include=roles)
+                  description: The account is returned without a `relationships.roles` object and without a top-level `included` array.
+                  value:
+                    data:
+                      type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        address1: 1000 Little Martha Lane
+                        address2: ''''
+                        city: Macon
+                        state: GA
+                        country: US
+                        postal_code: '31204'
+                        phone: '+14157894567'
+                        fax: '+14157894567'
+                        email: southbound.trucking@example.com
+                        external_reference:
+                          business_system: ''
+                          dms: ''
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                        module_subscriptions:
+                        - key: account_management
+                          name: Account Management
+                          description: Handles user permissions, business relationships, and core account settings across the SRM platform
+                        - key: asset_management
+                          name: Asset Management
+                          description: Allows fleet / asset operators to track, manage and maintain their vehicles/assets across their entire lifecycle
+                        - key: maintenance
+                          name: Maintenance
+                          description: Helps consumers plan and execute preventive maintenance programs to reduce downtime and extend asset life
+                        - key: service_management
+                          name: Service Management
+                          description: Enables service providers to manage repairs, estimates, and workflow for commercial vehicle maintenance and repairs
+                        - key: telematics
+                          name: Telematics
+                          description: Provides real-time vehicle data, diagnostics, and location tracking to optimize asset operations and maintenance
+                WithInclude:
+                  summary: Response with ?include=roles
+                  description: The account carries a `relationships.roles` object and the related role resources are returned in the top-level `included` array. Both public and private (account-owned) roles are reflected.
+                  value:
+                    data:
+                      type: accounts
+                      id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+                      attributes:
+                        name: Southbound Trucking
+                        external_reference:
+                          decisiv: EATAPEACH
+                          srm_account: AB1-532
+                      relationships:
+                        roles:
+                          data:
+                          - type: roles
+                            id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                          - type: roles
+                            id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                    included:
+                    - type: roles
+                      id: 58295ebf-2cd5-4540-aef5-786739cbe07a
+                      attributes:
+                        name: Fleet Administrator
+                        description: Full administrative access to the account
+                        public: true
+                        permissions:
+                        - assets:read
+                        - assets:write
+                    - type: roles
+                      id: 1d9a0ad3-1922-4ace-a647-581c98b30b92
+                      attributes:
+                        name: Billing Approver
+                        description: Account-owned custom role
+                        public: false
+                        permissions:
+                        - invoices:approve
+              schema:
+                $ref: '#/components/schemas/account_by_id'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    account_by_id:
+      example:
+        data:
+          type: accounts
+          id: 7b86dc31-4ae3-4710-aab4-0e7d10f5dffc
+          attributes:
+            name: Southbound Trucking
+            address1: 1000 Little Martha Lane
+            address2: ''''
+            city: Macon
+            state: GA
+            country: US
+            postal_code: '31204'
+            phone: '+14157894567'
+            fax: '+14157894567'
+            email: southbound.trucking@example.com
+            external_reference:
+              business_system: ''
+              dms: ''
+              decisiv: EATAPEACH
+              srm_account: AB1-532
+            module_subscriptions:
+            - key: account_management
+              name: Account Management
+              description: Handles user permissions, business relationships, and core account settings across the SRM platform
+            - key: asset_management
+              name: Asset Management
+              description: Allows fleet / asset operators to track, manage and maintain their vehicles/assets across their entire lifecycle
+            - key: maintenance
+              name: Maintenance
+              description: Helps consumers plan and execute preventive maintenance programs to reduce downtime and extend asset life
+            - key: service_management
+              name: Service Management
+              description: Enables service providers to manage repairs, estimates, and workflow for commercial vehicle maintenance and repairs
+            - key: telematics
+              name: Telematics
+              description: Provides real-time vehicle data, diagnostics, and location tracking to optimize asset operations and maintenance
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - accounts
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the account
+                address1:
+                  type: string
+                  description: First line of the Address
+                address2:
+                  type: string
+                  description: Second line of the Address
+                city:
+                  type: string
+                  description: City the address is located in
+                state:
+                  type: string
+                  description: State or province the address is located in
+                country:
+                  type: string
+                  description: ISO 3166 country code for the country the address is located in
+                postal_code:
+                  type: string
+                  description: ZIP or Postal Code the address is located in
+                phone:
+                  type: string
+                  description: Phone number to reach the organization
+                fax:
+                  type: string
+                  description: Fax number to reach the organization
+                email:
+                  type: string
+                  description: Email to reach the organization
+                external_reference:
+                  type: object
+                  description: Identifiers available for the Account
+                  properties:
+                    business_system:
+                      type: string
+                      description: Business System Identifier
+                    dms:
+                      type: string
+                      description: DMS Identifier
+                      deprecated: true
+                    srm_account:
+                      type: string
+                      description: SRM Account Identifier
+                    decisiv:
+                      type: string
+                      description: Decisiv Identifier
+                module_subscriptions:
+                  type: array
+                  description: A list of objects that indicate which SRM Modules the account currently participates within in SRM land
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Snake case representation of the SRM module
+                        example: account_management
+                      name:
+                        type: string
+                        description: Name of the SRM module
+                        example: Account Management
+                      description:
+                        type: string
+                        description: Detailed explanation of the SRM module
+            relationships:
+              type: object
+              description: Present only when the request includes `?include=roles`. Omitted entirely otherwise.
+              properties:
+                roles:
+                  type: object
+                  description: The authenticated user's RBAC roles on this account, including both public and private (account-owned) roles. The full role resources are returned in the top-level `included` array.
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                            - roles
+                          id:
+                            type: string
+                            format: uuid
+          required:
+          - attributes
+          - type
+          - id
+        included:
+          type: array
+          description: Populated with the related `roles` resources when the request includes `?include=roles`.
+          items:
+            $ref: '#/components/schemas/role'
+      required:
+      - data
+    account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - accounts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the account
+            address1:
+              type: string
+              description: First line of the Address
+            address2:
+              type: string
+              description: Second line of the Address
+            city:
+              type: string
+              description: City the address is located in
+            state:
+              type: string
+              description: State or province the address is located in
+            country:
+              type: string
+              description: ISO 3166 country code for the country the address is located in
+            postal_code:
+              type: string
+              description: ZIP or Postal Code the address is located in
+            phone:
+              type: string
+              description: Phone number to reach the organization
+            fax:
+              type: string
+              description: Fax number to reach the organization
+            email:
+              type: string
+              description: Email to reach the organization
+            external_reference:
+              type: object
+              description: Identifiers available for the Account
+              properties:
+                business_system:
+                  type: string
+                  description: Business System Identifier
+                dms:
+                  type: string
+                  description: DMS Identifier
+                  deprecated: true
+                srm_account:
+                  type: string
+                  description: SRM Account Identifier
+                decisiv:
+                  type: string
+                  description: Decisiv Identifier
+            module_subscriptions:
+              type: array
+              description: A list of objects that indicate which SRM Modules the account currently participates within in SRM land
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: Snake case representation of the SRM module
+                    example: account_management
+                  name:
+                    type: string
+                    description: Name of the SRM module
+                    example: Account Management
+                  description:
+                    type: string
+                    description: Detailed explanation of the SRM module
+        relationships:
+          type: object
+          description: Present only when the request includes `?include=roles`. Omitted entirely otherwise.
+          properties:
+            roles:
+              type: object
+              description: The authenticated user's RBAC roles on this account, including both public and private (account-owned) roles. The full role resources are returned in the top-level `included` array.
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - roles
+                      id:
+                        type: string
+                        format: uuid
+      required:
+      - attributes
+      - type
+      - id
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
+      required:
+      - attributes
+      - type
+      - id
+    accounts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/account'
+        included:
+          type: array
+          description: Populated with the related `roles` resources when the request includes `?include=roles`.
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

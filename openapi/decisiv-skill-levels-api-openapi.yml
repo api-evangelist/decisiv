@@ -1,0 +1,381 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Skill Levels API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Skill Levels
+paths:
+  /service_management/{srm_account_id}/v1/skill_levels:
+    get:
+      summary: Retrieves a list of skill levels
+      tags:
+      - Skill Levels
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: A
+                  type: skill_levels
+                  attributes:
+                    description: This is a skill level description
+                    pricing:
+                      labor: '50.00'
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/skill_levels/A
+              schema:
+                $ref: '#/components/schemas/skill_levels'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/skill_levels/{id}:
+    get:
+      summary: Retrieves a skill level
+      tags:
+      - Skill Levels
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: string
+        description: The resource ID example A
+        required: true
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: A
+                  type: skill_levels
+                  attributes:
+                    description: This is a skill level description
+                    pricing:
+                      labor: '50.00'
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/skill_levels/A
+              schema:
+                $ref: '#/components/schemas/skill_level'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    skill_level:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Customer-defined skill level identifier
+              minLength: 1
+            type:
+              type: string
+              enum:
+              - skill_levels
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for skill level
+                  maxLength: 255
+                pricing:
+                  type: object
+                  description: Pricing details for the skill level
+                  properties:
+                    labor:
+                      type: string
+                      pattern: ^\d+\.\d{2}$
+                      description: Labor value for the skill level
+                      example: '50.00'
+                  required:
+                  - labor
+              required:
+              - description
+              - pricing
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - attributes
+          - type
+          - id
+    skill_levels:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/skill_level_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    skill_level_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Customer-defined skill level identifier
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - skill_levels
+        attributes:
+          type: object
+          properties:
+            description:
+              type: string
+              description: Description for skill level
+              maxLength: 255
+            pricing:
+              type: object
+              description: Pricing details for the skill level
+              properties:
+                labor:
+                  type: string
+                  pattern: ^\d+\.\d{2}$
+                  description: Labor value for the skill level
+                  example: '50.00'
+              required:
+              - labor
+          required:
+          - description
+          - pricing
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - attributes
+      - type
+      - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

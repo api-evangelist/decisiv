@@ -1,0 +1,352 @@
+openapi: 3.2.0
+info:
+  version: 2.0.4
+  title: Service Provider Group Assets API
+  description: Base API allowing Dealers to interact with Customers and Assets
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+servers:
+- url: /api/v1/
+security:
+- Bearer: []
+- OAuth2Password: []
+  TransitionToken: []
+tags:
+- name: group_assets
+paths:
+  /group_assets:
+    get:
+      tags:
+      - group_assets
+      description: Returns a listing of group assets for all a Dealers' Customers
+      operationId: groupAssets
+      parameters:
+      - $ref: '#/components/parameters/requiredVinParam'
+      responses:
+        '200':
+          description: List of group assets in the ecosystem for a Dealers' Customers
+          content:
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/jsonapiCustomerAssetsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/badRequestVINFilterMissingResponseError'
+        '429':
+          description: Too Many Requests
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/tooManyRequestsResponse'
+  /group_assets/{asset_id}:
+    delete:
+      tags:
+      - group_assets
+      description: Removes a Group Customer Asset from a Customer's inventory based upon ID
+      operationId: RemoveGroupCustomerAssetById
+      parameters:
+      - $ref: '#/components/parameters/assetId'
+      responses:
+        '204':
+          description: Group Asset Removed
+        '404':
+          description: Group Asset not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/tooManyRequestsResponse'
+components:
+  parameters:
+    assetId:
+      name: asset_id
+      in: path
+      description: ID of Customer Asset to fetch
+      required: true
+      schema:
+        type: integer
+    requiredVinParam:
+      name: filter[vin]
+      in: query
+      description: 'Exact match for a VIN, ex: JN1AR5XXXXXX*'
+      required: true
+      schema:
+        type: string
+        maxLength: 17
+        minLength: 12
+  schemas:
+    JSONAPI_Links:
+      title: JSONAPI_Links
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+    JSONAPI_Errors:
+      title: JSONAPI_Errors
+      type: array
+      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
+
+
+        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
+
+
+        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+
+        '
+      items:
+        $ref: '#/components/schemas/JSONAPI_Error'
+    JSONAPI_Error:
+      title: JSONAPI_Error
+      type: object
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
+
+        '
+      properties:
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+        id:
+          description: a unique identifier for this particular ocurrence of the problem.
+          type: string
+        links:
+          description: a links object containing the following members.
+          type: object
+          properties:
+            about:
+              type: string
+              description: a link that leads to further details about this particular occurrence of the problem.
+        meta:
+          type: object
+          description: a meta object containing non-standard meta-information about the error.
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+        source:
+          type: object
+          description: an object containing references to the source of the error, optionally including any of the following members.
+          properties:
+            parameter:
+              type: string
+              description: a string indicating which URI query parameter caused the error.
+            pointer:
+              type: string
+              description: a JSON pointer (RFC6901) to the associated entity in the request document.
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+    jsonapiCustomerAssetsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - attributes
+            - id
+            - type
+            properties:
+              attributes:
+                allOf:
+                - $ref: '#/components/schemas/customerAsset'
+                - $ref: '#/components/schemas/audit_details'
+              id:
+                type: integer
+                example: 88
+              type:
+                type: string
+                example: assets
+        links:
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Links'
+    tooManyRequestsResponseErrorWithExample:
+      title: tooManyRequestsResponseErrorWithExample
+      type: object
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
+
+        '
+      properties:
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+          example: '429'
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+          example: The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+          example: '429'
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+          example: Too Many Requests
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Errors'
+    tooManyRequestsResponseError:
+      title: Too Many Requests
+      type: array
+      description: 'Access restricted for a given user or application due to undesired behavior
+
+        '
+      items:
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+    JSONAPI_DocumentLink:
+      title: JSONAPI_DocumentLink
+      type: string
+      description: 'A "JSON API" document link.
+
+        '
+      example: http://link.to/resource
+    badRequestVINFilterMissingErrorWithExample:
+      title: badRequestFilterMissingErrorWithExample
+      type: object
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
+
+        '
+      properties:
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+          example: '400'
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+          example: decisiv:filters:106
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+          example: Required filter is missing
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+          example: 'Required filter must be provided. Valid required filters: vin'
+        source:
+          type: object
+          properties:
+            parameter:
+              type: string
+              example: filter
+    customerAsset:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          description: Customer ID
+          example: 42
+        asset_id:
+          type: string
+          description: Asset UUID
+          example: c441e9ee-d990-4759-b6ab-00230ab6647e
+        vin:
+          type: string
+          minLength: 17
+          maxLength: 17
+          example: 1C4RJFATXDC591345
+        serial_number:
+          type: string
+          example: DC591345
+        unit_number:
+          type: string
+          description: Unit Number
+          example: VT84
+    tooManyRequestsResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/tooManyRequestsResponseError'
+    badRequestVINFilterMissingResponseError:
+      title: Bad Request
+      type: array
+      description: 'Request is not sent as expected
+
+        '
+      items:
+        $ref: '#/components/schemas/badRequestVINFilterMissingErrorWithExample'
+    audit_details:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp record was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp record was last updated
+        created_by:
+          type: string
+          description: Username of user which created the record
+          example: current_user
+        updated_by:
+          type: string
+          description: Username of user which last updated the record
+          example: current_user
+  securitySchemes:
+    TransitionToken:
+      type: apiKey
+      in: header
+      name: X-Decisiv-Transition-Token
+      description: The transition token must be specified when using OAuth. Please see https://api-docs.decisiv.net/docs/api/oauth/
+    OAuth2Password:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: https://login.decisiv.net/oauth/token
+      description: Oauth flow with Transition Token. See https://api-docs.decisiv.net/docs/api/oauth/
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header

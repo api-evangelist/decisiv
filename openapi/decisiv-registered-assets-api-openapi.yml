@@ -1,0 +1,4064 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Registered Assets API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Registered Assets across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Registered Assets
+paths:
+  /asset_management/{srm_account_id}/v1/registered_assets:
+    get:
+      operationId: listRegisteredAssets
+      description: Lists all registered assets from the requested account.
+      summary: List all Registered Assets from the requested account
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 9
+        description: List `registered assets` matching the *exact* `serial_number` attribute.
+      - name: filter[unit_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `registered assets` matching the *exact* `unit_number` attribute.
+      - name: filter[chassis_id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `registered assets` matching the *exact* `chassis_id` attribute.
+      - name: filter[vin]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 17
+          maxLength: 17
+        description: List `registered assets` matching the *exact* `vin` attribute.
+      - name: filter[depot.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `registered assets` matching the *exact* `depot.id` attribute.
+      - name: filter[license.number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `registered assets` matching the *exact* `license.number` attribute.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - depot
+            - srm_verified_asset
+            - extended_asset_attributes
+        description: The relationships to be included.
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+        examples:
+          Ascending:
+            value: year
+            summary: Single attribute ascending
+          Descending:
+            value: -year
+            summary: Single attribute descending
+          Multiple:
+            value: -year,make
+            summary: Multiple attributes combined
+        description: 'Sort `registered_assets` by one or more attributes separated by commas; prefix with `-` for descending order. Valid attributes: `year`, `make`, `model`'
+      responses:
+        '200':
+          description: Returns list of registered assets
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                      serial_number: '123456789'
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: 1363
+                    stand_by_hours: null
+                    switch_on_hours: null
+                    notes: My notes about this vehicle
+                    license:
+                      number: HMB-0000
+                      state: PA
+                      country: US
+                      expiration: '2029-06-18'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      vehicle_status: TC
+                      country_iso_code: USA
+                      vehicle_use_code: DR
+                      car_class_description: 24FT Huge Truck
+                      physical_location_ps_org_id: '12345'
+                    gvwr:
+                      value: '100'
+                      unit_of_measure: kg
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                    extended_asset_attributes:
+                      data: []
+                - id: 3810e97f-5b23-4c7b-a605-8ad93c192d45
+                  type: registered_assets
+                  attributes:
+                    serial_number: CRR-8842
+                    unit_number: REEFER-01
+                    make: Carrier
+                    model: X4 7300
+                    year: 2022
+                    engine_hours: 1140
+                    stand_by_hours: 20
+                    switch_on_hours: 2000
+                    notes: Refrigeration unit
+                    vmrs_asset_status: '01'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: R
+                    metadata:
+                      series: REEFER-X
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data: null
+                    extended_asset_attributes:
+                      data: []
+              schema:
+                $ref: '#/components/schemas/registered_assets'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted. / Account filter is missing
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                ? This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+                : value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Invalid depot filter format:
+                  value:
+                    errors:
+                    - title: Invalid Filter Format
+                      detail: Invalid format for `depot.id`
+                      code: decisiv:filters:009
+                      status: '400'
+                      source:
+                        parameter: filter[depot.id]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a new Registered Asset
+      operationId: createRegisteredAsset
+      description: Creates a new Registered Asset for the requested account.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - asset:registered
+            - decisiv:asset_management:asset:registered
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '200':
+          description: Returns the created registered asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                      serial_number: '123456789'
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: 1363
+                    stand_by_hours: null
+                    switch_on_hours: null
+                    notes: My notes about this vehicle
+                    license:
+                      number: HMB-0000
+                      state: PA
+                      country: US
+                      expiration: '2029-06-18'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      vehicle_status: TC
+                      country_iso_code: USA
+                      vehicle_use_code: DR
+                      car_class_description: 24FT Huge Truck
+                      physical_location_ps_org_id: '12345'
+                    gvwr:
+                      value: '100'
+                      unit_of_measure: kg
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                    extended_asset_attributes:
+                      data: []
+              schema:
+                $ref: '#/components/schemas/registered_asset'
+        '400':
+          description: Account filter is missing / Missing required field - serial_number / Missing required field - make / Missing required field - model / Missing required field - year / Missing depot relationship / Invalid depot UUID format / GVWR invalid type / GVWR missing key / Engine serial number invalid type / Engine serial number exceeds max length / Invalid silence event value / Invalid request attribute
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Missing required field - serial_number:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/serial_number
+                Missing required field - make:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/make
+                Missing required field - model:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/model
+                Missing required field - year:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/year
+                Missing depot relationship:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:relationships:002
+                      title: Missing required relationship
+                      detail: The required relationship {{relationship_name}} is missing
+                      source:
+                        pointer: /data/relationships/depot
+                Invalid depot UUID format:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:011
+                      title: Invalid Attribute Pattern
+                      detail: Attribute value must match pattern '{{pattern}}'
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                GVWR invalid type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/gvwr
+                GVWR missing key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/gvwr
+                Engine serial number invalid type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/engine/serial_number
+                Engine serial number exceeds max length:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:014
+                      title: Character Limit Exceeded
+                      detail: Field length can not exceed {{limit}} characters
+                      source:
+                        pointer: /data/attributes/engine/serial_number
+                Invalid silence event value:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+                Invalid request attribute:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: invalid_attribute is not allowed
+                      source:
+                        pointer: /data/attributes/invalid_attribute
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Missing identifier / Invalid VIN length / Invalid VIN check digit / Invalid VIN character I / Invalid VIN character O / Invalid VIN character Q / Invalid VIN character format / Serial number below minimum length / Serial number exceeds maximum length / Serial number VIN mismatch / Invalid year range / Missing odometer unit / Invalid odometer unit / Invalid metadata key / Invalid metadata value / Too many metadata keys / GVWR invalid unit / GVWR value required / GVWR unit_of_measure required / Depot not in fleet / Depot belongs to different fleet / Invalid country / Empty country / Empty state / Invalid license state / State does not match country / License expiration date / Invalid vmrs asset status / Invalid vmrs.asset_type.code / Invalid vmrs.asset_type.code_key
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Missing identifier:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:010
+                      title: Missinsg Required Fields
+                      detail: 'At least one of the following fields should be present: vin, chassis_id, unit_number'
+                      source:
+                        pointer: /data/attributes
+                Invalid VIN length:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vins:002
+                      title: Invalid length
+                      detail: Provided VIN attribute must be 17 digits in length
+                      source:
+                        pointer: /data/attributes/vin
+                Invalid VIN check digit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vins:001
+                      title: Invalid check digit
+                      detail: Provided VIN attribute has an invalid check digit.
+                      source:
+                        pointer: /data/attributes/vin
+                Invalid VIN character I:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vins:003
+                      title: Invalid character I
+                      detail: Provided VIN attribute has an invalid character I.
+                      source:
+                        pointer: /data/attributes/vin
+                Invalid VIN character O:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vins:004
+                      title: Invalid character O
+                      detail: Provided VIN attribute has an Invalid character O.
+                      source:
+                        pointer: /data/attributes/vin
+                Invalid VIN character Q:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vins:005
+                      title: Invalid character Q
+                      detail: Provided VIN attribute has an Invalid character Q.
+                      source:
+                        pointer: /data/attributes/vin
+                Invalid VIN character format:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vins:006
+                      title: Invalid format
+                      detail: Provided VIN attribute has an invalid format.
+                      source:
+                        pointer: /data/attributes/vin
+                Serial number below minimum length:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:015
+                      title: Field Length Within Limit
+                      detail: Field length must be at least {{limit}} characters
+                      source:
+                        pointer: /data/attributes/serial_number
+                Serial number exceeds maximum length:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:014
+                      title: Character Limit Exceeded
+                      detail: Field length can not exceed {{limit}} characters
+                      source:
+                        pointer: /data/attributes/serial_number
+                Serial number VIN mismatch:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:vin_based_asset:002
+                      title: Invalid Serial Number
+                      detail: Provided serial number must match the last 8-9 digits of the provided vin attribute
+                      source:
+                        pointer: /data/attributes/serial_number
+                Invalid year range:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:016
+                      title: Invalid Year
+                      detail: Provided year value is outside of the supported range - {{range}}
+                      source:
+                        pointer: /data/attributes/year
+                Missing odometer unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:011
+                      title: Required odometer_unit value.
+                      detail: An odometer_unit value is required when providing an odometer reading.
+                      source:
+                        pointer: /data/attributes/odometer_unit
+                Invalid odometer unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:012
+                      title: Invalid odometer_unit value.
+                      detail: 'Invalid value for odometer_unit. Valid values: {{valid_odometer_units}}'
+                      source:
+                        pointer: /data/attributes/odometer_unit
+                Invalid metadata key:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:001
+                      title: Invalid Metadata key
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                Invalid metadata value:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:002
+                      title: Invalid Metadata value
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                Too many metadata keys:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:003
+                      title: Metadata object is too big
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                GVWR invalid unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:base:unexpected_value:103
+                      title: Unexpected Value
+                      detail: Value provided for unit_of_measure is not supported. Valid values are kg, lb
+                      source:
+                        pointer: /data/attributes/gvwr/unit_of_measure
+                GVWR value required:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/gvwr/value
+                GVWR unit_of_measure required:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/gvwr/unit_of_measure
+                Depot not in fleet:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:100
+                      title: Depot Identifier Not Found
+                      detail: Depot Identifier does not exist for this Asset Management Account
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                Depot belongs to different fleet:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier Not Found
+                      detail: This object is not from the same account
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                Invalid country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:001
+                      title: 'Invalid format for country value, must be ISO 3166-1 alpha-2. Valid values are: `{{valid_values}}`'
+                      detail: 'Invalid country value. Valid values are: US, CA, EC, MX, CL, JP'
+                      source:
+                        pointer: /data/attributes/license/country
+                Empty country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/license/country
+                Empty state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/license/state
+                Invalid license state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:002
+                      title: Invalid State
+                      detail: Invalid format for state value, must be ISO 3166-2
+                      source:
+                        pointer: /data/attributes/license/state
+                State does not match country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:004
+                      title: Mismatch between State and Country
+                      detail: Triggered when state does not exists in the country.
+                      source:
+                        pointer: /data/attributes/license/state
+                License expiration date:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:006
+                      title: Timestamps must conform to ISO 8601 standard in the format of "YYYY-MM-DDTHH:MM:SSZ"
+                      source:
+                        pointer: /data/attributes/license/expiration
+                Invalid vmrs asset status:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/vmrs_asset_status
+                Invalid vmrs.asset_type.code:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid vmrs.asset_type.code value provided - the value provided is not a valid code according to VMRS code key 2
+                      source:
+                        pointer: /data/attributes/vmrs/asset_type/code
+                Invalid vmrs.asset_type.code_key:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid vmrs.asset_type.code_key value provided - vmrs.asset_type.code_key must be '2'
+                      source:
+                        pointer: /data/attributes/vmrs/asset_type/code_key
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action. / Asset Already Registered (non-VIN asset contention)
+          content:
+            application/vnd.api+json:
+              examples:
+                Asset Contention - VIN:
+                  value:
+                    errors:
+                    - status: '424'
+                      code: decisiv:registered_assets:001
+                      title: Failed Dependency
+                      detail: Asset Contention Issue
+                      source:
+                        pointer: /data/attributes/vin
+                Asset Already Registered - non-VIN:
+                  value:
+                    errors:
+                    - status: '424'
+                      code: decisiv:registered_assets:002
+                      title: Asset Already Registered
+                      detail: The asset's identifying attributes are already registered in the SRM Ecosystem.
+                      source:
+                        pointer: /data/attributes/serial_number
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_registered_asset'
+            examples:
+              Registered Asset:
+                value:
+                  data:
+                    type: registered_assets
+                    attributes:
+                      vin: 1FDWE3FNXMDC03939
+                      serial_number: MDC03939
+                      unit_number: '42'
+                      chassis_id: XMDC03939
+                      make: Ford
+                      model: E350
+                      year: 2021
+                      engine:
+                        make: Ford
+                        model: 7.3L V-10
+                        displacement: 6.8 l
+                        serial_number: '123456789'
+                      odometer_value: 61342
+                      odometer_unit: mi
+                      engine_hours: 1363
+                      stand_by_hours: null
+                      switch_on_hours: null
+                      notes: My notes about this vehicle
+                      license:
+                        number: HMB-0000
+                        state: PA
+                        country: US
+                        expiration: '2029-06-18'
+                      vmrs_asset_status: '02'
+                      vmrs:
+                        asset_type:
+                          code_key: '2'
+                          code: R
+                      metadata:
+                        series: 24SK
+                        sale_date: '2021-01-06'
+                        car_class_code: FSTK
+                        vehicle_status: TC
+                        country_iso_code: USA
+                        vehicle_use_code: DR
+                        car_class_description: 24FT Huge Truck
+                        physical_location_ps_org_id: '12345'
+                      gvwr:
+                        value: '100'
+                        unit_of_measure: kg
+                    relationships:
+                      depot:
+                        data:
+                          type: depots
+                          id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}:
+    get:
+      summary: Retrieves a Registered Assets from the requested account
+      operationId: getRegisteredAsset
+      description: Returns details for a specific Registered Asset by ID.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - depot
+            - srm_verified_asset
+            - extended_asset_attributes
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns a registered asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                      serial_number: '123456789'
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: 1363
+                    stand_by_hours: null
+                    switch_on_hours: null
+                    notes: My notes about this vehicle
+                    license:
+                      number: HMB-0000
+                      state: PA
+                      country: US
+                      expiration: '2029-06-18'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      vehicle_status: TC
+                      country_iso_code: USA
+                      vehicle_use_code: DR
+                      car_class_description: 24FT Huge Truck
+                      physical_location_ps_org_id: '12345'
+                    gvwr:
+                      value: '100'
+                      unit_of_measure: kg
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                    extended_asset_attributes:
+                      data: []
+              schema:
+                $ref: '#/components/schemas/registered_asset'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates a registered asset
+      operationId: updateRegisteredAsset
+      description: Updates an existing Registered Asset for the requested account.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - asset:meter_update
+            - asset:transferred
+            - decisiv:asset_management:asset:transferred
+            - decisiv:asset_management:asset:meter_updated
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '200':
+          description: Show the updated registered asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                      serial_number: '123456789'
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: 1363
+                    stand_by_hours: null
+                    switch_on_hours: null
+                    notes: My notes about this vehicle
+                    license:
+                      number: HMB-0000
+                      state: PA
+                      country: US
+                      expiration: '2029-06-18'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      vehicle_status: TC
+                      country_iso_code: USA
+                      vehicle_use_code: DR
+                      car_class_description: 24FT Huge Truck
+                      physical_location_ps_org_id: '12345'
+                    gvwr:
+                      value: '100'
+                      unit_of_measure: kg
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                    extended_asset_attributes:
+                      data: []
+              schema:
+                $ref: '#/components/schemas/registered_asset'
+        '400':
+          description: Invalid depot UUID format / GVWR invalid type / GVWR missing key / Engine serial number invalid type / Engine serial number exceeds max length / Invalid silence event value / Invalid request attribute / ID mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid depot UUID format:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:011
+                      title: Invalid Attribute Pattern
+                      detail: Attribute value must match pattern '{{pattern}}'
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: ID Mismatch
+                      detail: The "id" provided does not match the resource ID in the URL
+                      source:
+                        pointer: /data/id
+                GVWR invalid type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/gvwr
+                GVWR missing key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/gvwr
+                Engine serial number invalid type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/engine/serial_number
+                Engine serial number exceeds max length:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:014
+                      title: Character Limit Exceeded
+                      detail: Field length can not exceed {{limit}} characters
+                      source:
+                        pointer: /data/attributes/engine/serial_number
+                Invalid silence event value:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+                Invalid request attribute:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: invalid_attribute is not allowed
+                      source:
+                        pointer: /data/attributes/invalid_attribute
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid year range / Missing odometer unit / Invalid odometer unit / Invalid metadata key / Invalid metadata value / Too many metadata keys / GVWR invalid unit / GVWR value required / GVWR unit_of_measure required / Depot not in fleet / Invalid country / Empty country / Empty state / Invalid license state / State does not match country / License expiration date / Invalid vmrs asset status / Invalid vmrs.asset_type.code / Invalid vmrs.asset_type.code_key
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid year range:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:003
+                      title: Invalid Year
+                      detail: Provided year value is outside of the supported range - {{range}}
+                      source:
+                        pointer: /data/attributes/year
+                Missing odometer unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:011
+                      title: Required odometer_unit value.
+                      detail: An odometer_unit value is required when providing an odometer reading.
+                      source:
+                        pointer: /data/attributes/odometer_unit
+                Invalid odometer unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:012
+                      title: Invalid odometer_unit value.
+                      detail: 'Invalid value for odometer_unit. Valid values: {{valid_odometer_units}}'
+                      source:
+                        pointer: /data/attributes/odometer_unit
+                Invalid metadata key:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:001
+                      title: Invalid Metadata key
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                Invalid metadata value:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:002
+                      title: Invalid Metadata value
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                Too many metadata keys:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:003
+                      title: Metadata object is too big
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                GVWR invalid unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/gvwr/unit
+                GVWR value required:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/gvwr/value
+                GVWR unit_of_measure required:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/gvwr/unit_of_measure
+                Depot not in fleet:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:100
+                      title: Depot Identifier Not Found
+                      detail: Depot Identifier does not exist for this Asset Management Account
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                Invalid country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:001
+                      title: 'Invalid format for country value, must be ISO 3166-1 alpha-2. Valid values are: `{{valid_values}}`'
+                      detail: 'Invalid country value. Valid values are: US, CA, EC, MX, CL, JP'
+                      source:
+                        pointer: /data/attributes/license/country
+                Empty country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/license/country
+                Empty state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/license/state
+                Invalid license state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:002
+                      title: Invalid State
+                      detail: Invalid format for state value, must be ISO 3166-2
+                      source:
+                        pointer: /data/attributes/license/state
+                State does not match country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:004
+                      title: Mismatch between State and Country
+                      detail: Triggered when state does not exists in the country.
+                      source:
+                        pointer: /data/attributes/license/state
+                License expiration date:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:006
+                      title: Timestamps must conform to ISO 8601 standard in the format of "YYYY-MM-DDTHH:MM:SSZ"
+                      source:
+                        pointer: /data/attributes/license/expiration
+                Invalid vmrs asset status:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/vmrs_asset_status
+                Invalid vmrs.asset_type.code:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid vmrs.asset_type.code value provided - the value provided is not a valid code according to VMRS code key 2
+                      source:
+                        pointer: /data/attributes/vmrs/asset_type/code
+                Invalid vmrs.asset_type.code_key:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid vmrs.asset_type.code_key value provided - vmrs.asset_type.code_key must be '2'
+                      source:
+                        pointer: /data/attributes/vmrs/asset_type/code_key
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/registered_asset_patch'
+            examples:
+              Registered Asset:
+                value:
+                  data:
+                    id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                    type: registered_assets
+                    attributes:
+                      unit_number: '42'
+                      chassis_id: XMDC03939
+                      fleet_info: Fleet 42
+                      make: Ford
+                      model: E350
+                      year: 2021
+                      engine:
+                        make: Ford
+                        model: 7.3L V-10
+                        displacement: 6.8 l
+                        serial_number: '123456789'
+                      odometer_value: 61342
+                      odometer_unit: mi
+                      engine_hours: 1363
+                      notes: My notes about this vehicle
+                      license:
+                        number: HMB-0000
+                        state: PA
+                        country: US
+                        expiration: '2029-06-18'
+                      vmrs_asset_status: '02'
+                      vmrs:
+                        asset_type:
+                          code_key: '2'
+                          code: R
+                      metadata:
+                        series: 24SK
+                        sale_date: '2021-01-06'
+                        car_class_code: FSTK
+                        vehicle_status: TC
+                        country_iso_code: USA
+                        vehicle_use_code: DR
+                        car_class_description: 24FT Huge Truck
+                        physical_location_ps_org_id: '12345'
+                      gvwr:
+                        value: '100'
+                        unit_of_measure: kg
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/deactivate:
+    post:
+      summary: Deactivates a Registered Asset, removing it from the Account
+      operationId: deactivateRegisteredAsset
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - asset:deactivated
+            - decisiv:asset_management:asset:deactivated
+        description: Corresponding webhook events which can be muted for the given transaction
+      description: "Endpoint provides the ability to deactivate and remove a `Registered Asset` from the specified `Asset Management` account.\n\n Once an `asset` is *deactivated* it will be accessible for historical purposes by calling:\n * `GET /deactivated_assets`\n* `GET /deactivated_assets/:id`\n\nAssets which have been made inactive in error can be re-enabled for use on the platform through the `activate` child endpoint of the desired asset."
+      responses:
+        '204':
+          description: Successful deativation of a Registered Asset
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/deactivate_registered_asset'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+                - title: Bad Request
+                  detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                  code: decisiv:silence_webhook_events:001
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/metadata:
+    delete:
+      summary: Remove all Metadata Keys from the Registered Asset
+      operationId: deleteRegisteredAssetMetadata
+      description: Removes all metadata keys from the Registered Asset.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful remove the metadata key of a Registered Asset
+          content: {}
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/metadata/{metadata_key}:
+    delete:
+      summary: Remove a specific Metadata Key from the Registered Asset
+      operationId: deleteRegisteredAssetMetadataKey
+      description: Removes a specific metadata key from the Registered Asset.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: metadata_key
+        in: path
+        description: The metadata key to be removed
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful remove the metadata key of a Registered Asset
+          content: {}
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:metadata:004
+                  title: Metadata key not found
+                  detail: The metadata object must include the metadata key
+                  source:
+                    parameter: metadata_key
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/update_meter_data:
+    post:
+      summary: Update an existing Registered Asset meter data
+      description: Updates the meter data for a registered asset.
+      tags:
+      - Registered Assets
+      operationId: asset_management_ra_update_meter_data
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - asset:meter_update
+            - decisiv:asset_management:asset:meter_updated
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '200':
+          description: Returns the updated registered asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                      serial_number: '123456789'
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: 1363
+                    stand_by_hours: null
+                    switch_on_hours: null
+                    fuel_consumed_value: 500
+                    fuel_consumed_unit: gal
+                    notes: My notes about this vehicle
+                    license:
+                      number: HMB-0000
+                      state: PA
+                      country: US
+                      expiration: '2029-06-18'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      vehicle_status: TC
+                      country_iso_code: USA
+                      vehicle_use_code: DR
+                      car_class_description: 24FT Huge Truck
+                      physical_location_ps_org_id: '12345'
+                    gvwr:
+                      value: '100'
+                      unit_of_measure: kg
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                    extended_asset_attributes:
+                      data: []
+              schema:
+                $ref: '#/components/schemas/registered_asset'
+        '400':
+          description: Invalid request / ID mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid silence event value:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+                ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: ID Mismatch
+                      detail: The "id" provided does not match the resource ID in the URL
+                      source:
+                        pointer: /data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid meter type / Invalid meter unit / Invalid meter value type / Invalid metadata key / Invalid metadata value / Too many metadata keys
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid meter type:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:meter_data:001
+                      title: Invalid Meter Type
+                      detail: Value provided for meter is not expected
+                      source:
+                        pointer: /data/attributes/meter_data
+                Invalid meter unit:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:meter_data:002
+                      title: Invalid Meter Unit
+                      detail: Value provided for the unit of measure is not supported
+                      source:
+                        pointer: /data/attributes/meter_data
+                Non-integer meter value:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:meter_data:003
+                      title: Invalid Meter Value Type
+                      detail: Value must be an integer
+                      source:
+                        pointer: /data/attributes/meter_data
+                Non-numeric meter value (fuel_consumed):
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:meter_data:003
+                      title: Invalid Meter Value Type
+                      detail: Value must be numeric
+                      source:
+                        pointer: /data/attributes/meter_data
+                Invalid metadata key:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:001
+                      title: Invalid Metadata key
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                Invalid metadata value:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:002
+                      title: Invalid Metadata value
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+                Too many metadata keys:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:metadata:003
+                      title: Metadata object is too big
+                      detail: null
+                      source:
+                        pointer: /data/attributes/metadata
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/meter_data_odometer_registered_asset'
+              - $ref: '#/components/schemas/meter_data_eng_hours_registered_asset'
+              - $ref: '#/components/schemas/meter_data_switch_hours_registered_asset'
+              - $ref: '#/components/schemas/meter_data_stand_hours_registered_asset'
+              - $ref: '#/components/schemas/meter_data_fuel_consumed_registered_asset'
+            examples:
+              Registered Asset Meter Data:
+                value:
+                  data:
+                    id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                    type: registered_assets
+                    attributes:
+                      meter_data:
+                      - meter: odometer
+                        unit: mi
+                        value: 2114
+              Registered Asset Fuel Consumed Meter Data:
+                value:
+                  data:
+                    id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                    type: registered_assets
+                    attributes:
+                      meter_data:
+                      - meter: fuel_consumed
+                        unit: gal
+                        value: 500
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/meter_data_history:
+    get:
+      summary: Get the Registered Asset meter data log history
+      description: Returns a log of historical meter data records for the registered asset.
+      tags:
+      - Registered Assets
+      operationId: asset_management_ra_meter_data_history
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the registered asset meter data log history
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: d779edd8-cbba-4689-8d9c-8ea1488cc124
+                  type: meter_data_records
+                  attributes:
+                    meter: odometer
+                    value: 1240
+                    unit: mi
+                    event_timestamps:
+                      retrieved_at: '2025-04-07T18:58:31Z'
+                    recorded_by: some_email@****
+              schema:
+                $ref: '#/components/schemas/meter_data_history'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/transfer:
+    post:
+      summary: Transfer an existing Registered Asset
+      operationId: transferRegisteredAsset
+      description: Transfers an existing Registered Asset to a different account.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - asset:meter_update
+            - asset:transferred
+            - decisiv:asset_management:asset:transferred
+            - decisiv:asset_management:asset:meter_updated
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '200':
+          description: Returns the transfered registered asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                      serial_number: '123456789'
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: 1363
+                    stand_by_hours: null
+                    switch_on_hours: null
+                    notes: My notes about this vehicle
+                    license:
+                      number: HMB-0000
+                      state: PA
+                      country: US
+                      expiration: '2029-06-18'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      vehicle_status: TC
+                      country_iso_code: USA
+                      vehicle_use_code: DR
+                      car_class_description: 24FT Huge Truck
+                      physical_location_ps_org_id: '12345'
+                    gvwr:
+                      value: '100'
+                      unit_of_measure: kg
+                  relationships:
+                    depot:
+                      data:
+                        type: depots
+                        id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                    extended_asset_attributes:
+                      data: []
+              schema:
+                $ref: '#/components/schemas/registered_asset'
+        '400':
+          description: Invalid request / Invalid depot UUID format / ID mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid depot UUID format:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:relationships:001
+                      title: Invalid UUID
+                      detail: Attribute value must be a valid UUID
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: ID Mismatch
+                      detail: The "id" provided does not match the resource ID in the URL
+                      source:
+                        pointer: /data/id
+                Invalid silence event value:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Depot not found / Depot belongs to different fleet
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Depot not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:registered_asset:100
+                      title: Depot Identifier Not Found
+                      detail: Depot Identifier does not exist for this Asset Management Account
+                      source:
+                        pointer: /data/relationships/depot/data/id
+                Depot belongs to different fleet:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier Not Found
+                      detail: This object is not from the same account
+                      source:
+                        pointer: /data/relationships/depot/data/id
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/transfer_registered_asset'
+            examples:
+              Registered Asset:
+                value:
+                  data:
+                    id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                    type: registered_assets
+                    attributes: {}
+                    relationships:
+                      depot:
+                        data:
+                          type: depots
+                          id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/registered_assets/{id}/build_information:
+    get:
+      summary: Get the SRM verified build information for a registered asset
+      operationId: getBuildInformation
+      description: Returns manufacturer-provided build data for the asset, sourced from SRM verified asset records. The response data array will be empty if the asset has no linked manufactured asset record.
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the manufacturer build information for the registered asset. Returns an empty array if the asset has no linked manufactured asset.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: f8c1d2e3-4567-890a-bcde-f12345678901
+                  type: manufacturer_build_information
+                  attributes:
+                    manufacturer_specific_attributes:
+                      series: 24SK
+                      sale_date: '2021-01-06'
+                      car_class_code: FSTK
+                      car_class_description: 24FT Huge Truck
+              schema:
+                $ref: '#/components/schemas/build_information'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:registered_asset:009
+                  title: Resource Identifier - Deactivated Asset
+                  detail: Operations on deactivated assets are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/registered_assets:
+    get:
+      summary: List all registered assets filtered by vin or serial number or unit number
+      tags:
+      - Registered Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 9
+        description: Filter `registered_assets` matching the *exact* `serial_number` attribute.
+      - name: filter[unit_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter `registered_assets` matching the *exact* `unit_number` attribute.
+      - name: filter[vin]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 17
+          maxLength: 17
+        description: Filter `registered_assets` matching the *exact* `vin` attribute.
+      - name: filter[chassis_id]
+        in: query
+        required: false
+        schema:
+          type: string
+          maxLength: 50
+        description: Filter `registered_assets` matching the *exact* `chassis_id` attribute.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of registered assets
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: f444a054-4889-484a-b549-7a60caa5d79f
+                  type: registered_assets
+                  attributes:
+                    vin: 3B7HF13Z11M269883
+                    serial_number: 1M269883
+                    unit_number: NU2695
+                    chassis_id: N-991562
+                    make: Acme
+                    model: CH613
+                    year: 2024
+                    engine:
+                      make: Cummins
+                      model: X15
+                      displacement: 14.8L
+                      serial_number: '79412345'
+                    odometer_value: 125000
+                    odometer_unit: mi
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+              schema:
+                $ref: '#/components/schemas/registered_assets'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    registered_assets:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/registered_asset_properties-data'
+        meta:
+          type: object
+    build_information:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/manufacturer_build_information'
+        meta:
+          type: object
+    manufacturer_build_information:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The manufactured asset identifier
+        type:
+          type: string
+          example: manufacturer_build_information
+        attributes:
+          type: object
+          properties:
+            manufacturer_specific_attributes:
+              type: object
+              additionalProperties: true
+              description: Vendor-specific build data for the asset. The structure varies by manufacturer.
+          required:
+          - manufacturer_specific_attributes
+      required:
+      - attributes
+      - type
+      - id
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    meter_data_odometer_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Odometer readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - odometer
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - mi
+                        - km
+                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
+                      value:
+                        type: number
+                        description: Reading value for the given meter data
+    registered_asset_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - registered_assets
+        attributes:
+          type: object
+          properties:
+            vin:
+              type: string
+              description: 17 digit vehicle identification number
+              minLength: 17
+              maxLength: 17
+            serial_number:
+              type: string
+              description: Production number of the asset
+              minLength: 6
+              maxLength: 36
+            unit_number:
+              type: string
+              maxLength: 255
+              description: Identification number commonly used on assets residing within a fleet
+            chassis_id:
+              type: string
+              maxLength: 255
+              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+            fleet_info:
+              type: string
+              maxLength: 255
+              description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
+            make:
+              type: string
+              maxLength: 255
+              description: Brand of the asset
+            model:
+              type: string
+              maxLength: 255
+              description: Name of the asset product from the manufacturer
+            year:
+              type: integer
+              minimum: 1970
+              maximum: 2028
+              description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+            odometer_value:
+              type: number
+              description: Integer representation about the asset odometer
+            odometer_unit:
+              type: string
+              description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+              enum:
+              - mi
+              - km
+            engine_hours:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation about the engine hours of asset
+            stand_by_hours:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation about the stand by hours of asset
+            switch_on_hours:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation about the switch on hours of asset
+            fuel_consumed_value:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation of the total fuel consumed by the asset (stored in gallons)
+            fuel_consumed_unit:
+              type: string
+              description: Unit of measure for fuel consumed. Always returned as `gal`.
+              enum:
+              - gal
+            notes:
+              type: string
+              maxLength: 1000
+              description: Notes about the asset
+            gvwr:
+              type: object
+              description: Gross Vehicle Weight Rating
+              properties:
+                value:
+                  type: string
+                  description: The numeral value for the weight
+                unit_of_measure:
+                  type: string
+                  description: The unit of measure used, can be `kg` or `lb`
+                  enum:
+                  - kg
+                  - lb
+            engine:
+              type: object
+              description: Engine data
+              properties:
+                make:
+                  type: string
+                  maxLength: 255
+                  description: The make of the engine
+                model:
+                  type: string
+                  maxLength: 255
+                  description: The model of the engine
+                displacement:
+                  type: string
+                  maxLength: 50
+                  description: The engine size related in liters or cubic inches
+                serial_number:
+                  type: string
+                  description: The engine serial number
+                  minLength: 1
+                  maxLength: 40
+            license:
+              type: object
+              description: License plate data
+              properties:
+                number:
+                  type: string
+                  maxLength: 50
+                  description: The number of the license plate
+                state:
+                  type: string
+                  minLength: 2
+                  maxLength: 10
+                  description: The second part of the ISO 3166-2 code indicates the license State
+                country:
+                  type: string
+                  enum:
+                  - US
+                  - CA
+                  - MX
+                  - EC
+                  minLength: 2
+                  maxLength: 2
+                  description: ISO 3166-1 alpha-2 code indicating the license Country
+                expiration:
+                  type: string
+                  format: date
+                  description: '`ISO 8601` date indicating when the license expires'
+                  example: '2029-06-18'
+            vmrs_asset_status:
+              type: string
+              description: 'Valid values are: 01, 02, 12, 13, 15, 16, 31, 33, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61'
+            vmrs:
+              type: object
+              description: VMRS classification of the asset.
+              properties:
+                asset_type:
+                  type: object
+                  description: VMRS Code Key 2 (Equipment Category).
+                  properties:
+                    code_key:
+                      type: string
+                      description: The VMRS code key identifier. Must be `"2"` when supplied on write.
+                      example: '2'
+                    code:
+                      type: string
+                      description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+            metadata:
+              type: object
+              description: 'Arbitrary key-value pairs for custom asset metadata (max 50 entries). Keys: lowercase snake_case, 1-50 chars, alphanumeric start/end, no double underscores. Values: required strings, max 500 chars.'
+              minProperties: 1
+              maxProperties: 50
+              propertyNames:
+                minLength: 1
+                maxLength: 50
+                pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+              additionalProperties:
+                type: string
+                minLength: 1
+                maxLength: 500
+        relationships:
+          type: object
+          properties:
+            depot:
+              $ref: '#/components/schemas/relationship_object'
+            srm_verified_asset:
+              $ref: '#/components/schemas/relationship_object'
+            extended_asset_attributes:
+              $ref: '#/components/schemas/relationship_objects'
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - registered_assets
+            attributes:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: 17 digit vehicle identification number
+                  minLength: 17
+                  maxLength: 17
+                serial_number:
+                  type: string
+                  description: Production number of the asset
+                  minLength: 6
+                  maxLength: 36
+                unit_number:
+                  type: string
+                  maxLength: 255
+                  description: Identification number commonly used on assets residing within a fleet
+                chassis_id:
+                  type: string
+                  maxLength: 255
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                make:
+                  type: string
+                  maxLength: 255
+                  description: Brand of the asset
+                model:
+                  type: string
+                  maxLength: 255
+                  description: Name of the asset product from the manufacturer
+                year:
+                  type: integer
+                  minimum: 1970
+                  maximum: 2028
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+                  enum:
+                  - mi
+                  - km
+                engine_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the engine hours of asset
+                stand_by_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the stand by hours of asset
+                switch_on_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the switch on hours of asset
+                notes:
+                  type: string
+                  maxLength: 1000
+                  description: Notes about the asset
+                gvwr:
+                  type: object
+                  description: Gross Vehicle Weight Rating
+                  properties:
+                    value:
+                      type: string
+                      description: The numeral value for the weight, serialized as a string
+                    unit_of_measure:
+                      type: string
+                      description: The unit of measure used, can be `kg` or `lb`
+                      enum:
+                      - kg
+                      - lb
+                engine:
+                  type: object
+                  description: Engine data
+                  properties:
+                    make:
+                      type: string
+                      maxLength: 255
+                      description: The make of the engine
+                    model:
+                      type: string
+                      maxLength: 255
+                      description: The model of the engine
+                    displacement:
+                      type: string
+                      maxLength: 50
+                      description: The engine size related in liters or cubic inches
+                    serial_number:
+                      type: string
+                      description: The engine serial number
+                      minLength: 1
+                      maxLength: 40
+                license:
+                  type: object
+                  description: License plate data
+                  properties:
+                    number:
+                      type: string
+                      maxLength: 50
+                      description: The number of the license plate
+                    state:
+                      type: string
+                      minLength: 2
+                      maxLength: 10
+                      description: The second part of the ISO 3166-2 code indicates the license State
+                    country:
+                      type: string
+                      enum:
+                      - US
+                      - CA
+                      - MX
+                      - EC
+                      minLength: 2
+                      maxLength: 2
+                      description: ISO 3166-1 alpha-2 code indicating the license Country
+                    expiration:
+                      type: string
+                      format: date
+                      description: '`ISO 8601` date indicating when the license expires'
+                      example: '2029-06-18'
+                vmrs_asset_status:
+                  type: string
+                  description: 'Valid values are: 01, 02, 12, 13, 15, 16, 31, 33, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61'
+                vmrs:
+                  type: object
+                  description: VMRS classification of the asset. Optional on create.
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category).
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier. Must be `"2"` when supplied.
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+                          example: R
+                metadata:
+                  type: object
+                  description: 'Arbitrary key-value pairs for custom asset metadata (max 50 entries). Keys: lowercase snake_case, 1-50 chars, alphanumeric start/end, no double underscores. Values: required strings, max 500 chars.'
+                  minProperties: 1
+                  maxProperties: 50
+                  propertyNames:
+                    minLength: 1
+                    maxLength: 50
+                    pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                  additionalProperties:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+              required:
+              - serial_number
+              - make
+              - model
+              - year
+            relationships:
+              type: object
+              properties:
+                depot:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - depot
+          required:
+          - attributes
+          - relationships
+          - type
+    registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - registered_assets
+            attributes:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: 17 digit vehicle identification number
+                  minLength: 17
+                  maxLength: 17
+                serial_number:
+                  type: string
+                  description: Production number of the asset
+                  minLength: 6
+                  maxLength: 36
+                unit_number:
+                  type: string
+                  maxLength: 255
+                  description: Identification number commonly used on assets residing within a fleet
+                chassis_id:
+                  type: string
+                  maxLength: 255
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                fleet_info:
+                  type: string
+                  maxLength: 255
+                  description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
+                make:
+                  type: string
+                  maxLength: 255
+                  description: Brand of the asset
+                model:
+                  type: string
+                  maxLength: 255
+                  description: Name of the asset product from the manufacturer
+                year:
+                  type: integer
+                  minimum: 1970
+                  maximum: 2028
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+                  enum:
+                  - mi
+                  - km
+                engine_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the engine hours of asset
+                stand_by_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the stand by hours of asset
+                switch_on_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the switch on hours of asset
+                fuel_consumed_value:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation of the total fuel consumed by the asset (stored in gallons)
+                fuel_consumed_unit:
+                  type: string
+                  description: Unit of measure for fuel consumed. Always returned as `gal`.
+                  enum:
+                  - gal
+                notes:
+                  type: string
+                  maxLength: 1000
+                  description: Notes about the asset
+                gvwr:
+                  type: object
+                  description: Gross Vehicle Weight Rating
+                  properties:
+                    value:
+                      type: string
+                      description: The numeral value for the weight
+                    unit_of_measure:
+                      type: string
+                      description: The unit of measure used, can be `kg` or `lb`
+                      enum:
+                      - kg
+                      - lb
+                engine:
+                  type: object
+                  description: Engine data
+                  properties:
+                    make:
+                      type: string
+                      maxLength: 255
+                      description: The make of the engine
+                    model:
+                      type: string
+                      maxLength: 255
+                      description: The model of the engine
+                    displacement:
+                      type: string
+                      maxLength: 50
+                      description: The engine size related in liters or cubic inches
+                    serial_number:
+                      type: string
+                      description: The engine serial number
+                      minLength: 1
+                      maxLength: 40
+                license:
+                  type: object
+                  description: License plate data
+                  properties:
+                    number:
+                      type: string
+                      maxLength: 50
+                      description: The number of the license plate
+                    state:
+                      type: string
+                      minLength: 2
+                      maxLength: 10
+                      description: The second part of the ISO 3166-2 code indicates the license State
+                    country:
+                      type: string
+                      enum:
+                      - US
+                      - CA
+                      - MX
+                      - EC
+                      minLength: 2
+                      maxLength: 2
+                      description: ISO 3166-1 alpha-2 code indicating the license Country
+                    expiration:
+                      type: string
+                      format: date
+                      description: '`ISO 8601` date indicating when the license expires'
+                      example: '2029-06-18'
+                vmrs_asset_status:
+                  type: string
+                  description: 'Valid values are: 01, 02, 12, 13, 15, 16, 31, 33, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61'
+                vmrs:
+                  type: object
+                  description: VMRS classification of the asset.
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category).
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier. Must be `"2"` when supplied on write.
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+                metadata:
+                  type: object
+                  description: 'Arbitrary key-value pairs for custom asset metadata (max 50 entries). Keys: lowercase snake_case, 1-50 chars, alphanumeric start/end, no double underscores. Values: required strings, max 500 chars.'
+                  minProperties: 1
+                  maxProperties: 50
+                  propertyNames:
+                    minLength: 1
+                    maxLength: 50
+                    pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                  additionalProperties:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+            relationships:
+              type: object
+              properties:
+                depot:
+                  $ref: '#/components/schemas/relationship_object'
+                srm_verified_asset:
+                  $ref: '#/components/schemas/relationship_object'
+                extended_asset_attributes:
+                  $ref: '#/components/schemas/relationship_objects'
+          required:
+          - attributes
+          - type
+          - id
+    meter_data_eng_hours_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Engine-hours meter readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - engine_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `engine_hours` is `hr`.
+                      value:
+                        type: number
+                        description: Reading value for the given meter data
+    meter_data_history:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter:
+                  type: string
+                  description: The meter type
+                  enum:
+                  - odometer
+                  - engine_hours
+                  - stand_by_hours
+                  - switch_on_hours
+                  - fuel_consumed
+                  example: odometer
+                value:
+                  type: integer
+                  description: The meter value
+                  example: 1234
+                unit:
+                  type: string
+                  enum:
+                  - mi
+                  - km
+                  - hr
+                  - gal
+                  example: mi
+                  description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`; `hr` for `engine_hours`, `stand_by_hours`, and `switch_on_hours`; `gal` for `fuel_consumed`
+                event_timestamps:
+                  type: object
+                  description: The timestamps of the meter event
+                  properties:
+                    retrieved_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time the meter was retrieved'
+                      example: '2023-01-31T18:21:23Z'
+                recorded_by:
+                  type: string
+                  description: The user who recorded the meter data
+                  example: user@****
+    registered_asset_patch:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - registered_assets
+            attributes:
+              type: object
+              properties:
+                unit_number:
+                  type: string
+                  maxLength: 255
+                  description: Identification number commonly used on assets residing within a fleet
+                chassis_id:
+                  type: string
+                  maxLength: 255
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                fleet_info:
+                  type: string
+                  maxLength: 255
+                  description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
+                make:
+                  type: string
+                  maxLength: 255
+                  description: Brand of the asset
+                model:
+                  type: string
+                  maxLength: 255
+                  description: Name of the asset product from the manufacturer
+                year:
+                  type: integer
+                  minimum: 1970
+                  maximum: 2028
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)
+                  enum:
+                  - mi
+                  - km
+                engine_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the engine hours of asset
+                stand_by_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the stand by hours of asset
+                switch_on_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Integer representation about the switch on hours of asset
+                fuel_consumed_value:
+                  type:
+                  - number
+                  - 'null'
+                  description: The total fuel consumed by the asset. Decimal values are accepted and rounded to the nearest integer when stored. Requires `fuel_consumed_unit` when provided.
+                fuel_consumed_unit:
+                  type: string
+                  description: 'Unit of measure for fuel consumed. Valid values: `gal`, `gallons`, `l`, `liters`. The value is stored and returned in gallons (`gal`). Required when `fuel_consumed_value` is present.'
+                  enum:
+                  - gal
+                  - gallons
+                  - l
+                  - liters
+                notes:
+                  type: string
+                  maxLength: 1000
+                  description: Notes about the asset
+                gvwr:
+                  type: object
+                  description: Gross Vehicle Weight Rating
+                  properties:
+                    value:
+                      type: string
+                      description: The numeral value for the weight, serialized as a string
+                    unit_of_measure:
+                      type: string
+                      description: The unit of measure used, can be `kg` or `lb`
+                      enum:
+                      - kg
+                      - lb
+                engine:
+                  type: object
+                  description: Engine data
+                  properties:
+                    make:
+                      type: string
+                      maxLength: 255
+                      description: The make of the engine
+                    model:
+                      type: string
+                      maxLength: 255
+                      description: The model of the engine
+                    displacement:
+                      type: string
+                      maxLength: 50
+                      description: The engine size related in liters or cubic inches
+                    serial_number:
+                      type: string
+                      description: The engine serial number
+                      minLength: 1
+                      maxLength: 40
+                license:
+                  type: object
+                  description: License plate data
+                  properties:
+                    number:
+                      type: string
+                      maxLength: 50
+                      description: The number of the license plate
+                    state:
+                      type: string
+                      minLength: 2
+                      maxLength: 10
+                      description: The second part of the ISO 3166-2 code indicates the license State
+                    country:
+                      type: string
+                      enum:
+                      - US
+                      - CA
+                      - MX
+                      - EC
+                      minLength: 2
+                      maxLength: 2
+                      description: ISO 3166-1 alpha-2 code indicating the license Country
+                    expiration:
+                      type: string
+                      format: date
+                      description: '`ISO 8601` date indicating when the license expires'
+                      example: '2029-06-18'
+                vmrs_asset_status:
+                  type: string
+                  description: 'Valid values are: 01, 02, 12, 13, 15, 16, 31, 33, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61'
+                vmrs:
+                  type: object
+                  description: 'VMRS classification of the asset. Optional on update.
+
+
+                    Sending `vmrs.asset_type = null`, `vmrs.asset_type = {}`,
+
+                    `vmrs.asset_type.code = null`, or `vmrs.asset_type.code = ""`
+
+                    clears the existing value. Sending `vmrs = null` is a no-op.
+
+                    '
+                  properties:
+                    asset_type:
+                      type:
+                      - object
+                      - 'null'
+                      description: VMRS Code Key 2 (Equipment Category). `null` clears the field.
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier. Must be `"2"` when supplied.
+                          example: '2'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`. `null` or empty string clears the field.
+                          example: R
+                metadata:
+                  type: object
+                  description: 'Arbitrary key-value pairs for custom asset metadata (max 50 entries). Keys: lowercase snake_case, 1-50 chars, alphanumeric start/end, no double underscores. Values: required strings, max 500 chars.'
+                  minProperties: 1
+                  maxProperties: 50
+                  propertyNames:
+                    minLength: 1
+                    maxLength: 50
+                    pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                  additionalProperties:
+                    type: string
+                    minLength: 1
+                    maxLength: 500
+            relationships:
+              type: object
+              properties:
+                depot:
+                  type: object
+                  description: The depot for the registered asset
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: depots
+                        id:
+                          type: string
+                          example: The UUID of the depot
+    meter_data_fuel_consumed_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Fuel-consumed meter readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - fuel_consumed
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - gal
+                        - gallons
+                        - l
+                        - liters
+                        description: Unit of measurement for given meter data. Valid units for `fuel_consumed` are `gal`, `gallons`, `l`, and `liters`. The value is always stored and returned in gallons (`gal`).
+                      value:
+                        type: number
+                        description: Reading value for the given meter data. Decimal values are accepted and rounded to the nearest integer when stored.
+    transfer_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              additionalProperties: true
+            relationships:
+              type: object
+              properties:
+                depot:
+                  type: object
+                  description: The depot for the registered asset
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: depots
+                        id:
+                          type: string
+                          example: The UUID of the depot
+    meter_data_stand_hours_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Stand-by-hours meter readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - stand_by_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `stand_by_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+    meter_data_switch_hours_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Switch-on-hours meter readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - switch_on_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `switch_on_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    deactivate_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+          required:
+          - attributes
+          - type
+          - id
+    registered_asset_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - registered_assets
+        attributes:
+          type: object
+          properties:
+            vin:
+              type: string
+              description: 17 digit vehicle identification number
+              minLength: 17
+              maxLength: 17
+            serial_number:
+              type: string
+              description: Production number of the asset
+              minLength: 8
+              maxLength: 9
+            unit_number:
+              type: string
+              description: Identification number commonly used on assets residing within a fleet
+            chassis_id:
+              type: string
+              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+              maxLength: 50
+              example: N-991562
+            make:
+              type: string
+              description: Brand of the asset
+              maxLength: 100
+            model:
+              type: string
+              description: Name of the asset product from the manufacturer
+              maxLength: 100
+            year:
+              type: integer
+              description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+            engine:
+              type: object
+              description: Engine data
+              properties:
+                make:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 255
+                  description: The make of the engine
+                  example: Cummins
+                model:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 100
+                  description: The model of the engine
+                  example: X15
+                displacement:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 100
+                  description: The engine size related in liters or cubic inches
+                  example: 14.8L
+                serial_number:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 40
+                  description: The engine serial number
+                  example: '79412345'
+            odometer_value:
+              type:
+              - number
+              - 'null'
+              description: Integer representation about the asset odometer
+              example: 125000
+            odometer_unit:
+              type:
+              - string
+              - 'null'
+              description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+              enum:
+              - mi
+              - km
+              example: mi
+            vmrs:
+              type: object
+              description: VMRS classification of the asset
+              properties:
+                asset_type:
+                  type: object
+                  description: VMRS Code Key 2 (Equipment Category)
+                  properties:
+                    code_key:
+                      type: string
+                      description: The VMRS code key identifier
+                      example: '2'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value for the equipment category (e.g. 'D', '1', 'R'). Null when unset on the underlying vehicle.
+      required:
+      - attributes
+      - type
+      - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

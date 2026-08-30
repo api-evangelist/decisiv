@@ -1,0 +1,582 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Sublet Cases API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Sublet Cases
+paths:
+  /service_management/{srm_account_id}/v1/sublet_cases:
+    get:
+      summary: Retrieves a list of sublet cases
+      tags:
+      - Sublet Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - service_provider
+            - parent_case
+        description: The relationships to be included.
+      - name: filter[ro_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given ro_number, using exact matching search
+      - name: filter[reference_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given reference_number, using exact matching search
+      - name: filter[parent_case.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given parent_case.id, using exact matching search
+      - name: filter[service_provider.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given service_provider.id, using exact matching search
+      - name: filter[event_timestamps.started_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given event_timestamps.started_at:gt, using exact matching search
+      - name: filter[event_timestamps.started_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given event_timestamps.started_at:lt, using exact matching search
+      - name: filter[event_timestamps.started_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given event_timestamps.started_at:gte, using exact matching search
+      - name: filter[event_timestamps.started_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the sublet_cases for the given event_timestamps.started_at:lte, using exact matching search
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: dc8b7b66-288c-4072-9e31-3df871d5e561
+                  type: sublet_cases
+                  attributes:
+                    reference_number: 321098
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    repair_status: appointment
+                    pricing:
+                      parts_total: '140.00'
+                      labor_total: '0.0'
+                      taxes_total: '20.0'
+                      total: '160.00'
+                    invoice:
+                      total: 3758.5
+                      number: TR-91324
+                      invoice_date: '2025-04-10T13:30:41Z'
+                    event_timestamps:
+                      closed_at: '2025-04-10T13:30:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      started_at: '2025-04-10T12:00:41Z'
+                    created_at: 2025-04-10 12:30:41 UTC
+                    updated_at: 2025-04-10 13:21:41 UTC
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/cases/487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  relationships:
+                    parent_case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/sublet_cases'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/sublet_cases/{id}:
+    get:
+      summary: List details on a specific sublet case
+      tags:
+      - Sublet Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show details for requested asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: dc8b7b66-288c-4072-9e31-3df871d5e561
+                  type: sublet_cases
+                  attributes:
+                    reference_number: 321098
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    repair_status: appointment
+                    pricing:
+                      parts_total: '140.00'
+                      labor_total: '0.0'
+                      taxes_total: '20.0'
+                      total: '160.00'
+                    invoice:
+                      total: 3758.5
+                      number: TR-91324
+                      invoice_date: '2025-04-10T13:30:41Z'
+                    event_timestamps:
+                      closed_at: '2025-04-10T13:30:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      started_at: '2025-04-10T12:00:41Z'
+                    created_at: 2025-04-10 12:30:41 UTC
+                    updated_at: 2025-04-10 13:21:41 UTC
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/cases/487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  relationships:
+                    parent_case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/sublet_case'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    sublet_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                po_number:
+                  type: string
+                  description: Purchase Order number
+                  maxLength: 40
+                auth_number:
+                  type: string
+                  description: Authorization number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                reference_number:
+                  type: integer
+                  description: Integer representation of the sublet request ID inside of the User Interface
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  example: Hold (auth)
+                pricing:
+                  type: object
+                  description: Total price
+                  properties:
+                    parts_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation parts
+                    labor_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation labor
+                    taxes_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation taxes
+                    total:
+                      type: string
+                      format: decimal
+                      description: Total price
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      example: 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      example: TR3847
+                    invoice_date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` format
+                      example: '2025-04-10T13:30:41Z'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the sublet request
+                  properties:
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2025-04-10T13:10:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase was marked as completed and closed'
+                      example: '2025-04-10T13:30:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2025-04-10T13:15:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase started'
+                      example: '2025-04-10T12:00:41Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was created'
+                  example: 2025-04-10 12:30:41 UTC
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
+                  example: 2025-04-10 13:21:41 UTC
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    sublet_cases:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_case'
+        meta:
+          type: object
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

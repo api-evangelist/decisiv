@@ -1,0 +1,4214 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Cases API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Cases across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Cases
+paths:
+  /asset_management/{srm_account_id}/v1/cases:
+    get:
+      operationId: listCases
+      description: Returns a list of cases for the requested account.
+      summary: List all Case for the requested account
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[event_timestamps.started_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list cases started _less than_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.started_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list cases started _less than or equal to_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.started_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list cases started _greater than_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.started_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list cases started _greater than or equal to_ a specified `ISO8601` timestamp.
+      - name: filter[updated_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases last updated _on or after_ the specified `ISO 8601` datetime.
+      - name: filter[updated_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases last updated _on or before_ the specified `ISO 8601` datetime.
+      - name: filter[registered_asset.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          minLength: 36
+          maxLength: 36
+        description: Filter cases based upon the specified `Registered Asset` identifier
+      - name: filter[service_provider.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          minLength: 36
+          maxLength: 36
+        description: Filter cases based upon the specified `Service Provider` identifier
+      - name: filter[service_provider.external_reference.srm_account]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter cases based upon the specified `Service Provider` srm account identifier
+      - name: filter[event_timestamps.closed_at:exists]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter cases by whether a `closed_at` timestamp exists. Use `true` to list only closed cases, or `false` to list only open cases. Must be paired up with either a registered_asset.id filter, a timebased filter, or a service_provider.id filter.
+      - name: filter[closed]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: string
+        description: '**Deprecated** — use `filter[event_timestamps.closed_at:exists]` instead. Filters cases for the given closed, using `true` or `false` for exact matching search. Required to be paired up with either a registered_asset.id filter, a timebased filter, or a service_provider.id filter.'
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_asset
+            - service_provider
+            - estimates
+            - billing_contact
+            - primary_contact
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of cases
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                  type: cases
+                  attributes:
+                    complaint: Check Engine Light continually on
+                    invoice:
+                      total: 0
+                      number: TR-91324
+                      invoice_date: '2025-04-07'
+                    po_number: THX1138
+                    auth_number: FLT2112
+                    ro_number: RO1888
+                    reference_number: 18328893
+                    closed: false
+                    repair_status: Diagnosing
+                    status: Drop-off
+                    event_timestamps:
+                      started_at: '2025-04-07T18:58:31Z'
+                      requested_appointment_time: '2025-04-07T17:20:31Z'
+                      requested_completion_time: '2025-04-07T17:20:31Z'
+                      actual_time_to_repair: '2025-04-07T17:20:31Z'
+                      estimated_time_to_repair: '2025-04-07T17:20:31Z'
+                      followup_time: '2025-04-07T19:58:31Z'
+                      asset_arrived: '2025-04-07T16:58:31Z'
+                      asset_checked_in: '2025-04-07T17:20:31Z'
+                      closed_at: '2025-04-07T17:20:31Z'
+                      asset_uptime: '2025-04-07T17:20:31Z'
+                      asset_downtime: '2025-04-06T18:58:31Z'
+                    asset_information:
+                      odometer_value: 61342
+                      odometer_unit: mi
+                      unit_number: 42X
+                      cargo:
+                        unit: null
+                        loaded: false
+                        load: null
+                    breakdown:
+                      location: outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    estimates:
+                      data: []
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: d60717e2-e303-11ea-86c2-1f9b5bc5281b
+                    billing_contact:
+                      data:
+                        type: contacts
+                        id: 3f2a1c9e-6b4d-4e2a-9c1a-7d5f8e2b9a10
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 9b6e2b7d-1f4a-4b8e-9d3c-5a7f0e2c8b41
+              schema:
+                $ref: '#/components/schemas/cases'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+                - code: decisiv:filters:010
+                  title: Invalid filter value
+                  detail: Invalid filter value `{{invalid_filter}}`. Expected an ISO 8601 timestamp.
+                  status: '400'
+                  source:
+                    parameter: filter[event_timestamps.started_at:gte]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/cases/{id}:
+    get:
+      operationId: getCase
+      description: Returns details for a specific case.
+      summary: List details on a specific case
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_asset
+            - service_provider
+            - estimates
+            - billing_contact
+            - primary_contact
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Show details for requested case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                  type: cases
+                  attributes:
+                    complaint: Check Engine Light continually on
+                    invoice:
+                      total: 0
+                      number: TR-91324
+                      invoice_date: '2025-04-07'
+                    po_number: THX1138
+                    auth_number: FLT2112
+                    ro_number: RO1888
+                    reference_number: 18328893
+                    closed: false
+                    repair_status: Diagnosing
+                    status: Drop-off
+                    event_timestamps:
+                      started_at: '2025-04-07T18:58:31Z'
+                      requested_appointment_time: '2025-04-07T17:20:31Z'
+                      requested_completion_time: '2025-04-07T17:20:31Z'
+                      actual_time_to_repair: '2025-04-07T17:20:31Z'
+                      estimated_time_to_repair: '2025-04-07T17:20:31Z'
+                      followup_time: '2025-04-07T19:58:31Z'
+                      asset_arrived: '2025-04-07T16:58:31Z'
+                      asset_checked_in: '2025-04-07T17:20:31Z'
+                      closed_at: '2025-04-07T17:20:31Z'
+                      asset_uptime: '2025-04-07T17:20:31Z'
+                      asset_downtime: '2025-04-06T18:58:31Z'
+                    asset_information:
+                      odometer_value: 61342
+                      odometer_unit: mi
+                      unit_number: 42X
+                      cargo:
+                        unit: null
+                        loaded: false
+                        load: null
+                    breakdown:
+                      location: outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    estimates:
+                      data: []
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: d60717e2-e303-11ea-86c2-1f9b5bc5281b
+                    billing_contact:
+                      data:
+                        type: contacts
+                        id: 3f2a1c9e-6b4d-4e2a-9c1a-7d5f8e2b9a10
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 9b6e2b7d-1f4a-4b8e-9d3c-5a7f0e2c8b41
+              schema:
+                $ref: '#/components/schemas/case'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      operationId: updateCase
+      description: Updates the specified case with the provided attributes.
+      summary: Updates a case
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show the case updated
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                  type: cases
+                  attributes:
+                    complaint: Check Engine Light continually on
+                    invoice:
+                      total: 0
+                      number: TR-91324
+                      invoice_date: '2025-04-07'
+                    po_number: THX1138
+                    auth_number: FLT2112
+                    ro_number: RO1888
+                    reference_number: 18328893
+                    closed: false
+                    repair_status: Diagnosing
+                    status: Drop-off
+                    event_timestamps:
+                      started_at: '2025-04-07T18:58:31Z'
+                      requested_appointment_time: '2025-04-07T17:20:31Z'
+                      requested_completion_time: '2025-04-07T17:20:31Z'
+                      actual_time_to_repair: '2025-04-07T17:20:31Z'
+                      estimated_time_to_repair: '2025-04-07T17:20:31Z'
+                      followup_time: '2025-04-07T19:58:31Z'
+                      asset_arrived: '2025-04-07T16:58:31Z'
+                      asset_checked_in: '2025-04-07T17:20:31Z'
+                      closed_at: '2025-04-07T17:20:31Z'
+                      asset_uptime: '2025-04-07T17:20:31Z'
+                      asset_downtime: '2025-04-06T18:58:31Z'
+                    asset_information:
+                      odometer_value: 61342
+                      odometer_unit: mi
+                      unit_number: 42X
+                      cargo:
+                        unit: null
+                        loaded: false
+                        load: null
+                    breakdown:
+                      location: outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    estimates:
+                      data: []
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: d60717e2-e303-11ea-86c2-1f9b5bc5281b
+                    billing_contact:
+                      data:
+                        type: contacts
+                        id: 3f2a1c9e-6b4d-4e2a-9c1a-7d5f8e2b9a10
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 9b6e2b7d-1f4a-4b8e-9d3c-5a7f0e2c8b41
+              schema:
+                $ref: '#/components/schemas/case'
+        '400':
+          description: This response may occur when the request body is missing required keys (e.g. attributes hash) or when a relationship linkage's `type` is not one of `contacts`, `registered_contacts`, `recipients`.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Missing required attribute key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes
+                Invalid resource type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Resource type is invalid
+                      detail: Resource type is invalid
+                      source:
+                        pointer: /data/relationships/primary_contact/data/type
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Immutable Attribute error / Attribute cannot be updated error / Invalid fleet status value / Contact relationship not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Immutable Attribute error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Immutable Attribute
+                      detail: The resource attribute is immutable through this particular endpoint
+                      code: decisiv:request_attributes:005
+                      source:
+                        pointer: /data/attributes/ro_number
+                Attribute cannot be updated error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Immutable Attribute
+                      detail: The resource attribute is immutable through this particular endpoint
+                      code: decisiv:request_attributes:005
+                      source:
+                        pointer: /data/attributes/correction
+                Invalid fleet status:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: 'Invalid status value provided - value must be one of: Working, Pick-up, Drop-off, Complete, Hold (auth), Hold (parts), Hold (information)'
+                      source:
+                        pointer: /data/attributes/status
+                Contact relationship not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Contact not found in database
+                      source:
+                        pointer: /data/relationships/billing_contact/data/id
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_case'
+            examples:
+              Case:
+                value:
+                  data:
+                    id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    type: cases
+                    attributes:
+                      complaint: Check Engine Light continually on
+                      po_number: THX1138
+                      auth_number: FLT2112
+                      status: Drop-off
+                      event_timestamps:
+                        followup_time: '2025-04-07T18:58:31Z'
+                        requested_completion_time: '2025-04-07T18:58:31Z'
+              Case with contact relationships:
+                value:
+                  data:
+                    id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    type: cases
+                    attributes:
+                      complaint: Check Engine Light continually on
+                      po_number: THX1138
+                      auth_number: FLT2112
+                      status: Drop-off
+                    relationships:
+                      billing_contact:
+                        data:
+                          type: contacts
+                          id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+                      primary_contact:
+                        data:
+                          type: recipients
+                          id: 462d54f5-a1a1-48b5-ac0f-2068259105df
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases:
+    get:
+      summary: List cases for the requested account
+      operationId: listCases
+      description: 'Returns a paginated list of cases for the requested SRM account. Supports filtering by service provider, customer asset, customer, repair status, repair order number, and event timestamps.
+
+        '
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[service_provider.external_reference.srm_account]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter cases by the service provider's SRM account ID.
+      - name: filter[customer_asset.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter cases matching the exact `customer_asset.id`.
+      - name: filter[customer_asset.vin]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 17
+          maxLength: 17
+        description: Filter cases matching the exact `customer_asset.vin`. Must be exactly 17 characters.
+      - name: filter[customer_asset.serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 17
+        description: Filter cases matching the exact `customer_asset.serial_number`. Must be between 6 and 17 characters.
+      - name: filter[ro_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          maxLength: 40
+        description: Filter cases matching the exact repair order number.
+      - name: filter[reference_number]
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Filter cases matching the exact case reference number.
+      - name: filter[repair_status:include]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: string
+        description: '**Deprecated** — use `filter[repair_status:includes]` instead. Filter cases to only those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values.'
+      - name: filter[repair_status:exclude]
+        in: query
+        required: false
+        deprecated: true
+        schema:
+          type: string
+        description: '**Deprecated** — use `filter[repair_status:excludes]` instead. Filter cases to exclude those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values.'
+      - name: filter[repair_status:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter cases to only those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values.
+      - name: filter[repair_status:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter cases to exclude those matching the specified repair status(es). Accepts a comma-separated list of up to 50 statuses. See the `repair_status` endpoint for available values.
+      - name: filter[assignee.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter cases assigned to the user with the given assignee id (the id segment of the assignee's user URI).
+      - name: filter[assignee.id:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter cases assigned to any of the given assignee ids. Accepts a comma-separated list of up to 50 ids.
+      - name: filter[assignee.id:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter cases excluding those assigned to any of the given assignee ids. Accepts a comma-separated list of up to 50 ids.
+      - name: filter[event_timestamps.started_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases started _before_ the specified `ISO 8601` datetime.
+      - name: filter[event_timestamps.started_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases started _on or before_ the specified `ISO 8601` datetime.
+      - name: filter[event_timestamps.started_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases started _after_ the specified `ISO 8601` datetime.
+      - name: filter[event_timestamps.started_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases started _on or after_ the specified `ISO 8601` datetime.
+      - name: filter[event_timestamps.closed_at:exists]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter cases by whether a `closed_at` timestamp exists. Use `true` to list only closed cases, or `false` to list only open cases.
+      - name: filter[customer_asset.customer.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter cases matching the exact `customer_asset.customer.id`.
+      - name: filter[customer.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter cases by the case's primary customer, matching the exact `customer.id` (the customer's UUID). Applies to both local (`customers`) and registered (`registered_customers`) customers.
+      - name: filter[updated_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases last updated _on or after_ the specified `ISO 8601` datetime.
+      - name: filter[updated_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Filter cases last updated _on or before_ the specified `ISO 8601` datetime.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: 'Sets the desired `page` when encountering larger result sets. The response `meta.metadata.record-count` may be `null` (intentionally not computed to avoid expensive COUNT queries on large datasets). Paginate until a page returns fewer items than `page[size]`.
+
+          '
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: 'Sets the desired maximum number of results per page. The response `meta.metadata.record-count` may be `null` (intentionally not computed to avoid expensive COUNT queries on large datasets). Paginate until a page returns fewer items than `page[size]`.
+
+          '
+      responses:
+        '200':
+          description: Returns list of cases
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: cases
+                  attributes:
+                    reference_number: 321098
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    asset_information:
+                      odometer_value: 10000
+                      odometer_unit: mi
+                      engine_hours: 167
+                      switch_on_hours: 10
+                      stand_by_hours: 2
+                    event_timestamps:
+                      requested_appointment_time: '2025-10-10T13:30:41Z'
+                      requested_completion_time: '2025-10-10T13:30:41Z'
+                      followup_time: '2025-10-10T13:30:41Z'
+                      closed_at: '2025-04-10T13:30:41Z'
+                      asset_uptime: '2025-04-10T13:00:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      asset_checked_in: '2025-04-10T12:30:41Z'
+                      started_at: '2025-04-10T12:00:41Z'
+                      asset_arrived: '2025-04-10T11:30:41Z'
+                      asset_downtime: '2025-04-10T10:30:41Z'
+                      asset_departed_at: '2025-04-10T13:30:41Z'
+                    breakdown:
+                      location: Outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    repair_status: appointment
+                    invoice:
+                      total: 3758.5
+                      number: TR-91324
+                      date: '2025-04-10'
+                    pricing:
+                      parts_total: 432.5
+                      labor_total: 250
+                      core_total: 75
+                      tax: 32.18
+                      haz_waste: 15
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: R
+                      repair_priority:
+                        code_key: '16'
+                        code: '2'
+                      repair_site:
+                        code_key: '17'
+                        code: '7'
+                      reason_for_repair:
+                        code_key: '14'
+                        code: '01'
+                      operator_report:
+                      - code_key: '82'
+                        code: '001'
+                      - code_key: '82'
+                        code: '002'
+                      component:
+                        code_key: '33'
+                        code: 023-000-000
+                      position:
+                        code_key: '79'
+                        code: '03'
+                      technician_failure:
+                        code_key: '18'
+                        code: B1
+                      work_accomplished:
+                        code_key: '15'
+                        code: A
+                    tag_number: null
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/cases/487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  relationships:
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                    customer:
+                      data:
+                        type: customers
+                        id: 9b1f3c52-7e44-4a8d-9c2f-1d6e0a2b4c8e
+                    billing_contact:
+                      data:
+                        type: registered_customers
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+                    billing_customer:
+                      data:
+                        type: registered_customers
+                        id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    shipping_customer:
+                      data:
+                        type: customers
+                        id: 11028a0c-1a4b-42c7-86ff-16343fb546a0
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                    program_type:
+                      data:
+                        type: program_types
+                        id: b7390546-9a28-4aed-9e30-1a5afc0ab696
+                    primary_contact:
+                      data:
+                        type: recipients
+                        id: 462d54f5-a1a1-48b5-ac0f-2068259105df
+                    driver:
+                      data:
+                        type: recipients
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    department:
+                      data:
+                        type: departments
+                        id: department_code
+              schema:
+                $ref: '#/components/schemas/cases_2'
+        '400':
+          description: The request contains invalid parameters and may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid filter value:
+                  value:
+                    errors:
+                    - title: Invalid filter value
+                      detail: '''{{invalid_value}}'' is not a valid value. Valid values: {{valid_values}}'
+                      code: decisiv:filters:002
+                      status: '400'
+                      source:
+                        parameter: filter[repair_status:include]
+                Date range exceeded:
+                  value:
+                    errors:
+                    - title: Filter validation failed
+                      detail: Date range must not exceed 180 days
+                      code: decisiv:filters:004
+                      status: '400'
+                Minimum character length not met:
+                  value:
+                    errors:
+                    - title: Minimum character length not met
+                      detail: Filter value must be at least {{minimum_length}} characters
+                      code: decisiv:filters:007
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Maximum character length exceeded:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be less than {{maximum_length}} characters
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid filter format:
+                  value:
+                    errors:
+                    - title: Invalid filter format
+                      detail: '''{{invalid_filter}}'' is not a valid filter format'
+                      code: decisiv:filters:009
+                      status: '400'
+                      source:
+                        parameter: filter[customer_asset.id]
+                Too many filter values:
+                  value:
+                    errors:
+                    - title: Too many filter values
+                      detail: 'Too many values for filter[repair_status:include]. Maximum allowed: 50.'
+                      code: decisiv:filters:011
+                      status: '400'
+                      source:
+                        parameter: filter[repair_status:include]
+                Filter value too long:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be less than 4096 characters
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[ro_number]
+                Invalid filter characters:
+                  value:
+                    errors:
+                    - title: Invalid filter characters
+                      detail: Filter value for filter[ro_number] contains invalid characters.
+                      code: decisiv:filters:013
+                      status: '400'
+                      source:
+                        parameter: filter[ro_number]
+                Invalid filter shape:
+                  value:
+                    errors:
+                    - title: Invalid filter value shape
+                      detail: Filter value for filter[ro_number] must be a string.
+                      code: decisiv:filters:014
+                      status: '400'
+                      source:
+                        parameter: filter[ro_number]
+                Invalid date format:
+                  value:
+                    errors:
+                    - title: Invalid date format
+                      detail: Invalid filter value `{{invalid_filter}}`. Expected an ISO 8601 timestamp.
+                      code: decisiv:filters:010
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+        '401':
+          description: The access token provided in the Authorization header is missing, invalid, or expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have permission to access the requested resource or the feature is not enabled for the account.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Forbidden:
+                  value:
+                    errors:
+                    - title: Forbidden
+                      detail: User does not have permission to perform this action on the requested resource(s)
+                      code: decisiv:access:001
+                      status: '403'
+                Feature unavailable:
+                  value:
+                    errors:
+                    - title: Feature unavailable
+                      detail: This feature is not enabled for the requested account
+                      code: decisiv:account:002
+                      status: '403'
+        '404':
+          description: The requested account could not be found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: An unresolved data dependency or configuration within the Decisiv Platform is preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: The authenticated user's token does not include the required module assignment for this resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: The user does not have the required module assignment
+                  code: decisiv:access:003
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: The request timed out due to a long-running query.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Gateway timeout error
+                  detail: Gateway timeout error
+                  code: decisiv:timeout:001
+                  status: '504'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{id}:
+    get:
+      summary: List details on a specific case
+      operationId: getCase
+      description: Returns full detail for a single case, including attributes, VMRS codes, invoice fields, and all relationships associated with the case.
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Show details for case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: cases
+                  attributes:
+                    reference_number: 321098
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    asset_information:
+                      odometer_value: 10000
+                      odometer_unit: mi
+                      engine_hours: 167
+                      switch_on_hours: 10
+                      stand_by_hours: 2
+                    event_timestamps:
+                      requested_appointment_time: '2025-10-10T13:30:41Z'
+                      requested_completion_time: '2025-10-10T13:30:41Z'
+                      followup_time: '2025-10-10T13:30:41Z'
+                      closed_at: '2025-04-10T13:30:41Z'
+                      asset_uptime: '2025-04-10T13:00:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      asset_checked_in: '2025-04-10T12:30:41Z'
+                      started_at: '2025-04-10T12:00:41Z'
+                      asset_arrived: '2025-04-10T11:30:41Z'
+                      asset_downtime: '2025-04-10T10:30:41Z'
+                      asset_departed_at: '2025-04-10T13:30:41Z'
+                    breakdown:
+                      location: Outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    repair_status: appointment
+                    invoice:
+                      total: 3758.5
+                      number: TR-91324
+                      date: '2025-04-10'
+                    pricing:
+                      parts_total: 432.5
+                      labor_total: 250
+                      core_total: 75
+                      tax: 32.18
+                      haz_waste: 15
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: R
+                      repair_priority:
+                        code_key: '16'
+                        code: '2'
+                      repair_site:
+                        code_key: '17'
+                        code: '7'
+                      reason_for_repair:
+                        code_key: '14'
+                        code: '01'
+                      operator_report:
+                      - code_key: '82'
+                        code: '001'
+                      - code_key: '82'
+                        code: '002'
+                      component:
+                        code_key: '33'
+                        code: 023-000-000
+                      position:
+                        code_key: '79'
+                        code: '03'
+                      technician_failure:
+                        code_key: '18'
+                        code: B1
+                      work_accomplished:
+                        code_key: '15'
+                        code: A
+                    tag_number: null
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/cases/487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  relationships:
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                    customer:
+                      data:
+                        type: customers
+                        id: 9b1f3c52-7e44-4a8d-9c2f-1d6e0a2b4c8e
+                    billing_contact:
+                      data:
+                        type: registered_customers
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+                    billing_customer:
+                      data:
+                        type: registered_customers
+                        id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    shipping_customer:
+                      data:
+                        type: customers
+                        id: 11028a0c-1a4b-42c7-86ff-16343fb546a0
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                    program_type:
+                      data:
+                        type: program_types
+                        id: b7390546-9a28-4aed-9e30-1a5afc0ab696
+                    primary_contact:
+                      data:
+                        type: recipients
+                        id: 462d54f5-a1a1-48b5-ac0f-2068259105df
+                    driver:
+                      data:
+                        type: recipients
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    department:
+                      data:
+                        type: departments
+                        id: department_code
+              schema:
+                $ref: '#/components/schemas/case_2'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates a case
+      operationId: updateCase
+      description: Updates a case. Any subset of the attributes and relationships listed in the request body schema may be supplied; omitted fields are not modified. Immutable attributes (such as `ro_number` once set) cannot be changed and will return a 422 error.
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update the meter data for asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: cases
+                  attributes:
+                    reference_number: 321098
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    asset_information:
+                      odometer_value: 10000
+                      odometer_unit: mi
+                      engine_hours: 167
+                      switch_on_hours: 10
+                      stand_by_hours: 2
+                    event_timestamps:
+                      requested_appointment_time: '2025-10-10T13:30:41Z'
+                      requested_completion_time: '2025-10-10T13:30:41Z'
+                      followup_time: '2025-10-10T13:30:41Z'
+                      closed_at: '2025-04-10T13:30:41Z'
+                      asset_uptime: '2025-04-10T13:00:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      asset_checked_in: '2025-04-10T12:30:41Z'
+                      started_at: '2025-04-10T12:00:41Z'
+                      asset_arrived: '2025-04-10T11:30:41Z'
+                      asset_downtime: '2025-04-10T10:30:41Z'
+                      asset_departed_at: '2025-04-10T13:30:41Z'
+                    breakdown:
+                      location: Outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    repair_status: appointment
+                    invoice:
+                      total: 3758.5
+                      number: TR-91324
+                      date: '2025-04-10'
+                    pricing:
+                      parts_total: 432.5
+                      labor_total: 250
+                      core_total: 75
+                      tax: 32.18
+                      haz_waste: 15
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: R
+                      repair_priority:
+                        code_key: '16'
+                        code: '2'
+                      repair_site:
+                        code_key: '17'
+                        code: '7'
+                      reason_for_repair:
+                        code_key: '14'
+                        code: '01'
+                      operator_report:
+                      - code_key: '82'
+                        code: '001'
+                      - code_key: '82'
+                        code: '002'
+                      component:
+                        code_key: '33'
+                        code: 023-000-000
+                      position:
+                        code_key: '79'
+                        code: '03'
+                      technician_failure:
+                        code_key: '18'
+                        code: B1
+                      work_accomplished:
+                        code_key: '15'
+                        code: A
+                    tag_number: null
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/cases/487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  relationships:
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                    customer:
+                      data:
+                        type: customers
+                        id: 9b1f3c52-7e44-4a8d-9c2f-1d6e0a2b4c8e
+                    billing_contact:
+                      data:
+                        type: registered_customers
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+                    billing_customer:
+                      data:
+                        type: registered_customers
+                        id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    shipping_customer:
+                      data:
+                        type: customers
+                        id: 11028a0c-1a4b-42c7-86ff-16343fb546a0
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                    program_type:
+                      data:
+                        type: program_types
+                        id: b7390546-9a28-4aed-9e30-1a5afc0ab696
+                    primary_contact:
+                      data:
+                        type: recipients
+                        id: 462d54f5-a1a1-48b5-ac0f-2068259105df
+                    driver:
+                      data:
+                        type: recipients
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    department:
+                      data:
+                        type: departments
+                        id: department_code
+              schema:
+                $ref: '#/components/schemas/case_2'
+        '400':
+          description: Path ID mismatch / Missing required attribute key
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Path ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: Resource Identifier mismatch
+                      detail: Resource Identifier must match the one provided in URL
+                      source:
+                        pointer: /data/id
+                Missing id key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: 'The request is missing a required attribute key: id'
+                      source:
+                        pointer: /data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Case not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: The parent resource could not be found
+                  code: decisiv:resource:001
+                  source:
+                    pointer: /data/id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Immutable Attribute error / Invalid Attribute Value / Customer asset deactivated
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Immutable Attribute error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Immutable Attribute
+                      detail: The resource attribute is immutable through this particular endpoint
+                      code: decisiv:request_attributes:005
+                      source:
+                        pointer: /data/attributes/ro_number
+                Invalid repair_status value:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid repair_status value provided - must be a valid repair_status for this Service Management account
+                      source:
+                        pointer: /data/attributes/repair_status
+                      links:
+                        about: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/repair_statuses
+                Customer asset deactivated:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:resource:008
+                      title: Customer asset deactivated
+                      detail: The related customer asset has been deactivated and cannot be modified
+                      source:
+                        pointer: /data/relationships/customer_asset
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/case_update'
+            examples:
+              Case:
+                value:
+                  data:
+                    id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    type: cases
+                    attributes:
+                      complaint: CEL on
+                      po_number: V2479-128
+                      auth_number: DV793957
+                      ro_number: U2112550
+                      cause: Diagnostic check required
+                      correction: Reset Diagnostics
+                      event_timestamps:
+                        followup_time: '2025-10-10T13:30:41Z'
+                        closed_at: '2025-04-10T13:30:41Z'
+                        asset_uptime: '2025-04-10T13:00:41Z'
+                        actual_time_to_repair: '2025-04-10T13:10:41Z'
+                        estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                        asset_checked_in: '2025-04-10T12:30:41Z'
+                        asset_arrived: '2025-04-10T11:30:41Z'
+                        asset_downtime: '2025-04-10T10:30:41Z'
+                      breakdown:
+                        location: Outside Seneca Lodge
+                        city: Watkins Glen
+                        state: NY
+                        country: US
+                      repair_status: parts_ordered
+                      invoice:
+                        total: 3758.5
+                        number: TR-91324
+                        date: '2025-04-10'
+                      tag_number: null
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{id}/update_meter_data:
+    post:
+      summary: Updates Meter Data
+      operationId: updateCaseMeterData
+      description: Appends meter readings (odometer, engine hours, stand-by hours, or switch-on hours) to a case. Each entry specifies the meter type, unit, and value; multiple entries may be submitted in a single request.
+      tags:
+      - Cases
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update the meter data for asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: cases
+                  attributes:
+                    reference_number: 321098
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    asset_information:
+                      odometer_value: 10000
+                      odometer_unit: mi
+                      engine_hours: 167
+                      switch_on_hours: 10
+                      stand_by_hours: 2
+                    event_timestamps:
+                      requested_appointment_time: '2025-10-10T13:30:41Z'
+                      requested_completion_time: '2025-10-10T13:30:41Z'
+                      followup_time: '2025-10-10T13:30:41Z'
+                      closed_at: '2025-04-10T13:30:41Z'
+                      asset_uptime: '2025-04-10T13:00:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      asset_checked_in: '2025-04-10T12:30:41Z'
+                      started_at: '2025-04-10T12:00:41Z'
+                      asset_arrived: '2025-04-10T11:30:41Z'
+                      asset_downtime: '2025-04-10T10:30:41Z'
+                      asset_departed_at: '2025-04-10T13:30:41Z'
+                    breakdown:
+                      location: Outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                    repair_status: appointment
+                    invoice:
+                      total: 3758.5
+                      number: TR-91324
+                      date: '2025-04-10'
+                    pricing:
+                      parts_total: 432.5
+                      labor_total: 250
+                      core_total: 75
+                      tax: 32.18
+                      haz_waste: 15
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: R
+                      repair_priority:
+                        code_key: '16'
+                        code: '2'
+                      repair_site:
+                        code_key: '17'
+                        code: '7'
+                      reason_for_repair:
+                        code_key: '14'
+                        code: '01'
+                      operator_report:
+                      - code_key: '82'
+                        code: '001'
+                      - code_key: '82'
+                        code: '002'
+                      component:
+                        code_key: '33'
+                        code: 023-000-000
+                      position:
+                        code_key: '79'
+                        code: '03'
+                      technician_failure:
+                        code_key: '18'
+                        code: B1
+                      work_accomplished:
+                        code_key: '15'
+                        code: A
+                    tag_number: null
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/cases/487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  relationships:
+                    customer_asset:
+                      data:
+                        type: customer_assets
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                    customer:
+                      data:
+                        type: customers
+                        id: 9b1f3c52-7e44-4a8d-9c2f-1d6e0a2b4c8e
+                    billing_contact:
+                      data:
+                        type: registered_customers
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+                    billing_customer:
+                      data:
+                        type: registered_customers
+                        id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    shipping_customer:
+                      data:
+                        type: customers
+                        id: 11028a0c-1a4b-42c7-86ff-16343fb546a0
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                    program_type:
+                      data:
+                        type: program_types
+                        id: b7390546-9a28-4aed-9e30-1a5afc0ab696
+                    primary_contact:
+                      data:
+                        type: recipients
+                        id: 462d54f5-a1a1-48b5-ac0f-2068259105df
+                    driver:
+                      data:
+                        type: recipients
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    department:
+                      data:
+                        type: departments
+                        id: department_code
+              schema:
+                $ref: '#/components/schemas/case_2'
+        '400':
+          description: Invalid type / Path ID mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''wrong-type'' is an invalid resource'
+                      source:
+                        pointer: /data/type
+                Path ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''487136d2-c4d6-424c-b018-f1ed8a740c6a'' is an invalid resource'
+                      source:
+                        pointer: /data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Case not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: The parent resource could not be found
+                  code: decisiv:resource:001
+                  source:
+                    pointer: /data/id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: No code provided
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '422'
+                  code: vmrs-001
+                  title: Must have at least one valid code
+                  source:
+                    pointer: /data/attributes/vmrs
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/case_update_meter_data_odometer_meter'
+              - $ref: '#/components/schemas/case_update_meter_data_eng_hours'
+              - $ref: '#/components/schemas/case_update_meter_data_stand_hours'
+              - $ref: '#/components/schemas/case_update_meter_data_switch_hours'
+            examples:
+              Meter Data:
+                value:
+                  data:
+                    id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    type: cases
+                    attributes:
+                      meter_data:
+                      - meter: odometer
+                        unit: mi
+                        value: 12114
+                      - meter: engine_hours
+                        unit: hr
+                        value: 180
+                      - meter: stand_by_hours
+                        unit: hr
+                        value: 1
+                      - meter: switch_on_hours
+                        unit: hr
+                        value: 2
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    cases:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/properties-data'
+        meta:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - cases
+        attributes:
+          type: object
+          properties:
+            complaint:
+              type: string
+              description: Initially reported information from driver or other customer entity
+              examples:
+              - Broken truck
+            po_number:
+              type: string
+              description: The Purchase Order number
+              examples:
+              - '1234'
+            auth_number:
+              type: string
+              description: The Authorization number
+              examples:
+              - '1234'
+            ro_number:
+              type: string
+              description: The Repair Order number
+              examples:
+              - '1234'
+            reference_number:
+              type: number
+              description: Integer representation of the Case ID inside of the User Interface
+            closed:
+              type: boolean
+              description: Indicates whether the case has been closed.
+            repair_status:
+              type: string
+              description: Status of the repair
+              examples:
+              - Hold (auth)
+            status:
+              type: string
+              description: Status of the case
+              examples:
+              - Pick-up
+            invoice:
+              type: object
+              description: The invoice information for the case
+              properties:
+                total:
+                  type: number
+                  description: The total amount of the invoice
+                number:
+                  type: string
+                  description: The invoice number
+                invoice_date:
+                  type: string
+                  format: date
+                  description: The date of the invoice
+                  examples:
+                  - '2025-04-07'
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the case
+              properties:
+                started_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_completion_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the completion time of the case'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_appointment_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the appointment time'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                actual_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                estimated_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                followup_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_arrived:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_checked_in:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                closed_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_uptime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_downtime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+            pricing:
+              type: object
+              description: Financial totals for the case, sourced directly from the Estimate
+              properties:
+                parts_total:
+                  type: number
+                  description: Total cost of parts
+                  examples:
+                  - 432.5
+                labor_total:
+                  type: number
+                  description: Total cost of labor
+                  examples:
+                  - 250
+                core_total:
+                  type: number
+                  description: Total cost of cores
+                  examples:
+                  - 75
+                tax:
+                  type: number
+                  description: Total tax amount
+                  examples:
+                  - 32.18
+                haz_waste:
+                  type: number
+                  description: Total hazardous waste charge
+                  examples:
+                  - 15
+            asset_information:
+              type: object
+              description: The asset information when the case was created
+              properties:
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
+                  examples:
+                  - mi
+                unit_number:
+                  type: string
+                  description: The unit number
+                cargo:
+                  type: object
+                  properties:
+                    unit:
+                      type:
+                      - string
+                      - 'null'
+                      description: The unit number
+                    loaded:
+                      type: boolean
+                      description: Indicates whether the cargo is loaded.
+                    load:
+                      type:
+                      - string
+                      - 'null'
+                      description: The load amount
+            breakdown:
+              type: object
+              description: Information about the breakdown location
+              properties:
+                city:
+                  type: string
+                  description: City of breakdown
+                  examples:
+                  - North Haven
+                location:
+                  type: string
+                  description: Exact map location of the breakdown
+                  examples:
+                  - 41.395022,-72.856326
+                state:
+                  type: string
+                  description: State of the breakdown
+                  examples:
+                  - CT
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the case was last updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the case was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+        relationships:
+          type: object
+          properties:
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+            service_provider:
+              $ref: '#/components/schemas/relationship_object'
+            assignee:
+              $ref: '#/components/schemas/relationship_object'
+            billing_contact:
+              $ref: '#/components/schemas/relationship_object'
+            primary_contact:
+              $ref: '#/components/schemas/relationship_object'
+            estimates:
+              $ref: '#/components/schemas/relationship_objects'
+      required:
+      - attributes
+      - type
+      - id
+    case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  examples:
+                  - '1234'
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  examples:
+                  - '1234'
+                reference_number:
+                  type: number
+                  description: Integer representation of the Case ID inside of the User Interface
+                closed:
+                  type: boolean
+                  description: Indicates whether the case has been closed.
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  examples:
+                  - Hold (auth)
+                status:
+                  type: string
+                  description: Status of the case
+                  examples:
+                  - Pick-up
+                invoice:
+                  type: object
+                  description: The invoice information for the case
+                  properties:
+                    total:
+                      type: number
+                      description: The total amount of the invoice
+                    number:
+                      type: string
+                      description: The invoice number
+                    invoice_date:
+                      type: string
+                      format: date
+                      description: The date of the invoice
+                      examples:
+                      - '2025-04-07'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the case
+                  properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                pricing:
+                  type: object
+                  description: Financial totals for the case, sourced directly from the Estimate
+                  properties:
+                    parts_total:
+                      type: number
+                      description: Total cost of parts
+                      examples:
+                      - 432.5
+                    labor_total:
+                      type: number
+                      description: Total cost of labor
+                      examples:
+                      - 250
+                    core_total:
+                      type: number
+                      description: Total cost of cores
+                      examples:
+                      - 75
+                    tax:
+                      type: number
+                      description: Total tax amount
+                      examples:
+                      - 32.18
+                    haz_waste:
+                      type: number
+                      description: Total hazardous waste charge
+                      examples:
+                      - 15
+                asset_information:
+                  type: object
+                  description: The asset information when the case was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
+                      examples:
+                      - mi
+                    unit_number:
+                      type: string
+                      description: The unit number
+                    cargo:
+                      type: object
+                      properties:
+                        unit:
+                          type:
+                          - string
+                          - 'null'
+                          description: The unit number
+                        loaded:
+                          type: boolean
+                          description: Indicates whether the cargo is loaded.
+                        load:
+                          type:
+                          - string
+                          - 'null'
+                          description: The load amount
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: State of the breakdown
+                      examples:
+                      - CT
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the case was last updated'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the case was created'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+            relationships:
+              type: object
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+                assignee:
+                  $ref: '#/components/schemas/relationship_object'
+                billing_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                estimates:
+                  $ref: '#/components/schemas/relationship_objects'
+          required:
+          - attributes
+          - type
+          - id
+    update_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: PO number
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The auth number
+                  examples:
+                  - '1234'
+                correction:
+                  type: string
+                  description: Correction details for the case
+                  writeOnly: true
+                  maxLength: 6000
+                status:
+                  type: string
+                  description: Status of the case
+                  examples:
+                  - Pick-up
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the case
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                ro_number:
+                  type: string
+            relationships:
+              type: object
+              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; `id` must be the `uuid` of one of the fleet''s own registered contacts.'
+              properties:
+                billing_contact:
+                  type: object
+                  description: Billing contact on the case.
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                          - registered_contacts
+                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                primary_contact:
+                  type: object
+                  description: Primary contact on the case.
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                          - registered_contacts
+                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+          required:
+          - id
+          - type
+          - attributes
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    cases_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/data'
+        meta:
+          type: object
+          properties:
+            metadata:
+              type: object
+              properties:
+                record-count:
+                  type:
+                  - integer
+                  - 'null'
+                  description: 'Total record count for the query. Intentionally null in degraded mode to avoid expensive COUNT queries; paginate until a page returns fewer items than `page[size]`.
+
+                    '
+    data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - cases
+        attributes:
+          type: object
+          properties:
+            auth_number:
+              type: string
+              description: The Authorization number
+              maxLength: 40
+            po_number:
+              type: string
+              description: The Purchase Order number
+              maxLength: 40
+            ro_number:
+              type: string
+              description: The Repair Order number
+              maxLength: 40
+            reference_number:
+              type: integer
+              description: Integer representation of the Case ID as shown in the UI
+            complaint:
+              type: string
+              description: Initially reported information from driver or other customer entity
+              maxLength: 6000
+            cause:
+              type: string
+              description: Documentation of the technical failure assessed by the Service Location
+              maxLength: 6000
+            correction:
+              type: string
+              description: Summary of the actual work accomplished to address the reported issue
+              maxLength: 6000
+            repair_status:
+              type: string
+              description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
+              examples:
+              - appointment
+            tag_number:
+              type: string
+              description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+              maxLength: 40
+            asset_information:
+              type: object
+              description: Information about the asset
+              properties:
+                odometer_value:
+                  type: integer
+                  description: Odometer reading of the asset
+                odometer_unit:
+                  type: string
+                  description: 'Abbreviation for the odometer unit: `mi` for miles or `km` for kilometers'
+                  enum:
+                  - mi
+                  - km
+                engine_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Engine hours of the asset
+                stand_by_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Stand-by hours of the asset
+                switch_on_hours:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Switch-on hours of the asset
+            event_timestamps:
+              type: object
+              description: Timestamp attributes reflecting key events surrounding the case
+              required:
+              - started_at
+              properties:
+                requested_completion_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the completion time requested by the Customer'
+                  examples:
+                  - '2025-10-10T13:30:41Z'
+                requested_appointment_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the appointment time requested by the Customer'
+                  examples:
+                  - '2025-10-10T13:30:41Z'
+                followup_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                  examples:
+                  - '2025-10-10T13:30:41Z'
+                closed_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                  examples:
+                  - '2025-04-10T13:30:41Z'
+                asset_uptime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                  examples:
+                  - '2025-04-10T13:00:41Z'
+                actual_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                  examples:
+                  - '2025-04-10T13:10:41Z'
+                estimated_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                  examples:
+                  - '2025-04-10T13:15:41Z'
+                asset_checked_in:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                  examples:
+                  - '2025-04-10T12:30:41Z'
+                started_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                  examples:
+                  - '2025-04-10T12:00:41Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was last updated. Pairs with the `filter[updated_at:gte]` / `filter[updated_at:lte]` filters for incremental sync.'
+                  examples:
+                  - '2025-04-10T13:20:41Z'
+                asset_arrived:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                  examples:
+                  - '2025-04-10T11:30:41Z'
+                asset_downtime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                  examples:
+                  - '2025-04-10T10:30:41Z'
+                asset_departed_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
+                  examples:
+                  - '2025-04-10T13:30:41Z'
+            invoice:
+              type: object
+              description: Invoice details
+              properties:
+                total:
+                  type: number
+                  description: Total amount for the invoice
+                  maximum: 999999.99
+                  examples:
+                  - 432.5
+                number:
+                  type: string
+                  description: Number of the invoice
+                  maxLength: 255
+                  examples:
+                  - TR3847
+                date:
+                  type: string
+                  format: date
+                  description: Date of the invoice in `ISO 8601` date format (not datetime).
+                  examples:
+                  - '2025-06-19'
+            pricing:
+              type: object
+              description: Financial totals for the case, sourced directly from the Estimate
+              properties:
+                parts_total:
+                  type: number
+                  description: Total cost of parts
+                  examples:
+                  - 432.5
+                labor_total:
+                  type: number
+                  description: Total cost of labor
+                  examples:
+                  - 250
+                core_total:
+                  type: number
+                  description: Total cost of cores
+                  examples:
+                  - 75
+                tax:
+                  type: number
+                  description: Total tax amount
+                  examples:
+                  - 32.18
+                haz_waste:
+                  type: number
+                  description: Total hazardous waste charge
+                  examples:
+                  - 15
+            vmrs:
+              type: object
+              description: 'Vehicle Maintenance Reporting Standards (VMRS) coding for the case, exposing nine VMRS code categories: asset type (CK02), repair priority (CK16), repair site (CK17), reason for repair (CK14), operator report (CK82), component code (CK33), position (CK79), technician failure (CK18), and work accomplished (CK15). Each category outside `asset_type` is null when no code is assigned; `asset_type` is always present.'
+              properties:
+                asset_type:
+                  type: object
+                  description: Identifies the asset type. Useful for non-VIN assets.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '2'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - R
+                repair_priority:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies the priority assigned to the repair.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '16'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - '1'
+                repair_site:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies the relative location where the repair is taking place.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '17'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - '7'
+                reason_for_repair:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies what caused a piece of equipment to come in for repair.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '14'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - '01'
+                operator_report:
+                  type:
+                  - array
+                  - 'null'
+                  description: Identifies what the operator reports as being the issue.
+                  items:
+                    type: object
+                    properties:
+                      code_key:
+                        type:
+                        - string
+                        - 'null'
+                        description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                        examples:
+                        - '82'
+                      code:
+                        type:
+                        - string
+                        - 'null'
+                        description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                        examples:
+                        - '001'
+                component:
+                  type:
+                  - object
+                  - 'null'
+                  description: Provides universal identifiers or generic terms for parts.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '33'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - 023-000-000
+                position:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies position based on industry-accepted conventions.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '79'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - '03'
+                technician_failure:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies the technical failure diagnosed by the mechanic.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '18'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - B1
+                work_accomplished:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies the work accomplished by the mechanic.
+                  properties:
+                    code_key:
+                      type:
+                      - string
+                      - 'null'
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      examples:
+                      - '15'
+                    code:
+                      type:
+                      - string
+                      - 'null'
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      examples:
+                      - A
+            breakdown:
+              type: object
+              description: Information about the location of the Service Provider
+              properties:
+                location:
+                  type: string
+                  description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                  maxLength: 255
+                city:
+                  type: string
+                  description: Breakdown City name
+                  maxLength: 255
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                  minLength: 1
+                  maxLength: 3
+                  examples:
+                  - NJ
+            metadata:
+              type: object
+              additionalProperties: true
+          required:
+          - reference_number
+        relationships:
+          type: object
+          properties:
+            customer_asset:
+              $ref: '#/components/schemas/relationship_object'
+            customer:
+              type: object
+              description: The case's primary customer. `data.type` is `customers` for local customers or `registered_customers` for registered (fleet) customers.
+              required:
+              - data
+              properties:
+                data:
+                  type:
+                  - object
+                  - 'null'
+                  required:
+                  - id
+                  - type
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                      - customers
+                      - registered_customers
+            billing_contact:
+              $ref: '#/components/schemas/relationship_object'
+            billing_customer:
+              $ref: '#/components/schemas/relationship_object'
+            shipping_customer:
+              $ref: '#/components/schemas/relationship_object'
+            service_provider:
+              $ref: '#/components/schemas/relationship_object'
+            program_type:
+              $ref: '#/components/schemas/relationship_object'
+            driver:
+              $ref: '#/components/schemas/relationship_object'
+            primary_contact:
+              $ref: '#/components/schemas/relationship_object'
+            assignee:
+              $ref: '#/components/schemas/relationship_object'
+            department:
+              allOf:
+              - $ref: '#/components/schemas/relationship_object'
+              - description: 'Note: `department.data.id` is a dealer-scoped string code (e.g. "SERVICE"), not a UUID.'
+          required:
+          - customer_asset
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              description: URL of the case resource
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    case_update_meter_data_stand_hours:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Stand-by-hours meter readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - stand_by_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `stand_by_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
+    case_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  maxLength: 40
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                reference_number:
+                  type: integer
+                  description: Integer representation of the Case ID as shown in the UI
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                  maxLength: 6000
+                repair_status:
+                  type: string
+                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
+                  examples:
+                  - appointment
+                tag_number:
+                  type: string
+                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+                  maxLength: 40
+                asset_information:
+                  type: object
+                  description: Information about the asset
+                  properties:
+                    odometer_value:
+                      type: integer
+                      description: Odometer reading of the asset
+                    odometer_unit:
+                      type: string
+                      description: 'Abbreviation for the odometer unit: `mi` for miles or `km` for kilometers'
+                      enum:
+                      - mi
+                      - km
+                    engine_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Engine hours of the asset
+                    stand_by_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Stand-by hours of the asset
+                    switch_on_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Switch-on hours of the asset
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes reflecting key events surrounding the case
+                  required:
+                  - started_at
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time requested by the Customer'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time requested by the Customer'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      examples:
+                      - '2025-04-10T13:00:41Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      examples:
+                      - '2025-04-10T13:10:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2025-04-10T13:15:41Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      examples:
+                      - '2025-04-10T12:30:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      examples:
+                      - '2025-04-10T12:00:41Z'
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was last updated. Pairs with the `filter[updated_at:gte]` / `filter[updated_at:lte]` filters for incremental sync.'
+                      examples:
+                      - '2025-04-10T13:20:41Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      examples:
+                      - '2025-04-10T11:30:41Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2025-04-10T10:30:41Z'
+                    asset_departed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      maximum: 999999.99
+                      examples:
+                      - 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      maxLength: 255
+                      examples:
+                      - TR3847
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` date format (not datetime).
+                      examples:
+                      - '2025-06-19'
+                pricing:
+                  type: object
+                  description: Financial totals for the case, sourced directly from the Estimate
+                  properties:
+                    parts_total:
+                      type: number
+                      description: Total cost of parts
+                      examples:
+                      - 432.5
+                    labor_total:
+                      type: number
+                      description: Total cost of labor
+                      examples:
+                      - 250
+                    core_total:
+                      type: number
+                      description: Total cost of cores
+                      examples:
+                      - 75
+                    tax:
+                      type: number
+                      description: Total tax amount
+                      examples:
+                      - 32.18
+                    haz_waste:
+                      type: number
+                      description: Total hazardous waste charge
+                      examples:
+                      - 15
+                vmrs:
+                  type: object
+                  description: 'Vehicle Maintenance Reporting Standards (VMRS) coding for the case, exposing nine VMRS code categories: asset type (CK02), repair priority (CK16), repair site (CK17), reason for repair (CK14), operator report (CK82), component code (CK33), position (CK79), technician failure (CK18), and work accomplished (CK15). Each category outside `asset_type` is null when no code is assigned; `asset_type` is always present.'
+                  properties:
+                    asset_type:
+                      type: object
+                      description: Identifies the asset type. Useful for non-VIN assets.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '2'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - R
+                    repair_priority:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the priority assigned to the repair.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '16'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '1'
+                    repair_site:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the relative location where the repair is taking place.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '17'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '7'
+                    reason_for_repair:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies what caused a piece of equipment to come in for repair.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '14'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '01'
+                    operator_report:
+                      type:
+                      - array
+                      - 'null'
+                      description: Identifies what the operator reports as being the issue.
+                      items:
+                        type: object
+                        properties:
+                          code_key:
+                            type:
+                            - string
+                            - 'null'
+                            description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                            examples:
+                            - '82'
+                          code:
+                            type:
+                            - string
+                            - 'null'
+                            description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                            examples:
+                            - '001'
+                    component:
+                      type:
+                      - object
+                      - 'null'
+                      description: Provides universal identifiers or generic terms for parts.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '33'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - 023-000-000
+                    position:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies position based on industry-accepted conventions.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '79'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '03'
+                    technician_failure:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the technical failure diagnosed by the mechanic.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '18'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - B1
+                    work_accomplished:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the work accomplished by the mechanic.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '15'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - A
+                breakdown:
+                  type: object
+                  description: Information about the location of the Service Provider
+                  properties:
+                    location:
+                      type: string
+                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                      maxLength: 255
+                    city:
+                      type: string
+                      description: Breakdown City name
+                      maxLength: 255
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                metadata:
+                  type: object
+                  additionalProperties: true
+              required:
+              - reference_number
+            relationships:
+              type: object
+              properties:
+                customer_asset:
+                  $ref: '#/components/schemas/relationship_object'
+                customer:
+                  type: object
+                  description: The case's primary customer. `data.type` is `customers` for local customers or `registered_customers` for registered (fleet) customers.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      required:
+                      - id
+                      - type
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                          - registered_customers
+                billing_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                billing_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                shipping_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+                program_type:
+                  $ref: '#/components/schemas/relationship_object'
+                driver:
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                assignee:
+                  $ref: '#/components/schemas/relationship_object'
+                department:
+                  allOf:
+                  - $ref: '#/components/schemas/relationship_object'
+                  - description: 'Note: `department.data.id` is a dealer-scoped string code (e.g. "SERVICE"), not a UUID.'
+              required:
+              - customer_asset
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  description: URL of the case resource
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    case_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  maxLength: 40
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                  maxLength: 6000
+                repair_status:
+                  type: string
+                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
+                  examples:
+                  - asset_ready
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      maximum: 999999.99
+                      examples:
+                      - 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      maxLength: 255
+                      examples:
+                      - TR3847
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` date format (not datetime).
+                      examples:
+                      - '2025-06-19'
+                tag_number:
+                  type: string
+                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+                  maxLength: 40
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes reflecting key events surrounding the case
+                  properties:
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      examples:
+                      - '2025-04-10T13:00:41Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      examples:
+                      - '2025-04-10T13:10:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2025-04-10T13:15:41Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      examples:
+                      - '2025-04-10T12:30:41Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      examples:
+                      - '2025-04-10T11:30:41Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2025-04-10T10:30:41Z'
+                    asset_departed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                breakdown:
+                  type: object
+                  description: Information about the location of the Service Provider
+                  properties:
+                    location:
+                      type: string
+                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                      maxLength: 255
+                    city:
+                      type: string
+                      description: Breakdown City name
+                      maxLength: 255
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                    country:
+                      type: string
+                      description: '`ISO 3166-1` alpha-2 code indicating the breakdown Country'
+                      minLength: 2
+                      maxLength: 2
+                      examples:
+                      - US
+                vmrs:
+                  type: object
+                  description: Case-level VMRS codes. Each code is provided as a `{ code_key, code }` object, consistent with `vmrs.asset_type`.
+                  properties:
+                    reason_for_repair:
+                      type: object
+                      description: VMRS Code Key 14 — identifies what caused the asset to come in for repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '14'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 14 value
+                          example: '01'
+                    repair_priority:
+                      type: object
+                      description: VMRS Code Key 16 — priority assigned to the repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '16'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 16 value
+                          example: '1'
+                    repair_site:
+                      type: object
+                      description: VMRS Code Key 17 — relative location where the repair takes place
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '17'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 17 value
+                          example: '1'
+            relationships:
+              type: object
+              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; the `type` must match the enum listed for that relationship, and `id` must be a UUID.'
+              properties:
+                assignee:
+                  type: object
+                  description: Internal user assigned to the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - internal_users
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                driver:
+                  type: object
+                  description: Driver contact on the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                primary_contact:
+                  type: object
+                  description: Primary contact on the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                billing_contact:
+                  type: object
+                  description: Billing contact on the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                program_type:
+                  type: object
+                  description: Program type assigned to the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - program_types
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                shipping_customer:
+                  type: object
+                  description: Customer to which parts/services will be shipped.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                billing_customer:
+                  type: object
+                  description: Customer that will be billed for the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+          required:
+          - id
+          - type
+          - attributes
+    case_update_meter_data_odometer_meter:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Odometer readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - odometer
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - mi
+                        - km
+                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
+    case_update_meter_data_switch_hours:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Switch-on-hours meter readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - switch_on_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `switch_on_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
+    case_update_meter_data_eng_hours:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Engine-hours meter readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - engine_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `engine_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

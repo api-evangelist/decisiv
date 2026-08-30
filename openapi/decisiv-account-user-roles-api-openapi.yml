@@ -1,0 +1,326 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management Account User Roles API
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Account User Roles
+paths:
+  /account_management/v1/accounts/{account_id}/users/{account_user_id}/relationships/roles:
+    post:
+      summary: Add roles to an account user
+      description: Assign one or more additional roles to a user within an account.
+      tags:
+      - Account User Roles
+      operationId: addAccountUserRoles
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: account_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/add_account_user_roles_request'
+      responses:
+        '201':
+          description: Roles added successfully
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/account_user_by_id'
+        '400':
+          description: Missing required relationship (`roles`) in the request body
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account or account user not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: One or more roles could not be found for this account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/users/{account_user_id}/relationships/roles/{id}:
+    delete:
+      summary: Remove a role from an account user
+      description: Remove a single role from a user within an account. Cannot remove the last role (use DELETE /users/{id} instead) or modify your own roles.
+      tags:
+      - Account User Roles
+      operationId: deleteAccountUserRole
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: account_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The role ID to remove
+      responses:
+        '204':
+          description: Role removed successfully
+        '404':
+          description: Account, account user, role, or role assignment not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Cannot remove your own roles, or cannot remove the last role from a user (use DELETE /users/{id} to remove the user entirely)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    account_user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - account_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            username:
+              type: string
+              description: Username used to sign in. Mirrors `email` for users authenticated by email, and may differ for users provisioned via SSO.
+            email:
+              type: string
+              format: email
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role within the account (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
+            address1:
+              type:
+              - string
+              - 'null'
+              description: First line of the user's mailing address
+            address2:
+              type:
+              - string
+              - 'null'
+              description: Second line of the user's mailing address
+            city:
+              type:
+              - string
+              - 'null'
+              description: City the address is located in
+            state:
+              type:
+              - string
+              - 'null'
+              description: State or province the address is located in
+            postal_code:
+              type:
+              - string
+              - 'null'
+              description: ZIP or postal code the address is located in
+            country:
+              type:
+              - string
+              - 'null'
+              description: ISO 3166 country code for the country the address is located in
+            last_login_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+              description: ISO 8601 timestamp of the user's most recent sign-in to this account. `null` when the user has never signed in.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+            communication_preferences:
+              $ref: '#/components/schemas/communication_preferences'
+        relationships:
+          type: object
+          properties:
+            roles:
+              type: object
+              description: The roles assigned to this user within the account
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - roles
+                      id:
+                        type: string
+                        format: uuid
+      required:
+      - attributes
+      - type
+      - id
+    add_account_user_roles_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            properties:
+              type:
+                type: string
+                enum:
+                - roles
+              id:
+                type: string
+                format: uuid
+    communication_preferences:
+      type: object
+      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      properties:
+        visible_as_external_recipient:
+          type: boolean
+          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
+        visible_as_internal_recipient:
+          type: boolean
+          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
+        visible_as_workflow_assignee:
+          type: boolean
+          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
+      example:
+        visible_as_external_recipient: true
+        visible_as_internal_recipient: true
+        visible_as_workflow_assignee: true
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    account_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/account_user'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

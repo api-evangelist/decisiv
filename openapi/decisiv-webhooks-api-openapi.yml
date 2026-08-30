@@ -1,0 +1,1340 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management Webhooks API
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Webhooks
+paths:
+  /account_management/v1/accounts/{account_id}/webhooks:
+    get:
+      summary: List webhook endpoints for the designated account
+      tags:
+      - Webhooks
+      operationId: getWebhooks
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: filter[events:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter `Webhooks` which are subscribed to the listed webhook events
+      - name: filter[events:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter `Webhooks` which are **NOT** subscribed to the listed webhook events
+      - name: filter[enabled]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Filter `Webhooks` based upon active / inactive status
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns a list of webhooks for the requested Account
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - type: webhooks
+                  id: be510cb1-6e2f-418b-a03e-53b85bdb2ab9
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/webhooks'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create new webhook for the requested account
+      tags:
+      - Webhooks
+      operationId: createWebhookByAccountId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      description: The custom header Authorization is not allowed
+      responses:
+        '201':
+          description: Creates a webhook which may receive notification for subscribed events
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: f7f9781f-b512-4a42-9f7a-266eaa4eaf7e
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    signing_key: 1vbr7FdXzERlptLN8B1NUixF
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/webhook_by_id'
+        '400':
+          description: Invalid URL format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Webhook Event:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Value
+                      detail: Invalid url value provided - {{invalid_url}} is not a valid URL
+                      code: decisiv:request_attributes:010
+                      source:
+                        pointer: /data/attributes
+                      status: '400'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid Webhook Event / Duplicate Webhook URL / Invalid Attribute Type / Custom Header Not Allowed / Maximum Custom Headers Exceeded / Duplicate Custom Header
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Webhook Event:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook event is invalid or unknown for specified account
+                      code: decisiv:webhook_events:001
+                      source:
+                        pointer: /data/attributes/events
+                      status: '422'
+                Duplicate Webhook URL:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook url already configured for the specified account
+                      code: decisiv:webhooks:001
+                      source:
+                        pointer: /data/attributes/url
+                      status: '422'
+                Invalid Attribute Type:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      code: decisiv:request_attributes:004
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Invalid-Header
+                Custom Header Not Allowed:
+                  value:
+                    errors:
+                    - title: Custom Header Not Allowed
+                      detail: 'The custom header Authorization is not allowed. Unallowed headers: authorization, content-type, host, user-agent, content-length'
+                      code: decisiv:webhooks:002
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Authorization
+                Maximum Custom Headers Exceeded:
+                  value:
+                    errors:
+                    - title: Maximum Custom Headers Exceeded
+                      detail: The number of custom headers exceeds the maximum allowed (10)
+                      code: decisiv:webhooks:003
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers
+                Duplicate Custom Header:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:webhooks:001
+                      title: Duplicate Custom Header
+                      detail: Duplicate header
+                      source:
+                        pointer: /data/attributes/custom_headers/client-id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/webhook_create'
+            examples:
+              Creates webhook:
+                value:
+                  data:
+                    type: webhooks
+                    attributes:
+                      url: https://example.com/hooked
+                      events:
+                      - decisiv:asset_management:asset:transferred
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:asset_management:asset:meter_updated
+                      - decisiv:asset_management:asset:registered
+                      - decisiv:maintenance:scheduled_operation:planned
+                      - decisiv:maintenance:scheduled_operation:overdue
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:maintenance:service_event:created
+                      - decisiv:maintenance:scheduled_operation:invalidated
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:case:repair_status_changed
+                      - decisiv:asset_management:case:attachment_posted
+                      - decisiv:asset_management:case:note_posted
+                      enabled: true
+                      custom_headers:
+                        Client-ID: 649fd16a-b14d-43e3-b4b1-31ce15d6272b
+                        client_secret: b4b6b937657e130b447b59e3b47820d6
+                        decisiv-manufacturer: HINO
+  /account_management/v1/accounts/{account_id}/webhooks/{id}:
+    get:
+      summary: Show details for a specific webhook
+      tags:
+      - Webhooks
+      operationId: getWebhooksById
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show details for requested webhook
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: be510cb1-6e2f-418b-a03e-53b85bdb2ab9
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/webhook_by_id'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Update details for a specific webhook
+      tags:
+      - Webhooks
+      operationId: updateWebhookbyId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      description: The custom header Authorization is not allowed
+      responses:
+        '200':
+          description: Updates a webhook which may receive notification for subscribed events
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: 5d1dec8d-5153-49a2-a845-dd1cd805f77e
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    created_at: '2025-02-05T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/update_webhook_response'
+        '400':
+          description: Missing required attribute key / Invalid URL format / Resource Identifier mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Missing required attribute key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/url
+                Invalid URL format:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Value
+                      detail: Invalid url value provided - {{invalid_url}} is not a valid URL
+                      code: decisiv:request_attributes:010
+                      source:
+                        pointer: /data/attributes
+                      status: '400'
+                Resource Identifier mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: Resource Identifier mismatch
+                      detail: Resource Identifier must match the one provided in URL
+                      source:
+                        pointer: /data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid Webhook Event / Duplicate Webhook URL / Invalid Attribute Type / Custom Header Not Allowed / Maximum Custom Headers Exceeded / Duplicate Custom Header
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Webhook Event:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook event is invalid or unknown for specified account
+                      code: decisiv:webhook_events:001
+                      source:
+                        pointer: /data/attributes/events
+                      status: '422'
+                Duplicate Webhook URL:
+                  value:
+                    errors:
+                    - title: Invalid Value
+                      detail: Provided webhook url already configured for the specified account
+                      code: decisiv:webhooks:001
+                      source:
+                        pointer: /data/attributes/url
+                      status: '422'
+                Invalid Attribute Type:
+                  value:
+                    errors:
+                    - title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      code: decisiv:request_attributes:004
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Invalid-Header
+                Custom Header Not Allowed:
+                  value:
+                    errors:
+                    - title: Custom Header Not Allowed
+                      detail: 'The custom header Authorization is not allowed. Unallowed headers: authorization, content-type, host, user-agent, content-length, decisiv-signature, x-decisiv-signature'
+                      code: decisiv:webhooks:002
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers/Authorization
+                Maximum Custom Headers Exceeded:
+                  value:
+                    errors:
+                    - title: Maximum Custom Headers Exceeded
+                      detail: The number of custom headers exceeds the maximum allowed (10)
+                      code: decisiv:webhooks:003
+                      status: 422
+                      source:
+                        pointer: /data/attributes/custom_headers
+                Duplicate Custom Header:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:webhooks:001
+                      title: Duplicate Custom Header
+                      detail: Duplicate header
+                      source:
+                        pointer: /data/attributes/custom_headers/client-id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_webhook_request'
+            examples:
+              Update webhook:
+                value:
+                  data:
+                    type: webhooks
+                    id: 29f2cf31-aed4-438a-b893-3d8d32167d9f
+                    attributes:
+                      url: https://example.com/hooked
+                      events:
+                      - decisiv:asset_management:asset:transferred
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:asset_management:asset:meter_updated
+                      - decisiv:asset_management:asset:registered
+                      - decisiv:maintenance:scheduled_operation:planned
+                      - decisiv:maintenance:scheduled_operation:overdue
+                      - decisiv:asset_management:estimate:approval_requested
+                      - decisiv:asset_management:estimate:approved
+                      - decisiv:asset_management:estimate:declined
+                      - decisiv:maintenance:service_event:created
+                      - decisiv:maintenance:scheduled_operation:invalidated
+                      - decisiv:asset_management:case:created
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:service_request:accepted
+                      - decisiv:asset_management:service_request:declined
+                      - decisiv:asset_management:case:closed
+                      - decisiv:asset_management:case:reopened
+                      - decisiv:asset_management:case:repair_status_changed
+                      - decisiv:asset_management:case:attachment_posted
+                      - decisiv:asset_management:case:note_posted
+                      enabled: true
+                      custom_headers:
+                        Client-ID: 649fd16a-b14d-43e3-b4b1-31ce15d6272b
+                        client_secret: b4b6b937657e130b447b59e3b47820d6
+                        decisiv-manufacturer: HINO
+    delete:
+      summary: Delete a webhook
+      tags:
+      - Webhooks
+      operationId: deleteWebhooksbyId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deletes a webhook
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/webhooks/{id}/refresh_signing_key:
+    post:
+      summary: Refresh webhook signing key
+      tags:
+      - Webhooks
+      operationId: refreshSigningKeyWebhooksbyId
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Generates new webhook signing key
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: webhooks
+                  id: 52c9c6cc-cf67-48d0-a452-303fa8e1598d
+                  attributes:
+                    url: https://example.com/hooked
+                    events:
+                    - decisiv:asset_management:asset:transferred
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:asset_management:asset:meter_updated
+                    - decisiv:asset_management:asset:registered
+                    - decisiv:maintenance:scheduled_operation:planned
+                    - decisiv:maintenance:scheduled_operation:overdue
+                    - decisiv:asset_management:estimate:approval_requested
+                    - decisiv:asset_management:estimate:approved
+                    - decisiv:asset_management:estimate:declined
+                    - decisiv:maintenance:service_event:created
+                    - decisiv:maintenance:scheduled_operation:invalidated
+                    - decisiv:asset_management:case:created
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:service_request:accepted
+                    - decisiv:asset_management:service_request:declined
+                    - decisiv:asset_management:case:closed
+                    - decisiv:asset_management:case:reopened
+                    - decisiv:asset_management:case:repair_status_changed
+                    - decisiv:asset_management:case:attachment_posted
+                    - decisiv:asset_management:case:note_posted
+                    custom_headers:
+                      Client-ID: XXX72b
+                      client_secret: XXX0d6
+                      decisiv-manufacturer: XXXINO
+                    enabled: true
+                    signing_key: 1vbr7FdXzERlptLN8B1NUixF
+                    created_at: '2025-02-06T18:58:31Z'
+                    updated_at: '2025-02-06T18:58:31Z'
+              schema:
+                $ref: '#/components/schemas/refresh_signing_key_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    webhook_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+                signing_key:
+                  type: string
+                  description: Strong unique secret key that is auto-generated and used to sign webhook payloads. Only returned at webhook creation or when refreshing the signing key.
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    refresh_signing_key_response:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: false
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are not enabled, by default.**
+                signing_key:
+                  type: string
+                  description: Strong unique secret key that is auto-generated and used to sign webhook payloads. Only returned at webhook creation or when refreshing the signing key.
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
+    webhook_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              required:
+              - url
+              - events
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                  description: URL where notifications are delivered. Must use the **https** scheme.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+    update_webhook_request:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                  description: URL where notifications are delivered. Must use the **https** scheme.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+          required:
+          - id
+          - type
+          - attributes
+      required:
+      - data
+    update_webhook_response:
+      example:
+        data:
+          type: webhooks
+          id: 5d1dec8d-5153-49a2-a845-dd1cd805f77e
+          attributes:
+            url: https://example.com/hooked
+            events:
+            - decisiv:asset_management:asset:transferred
+            - decisiv:asset_management:service_request:accepted
+            - decisiv:asset_management:service_request:declined
+            - decisiv:asset_management:case:created
+            - decisiv:asset_management:estimate:approval_requested
+            - decisiv:asset_management:estimate:approved
+            - decisiv:asset_management:estimate:declined
+            - decisiv:asset_management:asset:meter_updated
+            - decisiv:asset_management:asset:registered
+            - decisiv:maintenance:scheduled_operation:planned
+            - decisiv:maintenance:scheduled_operation:overdue
+            - decisiv:asset_management:estimate:approval_requested
+            - decisiv:asset_management:estimate:approved
+            - decisiv:asset_management:estimate:declined
+            - decisiv:maintenance:service_event:created
+            - decisiv:maintenance:scheduled_operation:invalidated
+            - decisiv:asset_management:case:created
+            - decisiv:asset_management:case:closed
+            - decisiv:asset_management:case:reopened
+            - decisiv:asset_management:service_request:accepted
+            - decisiv:asset_management:service_request:declined
+            - decisiv:asset_management:case:closed
+            - decisiv:asset_management:case:reopened
+            - decisiv:asset_management:case:repair_status_changed
+            - decisiv:asset_management:case:attachment_posted
+            - decisiv:asset_management:case:note_posted
+            custom_headers:
+              Client-ID: XXX72b
+              client_secret: XXX0d6
+              decisiv-manufacturer: XXXINO
+            enabled: true
+            created_at: '2025-02-05T18:58:31Z'
+            updated_at: '2025-02-06T18:58:31Z'
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
+          required:
+          - attributes
+          - type
+          - id
+      required:
+      - data
+    webhooks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook'
+        meta:
+          type: object
+    webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - webhooks
+        attributes:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+              description: URL where notifications are delivered.
+              example: https://example.com/receive-webhook-notification
+            events:
+              type: array
+              description: A list of events to which the webhook is subscribed.
+              items:
+                type: string
+                description: Canonical name of the webhook event(s).
+              minItems: 1
+              example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+            custom_headers:
+              type: object
+              description: Custom headers to include in the webhook request.
+              additionalProperties:
+                type: string
+            enabled:
+              type: boolean
+              default: true
+              description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+            created_at:
+              type: string
+              format: date-time
+              description: The moment when the webhook was created.
+              example: '2022-04-12T03:04:05Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: The moment when the webhook was last updated.
+              example: '2022-04-14T05:23:45Z'
+      required:
+      - attributes
+      - type
+      - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

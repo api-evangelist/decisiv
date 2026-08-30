@@ -1,0 +1,2777 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Customer Assets API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Customer Assets
+paths:
+  /service_management/{srm_account_id}/v1/customer_assets:
+    get:
+      summary: List all customer assets for the requested account
+      tags:
+      - Customer Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 9
+        description: Filter `customer_assets` matching the *exact* `serial_number` attribute.
+      - name: filter[unit_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter `customer_assets` matching the *exact* `unit_number` attribute.
+      - name: filter[vin]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 17
+          maxLength: 17
+        description: Filter `customer_assets` matching the *exact* `vin` attribute.
+      - name: filter[chassis_id]
+        in: query
+        required: false
+        schema:
+          type: string
+          maxLength: 50
+        description: Filter `customer_assets` matching the *exact* `chassis_id` attribute.
+      - name: filter[customer.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: Filter `customer_assets` matching the *exact* `customer.id` attribute.
+      - name: filter[service_status]
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - active
+          - inactive
+          - archived
+        description: Filter `customer_assets` matching the *exact* `service_status` attribute.
+      - name: filter[service_status:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customer_assets` whose `service_status` is in the supplied comma-separated list. Accepted values are `active`, `inactive`, `archived`.
+      - name: filter[service_status:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customer_assets` whose `service_status` is **NOT** in the supplied comma-separated list. Accepted values are `active`, `inactive`, `archived`.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - customer
+            - srm_verified_asset
+        description: Return specified included relationships upon request
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          example: -year
+        description: 'Sort `customer_assets` by a single attribute; prefix with `-` for descending order. Valid attributes: `year`, `make`, `model`'
+      responses:
+        '200':
+          description: Returns list of customer assets
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  type: customer_assets
+                  attributes:
+                    vin: 3B7HF13Z11M269883
+                    serial_number: HN991562
+                    unit_number: NU2695
+                    chassis_id: N-991562
+                    make: Make
+                    model: CH613
+                    year: 2017
+                    service_status: active
+                    engine:
+                      make: Engine Make
+                      model: X15
+                      displacement: 14.8L
+                      serial_number: '79412345'
+                    odometer_value: 125000
+                    odometer_unit: mi
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                  links:
+                    source_application: https://{host}/vehicles/{id}/edit
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/customer_assets/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  relationships:
+                    customer:
+                      data:
+                        type: customers
+                        id: cd91f5cb-5c38-4f10-90cb-de2efad3ee82
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+                - id: bd4f8a46-cf03-586f-acf3-91dde0cc88e0
+                  type: customer_assets
+                  attributes:
+                    vin: 1FUJBBCK57LX12345
+                    serial_number: HN991563
+                    unit_number: NU2696
+                    chassis_id: N-991563
+                    make: Make
+                    model: CH613
+                    year: 2018
+                    service_status: archived
+                    engine:
+                      make: Engine Make
+                      model: X15
+                      displacement: 14.8L
+                      serial_number: '79412345'
+                    odometer_value: 125000
+                    odometer_unit: mi
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                  links:
+                    source_application: https://{host}/vehicles/{id}/edit
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/customer_assets/bd4f8a46-cf03-586f-acf3-91dde0cc88e0
+                  relationships:
+                    customer:
+                      data:
+                        type: service_group_customers
+                        id: de92a6dc-6d49-5021-a1dc-ef3fae4ef933
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: b7d0c232-6f89-5fd5-b8fb-334a11d87718
+              schema:
+                $ref: '#/components/schemas/customer_assets'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid filter value:
+                  value:
+                    errors:
+                    - title: Invalid filter value
+                      detail: '''{{invalid_value}}'' is not a valid value. Valid values: {{valid_values}}'
+                      code: decisiv:filters:002
+                      status: '400'
+                      source:
+                        parameter: filter[service_status:includes]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource not found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a new Customer Asset
+      tags:
+      - Customer Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Creates a new Customer Asset record
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  type: customer_assets
+                  attributes:
+                    vin: 3B7HF13Z11M269883
+                    serial_number: HN991562
+                    unit_number: NU2695
+                    chassis_id: N-991562
+                    make: Make
+                    model: CH613
+                    year: 2017
+                    service_status: active
+                    engine:
+                      make: Engine Make
+                      model: X15
+                      displacement: 14.8L
+                      serial_number: '79412345'
+                    odometer_value: 125000
+                    odometer_unit: mi
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                  links:
+                    source_application: https://{host}/vehicles/{id}/edit
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/customer_assets/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  relationships:
+                    customer:
+                      data:
+                        type: customers
+                        id: cd91f5cb-5c38-4f10-90cb-de2efad3ee82
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+              schema:
+                $ref: '#/components/schemas/customer_asset'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Missing required attributes:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/serial_number
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/make
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/model
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/year
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid vmrs.asset_type.code / Invalid vmrs.asset_type.code_key
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid vmrs.asset_type.code:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid vmrs.asset_type.code value provided - the value provided is not a valid code according to VMRS code key 2
+                      source:
+                        pointer: /data/attributes/vmrs/asset_type/code
+                Invalid vmrs.asset_type.code_key:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid vmrs.asset_type.code_key value provided - vmrs.asset_type.code_key must be '2'
+                      source:
+                        pointer: /data/attributes/vmrs/asset_type/code_key
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/create_customer_asset'
+              - $ref: '#/components/schemas/create_customer_asset_registered'
+            examples:
+              Using Local Customer:
+                summary: Customer Asset using a local Customer
+                description: 'Customer branch — the supplied `vmrs.asset_type.code` is written
+
+                  onto the newly-created vehicle''s `asset_type`.
+
+                  '
+                value:
+                  data:
+                    type: customer_assets
+                    attributes:
+                      vin: 3B7HF13Z11M269883
+                      serial_number: HN991562
+                      unit_number: NU2695
+                      chassis_id: N-991562
+                      make: Make
+                      model: CH613
+                      year: 2017
+                      vmrs:
+                        asset_type:
+                          code_key: '2'
+                          code: R
+                    relationships:
+                      customer:
+                        data:
+                          type: customers
+                          id: cd91f5cb-5c38-4f10-90cb-de2efad3ee82
+              Using Registered Asset:
+                summary: Customer Asset using an existing Registered Asset
+                description: 'Registered-asset branch — the supplied `vmrs.asset_type.code`
+
+                  is written onto the existing vehicle''s `asset_type` ONLY when
+
+                  that vehicle has no value yet (silent no-op otherwise).
+
+                  Overwriting / clearing belong on
+
+                  `PATCH /asset_management/{srm_account_id}/v1/registered_assets/{uuid}`.
+
+                  '
+                value:
+                  data:
+                    type: customer_assets
+                    attributes:
+                      unit_number: NU2695
+                      make: Make
+                      year: 2017
+                      vmrs:
+                        asset_type:
+                          code_key: '2'
+                          code: R
+                    relationships:
+                      registered_asset:
+                        data:
+                          type: registered_assets
+                          id: cd91f5cb-5c38-4f10-90cb-de2efad3ee82
+  /service_management/{srm_account_id}/v1/customer_assets/{id}:
+    get:
+      summary: List details on a specific Customer Asset
+      tags:
+      - Customer Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - customer
+            - srm_verified_asset
+        description: Return specified included relationships upon request
+      responses:
+        '200':
+          description: Show details for requested Customer Asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: customer_assets
+                  id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  attributes:
+                    vin: 3B7HF13Z11M269883
+                    serial_number: HN991562
+                    unit_number: NU2695
+                    chassis_id: N-991562
+                    make: Make
+                    model: CH613
+                    year: 2017
+                    service_status: active
+                    engine:
+                      make: Engine Make
+                      model: X15
+                      displacement: 14.8L
+                      serial_number: '79412345'
+                    odometer_value: 125000
+                    odometer_unit: mi
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                  relationships:
+                    customer:
+                      data:
+                        type: customers
+                        id: cd91f5cb-5c38-4f10-90cb-de2efad3ee82
+                    srm_verified_asset:
+                      data:
+                        type: srm_verified_assets
+                        id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+              schema:
+                $ref: '#/components/schemas/customer_asset_by_id'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource not found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/customer_assets/{id}/create_case:
+    post:
+      summary: Create a case for the specific Customer Asset
+      tags:
+      - Customer Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: X-DECISIV-IDEMPOTENCY-KEY
+        in: header
+        required: false
+        description: 'Optional idempotency key. The first successful create_case for a given (account, key) pair is cached briefly; a repeat request with the same key replays that original response (with X-Decisiv-Idempotent-Replay: true) instead of creating a duplicate case. A concurrent request with the same in-flight key gets 409; a key longer than 128 characters gets 400.'
+        schema:
+          type: string
+          maxLength: 128
+      responses:
+        '201':
+          description: Creates a Case for the specified Customer Asset
+          headers:
+            X-Decisiv-Idempotent-Replay:
+              description: Present and set to 'true' when this response was replayed from a prior request with the same X-DECISIV-IDEMPOTENCY-KEY (no new case was created).
+              schema:
+                type: string
+                enum:
+                - 'true'
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: cases
+                  attributes:
+                    reference_number: 1234
+                    created_at: null
+                    updated_at: null
+                    service_management_service_providers_id: null
+                    service_management_customer_assets_id: null
+                    service_management_customers_id: null
+                    complaint: CEL on
+                    po_number: V2479-128
+                    auth_number: DV793957
+                    ro_number: U2112550
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    asset_information: null
+                    event_timestamps:
+                      followup_time: '2025-10-10T13:30:41Z'
+                      asset_uptime: '2025-04-10T13:00:41Z'
+                      asset_downtime: '2025-04-10T10:30:41Z'
+                      asset_arrived: '2025-04-10T11:30:41Z'
+                      asset_checked_in: '2025-04-10T12:30:41Z'
+                      estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                      actual_time_to_repair: '2025-04-10T13:10:41Z'
+                    breakdown:
+                      location: Outside Seneca Lodge
+                      city: Watkins Glen
+                      state: NY
+                      country: US
+                    repair_status: null
+                    invoice: null
+                    vmrs:
+                      reason_for_repair:
+                        code_key: '14'
+                        code: '01'
+                      repair_priority:
+                        code_key: '16'
+                        code: '1'
+                      repair_site:
+                        code_key: '17'
+                        code: '1'
+                    tag_number: case_123
+                  relationships:
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    driver:
+                      data:
+                        type: contacts
+                        id: 98bf9011-6dcd-4ea8-ac60-3dc6a66f77a2
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: e3fe0737-d53c-49d1-ad35-0f5ee21c9c03
+                    billing_contact:
+                      data:
+                        type: contacts
+                        id: bbf7dec7-83b9-413a-be5e-6bb7e74b9acf
+                    program_type:
+                      data:
+                        type: program_types
+                        id: fc8b1a9f-4705-4444-b3cc-fdaa06f5defe
+                    department:
+                      data:
+                        type: departments
+                        id: SERVICE
+                    shipping_customer:
+                      data:
+                        type: customers
+                        id: fab7f731-3191-425b-a3b7-076c9ab63f14
+                    billing_customer:
+                      data:
+                        type: customers
+                        id: fab7f731-3312-67jn-a3b7-076c9ab63f14
+                    customer:
+                      data:
+                        type: customers
+                        id: 9b1f3c52-7e44-4a8d-9c2f-1d6e0a2b4c8e
+              schema:
+                $ref: '#/components/schemas/case'
+        '400':
+          description: The X-DECISIV-IDEMPOTENCY-KEY header exceeds the maximum length.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '400'
+                  code: decisiv:idempotency_key:002
+                  title: Idempotency Key Length Exceeded
+                  detail: X-DECISIV-IDEMPOTENCY-KEY can not exceed 128 characters
+                  source:
+                    header: X-DECISIV-IDEMPOTENCY-KEY
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource not found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+        '409':
+          description: A concurrent request with the same X-DECISIV-IDEMPOTENCY-KEY is already being processed. Retry to receive the original response.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:idempotency_key:001
+                  title: Idempotency Key In Progress
+                  detail: A request with this idempotency key is already being processed. Retry to receive the original response.
+                  source:
+                    header: X-DECISIV-IDEMPOTENCY-KEY
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+        '422':
+          description: Unprocessable record / Attribute can't be used error / Relationship not found / Registered Asset associated to the Customer Asset is deactivated
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+              examples:
+                Unprocessable record:
+                  value:
+                    errors:
+                    - code: '422'
+                      detail: Validation Error
+                      status: '422'
+                      title: Validation Error
+                Attribute can't be used error:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: attribute-001
+                      title: Can't be used
+                      detail: /data/attributes/attribute
+                Department relationship not found (unknown code or feature disabled):
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/department/data/id
+                Registered Asset associated to the Customer Asset is deactivated:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:customer_assets:005
+                      title: Asset has been deactivated by the Registered Customer and is not eligible for use
+                      detail: Occurs when an established Customer Asset related to a Registered Customer has since been deactivated by the Customer
+                      source:
+                        parameter: id
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response_with_header'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/customer_asset_create_case'
+            examples:
+              Case:
+                value:
+                  data:
+                    type: cases
+                    attributes:
+                      complaint: CEL on
+                      po_number: V2479-128
+                      auth_number: DV793957
+                      ro_number: U2112550
+                      cause: Diagnostic check required
+                      correction: Reset Diagnostics
+                      event_timestamps:
+                        followup_time: '2025-10-10T13:30:41Z'
+                        asset_uptime: '2025-04-10T13:00:41Z'
+                        asset_downtime: '2025-04-10T10:30:41Z'
+                        asset_arrived: '2025-04-10T11:30:41Z'
+                        asset_checked_in: '2025-04-10T12:30:41Z'
+                        estimated_time_to_repair: '2025-04-10T13:15:41Z'
+                        actual_time_to_repair: '2025-04-10T13:10:41Z'
+                      breakdown:
+                        location: Outside Seneca Lodge
+                        city: Watkins Glen
+                        state: NY
+                        country: US
+                      tag_number: case_123
+                      repair_status: appointment
+                      metadata:
+                        case_metadata: Metadata for case
+                        case_other_value: '2.30'
+                        case_other_integer: '80000'
+                        case_other_date: '2025-04-10T13:28:31Z'
+                      invoice:
+                        total: 3758.5
+                        number: TR-91324
+                        date: '2025-04-10'
+                      vmrs:
+                        reason_for_repair:
+                          code_key: '14'
+                          code: '01'
+                        repair_priority:
+                          code_key: '16'
+                          code: '1'
+                        repair_site:
+                          code_key: '17'
+                          code: '1'
+                    relationships:
+                      assignee:
+                        data:
+                          type: internal_users
+                          id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                      driver:
+                        data:
+                          type: contacts
+                          id: 98bf9011-6dcd-4ea8-ac60-3dc6a66f77a2
+                      primary_contact:
+                        data:
+                          type: contacts
+                          id: e3fe0737-d53c-49d1-ad35-0f5ee21c9c03
+                      billing_contact:
+                        data:
+                          type: contacts
+                          id: bbf7dec7-83b9-413a-be5e-6bb7e74b9acf
+                      program_type:
+                        data:
+                          type: program_types
+                          id: fc8b1a9f-4705-4444-b3cc-fdaa06f5defe
+                      department:
+                        data:
+                          type: departments
+                          id: SERVICE
+                      shipping_customer:
+                        data:
+                          type: customers
+                          id: fab7f731-3191-425b-a3b7-076c9ab63f14
+                      billing_customer:
+                        data:
+                          type: customers
+                          id: fab7f731-3312-67jn-a3b7-076c9ab63f14
+  /service_management/{srm_account_id}/v1/customer_assets/{id}/service_history:
+    get:
+      summary: List Service History for the specific Customer Asset
+      tags:
+      - Customer Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - service_provider
+        description: The relationships to be included.
+      - name: filter[service_provider.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: List `service histories` matching the *exact* `service_prodiver.id` attribute.
+      - name: filter[reference_number]
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: List `service histories` matching the *exact* `reference_number` attribute.
+      - name: filter[event_timestamps.closed_at:blank]
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: List `service histories` matching if `closed_at` attribute is blank.
+      - name: filter[event_timestamps.started_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories started _less than_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.started_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories started _less than or equal to_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.started_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories started _greater than_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.started_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories started _greater than or equal to_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.closed_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories closed _less than_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.closed_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories closed _less than or equal to_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.closed_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories closed _greater than_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.closed_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Timebased filter to list service histories closed _greater than or equal to_ a specified `ISO 8601` timestamp.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Show the list of Service History for requested Customer Asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                  type: in_network_cases
+                  attributes:
+                    cause: This is the cause
+                    complaint: This is the complaint
+                    correction: This is the correction
+                    event_timestamps:
+                      closed_at: '2025-04-10T13:30:41Z'
+                      started_at: '2025-04-08T13:30:41Z'
+                    reference_number: 321098
+                    repair_status: parts_ordered
+                  relationships:
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/service_histories'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+                - code: decisiv:filters:010
+                  detail: Invalid filter value `{{invalid_filter}}`. Expected an ISO 8601 timestamp.
+                  status: '400'
+                  source:
+                    parameter: filter[event_timestamps.started_at:gte]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource not found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Unprocessable record / This response may occur when the shared vehicle history is not enable to the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Unprocessable record:
+                  value:
+                    errors:
+                    - code: '422'
+                      detail: Validation Error
+                      status: '422'
+                      title: Validation Error
+                This response may occur when the shared vehicle history is not enable to the account:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: '422'
+                      title: Unprocessable record
+                      detail: Shared vehicle history is not enabled for this dealer.
+components:
+  schemas:
+    create_customer_asset_registered:
+      title: Customer Asset using an existing Registered Asset
+      type: object
+      description: 'Create a Customer Asset linked to an existing Registered Asset (i.e. an
+
+        already-registered vehicle). On this branch the supplied
+
+        `vmrs.asset_type.code` is written onto the underlying vehicle''s
+
+        `asset_type` ONLY when that vehicle has no value yet (silent no-op
+
+        otherwise — overwriting / clearing belong on
+
+        `PATCH /asset_management/{srm_account_id}/v1/registered_assets/{uuid}`).
+
+        '
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                unit_number:
+                  type: string
+                  description: Identification number commonly used on assets residing within a fleet
+                make:
+                  type: string
+                  description: Brand of the asset
+                  maxLength: 100
+                year:
+                  type: integer
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: next year'
+                vmrs:
+                  type: object
+                  description: 'VMRS classification of the asset. Optional on create.
+
+
+                    On the registered_asset branch the supplied `code` is written
+
+                    through to the underlying vehicle''s `asset_type` ONLY when that
+
+                    vehicle currently has no value. If the vehicle already has an
+
+                    `asset_type`, the supplied value is silently ignored — clearing
+
+                    and overwriting belong on
+
+                    `PATCH /asset_management/{srm_account_id}/v1/registered_assets/{uuid}`,
+
+                    not on this create endpoint.
+
+                    '
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category).
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier. Must be `"2"` when supplied.
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+                          example: R
+            relationships:
+              type: object
+              properties:
+                registered_assets:
+                  type: object
+                  description: The registered asset id
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: registered_assets
+                        id:
+                          type: string
+                          example: The UUID of the registered_asset
+    customer_asset_by_id:
+      example:
+        data:
+          type: customer_assets
+          id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+          attributes:
+            vin: 3B7HF13Z11M269883
+            serial_number: HN991562
+            unit_number: NU2695
+            chassis_id: N-991562
+            make: Make
+            model: CH613
+            year: 2017
+            service_status: active
+            engine:
+              make: Engine Make
+            vmrs:
+              asset_type:
+                code_key: '2'
+                code: D
+          relationships:
+            customer:
+              data:
+                type: customers
+                id: cd91f5cb-5c38-4f10-90cb-de2efad3ee82
+            srm_verified_asset:
+              data:
+                type: srm_verified_assets
+                id: a6cfb121-5e78-4ec4-a7ea-223900c76607
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customer_assets
+              - service_group_customer_assets
+            attributes:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: 17 digit vehicle identification number
+                  minLength: 17
+                  maxLength: 17
+                serial_number:
+                  type: string
+                  description: Production number of the asset
+                  minLength: 8
+                  maxLength: 9
+                chassis_id:
+                  type: string
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                  maxLength: 50
+                unit_number:
+                  type: string
+                  description: Identification number commonly used on assets residing within a fleet
+                make:
+                  type: string
+                  description: Brand of the asset
+                  maxLength: 100
+                model:
+                  type: string
+                  description: Name of the asset product from the manufacturer
+                  maxLength: 100
+                year:
+                  type: integer
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+                service_status:
+                  type: string
+                  description: "Current service eligibility for this customer asset.\n\n- `active` — service relationship is currently in force between\n  the Service Provider account and the customer on the asset.\n- `inactive` — no longer the current association; superseded by\n  a newer record for the same asset, but remains serviceable.\n  Creating a case against it flips the asset back to `active`.\n- `archived` — the underlying registered asset has been\n  deactivated by its Registered Asset Management account holder;\n  the asset is reference-only and cannot be used to create new\n  cases.\n"
+                  enum:
+                  - active
+                  - inactive
+                  - archived
+                engine:
+                  type: object
+                  properties:
+                    make:
+                      type:
+                      - string
+                      - 'null'
+                vmrs:
+                  type: object
+                  description: VMRS classification of the asset
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category)
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS code value for the equipment category (e.g. 'D', '1', 'R')
+              required:
+              - service_status
+            relationships:
+              type: object
+              properties:
+                customer:
+                  type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      required:
+                      - id
+                      - type
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                          - registered_customers
+                          - service_group_customers
+                          - service_group_registered_customers
+                srm_verified_asset:
+                  description: When present, indicates this asset's identity has been verified against a manufacturer-sourced canonical record. The associated YMMI (Year, Make, Model, and Identifier) values are OEM-authoritative and supersede any locally stored asset attributes.
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - customer
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                source_application:
+                  type: string
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+      required:
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    customer_asset_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - customer_assets
+          - service_group_customer_assets
+        attributes:
+          type: object
+          properties:
+            vin:
+              type: string
+              description: 17 digit vehicle identification number
+              minLength: 17
+              maxLength: 17
+            serial_number:
+              type: string
+              description: Production number of the asset
+              minLength: 8
+              maxLength: 9
+            chassis_id:
+              type: string
+              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+              maxLength: 50
+              example: N-991562
+            unit_number:
+              type: string
+              description: Identification number commonly used on assets residing within a fleet
+            make:
+              type: string
+              description: Brand of the asset
+              maxLength: 100
+            model:
+              type: string
+              description: Name of the asset product from the manufacturer
+              maxLength: 100
+            year:
+              type: integer
+              description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+            service_status:
+              type: string
+              description: "Current service eligibility for this customer asset.\n\n- `active` — service relationship is currently in force between\n  the Service Provider account and the customer on the asset.\n- `inactive` — no longer the current association; superseded by\n  a newer record for the same asset, but remains serviceable.\n  Creating a case against it flips the asset back to `active`.\n- `archived` — the underlying registered asset has been\n  deactivated by its Registered Asset Management account holder;\n  the asset is reference-only and cannot be used to create new\n  cases.\n"
+              enum:
+              - active
+              - inactive
+              - archived
+            engine:
+              type: object
+              description: Engine data
+              properties:
+                make:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 255
+                  description: The make of the engine
+                  example: Cummins
+                model:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 100
+                  description: The model of the engine
+                  example: X15
+                displacement:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 100
+                  description: The engine size related in liters or cubic inches
+                  example: 14.8L
+                serial_number:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 40
+                  description: The engine serial number
+                  example: '79412345'
+            odometer_value:
+              type:
+              - number
+              - 'null'
+              description: Integer representation about the asset odometer
+              example: 125000
+            odometer_unit:
+              type:
+              - string
+              - 'null'
+              description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+              enum:
+              - mi
+              - km
+              example: mi
+            vmrs:
+              type: object
+              description: VMRS classification of the asset.
+              properties:
+                asset_type:
+                  type: object
+                  description: VMRS Code Key 2 (Equipment Category).
+                  properties:
+                    code_key:
+                      type: string
+                      description: The VMRS code key identifier. Must be `"2"` when supplied on write.
+                      example: '2'
+                    code:
+                      type: string
+                      description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+          required:
+          - service_status
+        relationships:
+          type: object
+          properties:
+            customer:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type:
+                  - object
+                  - 'null'
+                  required:
+                  - id
+                  - type
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                      enum:
+                      - customers
+                      - registered_customers
+                      - service_group_customers
+                      - service_group_registered_customers
+            srm_verified_asset:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - customer
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+            source_application:
+              type: string
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    service_provider:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - service_providers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                postal_code:
+                  type: string
+                country:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                fax:
+                  type: string
+                location:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                    distance_from_geolocation:
+                      type: number
+                      description: Present only when filtering by `geolocation.point`.
+            relationships:
+              type: object
+              properties:
+                service_networks:
+                  $ref: '#/components/schemas/relationship_objects'
+          required:
+          - attributes
+          - type
+          - id
+    create_customer_asset:
+      title: Customer Asset using a local Customer
+      type: object
+      description: 'Create a Customer Asset linked to a local Customer. The vehicle described in
+
+        `attributes` will be created (or reused if found by VIN / serial); on this
+
+        branch the supplied `vmrs.asset_type.code` is written onto the newly-created
+
+        vehicle''s `asset_type`.
+
+        '
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - customer_assets
+            attributes:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: 17 digit vehicle identification number
+                  minLength: 17
+                  maxLength: 17
+                serial_number:
+                  type: string
+                  description: Production number of the asset
+                  minLength: 8
+                  maxLength: 9
+                chassis_id:
+                  type: string
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                  maxLength: 50
+                unit_number:
+                  type: string
+                  description: Identification number commonly used on assets residing within a fleet
+                make:
+                  type: string
+                  description: Brand of the asset
+                  maxLength: 100
+                model:
+                  type: string
+                  description: Name of the asset product from the manufacturer
+                  maxLength: 100
+                year:
+                  type: integer
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+                vmrs:
+                  type: object
+                  description: VMRS classification of the asset. Optional on create. On the customer branch the code persists onto the newly-created vehicle's `asset_type`.
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category).
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier. Must be `"2"` when supplied.
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+                          example: R
+            relationships:
+              type: object
+              properties:
+                customer:
+                  type: object
+                  description: The customer id
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          examples:
+                          - customers
+                        id:
+                          type: string
+                          examples:
+                          - The UUID of the customer
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - type
+          - attributes
+    customer_asset_create_case:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  maxLength: 40
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                  maxLength: 6000
+                repair_status:
+                  type: string
+                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
+                  example: asset_ready
+                metadata:
+                  type: array
+                  description: Metadata about the case
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Metadata key has to start and end with a letter or number, be lower snake case
+                        minLength: 1
+                        maxLength: 50
+                        pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                        example: some_key
+                      value:
+                        type: string
+                        description: The metadata value must be a string with 500 characters or less
+                        minLength: 1
+                        maxLength: 500
+                        example: The value goes here
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      example: 432.5
+                      maximum: 999999.99
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      example: TR3847
+                      maxLength: 255
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` format
+                      example: '2025-06-19'
+                tag_number:
+                  type: string
+                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+                  maxLength: 40
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes relfecting key events surround the case
+                  properties:
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      example: '2025-10-10T13:30:41Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      example: '2025-04-10T13:00:41Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      example: '2025-04-10T10:30:41Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      example: '2025-04-10T11:30:41Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      example: '2025-04-10T12:30:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2025-04-10T13:15:41Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2025-04-10T13:10:41Z'
+                breakdown:
+                  type: object
+                  description: Information about the location of the Service Provider
+                  properties:
+                    location:
+                      type: string
+                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                      maxLength: 255
+                    city:
+                      type: string
+                      description: Breakdown City name
+                      maxLength: 255
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      example: NJ
+                    country:
+                      type: string
+                      description: '`ISO 3166-1` alpha-2 code indicating the breakdown Country'
+                      minLength: 2
+                      maxLength: 2
+                      example: US
+                vmrs:
+                  type: object
+                  description: Case-level VMRS codes. Each code is provided as a `{ code_key, code }` object, consistent with `vmrs.asset_type`.
+                  properties:
+                    reason_for_repair:
+                      type: object
+                      description: VMRS Code Key 14 — identifies what caused the asset to come in for repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '14'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 14 value
+                          example: '01'
+                    repair_priority:
+                      type: object
+                      description: VMRS Code Key 16 — priority assigned to the repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '16'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 16 value
+                          example: '1'
+                    repair_site:
+                      type: object
+                      description: VMRS Code Key 17 — relative location where the repair takes place
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '17'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 17 value
+                          example: '1'
+            relationships:
+              type: object
+              properties:
+                assignee:
+                  $ref: '#/components/schemas/relationship_object'
+                driver:
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                billing_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                program_type:
+                  $ref: '#/components/schemas/relationship_object'
+                department:
+                  allOf:
+                  - $ref: '#/components/schemas/relationship_object'
+                  - description: 'Optional. Note: `department.data.id` is a dealer-scoped string code (e.g. "SERVICE"), not a UUID. The code must belong to the account and the `Departments` feature must be enabled for the account; otherwise the request fails with a 422 `Identifier not found` error.'
+                shipping_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                billing_customer:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    errors_response_with_header:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response_with_header'
+      required:
+      - errors
+    case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  maxLength: 40
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                reference_number:
+                  type: integer
+                  description: Integer representation of the Case ID as shown in the UI
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                  maxLength: 6000
+                repair_status:
+                  type: string
+                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
+                  examples:
+                  - appointment
+                tag_number:
+                  type: string
+                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+                  maxLength: 40
+                asset_information:
+                  type: object
+                  description: Information about the asset
+                  properties:
+                    odometer_value:
+                      type: integer
+                      description: Odometer reading of the asset
+                    odometer_unit:
+                      type: string
+                      description: 'Abbreviation for the odometer unit: `mi` for miles or `km` for kilometers'
+                      enum:
+                      - mi
+                      - km
+                    engine_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Engine hours of the asset
+                    stand_by_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Stand-by hours of the asset
+                    switch_on_hours:
+                      type:
+                      - integer
+                      - 'null'
+                      description: Switch-on hours of the asset
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes reflecting key events surrounding the case
+                  required:
+                  - started_at
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time requested by the Customer'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time requested by the Customer'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2025-10-10T13:30:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      examples:
+                      - '2025-04-10T13:00:41Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      examples:
+                      - '2025-04-10T13:10:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2025-04-10T13:15:41Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      examples:
+                      - '2025-04-10T12:30:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      examples:
+                      - '2025-04-10T12:00:41Z'
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was last updated. Pairs with the `filter[updated_at:gte]` / `filter[updated_at:lte]` filters for incremental sync.'
+                      examples:
+                      - '2025-04-10T13:20:41Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      examples:
+                      - '2025-04-10T11:30:41Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2025-04-10T10:30:41Z'
+                    asset_departed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      maximum: 999999.99
+                      examples:
+                      - 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      maxLength: 255
+                      examples:
+                      - TR3847
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` date format (not datetime).
+                      examples:
+                      - '2025-06-19'
+                pricing:
+                  type: object
+                  description: Financial totals for the case, sourced directly from the Estimate
+                  properties:
+                    parts_total:
+                      type: number
+                      description: Total cost of parts
+                      examples:
+                      - 432.5
+                    labor_total:
+                      type: number
+                      description: Total cost of labor
+                      examples:
+                      - 250
+                    core_total:
+                      type: number
+                      description: Total cost of cores
+                      examples:
+                      - 75
+                    tax:
+                      type: number
+                      description: Total tax amount
+                      examples:
+                      - 32.18
+                    haz_waste:
+                      type: number
+                      description: Total hazardous waste charge
+                      examples:
+                      - 15
+                vmrs:
+                  type: object
+                  description: 'Vehicle Maintenance Reporting Standards (VMRS) coding for the case, exposing nine VMRS code categories: asset type (CK02), repair priority (CK16), repair site (CK17), reason for repair (CK14), operator report (CK82), component code (CK33), position (CK79), technician failure (CK18), and work accomplished (CK15). Each category outside `asset_type` is null when no code is assigned; `asset_type` is always present.'
+                  properties:
+                    asset_type:
+                      type: object
+                      description: Identifies the asset type. Useful for non-VIN assets.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '2'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - R
+                    repair_priority:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the priority assigned to the repair.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '16'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '1'
+                    repair_site:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the relative location where the repair is taking place.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '17'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '7'
+                    reason_for_repair:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies what caused a piece of equipment to come in for repair.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '14'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '01'
+                    operator_report:
+                      type:
+                      - array
+                      - 'null'
+                      description: Identifies what the operator reports as being the issue.
+                      items:
+                        type: object
+                        properties:
+                          code_key:
+                            type:
+                            - string
+                            - 'null'
+                            description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                            examples:
+                            - '82'
+                          code:
+                            type:
+                            - string
+                            - 'null'
+                            description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                            examples:
+                            - '001'
+                    component:
+                      type:
+                      - object
+                      - 'null'
+                      description: Provides universal identifiers or generic terms for parts.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '33'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - 023-000-000
+                    position:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies position based on industry-accepted conventions.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '79'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - '03'
+                    technician_failure:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the technical failure diagnosed by the mechanic.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '18'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - B1
+                    work_accomplished:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the work accomplished by the mechanic.
+                      properties:
+                        code_key:
+                          type:
+                          - string
+                          - 'null'
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          examples:
+                          - '15'
+                        code:
+                          type:
+                          - string
+                          - 'null'
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          examples:
+                          - A
+                breakdown:
+                  type: object
+                  description: Information about the location of the Service Provider
+                  properties:
+                    location:
+                      type: string
+                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                      maxLength: 255
+                    city:
+                      type: string
+                      description: Breakdown City name
+                      maxLength: 255
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                metadata:
+                  type: object
+                  additionalProperties: true
+              required:
+              - reference_number
+            relationships:
+              type: object
+              properties:
+                customer_asset:
+                  $ref: '#/components/schemas/relationship_object'
+                customer:
+                  type: object
+                  description: The case's primary customer. `data.type` is `customers` for local customers or `registered_customers` for registered (fleet) customers.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      required:
+                      - id
+                      - type
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                          - registered_customers
+                billing_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                billing_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                shipping_customer:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+                program_type:
+                  $ref: '#/components/schemas/relationship_object'
+                driver:
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  $ref: '#/components/schemas/relationship_object'
+                assignee:
+                  $ref: '#/components/schemas/relationship_object'
+                department:
+                  allOf:
+                  - $ref: '#/components/schemas/relationship_object'
+                  - description: 'Note: `department.data.id` is a dealer-scoped string code (e.g. "SERVICE"), not a UUID.'
+              required:
+              - customer_asset
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                  description: URL of the case resource
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    customer_assets:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_asset_properties-data'
+        meta:
+          type: object
+    error_response_with_header:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+            header:
+              type:
+              - string
+              - 'null'
+              description: The request header the error refers to (e.g. X-DECISIV-IDEMPOTENCY-KEY).
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    service_history:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - in_network_cases
+            attributes:
+              type: object
+              properties:
+                reference_number:
+                  type: integer
+                  description: Integer representation of the Case ID inside of the User Interface
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                repair_status:
+                  type: string
+                  description: Name of the repair status
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes relfecting key events surround the case
+                  properties:
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      example: '2025-06-19T12:41:31Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      example: '2025-06-19T11:11:31Z'
+            relationships:
+              type: object
+              properties:
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    service_histories:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_history'
+        meta:
+          type: object
+        included:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/service_provider'
+    customer_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customer_assets
+              - service_group_customer_assets
+            attributes:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: 17 digit vehicle identification number
+                  minLength: 17
+                  maxLength: 17
+                serial_number:
+                  type: string
+                  description: Production number of the asset
+                  minLength: 8
+                  maxLength: 9
+                chassis_id:
+                  type: string
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                  maxLength: 50
+                  example: N-991562
+                unit_number:
+                  type: string
+                  description: Identification number commonly used on assets residing within a fleet
+                make:
+                  type: string
+                  description: Brand of the asset
+                  maxLength: 100
+                model:
+                  type: string
+                  description: Name of the asset product from the manufacturer
+                  maxLength: 100
+                year:
+                  type: integer
+                  description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+                service_status:
+                  type: string
+                  description: "Current service eligibility for this customer asset.\n\n- `active` — service relationship is currently in force between\n  the Service Provider account and the customer on the asset.\n- `inactive` — no longer the current association; superseded by\n  a newer record for the same asset, but remains serviceable.\n  Creating a case against it flips the asset back to `active`.\n- `archived` — the underlying registered asset has been\n  deactivated by its Registered Asset Management account holder;\n  the asset is reference-only and cannot be used to create new\n  cases.\n"
+                  enum:
+                  - active
+                  - inactive
+                  - archived
+                engine:
+                  type: object
+                  description: Engine data
+                  properties:
+                    make:
+                      type:
+                      - string
+                      - 'null'
+                      maxLength: 255
+                      description: The make of the engine
+                      example: Cummins
+                    model:
+                      type:
+                      - string
+                      - 'null'
+                      maxLength: 100
+                      description: The model of the engine
+                      example: X15
+                    displacement:
+                      type:
+                      - string
+                      - 'null'
+                      maxLength: 100
+                      description: The engine size related in liters or cubic inches
+                      example: 14.8L
+                    serial_number:
+                      type:
+                      - string
+                      - 'null'
+                      maxLength: 40
+                      description: The engine serial number
+                      example: '79412345'
+                odometer_value:
+                  type:
+                  - number
+                  - 'null'
+                  description: Integer representation about the asset odometer
+                  example: 125000
+                odometer_unit:
+                  type:
+                  - string
+                  - 'null'
+                  description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+                  enum:
+                  - mi
+                  - km
+                  example: mi
+                vmrs:
+                  type: object
+                  description: VMRS classification of the asset.
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category).
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier. Must be `"2"` when supplied on write.
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+              required:
+              - service_status
+            relationships:
+              type: object
+              properties:
+                customer:
+                  type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      required:
+                      - id
+                      - type
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                          - registered_customers
+                          - service_group_customers
+                          - service_group_registered_customers
+                srm_verified_asset:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - customer
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+                source_application:
+                  type: string
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

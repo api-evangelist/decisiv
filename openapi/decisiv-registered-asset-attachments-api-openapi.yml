@@ -1,0 +1,793 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Registered Asset Attachments API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Registered Asset Attachments
+paths:
+  /asset_management/{srm_account_id}/v1/registered_assets/{registered_asset_id}/attachments:
+    get:
+      summary: List all attachments for the requested registered asset
+      operationId: listRegisteredAssetAttachments
+      description: Returns file attachments associated with the registered asset, such as inspection reports or asset photos.
+      tags:
+      - Registered Asset Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: registered_asset_id
+        in: path
+        description: The registered asset uuid
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - publisher
+            - subject
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of attachments for the registered asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 0cc1a623-54ec-4e35-83b6-9125657a1baa
+                  type: attachments
+                  attributes:
+                    description: Asset inspection report
+                    filename: inspection.pdf
+                    size: 123456
+                    format: application/pdf
+                    download_url: https://decisiv.net/download_url
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    publisher:
+                      data:
+                        type: users
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+                    subject:
+                      data:
+                        type: registered_assets
+                        id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+              schema:
+                $ref: '#/components/schemas/attachments'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Creates an attachment for the requested registered asset
+      operationId: createRegisteredAssetAttachment
+      description: Uploads a file attachment to the registered asset. Files can be provided via multipart form-data upload or as a URL reference. Maximum file size is 10 MB.
+      tags:
+      - Registered Asset Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: registered_asset_id
+        in: path
+        description: The registered asset uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Created an attachment for the registered asset
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/attachment'
+              examples:
+                Attachment with file upload:
+                  value:
+                    data:
+                      id: 0cc1a623-54ec-4e35-83b6-9125657a1baa
+                      type: attachments
+                      attributes:
+                        description: Asset inspection report
+                        filename: inspection.pdf
+                        size: 123456
+                        format: application/pdf
+                        download_url: https://decisiv.net/download_url
+                        created_at: '2025-04-07T18:58:31Z'
+                        updated_at: '2025-04-07T18:58:31Z'
+                      relationships:
+                        publisher:
+                          data:
+                            type: users
+                            id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+                        subject:
+                          data:
+                            type: registered_assets
+                            id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+                Attachment with URL:
+                  value:
+                    data:
+                      id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                      type: attachments
+                      attributes:
+                        description: Description of URL resource.
+                        filename: null
+                        size: null
+                        format: null
+                        download_url: https://img.fileserver.com/truck_part.png
+                        created_at: '2025-04-07T18:58:31Z'
+                        updated_at: '2025-04-07T18:58:31Z'
+                      relationships:
+                        publisher:
+                          data:
+                            type: users
+                            id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+                        subject:
+                          data:
+                            type: registered_assets
+                            id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+        '400':
+          description: Invalid request attribute / Filename extension does not match / Invalid attribute value / File required / File too large
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid request attribute:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: invalid_attribute is not allowed
+                      source:
+                        pointer: /data/attributes/invalid_attribute
+                Filename extension does not match:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:attachments:003
+                      title: Filename extension does not match
+                      detail: Filename extension does not match the actual filename.
+                      source:
+                        pointer: /data/attributes/filename
+                File required:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:attachments:001
+                      title: File required
+                      detail: A file must be provided
+                File too large:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:attachments:002
+                      title: File too large
+                      detail: File size exceeds the maximum allowed (10 MB)
+                Invalid attribute value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/{{attribute_name}}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        description: 'Supports two content types:
+
+          - **multipart/form-data**: Upload a file with optional metadata in the `body` field.
+
+          - **application/vnd.api+json**: Create an attachment by providing a URL reference instead of uploading a file.
+
+          '
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: 'JSON metadata for the attachment. Example:
+
+                    ```json
+
+                    {"data": {"type": "attachments", "attributes": {"description": "This is a description", "filename": "filename.txt"}}}
+
+                    ```
+
+                    '
+                file:
+                  type: string
+                  format: binary
+                  description: File to be uploaded (max 10 MB)
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_attachment'
+            examples:
+              Attachment with URL:
+                summary: Create an attachment by providing a URL
+                value:
+                  data:
+                    type: attachments
+                    attributes:
+                      description: Description of URL resource.
+                      url: https://img.fileserver.com/truck_part.png
+  /asset_management/{srm_account_id}/v1/registered_assets/{registered_asset_id}/attachments/{id}:
+    get:
+      summary: Get a specific attachment for the requested registered asset
+      operationId: getRegisteredAssetAttachment
+      description: Returns a single attachment by ID, including a temporary download URL for the file.
+      tags:
+      - Registered Asset Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: registered_asset_id
+        in: path
+        description: The registered asset uuid
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - publisher
+            - subject
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns the requested attachment
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 0cc1a623-54ec-4e35-83b6-9125657a1baa
+                  type: attachments
+                  attributes:
+                    description: Asset inspection report
+                    filename: inspection.pdf
+                    size: 123456
+                    format: application/pdf
+                    download_url: https://decisiv.net/download_url
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    publisher:
+                      data:
+                        type: users
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+                    subject:
+                      data:
+                        type: registered_assets
+                        id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+              schema:
+                $ref: '#/components/schemas/attachment'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    delete:
+      summary: Delete an attachment for the requested registered asset
+      operationId: deleteRegisteredAssetAttachment
+      description: Permanently removes the attachment. Only attachments uploaded by the fleet can be deleted.
+      tags:
+      - Registered Asset Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: registered_asset_id
+        in: path
+        description: The registered asset uuid
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deletes an attachment
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: The resource is read-only and cannot be updated or deleted
+                  code: decisiv:resource:003
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    attachments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/attachment_properties-data'
+        meta:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    create_attachment:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  maxLength: 1024
+                  description: The description of the file
+                url:
+                  type: string
+                  maxLength: 255
+                  description: The URL of the file
+              required:
+              - url
+          required:
+          - attributes
+          - type
+    attachment:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  maxLength: 1024
+                  description: The description of the file
+                filename:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 256
+                  description: The name of the file. Null when the attachment was created via URL.
+                  example: example.pdf
+                size:
+                  type:
+                  - integer
+                  - 'null'
+                  maximum: 10485760
+                  description: The file size in bytes (max allowed is 10 megabytes). Null when the attachment was created via URL.
+                  example: 2684355
+                format:
+                  type:
+                  - string
+                  - 'null'
+                  description: The file content type. Null when the attachment was created via URL.
+                  example: application/pdf
+                download_url:
+                  type: string
+                  description: A temporary URL to download the file, or the external URL when the attachment was created via URL.
+                  example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was created'
+                  example: '2023-10-01T12:00:00Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
+                  example: '2023-10-01T12:00:00Z'
+              required:
+              - download_url
+              - created_at
+              - updated_at
+            relationships:
+              type: object
+              properties:
+                publisher:
+                  $ref: '#/components/schemas/relationship_object'
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    attachment_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            description:
+              type: string
+              maxLength: 1024
+              description: The description of the file
+            filename:
+              type:
+              - string
+              - 'null'
+              maxLength: 256
+              description: The name of the file. Null when the attachment was created via URL.
+              example: example.pdf
+            size:
+              type:
+              - integer
+              - 'null'
+              maximum: 10485760
+              description: The file size in bytes (max allowed is 10 megabytes). Null when the attachment was created via URL.
+              example: 2684355
+            format:
+              type:
+              - string
+              - 'null'
+              description: The file content type. Null when the attachment was created via URL.
+              example: application/pdf
+            download_url:
+              type: string
+              description: A temporary URL to download the file, or the external URL when the attachment was created via URL.
+              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was created'
+              example: '2023-10-01T12:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was updated'
+              example: '2023-10-01T12:00:00Z'
+          required:
+          - download_url
+          - created_at
+          - updated_at
+        relationships:
+          type: object
+          properties:
+            publisher:
+              $ref: '#/components/schemas/relationship_object'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

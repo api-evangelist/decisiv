@@ -1,0 +1,1056 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Case Line Items - Additional Charges API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Line Items - Additional Charges
+paths:
+  /service_management/{srm_account_id}/v1/cases/{case_uuid}/line_items/{line_item_uuid}/additional_charges:
+    get:
+      summary: List all Additional Charges for the requested line item
+      tags:
+      - Case Line Items - Additional Charges
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      responses:
+        '200':
+          description: Returns list of additional charge categories
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: ff0d0f58-9195-4071-a59c-96844600c2bb
+                  type: line_item_additional_charges
+                  attributes:
+                    description: Tax for sales done in the shop
+                    code: TAX-123
+                    pricing:
+                      amount: '15.00'
+                      sales_tax_amount: '2.06'
+                      total_amount: '27.06'
+                    created_at: '2025-04-10T13:28:31Z'
+                    updated_at: '2025-04-10T13:28:31Z'
+                  relationships:
+                    category:
+                      data:
+                        type: additional_charge_categories
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/additional_charges'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Creates an additional charge for the line item
+      tags:
+      - Case Line Items - Additional Charges
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      responses:
+        '201':
+          description: Successful creation of Case Line Item Additional Charge
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: ff0d0f58-9195-4071-a59c-96844600c2bb
+                  type: line_item_additional_charges
+                  attributes:
+                    description: Tax for sales done in the shop
+                    code: TAX-123
+                    pricing:
+                      amount: '15.00'
+                      sales_tax_amount: '2.06'
+                      total_amount: '27.06'
+                    created_at: '2025-04-10T13:28:31Z'
+                    updated_at: '2025-04-10T13:28:31Z'
+                  relationships:
+                    category:
+                      data:
+                        type: additional_charge_categories
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/technician_story'
+        '400':
+          description: Request validation errors returned as HTTP 400.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid resource error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''{{invalid_resource}}'' is an invalid resource'
+                      source:
+                        pointer: /data/type
+                Required key not provided error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/relationships/category/data
+                Required key not populated error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/description
+                Missing required relationship:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:relationships:002
+                      title: Missing required relationship
+                      detail: The required relationship category is missing
+                      source:
+                        pointer: /data/relationships/category
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Subject not found — the relationship references an identifier that does not exist.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              example:
+                errors:
+                - status: '422'
+                  code: decisiv:request_attributes:003
+                  title: Identifier not found
+                  detail: Identifier not found
+                  source:
+                    pointer: /data/relationships/category/data/id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_additional_charge'
+            examples:
+              Create Additional Charge:
+                value:
+                  data:
+                    type: line_item_additional_charges
+                    attributes:
+                      code: TEST-02
+                      description: Toll api
+                      pricing:
+                        amount: '45.00'
+                    relationships:
+                      category:
+                        data:
+                          type: additional_charge_categories
+                          id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+  /service_management/{srm_account_id}/v1/cases/{case_uuid}/line_items/{line_item_uuid}/additional_charges/{id}:
+    get:
+      summary: Show an Additional Charges for the requested line item
+      tags:
+      - Case Line Items - Additional Charges
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - category
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of additional charge categories
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: ff0d0f58-9195-4071-a59c-96844600c2bb
+                  type: line_item_additional_charges
+                  attributes:
+                    description: Tax for sales done in the shop
+                    code: TAX-123
+                    pricing:
+                      amount: '15.00'
+                      sales_tax_amount: '2.06'
+                      total_amount: '27.06'
+                    created_at: '2025-04-10T13:28:31Z'
+                    updated_at: '2025-04-10T13:28:31Z'
+                  relationships:
+                    category:
+                      data:
+                        type: additional_charge_categories
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/additional_charge'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Update an additional charge
+      tags:
+      - Case Line Items - Additional Charges
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update of Additional Charge
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: ff0d0f58-9195-4071-a59c-96844600c2bb
+                  type: line_item_additional_charges
+                  attributes:
+                    description: Tax for sales done in the shop
+                    code: TAX-123
+                    pricing:
+                      amount: '15.00'
+                      sales_tax_amount: '2.06'
+                      total_amount: '27.06'
+                    created_at: '2025-04-10T13:28:31Z'
+                    updated_at: '2025-04-10T13:28:31Z'
+                  relationships:
+                    category:
+                      data:
+                        type: additional_charge_categories
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/additional_charge'
+        '400':
+          description: Request validation errors returned as HTTP 400.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid resource error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''{{invalid_resource}}'' is an invalid resource'
+                      source:
+                        pointer: /data/type
+                Required key not provided error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/relationships/category/data
+                Required key not populated error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/description
+                Missing required relationship:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:relationships:002
+                      title: Missing required relationship
+                      detail: The required relationship category is missing
+                      source:
+                        pointer: /data/relationships/category
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Subject not found — the relationship references an identifier that does not exist.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              example:
+                errors:
+                - status: '422'
+                  code: decisiv:request_attributes:003
+                  title: Identifier not found
+                  detail: Identifier not found
+                  source:
+                    pointer: /data/relationships/category/data/id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_additional_charge'
+            examples:
+              Update Additional Charge:
+                value:
+                  data:
+                    type: line_item_additional_charges
+                    id: ff0d0f58-9195-4071-a59c-96844600c2bb
+                    attributes:
+                      code: TEST-02
+                      description: Toll api
+                      pricing:
+                        amount: '45.00'
+                    relationships:
+                      category:
+                        data:
+                          type: additional_charge_categories
+                          id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+    delete:
+      summary: Delete an additional charge
+      tags:
+      - Case Line Items - Additional Charges
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '204':
+          description: Deletes an additional charge
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    additional_charge_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - line_item_additional_charges
+        attributes:
+          type: object
+          properties:
+            code:
+              type: string
+              description: The code for the additional charge
+              maxLength: 20
+              example: TAX-123
+            description:
+              type: string
+              description: The description for the additional charge
+              maxLength: 255
+              example: Required state tax for the service
+            pricing:
+              type: object
+              description: Pricing information for the additional charge
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the additional charge, formatted as a decimal with two decimal places
+                  pattern: ^-?\d{1,7}\.\d{2}$
+                  example: '8.25'
+                sales_tax_amount:
+                  type: string
+                  description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
+                  pattern: ^-?\d{1,7}\.\d{2}$
+                  example: '1.25'
+                total_amount:
+                  type: string
+                  description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
+                  pattern: ^-?\d{1,7}\.\d{2}$
+                  example: '9.50'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the additional charge was created'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the additional charge was updated'
+          required:
+          - code
+          - description
+          - pricing
+        relationships:
+          type: object
+          properties:
+            category:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    create_additional_charge:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - description
+              - pricing
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with up to two decimal places.
+                      pattern: ^-?\d{1,7}(\.\d{1,2})?$
+                      example: '8.25'
+            relationships:
+              type: object
+              required:
+              - category
+              properties:
+                category:
+                  type: object
+                  description: The additional charge category to associate with this charge.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - additional_charge_categories
+                        id:
+                          type: string
+                          format: uuid
+                          description: The UUID of the additional charge category.
+                          example: 5f3a7d6c-8b1e-4f2a-9c4d-1e5b8a7f2c3d
+          required:
+          - type
+          - attributes
+          - relationships
+    update_additional_charge:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+              format: uuid
+            attributes:
+              type: object
+              required:
+              - description
+              - pricing
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '8.25'
+            relationships:
+              type: object
+              properties:
+                category:
+                  type: object
+                  description: The additional charge category id
+                  properties:
+                    type:
+                      type: string
+                      example: additional_charge_categories
+                    id:
+                      type: string
+                      example: The UUID of the additional charge category
+          required:
+          - type
+          - attributes
+          - id
+          - relationships
+    additional_charges:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/additional_charge_properties-data'
+        meta:
+          type: object
+    additional_charge:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_item_additional_charges
+            attributes:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '8.25'
+                    sales_tax_amount:
+                      type: string
+                      description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '1.25'
+                    total_amount:
+                      type: string
+                      description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '9.50'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was created'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was updated'
+              required:
+              - code
+              - description
+              - pricing
+            relationships:
+              type: object
+              properties:
+                category:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    technician_story:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - technician_stories
+            attributes:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: The story itself
+                  minLength: 1
+                  maxLength: 5000
+                  examples:
+                  - This is a story from the technician
+                created_at:
+                  type: string
+                  description: '`ISO 8601` timestamp indicating when the technician story was created'
+                  format: date-time
+          required:
+          - attributes
+          - type
+          - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

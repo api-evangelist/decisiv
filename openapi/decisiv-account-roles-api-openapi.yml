@@ -1,0 +1,281 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management Account Roles API
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Account Roles
+paths:
+  /account_management/v1/accounts/{account_id}/roles:
+    get:
+      summary: List account roles
+      description: List all roles available for an account, including public roles (from subscribed services) and private roles owned by the account.
+      tags:
+      - Account Roles
+      operationId: listAccountRoles
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 99
+        description: List `roles` that match the `name` attribute exactly (case-insensitive). Accepts a comma-separated list of values to match any of them (OR).
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+          maxLength: 99
+        description: List `roles` that partially match the `name` attribute (case-insensitive). Accepts a comma-separated list of values to match any of them (OR). Wildcard characters in the value are matched as literal characters, not wildcards.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/roles'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server. The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Filter value too short:
+                  value:
+                    errors:
+                    - title: Minimum character length not met
+                      detail: Filter value must be at least 3 characters
+                      code: decisiv:filters:007
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Filter value too long:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be 99 characters or fewer
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter characters:
+                  value:
+                    errors:
+                    - title: Invalid filter characters
+                      detail: Filter value for filter[name] contains invalid characters.
+                      code: decisiv:filters:013
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter shape:
+                  value:
+                    errors:
+                    - title: Invalid filter value shape
+                      detail: Filter value for filter[name] must be a string.
+                      code: decisiv:filters:014
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/roles/{id}:
+    get:
+      summary: Get an account role
+      description: Retrieve a single role available for an account.
+      tags:
+      - Account Roles
+      operationId: getAccountRole
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/role_by_id'
+        '404':
+          description: Role not found for this account
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    role_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/role'
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    roles:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

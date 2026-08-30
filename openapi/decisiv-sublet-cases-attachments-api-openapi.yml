@@ -1,0 +1,680 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Sublet Cases Attachments API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Sublet Cases Attachments
+paths:
+  /service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/attachments:
+    get:
+      summary: Retrieves a list of sublet cases attachments
+      tags:
+      - Sublet Cases Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: sublet_case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The sublet case UUID
+        required: true
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of attachments for the sublet case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 4c346310-aed3-48cd-af4b-3f6494cf95a1
+                  type: attachments
+                  attributes:
+                    description: The latest estimate
+                    filename: estimate.pdf
+                    size: 2684354
+                    format: application/pdf
+                    download_url: https://decisiv.net/shared/downloads/7746422/get_authed?filename=estimate.pdf&key=184bddd6479a3e3d
+                    created_at: '2023-10-01T12:00:00Z'
+                    updated_at: '2023-10-01T12:00:00Z'
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/attachments/4c346310-aed3-48cd-af4b-3f6494cf95a1
+                  relationships:
+                    publisher:
+                      data:
+                        type: users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    subject:
+                      data:
+                        type: sublet_cases
+                        id: dc8b7b66-288c-4072-9e31-3df871d5e561
+                    recipients:
+                      data:
+                      - type: participants
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+              schema:
+                $ref: '#/components/schemas/attachments'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Creates an attachment for the requested sublet case
+      tags:
+      - Sublet Cases Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: sublet_case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The sublet case UUID
+        required: true
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - decisiv:service_management:sublet_case:attachment_posted
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '201':
+          description: Created an attachment for the sublet case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 4c346310-aed3-48cd-af4b-3f6494cf95a1
+                  type: attachments
+                  attributes:
+                    description: The latest estimate
+                    filename: estimate.pdf
+                    size: 2684354
+                    format: application/pdf
+                    download_url: https://decisiv.net/shared/downloads/7746422/get_authed?filename=estimate.pdf&key=184bddd6479a3e3d
+                    created_at: '2023-10-01T12:00:00Z'
+                    updated_at: '2023-10-01T12:00:00Z'
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/attachments/4c346310-aed3-48cd-af4b-3f6494cf95a1
+                  relationships:
+                    publisher:
+                      data:
+                        type: users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    subject:
+                      data:
+                        type: sublet_cases
+                        id: dc8b7b66-288c-4072-9e31-3df871d5e561
+                    recipients:
+                      data:
+                      - type: participants
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+              schema:
+                $ref: '#/components/schemas/attachment'
+        '400':
+          description: Invalid event name to silence / Invalid request attribute / Filename extension does not match / Invalid attribute value
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid event name to silence:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+                Invalid request attribute:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: invalid_attribute is not allowed
+                      source:
+                        pointer: /data/attributes/invalid_attribute
+                Filename extension does not match:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:attachments:003
+                      title: Filename extension does not match
+                      detail: Filename extension does not match the actual filename.
+                      source:
+                        pointer: /data/attributes/filename
+                Invalid attribute value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid {{attribute_name}} value provided - {{reason}}
+                      source:
+                        pointer: /data/attributes/{{attribute_name}}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: 'Data to be sent as a body. **Example:** * {"data": {"type": "attachments","attributes": {  "description": "This is a description",  "filename": "filename.txt"},"relationships": {  "subject": {"data": {  "type": "sublet_cases",  "id": "287b52ce-6429-4319-b8ef-2c3042acfd82"}}, "recipients": {"data": [{ "type": "participants",  "id": "287b52ce-6429-4319-b8ef-87113944fe82"}]}}}}}* '
+                file:
+                  type: string
+                  format: binary
+                  description: File to be uploaded
+  /service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/attachments/{id}:
+    get:
+      summary: Retrieves a sublet cases attachment
+      tags:
+      - Sublet Cases Attachments
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: sublet_case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The sublet case UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 4c346310-aed3-48cd-af4b-3f6494cf95a1
+                  type: attachments
+                  attributes:
+                    description: The latest estimate
+                    filename: estimate.pdf
+                    size: 2684354
+                    format: application/pdf
+                    download_url: https://decisiv.net/shared/downloads/7746422/get_authed?filename=estimate.pdf&key=184bddd6479a3e3d
+                    created_at: '2023-10-01T12:00:00Z'
+                    updated_at: '2023-10-01T12:00:00Z'
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/attachments/4c346310-aed3-48cd-af4b-3f6494cf95a1
+                  relationships:
+                    publisher:
+                      data:
+                        type: users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    subject:
+                      data:
+                        type: sublet_cases
+                        id: dc8b7b66-288c-4072-9e31-3df871d5e561
+                    recipients:
+                      data:
+                      - type: participants
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+              schema:
+                $ref: '#/components/schemas/attachment'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Invalid UUID Format
+                  detail: The `ID` value does not contain a valid UUID format
+                  code: '107'
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    attachments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/properties-data'
+        meta:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            description:
+              type: string
+              maxLength: 1024
+              description: The description of the file
+            filename:
+              type: string
+              maxLength: 256
+              description: The name of the file
+              example: example.pdf
+            size:
+              type: integer
+              maximum: 10485760
+              description: The file size in bytes (max allowed is 10 megabytes)
+              example: 2684355
+            format:
+              type: string
+              description: The file content type
+              example: application/pdf
+            download_url:
+              type: string
+              description: A temporary URL to download the file
+              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was created'
+              example: '2023-10-01T12:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was updated'
+              example: '2023-10-01T12:00:00Z'
+          required:
+          - filename
+          - size
+          - format
+          - download_url
+          - created_at
+          - updated_at
+        relationships:
+          type: object
+          properties:
+            publisher:
+              $ref: '#/components/schemas/relationship_object'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            recipients:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    attachment:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  maxLength: 1024
+                  description: The description of the file
+                filename:
+                  type: string
+                  maxLength: 256
+                  description: The name of the file
+                  example: example.pdf
+                size:
+                  type: integer
+                  maximum: 10485760
+                  description: The file size in bytes (max allowed is 10 megabytes)
+                  example: 2684355
+                format:
+                  type: string
+                  description: The file content type
+                  example: application/pdf
+                download_url:
+                  type: string
+                  description: A temporary URL to download the file
+                  example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was created'
+                  example: '2023-10-01T12:00:00Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
+                  example: '2023-10-01T12:00:00Z'
+              required:
+              - filename
+              - size
+              - format
+              - download_url
+              - created_at
+              - updated_at
+            relationships:
+              type: object
+              properties:
+                publisher:
+                  $ref: '#/components/schemas/relationship_object'
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                recipients:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

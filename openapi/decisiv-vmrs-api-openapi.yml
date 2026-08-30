@@ -1,0 +1,3146 @@
+openapi: 3.2.0
+info:
+  title: Decisiv VMRS API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged VMRS across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: VMRS
+paths:
+  /asset_management/{srm_account_id}/v1/vmrs/asset_types:
+    get:
+      operationId: listVmrsAssetTypes
+      description: 'Returns the catalog of VMRS Code Key 2 ("Equipment Category" / asset type)
+
+        reference values. Use this to populate dropdowns and validate
+
+        `vmrs_asset_type` values before sending them on asset write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted alphabetically by `code` (ascending),
+
+        with `description` as a deterministic tiebreaker.
+
+        '
+      summary: List all VMRS Asset Types (Code Key 2)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Asset Types.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '01'
+                  type: decisiv_vmrs_asset_types
+                  attributes:
+                    code_key: '2'
+                    code_key_name: Equipment Category
+                    code: '01'
+                    description: Truck
+                - id: '02'
+                  type: decisiv_vmrs_asset_types
+                  attributes:
+                    code_key: '2'
+                    code_key_name: Equipment Category
+                    code: '02'
+                    description: Tractor
+                - id: D
+                  type: decisiv_vmrs_asset_types
+                  attributes:
+                    code_key: '2'
+                    code_key_name: Equipment Category
+                    code: D
+                    description: Agricultural Equipment
+                meta:
+                  record-count: 78
+              schema:
+                $ref: '#/components/schemas/vmrs_asset_types'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadAssetTypes` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/reasons_for_repair:
+    get:
+      operationId: listVmrsReasonsForRepair
+      description: 'Returns the catalog of VMRS Code Key 14 ("Reason for Repair") reference
+
+        values. Use this to populate dropdowns and validate reason-for-repair
+
+        values before sending them on case/line item write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending), with `reason` as a
+
+        deterministic tiebreaker. Each record also carries a `category` attribute
+
+        (the VMRS `repair_type` grouping the reason belongs to).
+
+        '
+      summary: List all VMRS Reasons for Repair (Code Key 14)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Reasons for Repair.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '01'
+                  type: decisiv_vmrs_reasons_for_repair
+                  attributes:
+                    code_key: '14'
+                    code_key_name: Reason for Repair
+                    code: '01'
+                    description: Breakdown
+                    category: Maintenance
+                - id: '22'
+                  type: decisiv_vmrs_reasons_for_repair
+                  attributes:
+                    code_key: '14'
+                    code_key_name: Reason for Repair
+                    code: '22'
+                    description: Vandalism
+                    category: Outside Influence
+                - id: '70'
+                  type: decisiv_vmrs_reasons_for_repair
+                  attributes:
+                    code_key: '14'
+                    code_key_name: Reason for Repair
+                    code: '70'
+                    description: Tow-in
+                    category: Management Decision
+                meta:
+                  record-count: 60
+              schema:
+                $ref: '#/components/schemas/vmrs_reasons_for_repair'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadReasonsForRepair` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/repair_priorities:
+    get:
+      operationId: listVmrsRepairPriorities
+      description: 'Returns the catalog of VMRS Code Key 16 ("Repair Priority Class")
+
+        reference values. Use this to populate dropdowns and validate
+
+        repair-priority values before sending them on case/line item write
+
+        endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Repair Priorities (Code Key 16)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Repair Priorities.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '1'
+                  type: decisiv_vmrs_repair_priorities
+                  attributes:
+                    code_key: '16'
+                    code_key_name: Repair Priority Class
+                    code: '1'
+                    description: Scheduled
+                - id: '2'
+                  type: decisiv_vmrs_repair_priorities
+                  attributes:
+                    code_key: '16'
+                    code_key_name: Repair Priority Class
+                    code: '2'
+                    description: Non-Scheduled
+                - id: '3'
+                  type: decisiv_vmrs_repair_priorities
+                  attributes:
+                    code_key: '16'
+                    code_key_name: Repair Priority Class
+                    code: '3'
+                    description: Emergency
+                meta:
+                  record-count: 3
+              schema:
+                $ref: '#/components/schemas/vmrs_repair_priorities'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadRepairPriorities` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/repair_sites:
+    get:
+      operationId: listVmrsRepairSites
+      description: 'Returns the catalog of VMRS Code Key 17 ("Repair Site") reference values.
+
+        Use this to populate dropdowns and validate repair-site values before
+
+        sending them on case/line item write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Repair Sites (Code Key 17)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Repair Sites.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '1'
+                  type: decisiv_vmrs_repair_sites
+                  attributes:
+                    code_key: '17'
+                    code_key_name: Repair Site
+                    code: '1'
+                    description: Facility (Fleet)
+                - id: '2'
+                  type: decisiv_vmrs_repair_sites
+                  attributes:
+                    code_key: '17'
+                    code_key_name: Repair Site
+                    code: '2'
+                    description: Field
+                - id: '3'
+                  type: decisiv_vmrs_repair_sites
+                  attributes:
+                    code_key: '17'
+                    code_key_name: Repair Site
+                    code: '3'
+                    description: Terminal
+                meta:
+                  record-count: 3
+              schema:
+                $ref: '#/components/schemas/vmrs_repair_sites'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadRepairSites` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/components:
+    get:
+      operationId: listVmrsComponents
+      description: 'Returns the catalog of VMRS Code Key 33 ("Component") reference values.
+
+        Use this to populate dropdowns and validate `component` values before
+
+        sending them on case/line item write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Components (Code Key 33)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Components.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 000-000-000
+                  type: decisiv_vmrs_components
+                  attributes:
+                    code_key: '33'
+                    code_key_name: Component
+                    code: 000-000-000
+                    description: Cab, Climate Control, Instrumentation, & Aerodynamic Devices Group
+                - id: 001-000-000
+                  type: decisiv_vmrs_components
+                  attributes:
+                    code_key: '33'
+                    code_key_name: Component
+                    code: 001-000-000
+                    description: Air Conditioning, Heating & Ventilating System
+                meta:
+                  record-count: 2
+              schema:
+                $ref: '#/components/schemas/vmrs_components'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadComponents` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/operator_reports:
+    get:
+      operationId: listVmrsOperatorReports
+      description: 'Returns the catalog of VMRS Code Key 82 ("Operator Vehicle/Equipment
+
+        Condition Report") reference values. Use this to populate dropdowns and
+
+        validate `operator_reports` values before sending them on line item /
+
+        estimate write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Operator Reports (Code Key 82)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Operator Reports.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '001'
+                  type: decisiv_vmrs_operator_reports
+                  attributes:
+                    code_key: '82'
+                    code_key_name: Operator Vehicle/Equipment Condition Report
+                    code: '001'
+                    description: Aim/Alignment (Out of Adjustment)
+                - id: '050'
+                  type: decisiv_vmrs_operator_reports
+                  attributes:
+                    code_key: '82'
+                    code_key_name: Operator Vehicle/Equipment Condition Report
+                    code: '050'
+                    description: Brakes, Grabbing
+                - id: '190'
+                  type: decisiv_vmrs_operator_reports
+                  attributes:
+                    code_key: '82'
+                    code_key_name: Operator Vehicle/Equipment Condition Report
+                    code: '190'
+                    description: ABS, Light Stays On
+                meta:
+                  record-count: 136
+              schema:
+                $ref: '#/components/schemas/vmrs_operator_reports'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadOperatorReports` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/positions:
+    get:
+      operationId: listVmrsPositions
+      description: 'Returns the catalog of VMRS Code Key 79 ("Position") reference values.
+
+        Use this to populate dropdowns and validate `positions` values before
+
+        sending them on line item / estimate write endpoints.
+
+
+        Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Positions (Code Key 79)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Positions.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '00'
+                  type: decisiv_vmrs_positions
+                  attributes:
+                    code_key: '79'
+                    code_key_name: Position
+                    code: '00'
+                    description: Not Applicable
+                - id: '01'
+                  type: decisiv_vmrs_positions
+                  attributes:
+                    code_key: '79'
+                    code_key_name: Position
+                    code: '01'
+                    description: Front
+                - id: '02'
+                  type: decisiv_vmrs_positions
+                  attributes:
+                    code_key: '79'
+                    code_key_name: Position
+                    code: '02'
+                    description: Front Left
+                meta:
+                  record-count: 162
+              schema:
+                $ref: '#/components/schemas/vmrs_positions'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadPositions` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/work_accomplished:
+    get:
+      operationId: listVmrsWorkAccomplished
+      description: 'Returns the catalog of VMRS Code Key 15 ("Work Accomplished") reference
+
+        values. Use this to populate dropdowns and validate `work_accomplished`
+
+        values before sending them on line item / estimate write endpoints.
+
+
+        Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Work Accomplished values (Code Key 15)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Work Accomplished values.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '01'
+                  type: decisiv_vmrs_work_accomplished
+                  attributes:
+                    code_key: '15'
+                    code_key_name: Work Accomplished
+                    code: '01'
+                    description: Adjust
+                - id: '02'
+                  type: decisiv_vmrs_work_accomplished
+                  attributes:
+                    code_key: '15'
+                    code_key_name: Work Accomplished
+                    code: '02'
+                    description: Clean
+                - id: '03'
+                  type: decisiv_vmrs_work_accomplished
+                  attributes:
+                    code_key: '15'
+                    code_key_name: Work Accomplished
+                    code: '03'
+                    description: Replace with New
+                meta:
+                  record-count: 68
+              schema:
+                $ref: '#/components/schemas/vmrs_work_accomplished_list'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadWorkAccomplished` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/vmrs/technician_part_failure_codes:
+    get:
+      operationId: listVmrsTechnicianPartFailureCodes
+      description: 'Returns the catalog of VMRS Code Key 18 ("Technician Part Failure Code")
+
+        reference values. Use this to populate dropdowns and validate
+
+        `technician_part_failure_codes` values before sending them on line item /
+
+        estimate write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `service_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Technician Part Failure Codes (Code Key 18)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Technician Part Failure Codes.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '00'
+                  type: decisiv_vmrs_technician_part_failure_codes
+                  attributes:
+                    code_key: '18'
+                    code_key_name: Technician Part Failure Code
+                    code: '00'
+                    description: No Failure
+                - id: '01'
+                  type: decisiv_vmrs_technician_part_failure_codes
+                  attributes:
+                    code_key: '18'
+                    code_key_name: Technician Part Failure Code
+                    code: '01'
+                    description: Battered, Hammered
+                - id: '02'
+                  type: decisiv_vmrs_technician_part_failure_codes
+                  attributes:
+                    code_key: '18'
+                    code_key_name: Technician Part Failure Code
+                    code: '02'
+                    description: Burned, Scorched, Melted, Blistered
+                meta:
+                  record-count: 109
+              schema:
+                $ref: '#/components/schemas/vmrs_technician_part_failure_codes'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadTechnicianPartFailureCodes` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/asset_types:
+    get:
+      operationId: listVmrsAssetTypes
+      description: 'Returns the catalog of VMRS Code Key 2 ("Equipment Category" / asset type)
+
+        reference values. Use this to populate dropdowns and validate
+
+        `vmrs_asset_type` values before sending them on asset write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted alphabetically by `code` (ascending),
+
+        with `description` as a deterministic tiebreaker.
+
+        '
+      summary: List all VMRS Asset Types (Code Key 2)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Asset Types.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '01'
+                  type: decisiv_vmrs_asset_types
+                  attributes:
+                    code_key: '2'
+                    code_key_name: Equipment Category
+                    code: '01'
+                    description: Truck
+                - id: '02'
+                  type: decisiv_vmrs_asset_types
+                  attributes:
+                    code_key: '2'
+                    code_key_name: Equipment Category
+                    code: '02'
+                    description: Tractor
+                - id: D
+                  type: decisiv_vmrs_asset_types
+                  attributes:
+                    code_key: '2'
+                    code_key_name: Equipment Category
+                    code: D
+                    description: Agricultural Equipment
+                meta:
+                  record-count: 78
+              schema:
+                $ref: '#/components/schemas/vmrs_asset_types'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadAssetTypes` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/reasons_for_repair:
+    get:
+      operationId: listVmrsReasonsForRepair
+      description: 'Returns the catalog of VMRS Code Key 14 ("Reason for Repair") reference
+
+        values. Use this to populate dropdowns and validate reason-for-repair
+
+        values before sending them on case/line item write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending), with `reason` as a
+
+        deterministic tiebreaker. Each record also carries a `category` attribute
+
+        (the VMRS `repair_type` grouping the reason belongs to).
+
+        '
+      summary: List all VMRS Reasons for Repair (Code Key 14)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Reasons for Repair.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '01'
+                  type: decisiv_vmrs_reasons_for_repair
+                  attributes:
+                    code_key: '14'
+                    code_key_name: Reason for Repair
+                    code: '01'
+                    description: Breakdown
+                    category: Maintenance
+                - id: '22'
+                  type: decisiv_vmrs_reasons_for_repair
+                  attributes:
+                    code_key: '14'
+                    code_key_name: Reason for Repair
+                    code: '22'
+                    description: Vandalism
+                    category: Outside Influence
+                - id: '70'
+                  type: decisiv_vmrs_reasons_for_repair
+                  attributes:
+                    code_key: '14'
+                    code_key_name: Reason for Repair
+                    code: '70'
+                    description: Tow-in
+                    category: Management Decision
+                meta:
+                  record-count: 60
+              schema:
+                $ref: '#/components/schemas/vmrs_reasons_for_repair'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadReasonsForRepair` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/repair_priorities:
+    get:
+      operationId: listVmrsRepairPriorities
+      description: 'Returns the catalog of VMRS Code Key 16 ("Repair Priority Class")
+
+        reference values. Use this to populate dropdowns and validate
+
+        repair-priority values before sending them on case/line item write
+
+        endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Repair Priorities (Code Key 16)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Repair Priorities.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '1'
+                  type: decisiv_vmrs_repair_priorities
+                  attributes:
+                    code_key: '16'
+                    code_key_name: Repair Priority Class
+                    code: '1'
+                    description: Scheduled
+                - id: '2'
+                  type: decisiv_vmrs_repair_priorities
+                  attributes:
+                    code_key: '16'
+                    code_key_name: Repair Priority Class
+                    code: '2'
+                    description: Non-Scheduled
+                - id: '3'
+                  type: decisiv_vmrs_repair_priorities
+                  attributes:
+                    code_key: '16'
+                    code_key_name: Repair Priority Class
+                    code: '3'
+                    description: Emergency
+                meta:
+                  record-count: 3
+              schema:
+                $ref: '#/components/schemas/vmrs_repair_priorities'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadRepairPriorities` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/repair_sites:
+    get:
+      operationId: listVmrsRepairSites
+      description: 'Returns the catalog of VMRS Code Key 17 ("Repair Site") reference values.
+
+        Use this to populate dropdowns and validate repair-site values before
+
+        sending them on case/line item write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Repair Sites (Code Key 17)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Repair Sites.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '1'
+                  type: decisiv_vmrs_repair_sites
+                  attributes:
+                    code_key: '17'
+                    code_key_name: Repair Site
+                    code: '1'
+                    description: Facility (Fleet)
+                - id: '2'
+                  type: decisiv_vmrs_repair_sites
+                  attributes:
+                    code_key: '17'
+                    code_key_name: Repair Site
+                    code: '2'
+                    description: Field
+                - id: '3'
+                  type: decisiv_vmrs_repair_sites
+                  attributes:
+                    code_key: '17'
+                    code_key_name: Repair Site
+                    code: '3'
+                    description: Terminal
+                meta:
+                  record-count: 3
+              schema:
+                $ref: '#/components/schemas/vmrs_repair_sites'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadRepairSites` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/components:
+    get:
+      operationId: listVmrsComponents
+      description: 'Returns the catalog of VMRS Code Key 33 ("Component") reference values.
+
+        Use this to populate dropdowns and validate `component` values before
+
+        sending them on case/line item write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Components (Code Key 33)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Components.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 000-000-000
+                  type: decisiv_vmrs_components
+                  attributes:
+                    code_key: '33'
+                    code_key_name: Component
+                    code: 000-000-000
+                    description: Cab, Climate Control, Instrumentation, & Aerodynamic Devices Group
+                - id: 001-000-000
+                  type: decisiv_vmrs_components
+                  attributes:
+                    code_key: '33'
+                    code_key_name: Component
+                    code: 001-000-000
+                    description: Air Conditioning, Heating & Ventilating System
+                meta:
+                  record-count: 2
+              schema:
+                $ref: '#/components/schemas/vmrs_components'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadComponents` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/operator_reports:
+    get:
+      operationId: listVmrsOperatorReports
+      description: 'Returns the catalog of VMRS Code Key 82 ("Operator Vehicle/Equipment
+
+        Condition Report") reference values. Use this to populate dropdowns and
+
+        validate `operator_reports` values before sending them on line item /
+
+        estimate write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Operator Reports (Code Key 82)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Operator Reports.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '001'
+                  type: decisiv_vmrs_operator_reports
+                  attributes:
+                    code_key: '82'
+                    code_key_name: Operator Vehicle/Equipment Condition Report
+                    code: '001'
+                    description: Aim/Alignment (Out of Adjustment)
+                - id: '050'
+                  type: decisiv_vmrs_operator_reports
+                  attributes:
+                    code_key: '82'
+                    code_key_name: Operator Vehicle/Equipment Condition Report
+                    code: '050'
+                    description: Brakes, Grabbing
+                - id: '190'
+                  type: decisiv_vmrs_operator_reports
+                  attributes:
+                    code_key: '82'
+                    code_key_name: Operator Vehicle/Equipment Condition Report
+                    code: '190'
+                    description: ABS, Light Stays On
+                meta:
+                  record-count: 136
+              schema:
+                $ref: '#/components/schemas/vmrs_operator_reports'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadOperatorReports` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/positions:
+    get:
+      operationId: listVmrsPositions
+      description: 'Returns the catalog of VMRS Code Key 79 ("Position") reference values.
+
+        Use this to populate dropdowns and validate `positions` values before
+
+        sending them on line item / estimate write endpoints.
+
+
+        Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Positions (Code Key 79)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Positions.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '00'
+                  type: decisiv_vmrs_positions
+                  attributes:
+                    code_key: '79'
+                    code_key_name: Position
+                    code: '00'
+                    description: Not Applicable
+                - id: '01'
+                  type: decisiv_vmrs_positions
+                  attributes:
+                    code_key: '79'
+                    code_key_name: Position
+                    code: '01'
+                    description: Front
+                - id: '02'
+                  type: decisiv_vmrs_positions
+                  attributes:
+                    code_key: '79'
+                    code_key_name: Position
+                    code: '02'
+                    description: Front Left
+                meta:
+                  record-count: 162
+              schema:
+                $ref: '#/components/schemas/vmrs_positions'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadPositions` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/work_accomplished:
+    get:
+      operationId: listVmrsWorkAccomplished
+      description: 'Returns the catalog of VMRS Code Key 15 ("Work Accomplished") reference
+
+        values. Use this to populate dropdowns and validate `work_accomplished`
+
+        values before sending them on line item / estimate write endpoints.
+
+
+        Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Work Accomplished values (Code Key 15)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Work Accomplished values.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '01'
+                  type: decisiv_vmrs_work_accomplished
+                  attributes:
+                    code_key: '15'
+                    code_key_name: Work Accomplished
+                    code: '01'
+                    description: Adjust
+                - id: '02'
+                  type: decisiv_vmrs_work_accomplished
+                  attributes:
+                    code_key: '15'
+                    code_key_name: Work Accomplished
+                    code: '02'
+                    description: Clean
+                - id: '03'
+                  type: decisiv_vmrs_work_accomplished
+                  attributes:
+                    code_key: '15'
+                    code_key_name: Work Accomplished
+                    code: '03'
+                    description: Replace with New
+                meta:
+                  record-count: 68
+              schema:
+                $ref: '#/components/schemas/vmrs_work_accomplished_list'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadWorkAccomplished` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/vmrs/technician_part_failure_codes:
+    get:
+      operationId: listVmrsTechnicianPartFailureCodes
+      description: 'Returns the catalog of VMRS Code Key 18 ("Technician Part Failure Code")
+
+        reference values. Use this to populate dropdowns and validate
+
+        `technician_part_failure_codes` values before sending them on line item /
+
+        estimate write endpoints.
+
+
+        The response payload is byte-identical to the equivalent route under
+
+        `asset_management` — both URLs are served by the same backend
+
+        controller. Results are sorted by `code` (ascending).
+
+        '
+      summary: List all VMRS Technician Part Failure Codes (Code Key 18)
+      tags:
+      - VMRS
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        description: The SRM Account ID.
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets.
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page.
+      responses:
+        '200':
+          description: Returns the list of VMRS Technician Part Failure Codes.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: '00'
+                  type: decisiv_vmrs_technician_part_failure_codes
+                  attributes:
+                    code_key: '18'
+                    code_key_name: Technician Part Failure Code
+                    code: '00'
+                    description: No Failure
+                - id: '01'
+                  type: decisiv_vmrs_technician_part_failure_codes
+                  attributes:
+                    code_key: '18'
+                    code_key_name: Technician Part Failure Code
+                    code: '01'
+                    description: Battered, Hammered
+                - id: '02'
+                  type: decisiv_vmrs_technician_part_failure_codes
+                  attributes:
+                    code_key: '18'
+                    code_key_name: Technician Part Failure Code
+                    code: '02'
+                    description: Burned, Scorched, Melted, Blistered
+                meta:
+                  record-count: 109
+              schema:
+                $ref: '#/components/schemas/vmrs_technician_part_failure_codes'
+        '401':
+          description: This response may occur when the access token provided within the Authorization header has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: The authenticated user does not have the `vmrs:ReadTechnicianPartFailureCodes` permission for the requested account.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    vmrs_technician_part_failure_codes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_technician_part_failure_code_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Technician Part Failure Code records across all pages.
+              example: 109
+    vmrs_components:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_component_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Component records across all pages.
+              example: 2
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    vmrs_repair_sites:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_repair_site_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Repair Site records across all pages.
+              example: 3
+    vmrs_asset_type_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 2 `code` value (natural key).
+          example: '01'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_asset_types
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"2"` for asset type lookups.
+              example: '2'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 2 this is
+
+                `"Equipment Category"`.
+
+                '
+              example: Equipment Category
+            code:
+              type: string
+              maxLength: 2
+              description: The VMRS Code Key 2 code (e.g. `"01"`, `"D"`).
+              example: '01'
+            description:
+              type: string
+              description: Human-readable name for the asset type / equipment category.
+              example: Truck
+    vmrs_component_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 33 `code` value (natural key).
+          example: 001-000-000
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_components
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"33"` for component lookups.
+              example: '33'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 33 this is
+
+                `"Component"`.
+
+                '
+              example: Component
+            code:
+              type: string
+              maxLength: 11
+              description: The VMRS Code Key 33 code (e.g. `"001-000-000"`).
+              example: 001-000-000
+            description:
+              type: string
+              description: Human-readable name for the component.
+              example: Air Conditioning, Heating & Ventilating System
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    vmrs_technician_part_failure_code_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 18 `code` value (natural key).
+          example: '01'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_technician_part_failure_codes
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"18"` for technician part failure code lookups.
+              example: '18'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 18 this is
+
+                `"Technician Part Failure Code"`.
+
+                '
+              example: Technician Part Failure Code
+            code:
+              type: string
+              maxLength: 2
+              description: The VMRS Code Key 18 code (e.g. `"00"`, `"01"`).
+              example: '01'
+            description:
+              type: string
+              description: Human-readable name for the technician part failure code.
+              example: Battered, Hammered
+    vmrs_work_accomplished_list:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_work_accomplished_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Work Accomplished records across all pages.
+              example: 68
+    vmrs_operator_report_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 82 `code` value (natural key).
+          example: '001'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_operator_reports
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"82"` for operator report lookups.
+              example: '82'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 82 this is
+
+                `"Operator Vehicle/Equipment Condition Report"`.
+
+                '
+              example: Operator Vehicle/Equipment Condition Report
+            code:
+              type: string
+              maxLength: 3
+              description: The VMRS Code Key 82 code (e.g. `"001"`, `"190"`).
+              example: '001'
+            description:
+              type: string
+              description: Human-readable name for the operator report condition.
+              example: Aim/Alignment (Out of Adjustment)
+    vmrs_work_accomplished_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 15 `code` value (natural key).
+          example: '01'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_work_accomplished
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"15"` for work accomplished lookups.
+              example: '15'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 15 this is
+
+                `"Work Accomplished"`.
+
+                '
+              example: Work Accomplished
+            code:
+              type: string
+              maxLength: 2
+              description: The VMRS Code Key 15 code (e.g. `"01"`, `"02"`).
+              example: '01'
+            description:
+              type: string
+              description: Human-readable short label for the work accomplished.
+              example: Adjust
+    vmrs_repair_site_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 17 `code` value (natural key).
+          example: '1'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_repair_sites
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"17"` for repair-site lookups.
+              example: '17'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 17 this is
+
+                `"Repair Site"`.
+
+                '
+              example: Repair Site
+            code:
+              type: string
+              maxLength: 1
+              description: The VMRS Code Key 17 code (e.g. `"1"`, `"2"`, `"3"`).
+              example: '1'
+            description:
+              type: string
+              description: Human-readable name for the repair site.
+              example: Facility (Fleet)
+    vmrs_asset_types:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_asset_type_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Asset Type records across all pages.
+              example: 78
+    vmrs_repair_priorities:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_repair_priority_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Repair Priority records across all pages.
+              example: 3
+    vmrs_position_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 79 `code` value (natural key).
+          example: '01'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_positions
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"79"` for position lookups.
+              example: '79'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 79 this is
+
+                `"Position"`.
+
+                '
+              example: Position
+            code:
+              type: string
+              maxLength: 2
+              description: The VMRS Code Key 79 code (e.g. `"00"`, `"01"`).
+              example: '01'
+            description:
+              type: string
+              description: Human-readable name for the position.
+              example: Front
+    vmrs_positions:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_position_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Position records across all pages.
+              example: 162
+    vmrs_reason_for_repair_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 14 `code` value (natural key).
+          example: '01'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_reasons_for_repair
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          - category
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"14"` for reason-for-repair lookups.
+              example: '14'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 14 this is
+
+                `"Reason for Repair"`.
+
+                '
+              example: Reason for Repair
+            code:
+              type: string
+              maxLength: 2
+              description: The VMRS Code Key 14 code (e.g. `"01"`, `"70"`).
+              example: '01'
+            description:
+              type: string
+              description: Human-readable name for the reason for repair.
+              example: Breakdown
+            category:
+              type: string
+              description: 'The VMRS Code Key 14 `repair_type` grouping the reason belongs to
+
+                (e.g. `"Maintenance"`, `"Outside Influence"`, `"Management Decision"`).
+
+                '
+              example: Maintenance
+    vmrs_reasons_for_repair:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_reason_for_repair_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Reason for Repair records across all pages.
+              example: 60
+    vmrs_operator_reports:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_operator_report_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Operator Report records across all pages.
+              example: 136
+    vmrs_repair_priority_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 16 `code` value (natural key).
+          example: '1'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_repair_priorities
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"16"` for repair-priority lookups.
+              example: '16'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 16 this is
+
+                `"Repair Priority Class"`.
+
+                '
+              example: Repair Priority Class
+            code:
+              type: string
+              maxLength: 1
+              description: The VMRS Code Key 16 code (e.g. `"1"`, `"2"`, `"3"`).
+              example: '1'
+            description:
+              type: string
+              description: Human-readable name for the repair priority class.
+              example: Scheduled
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

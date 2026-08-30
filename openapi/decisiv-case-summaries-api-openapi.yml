@@ -1,0 +1,320 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Case Summaries API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Summaries
+paths:
+  /asset_management/{srm_account_id}/v1/case_summaries:
+    get:
+      operationId: listCaseSummaries
+      summary: List all case summaries for the requested account
+      description: Returns summaries of case activity. Use the `include=case` parameter to sideload the full case resource alongside each summary.
+      tags:
+      - Case Summaries
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[service_provider.external_reference.srm_account]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter case summaries by the specified service provider SRM account identifier
+      - name: filter[updated_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list case summaries updated _greater than_ a specified `ISO8601` timestamp.
+      - name: filter[updated_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list case summaries updated _greater than or equal to_ a specified `ISO8601` timestamp.
+      - name: filter[updated_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list case summaries updated _less than_ a specified `ISO8601` timestamp.
+      - name: filter[updated_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list case summaries updated _less than or equal to_ a specified `ISO8601` timestamp.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - case
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of case summaries for the account
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+                  type: case_summaries
+                  attributes:
+                    content: Vehicle arrived with check engine light on. Diagnosed as faulty O2 sensor. Replaced and cleared codes.
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+              schema:
+                $ref: '#/components/schemas/case_summaries'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            content:
+              type: string
+              description: The case summary text
+              example: Vehicle arrived with check engine light on. Diagnosed as faulty O2 sensor. Replaced and cleared codes.
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the case summary was created'
+              example: '2023-10-01T12:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the case summary was last updated'
+              example: '2023-10-01T12:00:00Z'
+          required:
+          - content
+          - created_at
+          - updated_at
+        relationships:
+          type: object
+          properties:
+            case:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    case_summaries:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/data'
+        meta:
+          type: object
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

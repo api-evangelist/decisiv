@@ -1,0 +1,1183 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Service Group - Customer Contacts API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Service Group - Customer Contacts
+paths:
+  /service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts:
+    get:
+      summary: List all Contacts for the requested Service Group Customer
+      tags:
+      - Service Group - Customer Contacts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: customer_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The customer UUID
+        required: true
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `contacts` whose full name (`first_name` and `last_name` joined by a single space) exactly matches the provided value.
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+        description: List `contacts` matching a partial-token search across `first_name` and `last_name`. Whitespace-separated tokens in the provided value are matched as prefixes against either name field.
+      - name: filter[email]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `contacts` whose `attributes.communication[]` entry with `method_type` of `email` has a `value` exactly matching the provided value.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Page number
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Page size
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          example: -first_name,last_name
+        description: 'Sort `contacts` by one or more attributes separated by commas; prefix with `-` for descending order. Valid attributes: `first_name`, `last_name`'
+      responses:
+        '200':
+          description: Returns list of contacts / Returns list of service group contacts
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/contacts'
+              examples:
+                Returns list of contacts:
+                  value:
+                    data:
+                    - id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                      type: contacts
+                      attributes:
+                        first_name: John
+                        last_name: Doe
+                        communication:
+                        - method_type: email
+                          value: john.doe@example.com
+                          notify: true
+                        - method_type: mobile
+                          value: '+1234567890'
+                          notify: true
+                      links:
+                        self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                Returns list of service group contacts:
+                  value:
+                    data:
+                    - id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                      type: service_group_contacts
+                      attributes:
+                        first_name: John
+                        last_name: Doe
+                        communication:
+                        - method_type: email
+                          value: john.doe@example.com
+                          notify: true
+                        - method_type: mobile
+                          value: '+1234567890'
+                          notify: true
+                      links:
+                        self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+        '400':
+          description: Account filter is missing
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Required filter is missing
+                  detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                  code: decisiv:filters:006
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a Contact for Service Group Customer
+      tags:
+      - Service Group - Customer Contacts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: customer_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The customer UUID
+        required: true
+      responses:
+        '201':
+          description: The request has been fulfilled and a new resource is available.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  type: contacts
+                  attributes:
+                    first_name: John
+                    last_name: Doe
+                    communication:
+                    - method_type: email
+                      value: john.doe@example.com
+                      notify: true
+                    - method_type: mobile
+                      value: '+1234567890'
+                      notify: true
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/contact'
+        '400':
+          description: Account filter is missing / Required key not provided / Required value not provided
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/first_name
+                Required value not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Email with invalid host / Email with long local part / Email with long domain part / Phone number does not begin with + / Phone number has whitespace in it / Phone number has invalid country code or does not conform with E.164 / Phone number has less than 3 chars / Phone number has more than 15 chars
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Email with invalid host:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:001
+                      title: Invalid Email - Domain Resolution
+                      detail: Email domain name could not be resolved by DNS
+                      source:
+                        pointer: /data/attributes/communication/0/value
+                Email with long local part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:002
+                      title: Invalid Email - Local Part Length
+                      detail: Local-part exceeds maximum length of 64 octets
+                      source:
+                        pointer: /data/attributes/communication/0/value
+                Email with long domain part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:003
+                      title: Invalid Email - Domain Length
+                      detail: Email domain length exceeds 255 characters
+                      source:
+                        pointer: /data/attributes/communication/0/value
+                Phone number does not begin with +:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:001
+                      title: Invalid Phone Format
+                      detail: Phone number must begin with a + character per E.164 standard
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has whitespace in it:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:002
+                      title: Invalid Phone Format
+                      detail: Phone number can not contain spaces
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has invalid country code or does not conform with E.164:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:003
+                      title: Invalid Phone Format
+                      detail: Phone number contains an invalid country code
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has less than 3 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:004
+                      title: Invalid Phone Format
+                      detail: Phone number length does not meet minimum length - must be 3 characters
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has more than 15 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:005
+                      title: Invalid Phone Format
+                      detail: Phone number length exceeds maximum length - can not be longer than 15 characters
+                      source:
+                        pointer: /data/attributes/communication/1/value
+        '428':
+          description: Missing required permission
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_contact'
+            examples:
+              Create Contact:
+                value:
+                  data:
+                    type: contacts
+                    attributes:
+                      first_name: John
+                      last_name: Doe
+                      communication:
+                      - method_type: email
+                        value: john.doe@example.com
+                        notify: true
+                      - method_type: mobile
+                        value: '+1234567890'
+                        notify: true
+  /service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts/{id}:
+    get:
+      summary: Retrieves a Contact from the requested Service Group Customer
+      tags:
+      - Service Group - Customer Contacts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: customer_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The customer UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The contact UUID
+        required: true
+      responses:
+        '200':
+          description: Returns the contact
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  type: contacts
+                  id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  attributes:
+                    first_name: John
+                    last_name: Doe
+                    communication:
+                    - method_type: email
+                      value: john.doe@example.com
+                      notify: true
+                    - method_type: mobile
+                      value: '+1234567890'
+                      notify: true
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/contact_by_id'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates a Contact for Service Group Customer
+      tags:
+      - Service Group - Customer Contacts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: customer_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The customer UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The contact UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update of Contact
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                  type: contacts
+                  attributes:
+                    first_name: John
+                    last_name: Doe
+                    communication:
+                    - method_type: email
+                      value: john.doe@example.com
+                      notify: true
+                    - method_type: mobile
+                      value: '+1234567890'
+                      notify: true
+                  links:
+                    self: https://srm-api.decisivapps.com/service_management/{srm_account_id}/v1/service_group/customers/{customer_id}/contacts/aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/contact'
+        '400':
+          description: Path ID mismatch
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '400'
+                  code: decisiv:resource:002
+                  title: Invalid JSON:API Resource specified in request
+                  detail: '''79327cde-d5ce-4ce6-bdba-eebab125ae2d'' is an invalid resource'
+                  source:
+                    pointer: /data/id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Email with invalid host / Email with long local part / Email with long domain part / Phone number does not begin with + / Phone number has whitespace in it / Phone number has invalid country code or does not conform with E.164 / Phone number has less than 3 chars / Phone number has more than 15 chars
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Email with invalid host:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:001
+                      title: Invalid Email - Domain Resolution
+                      detail: Email domain name could not be resolved by DNS
+                      source:
+                        pointer: /data/attributes/communication/0/value
+                Email with long local part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:002
+                      title: Invalid Email - Local Part Length
+                      detail: Local-part exceeds maximum length of 64 octets
+                      source:
+                        pointer: /data/attributes/communication/0/value
+                Email with long domain part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:003
+                      title: Invalid Email - Domain Length
+                      detail: Email domain length exceeds 255 characters
+                      source:
+                        pointer: /data/attributes/communication/0/value
+                Phone number does not begin with +:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:001
+                      title: Invalid Phone Format
+                      detail: Phone number must begin with a + character per E.164 standard
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has whitespace in it:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:002
+                      title: Invalid Phone Format
+                      detail: Phone number can not contain spaces
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has invalid country code or does not conform with E.164:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:003
+                      title: Invalid Phone Format
+                      detail: Phone number contains an invalid country code
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has less than 3 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:004
+                      title: Invalid Phone Format
+                      detail: Phone number length does not meet minimum length - must be 3 characters
+                      source:
+                        pointer: /data/attributes/communication/1/value
+                Phone number has more than 15 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:005
+                      title: Invalid Phone Format
+                      detail: Phone number length exceeds maximum length - can not be longer than 15 characters
+                      source:
+                        pointer: /data/attributes/communication/1/value
+        '428':
+          description: Missing required permission
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/contact_update'
+            examples:
+              Update Contact:
+                value:
+                  data:
+                    type: contacts
+                    id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+                    attributes:
+                      first_name: John
+                      last_name: Doe
+                      communication:
+                      - method_type: email
+                        value: john.doe@example.com
+                        notify: true
+                      - method_type: mobile
+                        value: '+1234567890'
+                        notify: true
+    delete:
+      summary: Deletes a Contact from Service Group Customer
+      tags:
+      - Service Group - Customer Contacts
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: customer_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The customer UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The contact UUID
+        required: true
+      responses:
+        '204':
+          description: Contact deleted successfully
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: Missing required permission
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '428'
+                  code: decisiv:access:003
+                  title: Precondition required
+                  detail: OAuth Application does not have appropriate provisioning to access this resource
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    contact_by_id:
+      example:
+        data:
+          id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+          type: contacts
+          attributes:
+            first_name: John
+            last_name: Doe
+            communication:
+            - method_type: email
+              value: john.doe@example.com
+              notify: true
+            - method_type: mobile
+              value: '+1234567890'
+              notify: true
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+              - service_group_contacts
+              - registered_contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type:
+                        - string
+                        - 'null'
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - attributes
+          - type
+          - id
+      required:
+      - data
+    contact_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - contacts
+          - service_group_contacts
+          - registered_contacts
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: First name of the contact
+              maxLength: 100
+            last_name:
+              type: string
+              description: Last name of the contact
+              maxLength: 100
+            communication:
+              type: array
+              description: Array of communication methods for the contact
+              items:
+                type: object
+                properties:
+                  method_type:
+                    type: string
+                    description: Type of communication method (e.g., email, mobile)
+                    enum:
+                    - email
+                    - mobile
+                  value:
+                    type:
+                    - string
+                    - 'null'
+                    description: Value of the communication method (e.g., email address, phone number)
+                    maxLength: 128
+                  notify:
+                    type: boolean
+                    description: Indicates if notifications should be sent to this contact
+                required:
+                - method_type
+                - value
+                - notify
+          required:
+          - first_name
+          - last_name
+          - communication
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - id
+      - type
+      - attributes
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    contact:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+              - service_group_contacts
+              - registered_contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type:
+                        - string
+                        - 'null'
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - id
+          - type
+          - attributes
+      required:
+      - data
+    contact_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_contact:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    contacts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/contact_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

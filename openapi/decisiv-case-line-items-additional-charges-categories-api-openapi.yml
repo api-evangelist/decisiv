@@ -1,0 +1,378 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Case Line Items - Additional Charges Categories API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Line Items - Additional Charges Categories
+paths:
+  /service_management/{srm_account_id}/v1/additional_charge_categories:
+    get:
+      summary: List all Additional Charge Categories for the requested account
+      tags:
+      - Case Line Items - Additional Charges Categories
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of additional charge categories
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: f8649e5c-da38-442d-9158-9cedbec5ef23
+                  type: additional_charge_categories
+                  attributes:
+                    name: Shop Supplies
+                    sales_tax_rate: '8.25'
+                    created_at: '2025-10-09T10:55:20-03:00'
+                    updated_at: '2025-10-09T10:55:20-03:00'
+                  links:
+                    self: /service_management/test-account/v1/additional_charge_categories/f8649e5c-da38-442d-9158-9cedbec5ef23
+                - id: f8649e5c-da38-442d-9158-9cedbec5ef23
+                  type: additional_charge_categories
+                  attributes:
+                    name: Environmental Fee
+                    sales_tax_rate: '0.0'
+                    created_at: '2025-10-09T10:55:20-03:00'
+                    updated_at: '2025-10-09T10:55:20-03:00'
+                  links:
+                    self: /service_management/test-account/v1/additional_charge_categories/f8649e5c-da38-442d-9158-9cedbec5ef23
+                meta:
+                  record-count: 2
+              schema:
+                $ref: '#/components/schemas/additional_charge_categories'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: You do not have permission to access this resource
+                  code: decisiv:authorization:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Required permission is missing
+                  code: decisiv:permission:001
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Gateway timeout
+                  detail: The request timed out
+                  code: decisiv:timeout:001
+                  status: '504'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/additional_charge_categories/{id}:
+    get:
+      summary: Retrieves a specific Additional Charge Category
+      tags:
+      - Case Line Items - Additional Charges Categories
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Returns the additional charge category
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: f8649e5c-da38-442d-9158-9cedbec5ef23
+                  type: additional_charge_categories
+                  attributes:
+                    name: Shop Supplies
+                    sales_tax_rate: '8.25'
+                    created_at: '2025-10-09T10:55:20-03:00'
+                    updated_at: '2025-10-09T10:55:20-03:00'
+                  links:
+                    self: /service_management/test-account/v1/additional_charge_categories/f8649e5c-da38-442d-9158-9cedbec5ef23
+              schema:
+                $ref: '#/components/schemas/additional_charge_category'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: You do not have permission to access this resource
+                  code: decisiv:authorization:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested additional charge category could not be found
+                  code: decisiv:resource:001
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Required permission is missing
+                  code: decisiv:permission:001
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Gateway timeout
+                  detail: The request timed out
+                  code: decisiv:timeout:001
+                  status: '504'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    additional_charge_categories:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - additional_charge_categories
+              attributes:
+                type: object
+                required:
+                - name
+                - sales_tax_rate
+                properties:
+                  name:
+                    type: string
+                    description: The name of the additional charge category
+                    maxLength: 255
+                    example: Shop Supplies
+                  sales_tax_rate:
+                    type: string
+                    description: The sales tax rate as a formatted string (e.g., "8.25")
+                    pattern: ^\d+\.\d{2}$
+                    example: '8.25'
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    additional_charge_category:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - additional_charge_categories
+            attributes:
+              type: object
+              required:
+              - name
+              - sales_tax_rate
+              properties:
+                name:
+                  type: string
+                  description: The name of the additional charge category
+                  maxLength: 255
+                  example: Shop Supplies
+                sales_tax_rate:
+                  type: string
+                  description: The sales tax rate as a formatted string (e.g., "8.25")
+                  pattern: ^\d+\.\d{2}$
+                  example: '8.25'
+                created_at:
+                  type: string
+                  format: date-time
+                updated_at:
+                  type: string
+                  format: date-time
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - id
+          - type
+          - attributes
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

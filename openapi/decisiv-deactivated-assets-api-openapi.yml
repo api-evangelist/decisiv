@@ -1,0 +1,804 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Deactivated Assets API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Deactivated Assets
+paths:
+  /asset_management/{srm_account_id}/v1/deactivated_assets:
+    get:
+      operationId: listDeactivatedAssets
+      description: Lists all deactivated assets for the requested account.
+      summary: List all Deactivated Assets for the requested account
+      tags:
+      - Deactivated Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[serial_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 9
+        description: List `deactivated assets` matching the *exact* `serial_number` attribute.
+      - name: filter[unit_number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `deactivated assets` matching the *exact* `unit_number` attribute.
+      - name: filter[vin]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 17
+          maxLength: 17
+        description: List `deactivated assets` matching the *exact* `vin` attribute.
+      - name: filter[depot.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `deactivated assets` matching the *exact* `depot.id` attribute.
+      - name: filter[chassis_id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `deactivated assets` matching the *exact* `chassis_id` attribute.
+      - name: filter[license.number]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `deactivated assets` matching the *exact* `license.number` attribute.
+      - name: filter[event_timestamps.deactivated_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list deactivated assets deactivated _less than_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.deactivated_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list deactivated assets deactivated _less than or equal to_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.deactivated_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list deactivated assets deactivated _greater than_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.deactivated_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list deactivated assets deactivated _greater than or equal to_ a specified `ISO8601` timestamp.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - depot
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of deactivated assets
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: '1363'
+                    notes: MyString
+                    license:
+                      number: HMB-2112
+                      state: CA
+                      country: US
+                      expiration: '2029-06-18'
+                    event_timestamps:
+                      deactivated_at: '2021-11-05T17:30:38Z'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata: {}
+              schema:
+                $ref: '#/components/schemas/deactivated_assets'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid filter name:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Wrong timestamp format for filter:
+                  value:
+                    errors:
+                    - title: Invalid filter value
+                      code: decisiv:filters:010
+                      detail: Invalid filter value `{{invalid_filter}}`. Expected an ISO 8601 timestamp.
+                      status: '400'
+                      source:
+                        parameter: filter[event_timestamps.deactivated_at:gte]
+                Invalid depot filter format:
+                  value:
+                    errors:
+                    - title: Invalid Filter Format
+                      detail: Invalid format for `depot.id`
+                      code: decisiv:filters:009
+                      status: '400'
+                      source:
+                        parameter: filter[depot.id]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /asset_management/{srm_account_id}/v1/deactivated_assets/{id}:
+    get:
+      operationId: getDeactivatedAsset
+      description: Retrieves details on a specific deactivated asset by its ID.
+      summary: List details on a specific inactive asset
+      tags:
+      - Deactivated Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - depot
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Show details for requested asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                  type: registered_assets
+                  attributes:
+                    vin: 1FDWE3FNXMDC03939
+                    serial_number: MDC03939
+                    unit_number: '42'
+                    chassis_id: XMDC03939
+                    fleet_info: Fleet 42
+                    make: Ford
+                    model: E350
+                    year: 2021
+                    engine:
+                      make: Ford
+                      model: 7.3L V-10
+                      displacement: 6.8 l
+                    odometer_value: 61342
+                    odometer_unit: mi
+                    engine_hours: '1363'
+                    notes: MyString
+                    license:
+                      number: HMB-2112
+                      state: CA
+                      country: US
+                      expiration: '2029-06-18'
+                    event_timestamps:
+                      deactivated_at: '2021-11-05T17:30:38Z'
+                    vmrs_asset_status: '02'
+                    vmrs:
+                      asset_type:
+                        code_key: '2'
+                        code: D
+                    metadata: {}
+              schema:
+                $ref: '#/components/schemas/deactivated_asset'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                This response may occur when the requested resource is not found.:
+                  value:
+                    errors:
+                    - status: '404'
+                      code: decisiv:resource:001
+                      title: Resource Identifier - Not Found
+                      detail: The parent resource could not be found
+                      source:
+                        parameter: id
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /asset_management/{srm_account_id}/v1/deactivated_assets/{id}/activate:
+    post:
+      operationId: activateDeactivatedAsset
+      summary: Re-enable a previously inactive asset for use within the Account
+      tags:
+      - Deactivated Assets
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      description: Call to request re-enabling an asset for use within the registered Account
+      responses:
+        '204':
+          description: Asset successfully re-activated.  Will be availble in `GET /registered_assets` and `GET /registered_assets/:id`
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/activate_deactivated_asset'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    deactivated_asset_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - registered_assets
+        attributes:
+          type: object
+          properties:
+            vin:
+              type: string
+              description: 17 digit vehicle identification number
+              minLength: 17
+              maxLength: 17
+            serial_number:
+              type: string
+              description: Production number of the asset
+              minLength: 8
+              maxLength: 9
+            unit_number:
+              type: string
+              maxLength: 255
+              description: Identification number commonly used on assets residing within a fleet
+            chassis_id:
+              type: string
+              maxLength: 255
+              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+            fleet_info:
+              type: string
+              maxLength: 255
+              description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
+            make:
+              type: string
+              maxLength: 255
+              description: Brand of the asset
+            model:
+              type: string
+              maxLength: 255
+              description: Name of the asset product from the manufacturer
+            year:
+              type: integer
+              description: Calendar year the asset model was released
+            odometer_value:
+              type: number
+              description: Integer representation about the asset odometer
+            odometer_unit:
+              type: string
+              description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+              example: mi
+            engine_hours:
+              type: string
+              description: Integer representation about the engine hours of asset
+              minLength: 0
+              maxLength: 25
+            notes:
+              type: string
+              maxLength: 1000
+              description: Notes about the asset
+            engine:
+              type: object
+              description: Engine data
+              properties:
+                make:
+                  type: string
+                  maxLength: 255
+                  description: The make of the engine
+                model:
+                  type: string
+                  maxLength: 255
+                  description: The model of the engine
+                displacement:
+                  type: string
+                  maxLength: 255
+            license:
+              type: object
+              description: License plate data
+              properties:
+                number:
+                  type: string
+                  maxLength: 20
+                  description: The number of the license plate
+                state:
+                  type: string
+                  minLength: 2
+                  maxLength: 10
+                  description: The second part of the ISO 3166-2 code indicates the license State
+                country:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: ISO 3166-1 alpha-2 code indicating the license Country
+                expiration:
+                  type: string
+                  format: date
+                  description: '`ISO 8601` date indicating when the license expires'
+                  example: '2029-06-18'
+            vmrs_asset_status:
+              type: string
+            vmrs:
+              type: object
+              readOnly: true
+              description: VMRS classification of the asset
+              properties:
+                asset_type:
+                  type: object
+                  description: VMRS Code Key 2 (Equipment Category)
+                  properties:
+                    code_key:
+                      type: string
+                      description: The VMRS code key identifier
+                      example: '2'
+                    code:
+                      type: string
+                      description: The VMRS code value for the equipment category (e.g. 'D', '1', 'R')
+            metadata:
+              type: object
+              additionalProperties: true
+            event_timestamps:
+              type: object
+              properties:
+                deactivated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the asset was deactivated'
+      required:
+      - attributes
+      - type
+      - id
+    deactivated_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - registered_assets
+            attributes:
+              type: object
+              properties:
+                vin:
+                  type: string
+                  description: 17 digit vehicle identification number
+                  minLength: 17
+                  maxLength: 17
+                serial_number:
+                  type: string
+                  description: Production number of the asset
+                  minLength: 8
+                  maxLength: 9
+                unit_number:
+                  type: string
+                  maxLength: 255
+                  description: Identification number commonly used on assets residing within a fleet
+                chassis_id:
+                  type: string
+                  maxLength: 255
+                  description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                fleet_info:
+                  type: string
+                  maxLength: 255
+                  description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
+                make:
+                  type: string
+                  maxLength: 255
+                  description: Brand of the asset
+                model:
+                  type: string
+                  maxLength: 255
+                  description: Name of the asset product from the manufacturer
+                year:
+                  type: integer
+                  description: Calendar year the asset model was released
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                  example: mi
+                engine_hours:
+                  type: string
+                  description: Integer representation about the engine hours of asset
+                  minLength: 0
+                  maxLength: 25
+                notes:
+                  type: string
+                  maxLength: 1000
+                  description: Notes about the asset
+                engine:
+                  type: object
+                  description: Engine data
+                  properties:
+                    make:
+                      type: string
+                      maxLength: 255
+                      description: The make of the engine
+                    model:
+                      type: string
+                      maxLength: 255
+                      description: The model of the engine
+                    displacement:
+                      type: string
+                      maxLength: 255
+                license:
+                  type: object
+                  description: License plate data
+                  properties:
+                    number:
+                      type: string
+                      maxLength: 20
+                      description: The number of the license plate
+                    state:
+                      type: string
+                      minLength: 2
+                      maxLength: 10
+                      description: The second part of the ISO 3166-2 code indicates the license State
+                    country:
+                      type: string
+                      minLength: 2
+                      maxLength: 2
+                      description: ISO 3166-1 alpha-2 code indicating the license Country
+                    expiration:
+                      type: string
+                      format: date
+                      description: '`ISO 8601` date indicating when the license expires'
+                      example: '2029-06-18'
+                vmrs_asset_status:
+                  type: string
+                vmrs:
+                  type: object
+                  readOnly: true
+                  description: VMRS classification of the asset
+                  properties:
+                    asset_type:
+                      type: object
+                      description: VMRS Code Key 2 (Equipment Category)
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '2'
+                        code:
+                          type: string
+                          description: The VMRS code value for the equipment category (e.g. 'D', '1', 'R')
+                metadata:
+                  type: object
+                  additionalProperties: true
+                event_timestamps:
+                  type: object
+                  properties:
+                    deactivated_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the asset was deactivated'
+          required:
+          - attributes
+          - type
+          - id
+    deactivated_assets:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/deactivated_asset_properties-data'
+        meta:
+          type: object
+    activate_deactivated_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

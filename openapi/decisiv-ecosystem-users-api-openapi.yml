@@ -1,0 +1,409 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Account Management Ecosystem Users API
+  description: Inside of **Decisiv SRM Gateway**, the `Account Management` module represents all the accounts the current user has access granted to
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Ecosystem Users
+paths:
+  /account_management/v1/accounts/{account_id}/ecosystem_users:
+    get:
+      summary: Search ecosystem users
+      description: Search for users across the entire ecosystem, scoped to an account context. At least one filter parameter is required.
+      tags:
+      - Ecosystem Users
+      operationId: listEcosystemUsers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The account's UUID
+      - name: filter[email]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by exact email address
+      - name: filter[first_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by first name (partial, case-insensitive)
+      - name: filter[last_name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by last name (partial, case-insensitive)
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by the user's business-system identifier (the same value returned in `external_reference.business_system`).
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Page number for paginated results
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+          maximum: 100
+        description: Number of results per page
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ecosystem_users'
+        '400':
+          description: Missing required filter parameter
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: Invalid or expired access token
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: Forbidden — untrusted application or insufficient RBAC permissions
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: OAuth application not provisioned for this module
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create an ecosystem user
+      description: 'Provisions a new user in the Decisiv SRM ecosystem. This endpoint is **not** idempotent: a duplicate email or username — including one belonging to a discarded user — is rejected with `422`, matching the legacy vendor self-registration and admin-create flows. A welcome notification is sent automatically on success — either a password setup email or an SSO welcome email depending on the user''s email domain.'
+      tags:
+      - Ecosystem Users
+      operationId: createEcosystemUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The account's UUID
+      requestBody:
+        required: true
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/ecosystem_user_create'
+            example:
+              data:
+                type: ecosystem_users
+                attributes:
+                  username: jane.smith
+                  email: jane.smith@decisiv.com
+                  first_name: Jane
+                  last_name: Smith
+                  job_role: Service Manager
+                  address1: 100 Main St
+                  city: Greensboro
+                  state: NC
+                  postal_code: '27410'
+                  country: US
+                  external_reference:
+                    business_system: BS-12345
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ecosystem_user_by_id'
+        '400':
+          description: Missing required attributes
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Validation error — invalid email format (`decisiv:email:001`–`004` syntax/length/host), reserved email domain (`decisiv:email:005`), unresolvable email domain (`decisiv:email:001`), invalid country/state (`decisiv:location:001`/`002`/`004`), duplicate email (`decisiv:account_user:005`), or duplicate username (`decisiv:account_user:004`). Discarded users count toward duplicates.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /account_management/v1/accounts/{account_id}/ecosystem_users/{id}:
+    get:
+      summary: Get an ecosystem user
+      description: Retrieve a single ecosystem user by UUID.
+      tags:
+      - Ecosystem Users
+      operationId: getEcosystemUser
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The account's UUID
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The user's UUID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ecosystem_user_by_id'
+        '404':
+          description: User not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    ecosystem_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/ecosystem_user'
+    ecosystem_user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - ecosystem_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+              format: email
+              description: User's email address. Also used as the username.
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    ecosystem_user_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - ecosystem_users
+              description: JSON:API resource type
+            attributes:
+              type: object
+              required:
+              - email
+              - first_name
+              - last_name
+              properties:
+                username:
+                  type:
+                  - string
+                  - 'null'
+                  minLength: 4
+                  maxLength: 120
+                  description: Unique login identifier for the user. Optional — defaults to the email address when omitted. Cannot be changed after creation.
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                  description: User's email address. Reserved RFC 2606 domains (example.com, *.test, *.invalid, etc.) are rejected, and the domain must resolve via DNS (MX or A record).
+                first_name:
+                  type: string
+                  maxLength: 255
+                  description: User's first name
+                last_name:
+                  type: string
+                  maxLength: 255
+                  description: User's last name
+                job_role:
+                  type: string
+                  maxLength: 255
+                  description: User's job role (optional)
+                address1:
+                  type: string
+                  maxLength: 255
+                  description: Street address line 1 (optional)
+                address2:
+                  type: string
+                  maxLength: 255
+                  description: Street address line 2 (optional)
+                city:
+                  type: string
+                  maxLength: 100
+                  description: City (optional)
+                state:
+                  type: string
+                  minLength: 2
+                  maxLength: 6
+                  description: Bare subdivision code, without the country prefix (e.g. `NC`, `NY`, `ON`). Must be valid for the supplied country.
+                postal_code:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                  description: Postal/ZIP code (optional)
+                country:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                  description: ISO 3166-1 alpha-2 country code (optional)
+                external_reference:
+                  type: object
+                  description: Identifiers for the user from external systems
+                  properties:
+                    business_system:
+                      type: string
+                      maxLength: 100
+                      description: External business-system identifier (optional)
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    ecosystem_users:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ecosystem_user'
+        meta:
+          type: object
+        links:
+          type: object
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

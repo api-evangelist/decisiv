@@ -1,0 +1,400 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Operations API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Operations
+paths:
+  /service_management/{srm_account_id}/v1/cases/{case_id}/applicable_operations:
+    get:
+      summary: List all applicable operations for a specific case in the requested account
+      tags:
+      - Operations
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: filter[opcode]
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 3
+        description: Filters operations for the given opcode, using exact matching search
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of Applicable Operations for a case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: T3789-0-04
+                  type: applicable_operations
+                  attributes:
+                    name: All Engines All Years All Models All Makes for Air Dryer Cartridge, Replacement
+                    description: Default variation for Air Dryer Cartridge, Replacement
+                    opcode: T3789-0-04
+                    notes: A note added to the operation
+                    pricing:
+                      estimated_total: '100.0'
+                      fixed_total: null
+                      labor:
+                        estimated_total: '50.0'
+                      parts:
+                        estimated_total: 50
+                        fixed_total: null
+                    labor:
+                      time: '2.0'
+                      skill_level: A
+                    vmrs:
+                      code_key: '33'
+                      code_key_name: Component Code
+                      code: 001-001-000
+                      description: Component Code description
+                    parts:
+                    - number: AB1098
+                      name: Replacement for Air Dryer Cartridge
+                      quantity: 1
+                      unit_price: '353.28'
+                    price_code: SR37TYP
+              schema:
+                $ref: '#/components/schemas/applicable_operations'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    applicable_operations:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/applicable_operation'
+        meta:
+          type: object
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    applicable_operation:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the applicable operation
+                description:
+                  type: string
+                  description: Description of the applicable operation
+                opcode:
+                  type: string
+                  description: Unique operation code
+                price_code:
+                  type: string
+                  description: Price code information
+                notes:
+                  type: string
+                  description: Notes added to the operation
+                pricing:
+                  type: object
+                  description: Pricing information and estimates for the operation
+                  properties:
+                    estimated_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Estimated total for the operation (parts costs + labor costs). Null when the operation has a fixed price — `fixed_total` is populated instead.
+                    fixed_total:
+                      type:
+                      - number
+                      - 'null'
+                      description: Fixed total when the operation has a fixed price. Null when the operation is estimated — `estimated_total` is populated instead.
+                    parts:
+                      type: object
+                      description: Pricing information and estimates for the operation parts
+                      properties:
+                        estimated_total:
+                          type:
+                          - number
+                          - 'null'
+                          description: Estimated total for the operation parts. Null when the parts have a fixed price — `parts.fixed_total` is populated instead.
+                        fixed_total:
+                          type:
+                          - number
+                          - 'null'
+                          description: Fixed total when the parts have a fixed price. Null when the parts are estimated — `parts.estimated_total` is populated instead.
+                labor:
+                  type: object
+                  description: Information and estimates for the operation labor
+                  properties:
+                    estimated_total:
+                      type: string
+                      description: Estimated total for the operation labor. The skill level times the quantity of hours
+                    time:
+                      type: string
+                      description: The value in hours of the operation
+                    skill_level:
+                      type: string
+                      description: The value of the hour for the labor
+                vmrs:
+                  type: object
+                  description: VMRS Code Keys for the operation
+                  properties:
+                    code_key:
+                      type: string
+                      description: The VMRS Code Key
+                    code_key_name:
+                      type: string
+                      description: The VMRS Code Key name
+                    code:
+                      type: string
+                      description: VMRS Code Key 33 coding for the operation
+                    description:
+                      type: string
+                      description: The VMRS Code Key description
+                parts:
+                  type: array
+                  description: List of parts associated with applicable operation
+                  items:
+                    type: object
+                    properties:
+                      number:
+                        type: string
+                        description: Part number of material associated with applicable operation
+                      name:
+                        type: string
+                        description: Part name of materials associated with applicable operation
+                      quantity:
+                        type: integer
+                        description: Count of specific parts associated with applicable operation
+                      unit_price:
+                        type: string
+                        description: Unit cost of each part associated with the applicable operation
+                additional_charges:
+                  type:
+                  - array
+                  - 'null'
+                  description: Additional charges associated with the operation; null when none are present.
+                  items:
+                    type: object
+                    properties:
+                      category:
+                        type:
+                        - string
+                        - 'null'
+                        description: Category of the additional charge
+                      code:
+                        type:
+                        - string
+                        - 'null'
+                        description: Code of the additional charge
+                      description:
+                        type:
+                        - string
+                        - 'null'
+                        description: Description of the additional charge
+                      amount:
+                        type:
+                        - string
+                        - 'null'
+                        format: decimal
+                        description: Amount of the additional charge
+              required:
+              - name
+              - opcode
+          required:
+          - attributes
+          - type
+          - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

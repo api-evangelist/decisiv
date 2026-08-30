@@ -1,0 +1,1849 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Customers API
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  termsOfService: https://www.decisiv.com/terms-of-use
+  version: '1.0'
+  description: 'Operations tagged Customers across 2 of this provider''s published API definitions: decisiv-service-management-openapi.yml, decisiv-service-provider-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+- url: /api/v1/
+tags:
+- name: Customers
+paths:
+  /service_management/{srm_account_id}/v1/customers:
+    get:
+      summary: List all Customers
+      tags:
+      - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `name` attribute.
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` that match partially the `name` attribute.
+      - name: filter[city]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `city` attribute.
+      - name: filter[state]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `state` attribute.
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `business_system` attribute.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          example: -name
+        description: 'Sort `customers` by a single attribute; prefix with `-` for descending order. Valid attributes: `name`'
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - srm_account
+            - service_provider
+        description: Return specified included relationships upon request
+      responses:
+        '200':
+          description: Returns list of customers
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    notes: Premium customer - call ahead
+                    account_number: ACC-1234
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data: null
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                - id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: registered_customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    notes: Premium customer - call ahead
+                    account_number: ACC-1234
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data:
+                        type: srm_accounts
+                        id: 2addba31-878e-40de-b3d6-6aee375250dc
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/customers'
+      security:
+      - OAuth2AuthorizationCode: []
+        AccessToken: []
+      - OAuth2Password: []
+        AccessToken: []
+    post:
+      summary: Create a new Customer
+      tags:
+      - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Creates a new Customer record
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    notes: Premium customer - call ahead
+                    account_number: ACC-1234
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data: null
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Phone/Fax number does not begin with + / Phone/Fax number has whitespace in it / Phone/Fax number has invalid country code or does not conform with E.164 / Phone/Fax number has less than 3 chars / Phone/Fax number has more than 15 chars
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Phone number does not begin with +:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:001
+                      title: Invalid Phone Format
+                      detail: Phone number must begin with a + character per E.164 standard
+                      source:
+                        pointer: /data/attributes/phone
+                Fax number does not begin with +:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:001
+                      title: Invalid Phone Format
+                      detail: Fax number must begin with a + character per E.164 standard
+                      source:
+                        pointer: /data/attributes/fax
+                Phone number has whitespace in it:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:002
+                      title: Invalid Phone Format
+                      detail: Phone number can not contain spaces
+                      source:
+                        pointer: /data/attributes/phone
+                Fax number has whitespace in it:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:002
+                      title: Invalid Phone Format
+                      detail: Fax number can not contain spaces
+                      source:
+                        pointer: /data/attributes/fax
+                Phone number has invalid country code or does not conform with E.164:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:003
+                      title: Invalid Phone Format
+                      detail: Phone number contains an invalid country code
+                      source:
+                        pointer: /data/attributes/phone
+                Fax number has invalid country code or does not conform with E.164:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:003
+                      title: Invalid Phone Format
+                      detail: Fax number contains an invalid country code
+                      source:
+                        pointer: /data/attributes/fax
+                Phone number has less than 3 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:004
+                      title: Invalid Phone Format
+                      detail: Phone number length does not meet minimum length - must be 3 characters
+                      source:
+                        pointer: /data/attributes/phone
+                Fax number has less than 3 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:004
+                      title: Invalid Phone Format
+                      detail: Fax number length does not meet minimum length - must be 3 characters
+                      source:
+                        pointer: /data/attributes/fax
+                Phone number has more than 15 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:005
+                      title: Invalid Phone Format
+                      detail: Phone number length exceeds maximum length - can not be longer than 15 characters
+                      source:
+                        pointer: /data/attributes/phone
+                Fax number has more than 15 chars:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:phone:005
+                      title: Invalid Phone Format
+                      detail: Fax number length exceeds maximum length - can not be longer than 15 characters
+                      source:
+                        pointer: /data/attributes/fax
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_customer'
+            examples:
+              New customer with all attributes:
+                value:
+                  data:
+                    type: customers
+                    attributes:
+                      name: Joe's Garage
+                      address1: 9009 Sunset Blvd
+                      address2: Door 5
+                      city: West Hollywood
+                      state: CA
+                      postal_code: '90069'
+                      phone: '+12025550128'
+                      fax: '+12025550129'
+                      country: US
+                      email: roxy.by.proxy@decisivgenerated.email
+                      notes: Premium customer - call ahead
+                      account_number: ACC-1234
+                      external_reference:
+                        business_system: ES-2112
+      security:
+      - OAuth2AuthorizationCode: []
+        AccessToken: []
+      - OAuth2Password: []
+        AccessToken: []
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/customers/{id}:
+    get:
+      summary: Show details for a specific Customer
+      tags:
+      - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - srm_account
+            - service_provider
+        description: Return specified included relationships upon request
+      responses:
+        '200':
+          description: Show details for a specific Customer
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    notes: Premium customer - call ahead
+                    account_number: ACC-1234
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data: null
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/customer_by_id'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      security:
+      - OAuth2AuthorizationCode: []
+        AccessToken: []
+      - OAuth2Password: []
+        AccessToken: []
+    patch:
+      summary: Updates a customer
+      tags:
+      - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update of Customer
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    notes: Premium customer - call ahead
+                    account_number: ACC-1234
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data: null
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '400'
+                  code: decisiv:request_schema:001
+                  title: Request must be validated against exactly one of the documented schemas
+                  detail: Occurs when an invalid schema is provided
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/update_customer'
+              - $ref: '#/components/schemas/update_registered_customer'
+            examples:
+              Customer:
+                value:
+                  data:
+                    id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    type: customers
+                    attributes:
+                      name: Joe's Garage
+                      address1: 9009 Sunset Blvd
+                      address2: Door 5
+                      city: West Hollywood
+                      state: CA
+                      postal_code: '90069'
+                      phone: '+12025550128'
+                      fax: '+12025550129'
+                      country: US
+                      email: roxy.by.proxy@decisivgenerated.email
+                      notes: Premium customer - call ahead
+                      account_number: ACC-1234
+                      external_reference:
+                        business_system: ES-2112
+              Registered Customer:
+                value:
+                  data:
+                    id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    type: registered_customers
+                    attributes:
+                      external_reference:
+                        business_system: ES-2112
+      security:
+      - OAuth2AuthorizationCode: []
+        AccessToken: []
+      - OAuth2Password: []
+        AccessToken: []
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /customers:
+    get:
+      tags:
+      - Customers
+      description: Returns all Customers in the system for the authenticated Service Location
+      operationId: getCustomers
+      parameters:
+      - $ref: '#/components/parameters/createdBeforeParam'
+      - $ref: '#/components/parameters/createdAfterParam'
+      - $ref: '#/components/parameters/updatedBeforeParam'
+      - $ref: '#/components/parameters/updatedAfterParam'
+      - $ref: '#/components/parameters/serviceLocationIdParam'
+      - $ref: '#/components/parameters/customerNameParam'
+      - $ref: '#/components/parameters/dmsIdParam'
+      responses:
+        '200':
+          description: List of customers in the ecosystem
+          content:
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/jsonapiCustomersResponse'
+        default:
+          description: unexpected error
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/tooManyRequestsResponse'
+      security:
+      - Bearer: []
+      - OAuth2Password: []
+        TransitionToken: []
+    post:
+      tags:
+      - Customers
+      description: Creates a new Customer for use within the ecosystem
+      operationId: addCustomer
+      responses:
+        '201':
+          description: Customer Creation Success
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiCustomerResponse'
+        '400':
+          description: Asset Error
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/tooManyRequestsResponse'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/jsonapiCustomerObject'
+        description: Customer object that will be added to the ecosystem
+        required: true
+      security:
+      - Bearer: []
+      - OAuth2Password: []
+        TransitionToken: []
+    servers:
+    - url: /api/v1/
+  /customers/{id}:
+    get:
+      tags:
+      - Customers
+      description: Returns a Customer based on the provided ID
+      operationId: findCustomerById
+      parameters:
+      - name: id
+        in: path
+        description: Customer ID or UUID to fetch
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Customer details
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiCustomerResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/tooManyRequestsResponse'
+      security:
+      - Bearer: []
+      - OAuth2Password: []
+        TransitionToken: []
+    put:
+      tags:
+      - Customers
+      description: Updates a Customer record
+      operationId: updateCustomer
+      parameters:
+      - name: id
+        in: path
+        description: Customer ID or UUID to update
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Customer updated
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiCustomerResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/jsonapiErrorResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/tooManyRequestsResponse'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/jsonapiCustomerUpdateObject'
+        description: Updated Customer object
+        required: true
+      security:
+      - Bearer: []
+      - OAuth2Password: []
+        TransitionToken: []
+    servers:
+    - url: /api/v1/
+components:
+  schemas:
+    customers:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_properties-data'
+        meta:
+          type: object
+    customer_by_id:
+      example:
+        data:
+          id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+          type: customers
+          attributes:
+            name: Joe's Garage
+            address1: 9009 Sunset Blvd
+            address2: Door 5
+            city: West Hollywood
+            state: CA
+            postal_code: '90069'
+            phone: '+12025550128'
+            fax: '+12025550129'
+            country: US
+            email: roxy.by.proxy@decisivgenerated.email
+            notes: Premium customer - call ahead
+            account_number: ACC-1234
+            external_reference:
+              business_system: ES-2112
+          relationships:
+            srm_account:
+              data: null
+            service_location:
+              data:
+                type: service_providers
+                id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customers
+              - registered_customers
+              - service_group_customers
+              - service_group_registered_customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+            relationships:
+              type: object
+              properties:
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+                service_location:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+      required:
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    customer_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - customers
+          - registered_customers
+          - service_group_customers
+          - service_group_registered_customers
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the customer
+              maxLength: 100
+            address1:
+              type: string
+              description: Primary address information
+              maxLength: 100
+            address2:
+              type: string
+              description: Secondary address information
+              maxLength: 100
+            city:
+              type: string
+              description: City in which the business resides
+              maxLength: 100
+            state:
+              type: string
+              description: Second part of the `ISO 3166-2` code indicating the state
+              minLength: 1
+              maxLength: 3
+              example: NJ
+            country:
+              type: string
+              description: '`ISO 3166-1` alpha-2 code indicating the country'
+              minLength: 2
+              maxLength: 2
+              example: US
+            postal_code:
+              type: string
+              description: Postal ZIP Code
+              maxLength: 20
+            phone:
+              type: string
+              description: Telephone number, must conform to E.164 standard
+              maxLength: 60
+            fax:
+              type: string
+              description: Fax number, must conform to E.164 standard
+              maxLength: 60
+            email:
+              type: string
+              description: Email contact information
+              maxLength: 128
+            notes:
+              type: string
+              description: Free-form notes about the customer
+              example: Premium customer - call ahead
+            account_number:
+              type: string
+              description: Account number for the customer (applies to MVP/OEM accounts)
+              maxLength: 36
+              example: ACC-1234
+            external_reference:
+              type: object
+              description: Reference Identifiers used outside of Decisiv SRM
+              properties:
+                customer_number:
+                  type: string
+                  description: Number used to identify Customer record in external system
+                  minLength: 1
+                  maxLength: 40
+                  deprecated: true
+                business_system:
+                  type: string
+                  description: Number used to identify Customer record in external system
+                  minLength: 1
+                  maxLength: 40
+        relationships:
+          type: object
+          properties:
+            srm_account:
+              $ref: '#/components/schemas/relationship_object'
+            service_location:
+              $ref: '#/components/schemas/relationship_object'
+    update_registered_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - registered_customers
+            attributes:
+              type: object
+              properties:
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+          required:
+          - attributes
+          - type
+          - id
+    update_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+          required:
+          - attributes
+          - type
+          - id
+    create_customer:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+              required:
+              - name
+              - external_reference
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customers
+              - registered_customers
+              - service_group_customers
+              - service_group_registered_customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+            relationships:
+              type: object
+              properties:
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+                service_location:
+                  $ref: '#/components/schemas/relationship_object'
+    jsonapiCustomersResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 35
+          description: Name of company
+          example: Runaway Jim Trucking
+        address1:
+          type: string
+          maxLength: 40
+          description: Main address - Line 1
+          example: 100 Famous Mockingbird Lane
+        address2:
+          type: string
+          maxLength: 40
+          description: Main address - Line 2
+          example: 2410 Sloan Street
+        city:
+          type: string
+          maxLength: 25
+          description: City name
+          example: Gamehendge
+        state:
+          type: string
+          maxLength: 2
+          description: Postal abbreviation for the state or province
+          example: VT
+        postal_code:
+          type: string
+          maxLength: 10
+          example: '25610'
+          description: USPS zip code or Canadian postal code
+        country:
+          type: string
+          maxLength: 20
+          description: Country in which the state or province is located
+          example: US
+        phone:
+          type: string
+          maxLength: 10
+          description: Main office telephone number
+          example: 555-5555
+        fax:
+          type: string
+          maxLength: 10
+          description: Main office fax telephone number
+          example: 555-5555
+        email:
+          type: string
+          maxLength: 128
+          description: Main email address to be used for communication with the customer during estimating and repair processes
+          example: contact@decisiv.net
+        note:
+          type: string
+          maxLength: 300
+          description: Special instructions and / or any other information which will be useful to Service Network CSR while using DSRM
+          example: Note for contact
+        dms_id:
+          type: string
+          maxLength: 40
+          example: '12345'
+          description: Dealer Management System id
+        created_at:
+          type: string
+          example: '2023-10-17T15:50:52.133Z'
+        updated_at:
+          type: string
+          example: '2023-10-17T15:50:52.133Z'
+        created_by:
+          type: string
+          example: current_user
+        updated_by:
+          type: string
+          example: current_user
+    JSONAPI_Errors:
+      title: JSONAPI_Errors
+      type: array
+      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
+
+
+        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
+
+
+        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+
+        '
+      items:
+        $ref: '#/components/schemas/JSONAPI_Error'
+    JSONAPI_Error:
+      title: JSONAPI_Error
+      type: object
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
+
+        '
+      properties:
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+        id:
+          description: a unique identifier for this particular ocurrence of the problem.
+          type: string
+        links:
+          description: a links object containing the following members.
+          type: object
+          properties:
+            about:
+              type: string
+              description: a link that leads to further details about this particular occurrence of the problem.
+        meta:
+          type: object
+          description: a meta object containing non-standard meta-information about the error.
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+        source:
+          type: object
+          description: an object containing references to the source of the error, optionally including any of the following members.
+          properties:
+            parameter:
+              type: string
+              description: a string indicating which URI query parameter caused the error.
+            pointer:
+              type: string
+              description: a JSON pointer (RFC6901) to the associated entity in the request document.
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+    jsonapiCustomerUpdateObject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        name:
+          type: string
+          maxLength: 35
+          description: Name of company
+          example: Runaway Jim Trucking
+        address1:
+          type: string
+          maxLength: 40
+          description: Main address - Line 1
+          example: 100 Famous Mockingbird Lane
+        address2:
+          type: string
+          maxLength: 40
+          description: Main address - Line 2
+          example: 2410 Sloan Street
+        city:
+          type: string
+          maxLength: 25
+          description: City name
+          example: Gamehendge
+        state:
+          type: string
+          maxLength: 2
+          description: Postal abbreviation for the state or province
+          example: VT
+        postal_code:
+          type: string
+          maxLength: 10
+          example: '25610'
+          description: USPS zip code or Canadian postal code
+        country:
+          type: string
+          maxLength: 20
+          description: Country in which the state or province is located
+          example: US
+        phone:
+          type: string
+          maxLength: 10
+          description: Main office telephone number
+          example: 555-5555
+        fax:
+          type: string
+          maxLength: 10
+          description: Main office fax telephone number
+          example: 555-5555
+        email:
+          type: string
+          maxLength: 128
+          description: Main email address to be used for communication with the customer during estimating and repair processes
+          example: contact@decisiv.net
+        note:
+          type: string
+          maxLength: 300
+          description: Special instructions and / or any other information which will be useful to Service Network CSR while using DSRM
+          example: Note for contact
+        dms_id:
+          type: string
+          maxLength: 40
+          example: '12345'
+          description: Dealer Management System id
+    tooManyRequestsResponseErrorWithExample:
+      title: tooManyRequestsResponseErrorWithExample
+      type: object
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
+
+        '
+      properties:
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+          example: '429'
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+          example: The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+          example: '429'
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+          example: Too Many Requests
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Errors'
+    tooManyRequestsResponseError:
+      title: Too Many Requests
+      type: array
+      description: 'Access restricted for a given user or application due to undesired behavior
+
+        '
+      items:
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+    tooManyRequestsResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/tooManyRequestsResponseError'
+    jsonapiCustomerObject:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          maxLength: 35
+          description: Name of company
+          example: Runaway Jim Trucking
+        address1:
+          type: string
+          maxLength: 40
+          description: Main address - Line 1
+          example: 100 Famous Mockingbird Lane
+        address2:
+          type: string
+          maxLength: 40
+          description: Main address - Line 2
+          example: 2410 Sloan Street
+        city:
+          type: string
+          maxLength: 25
+          description: City name
+          example: Gamehendge
+        state:
+          type: string
+          maxLength: 2
+          description: Postal abbreviation for the state or province
+          example: VT
+        postal_code:
+          type: string
+          maxLength: 10
+          example: '25610'
+          description: USPS zip code or Canadian postal code
+        country:
+          type: string
+          maxLength: 20
+          description: Country in which the state or province is located
+          example: US
+        phone:
+          type: string
+          maxLength: 10
+          description: Main office telephone number
+          example: 555-5555
+        fax:
+          type: string
+          maxLength: 10
+          description: Main office fax telephone number
+          example: 555-5555
+        email:
+          type: string
+          maxLength: 128
+          description: Main email address to be used for communication with the customer during estimating and repair processes
+          example: contact@decisiv.net
+        note:
+          type: string
+          maxLength: 300
+          description: Special instructions and / or any other information which will be useful to Service Network CSR while using DSRM
+          example: Note for contact
+        dms_id:
+          type: string
+          maxLength: 40
+          example: '12345'
+          description: Dealer Management System id
+    jsonapiCustomerResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 35
+          description: Name of company
+          example: Runaway Jim Trucking
+        address1:
+          type: string
+          maxLength: 40
+          description: Main address - Line 1
+          example: 100 Famous Mockingbird Lane
+        address2:
+          type: string
+          maxLength: 40
+          description: Main address - Line 2
+          example: 2410 Sloan Street
+        city:
+          type: string
+          maxLength: 25
+          description: City name
+          example: Gamehendge
+        state:
+          type: string
+          maxLength: 2
+          description: Postal abbreviation for the state or province
+          example: VT
+        postal_code:
+          type: string
+          maxLength: 10
+          example: '25610'
+          description: USPS zip code or Canadian postal code
+        country:
+          type: string
+          maxLength: 20
+          description: Country in which the state or province is located
+          example: US
+        phone:
+          type: string
+          maxLength: 10
+          description: Main office telephone number
+          example: 555-5555
+        fax:
+          type: string
+          maxLength: 10
+          description: Main office fax telephone number
+          example: 555-5555
+        email:
+          type: string
+          maxLength: 128
+          description: Main email address to be used for communication with the customer during estimating and repair processes
+          example: contact@decisiv.net
+        note:
+          type: string
+          maxLength: 300
+          description: Special instructions and / or any other information which will be useful to Service Network CSR while using DSRM
+          example: Note for contact
+        dms_id:
+          type: string
+          maxLength: 40
+          example: '12345'
+          description: Dealer Management System id
+        created_at:
+          type: string
+          example: '2023-10-17T15:50:52.133Z'
+        updated_at:
+          type: string
+          example: '2023-10-17T15:50:52.133Z'
+        created_by:
+          type: string
+          example: current_user
+        updated_by:
+          type: string
+          example: current_user
+  parameters:
+    createdAfterParam:
+      name: filter[created_after]
+      in: query
+      description: 'Return records created after date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYYYDD
+    serviceLocationIdParam:
+      name: filter[service_location_id]
+      in: query
+      required: false
+      description: ID of Service Location
+      schema:
+        type: string
+    customerNameParam:
+      name: filter[name]
+      in: query
+      description: 'Partial match for Customer Name, ex: Pens*'
+      required: false
+      schema:
+        type: string
+        minLength: 4
+    updatedBeforeParam:
+      name: filter[updated_before]
+      in: query
+      description: 'Return records updated before date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYYYDD
+    updatedAfterParam:
+      name: filter[updated_after]
+      in: query
+      description: 'Return records updated after date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYYYDD
+    dmsIdParam:
+      name: filter[dms_id]
+      in: query
+      description: Dealer Management System id to filter collection by
+      required: false
+      schema:
+        type: string
+    createdBeforeParam:
+      name: filter[created_before]
+      in: query
+      description: 'Return records created before date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYYYDD
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    TransitionToken:
+      type: apiKey
+      in: header
+      name: X-Decisiv-Transition-Token
+      description: The transition token must be specified when using OAuth. Please see https://api-docs.decisiv.net/docs/api/oauth/
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+x-refined-from:
+- decisiv-service-management-openapi.yml
+- decisiv-service-provider-openapi.yml

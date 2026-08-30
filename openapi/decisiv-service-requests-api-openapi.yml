@@ -1,0 +1,1761 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Service Requests API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Service Requests
+paths:
+  /asset_management/{srm_account_id}/v1/service_requests:
+    get:
+      summary: List all Service requests available for the requested account
+      operationId: listServiceRequests
+      description: Lists all service requests available for the requested account.
+      tags:
+      - Service Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[event_timestamps.requested_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list service requests requested _less than_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.requested_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list service requests requested _less than or equal to_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.requested_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list service requests requested _greater than_ a specified `ISO8601` timestamp.
+      - name: filter[event_timestamps.requested_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list service requests requested _greater than or equal to_ a specified `ISO8601` timestamp.
+      - name: filter[account.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          minLength: 36
+          maxLength: 36
+        description: Filter service requests based upon the specified `Account` identifier
+      - name: filter[account.external_reference.srm_account]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter service requests based upon the specified `SRM account` external reference
+      - name: filter[service_provider.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          minLength: 36
+          maxLength: 36
+        description: Filter service requests based upon the specified `Service Provider` identifier
+      - name: filter[status]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter service requests by status
+      - name: filter[registered_asset.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          minLength: 36
+          maxLength: 36
+        description: Filter service requests based upon the specified `Registered Asset` identifier
+      - name: filter[case.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+          minLength: 36
+          maxLength: 36
+        description: Filter service requests based upon the specified `Case` identifier
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_asset
+            - service_provider
+            - case
+            - primary_contact
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of Service requests
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 22027e64-4191-41fd-b0e2-6f6c489d8b2a
+                  type: service_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    status: Accepted
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      first_name: Gandalf
+                      last_name: The Gray
+                      email: gandalf@thegray.com
+                      relation: Frodo
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    driver:
+                      first_name: Bilbo
+                      last_name: Baggins
+                      email: bilbo@baggins.com
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+              schema:
+                $ref: '#/components/schemas/service_requests'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+                - title: Invalid filter value
+                  code: decisiv:filters:010
+                  detail: Invalid filter value `{{invalid_filter}}`. Expected an ISO 8601 timestamp.
+                  status: '400'
+                  source:
+                    parameter: filter[event_timestamps.requested_at:gte]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a new Service Request
+      operationId: createServiceRequest
+      description: Creates a new Service Request for the requested account.
+      tags:
+      - Service Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - service_request:submitted
+            - decisiv:asset_management:service_request:submitted
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '200':
+          description: Returns the created service request
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 22027e64-4191-41fd-b0e2-6f6c489d8b2a
+                  type: service_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    status: Accepted
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      first_name: Gandalf
+                      last_name: The Gray
+                      email: gandalf@thegray.com
+                      relation: Frodo
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    driver:
+                      first_name: Bilbo
+                      last_name: Baggins
+                      email: bilbo@baggins.com
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+              schema:
+                $ref: '#/components/schemas/service_request'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid silence events header:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+                Missing required relationship:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:relationships:002
+                      title: Missing required relationship
+                      detail: The required relationship registered_asset is missing
+                      source:
+                        pointer: /data/relationships/registered_asset
+                Missing required attribute value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/complaint
+                Invalid timestamp value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:006
+                      title: Invalid Timestamp Format
+                      detail: Timestamps must conform to ISO 8601 standard in the format of "YYYY-MM-DDTHH:MM:SSZ"
+                      source:
+                        pointer: /data/attributes/event_timestamps/requested_at
+                Invalid odometer_unit value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid odometer_unit value provided - Needs to be either 'km' or 'mi'
+                      source:
+                        pointer: /data/attributes/asset_information/odometer_unit
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Service Provider does not have a contact to receive request / Registered Asset is not owned by the dealer or does not have owner / Relationship not found / Missing required contact field / Invalid state
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Service Provider does not have a contact to receive request:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:service_requests:002
+                      title: Service Provider is not currently available for accepting requests
+                      detail: Triggered when the service provider does not have a contact to receive the request
+                      source:
+                        pointer: /data/relationships/service_provider/data/id
+                Registered Asset is not owned by the dealer or does not have owner:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:service_requests:001
+                      title: Provided Registered Asset is not enrolled for this account
+                      detail: Triggered when the registered asset is not owned by any dealers on the account
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Relationship not found:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Triggered when the record is not found by the provided identifier
+                      source:
+                        pointer: /data/relationships/registered_asset/data/id
+                Missing required contact field:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:contacts:002
+                      title: Must be present when primary_contact information has been provided.
+                      detail: Triggered when contact data has been provided with missing mandatory fields
+                      source:
+                        pointer: /data/attributes/primary_contact/first_name
+                Invalid state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:002
+                      title: Invalid state value
+                      detail: Invalid format for state value, must be ISO 3166-2
+                      source:
+                        pointer: /data/attributes/breakdown/state
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_service_request'
+            examples:
+              Service Request:
+                value:
+                  data:
+                    type: service_requests
+                    attributes:
+                      complaint: transmission leaks on left side
+                      po_number: PO836743
+                      auth_number: AUTH984107
+                      note: Initial Note
+                      asset_information:
+                        odometer_value: 1234566
+                        odometer_unit: mi
+                      primary_contact:
+                        first_name: Gandalf
+                        last_name: The Gray
+                        email: gandalf@thegray.com
+                        relation: Frodo
+                        phone:
+                          mobile: (582) 123-1234
+                          work: (524) 123-1234
+                      driver:
+                        first_name: Bilbo
+                        last_name: Baggins
+                        email: bilbo@baggins.com
+                        phone:
+                          mobile: (582) 123-1234
+                          work: (524) 123-1234
+                      breakdown:
+                        location: Dorris
+                        city: South Lake Tahoe
+                        state: KY
+                    relationships:
+                      registered_asset:
+                        data:
+                          type: registered_assets
+                          id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                      service_provider:
+                        data:
+                          type: service_providers
+                          id: 49babff7-536d-4262-b267-de66a19452cf
+                      primary_contact:
+                        data:
+                          type: contacts
+                          id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+  /asset_management/{srm_account_id}/v1/service_requests/{id}:
+    get:
+      summary: Retrieves a Service Request available for the requested account
+      operationId: getServiceRequest
+      description: Returns details for a specific Service Request by ID.
+      tags:
+      - Service Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Retrieves a Service request
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 22027e64-4191-41fd-b0e2-6f6c489d8b2a
+                  type: service_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    status: Accepted
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      first_name: Gandalf
+                      last_name: The Gray
+                      email: gandalf@thegray.com
+                      relation: Frodo
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    driver:
+                      first_name: Bilbo
+                      last_name: Baggins
+                      email: bilbo@baggins.com
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+              schema:
+                $ref: '#/components/schemas/service_request'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    put:
+      summary: Updates a Service Request availavable for the requested account
+      operationId: updateServiceRequest
+      description: Updates an existing Service Request for the requested account.
+      tags:
+      - Service Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - service_request:canceled
+            - decisiv:asset_management:service_request:canceled
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '200':
+          description: Show the updated Service Request
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 22027e64-4191-41fd-b0e2-6f6c489d8b2a
+                  type: service_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    status: Accepted
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      first_name: Gandalf
+                      last_name: The Gray
+                      email: gandalf@thegray.com
+                      relation: Frodo
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    driver:
+                      first_name: Bilbo
+                      last_name: Baggins
+                      email: bilbo@baggins.com
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+              schema:
+                $ref: '#/components/schemas/service_request'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+                - title: Bad Request
+                  detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                  code: decisiv:silence_webhook_events:001
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: This response may occur when there is an error during the request processing.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '422'
+                  code: decisiv:base:unexpected_value:103
+                  title: Invalid value
+                  detail: 'Invalid Value for attribute - Valid values are: ["canceled", "pending"]'
+                  source:
+                    pointer: /data/attributes/status
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/service_request'
+            examples:
+              Service Request:
+                value:
+                  data:
+                    id: 22027e64-4191-41fd-b0e2-6f6c489d8b2a
+                    type: service_requests
+                    attributes:
+                      status: canceled
+  /asset_management/{srm_account_id}/v1/service_requests/{id}/cancel:
+    post:
+      summary: Cancel service request
+      operationId: cancelServiceRequest
+      description: Cancels a Service Request.
+      tags:
+      - Service Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 22027e64-4191-41fd-b0e2-6f6c489d8b2a
+                  type: service_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      first_name: Gandalf
+                      last_name: The Gray
+                      email: gandalf@thegray.com
+                      relation: Frodo
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    driver:
+                      first_name: Bilbo
+                      last_name: Baggins
+                      email: bilbo@baggins.com
+                      phone:
+                        mobile: (582) 123-1234
+                        work: (524) 123-1234
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                    status: Canceled
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+                    service_provider:
+                      data:
+                        type: service_providers
+                        id: 49babff7-536d-4262-b267-de66a19452cf
+                    case:
+                      data: null
+                    primary_contact:
+                      data:
+                        type: contacts
+                        id: 7da042d2-c47b-4748-ba65-c114adf1cf62
+              schema:
+                $ref: '#/components/schemas/service_request'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: invalid previous status
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: decisiv:sublet_requests:005
+                  status: '422'
+                  title: Unprocessable record
+                  detail: Only Sublet Requests with a status of 'Canceled' may be reopened by the requesting account
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    service_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - service_requests
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: PO number
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The auth number
+                  examples:
+                  - '1234'
+                note:
+                  type: string
+                  description: The notes for the service request
+                  examples:
+                  - Initial note
+                reference_number:
+                  type: number
+                  description: Integer representation of the service request ID inside of the User Interface
+                status:
+                  type: string
+                  description: Status of the service request
+                  examples:
+                  - Pick-up
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the service request was updated'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the service request was created'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_information:
+                  type: object
+                  description: The asset information when the service request was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                      examples:
+                      - mi
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: State of the breakdown
+                      examples:
+                      - CT
+                primary_contact:
+                  type: object
+                  description: Primary contact information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    relation:
+                      type: string
+                      examples:
+                      - Bobby
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                driver:
+                  type: object
+                  description: Driver information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                metadata:
+                  type: string
+                  additionalProperties: true
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the service request
+                  properties:
+                    requested_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the service was requested'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+            relationships:
+              type: object
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+                case:
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  description: The contact designated as the primary contact for the service request. Resolved from the service request's descriptive primary contact information against the fleet's contacts; absent when no matching contact is found.
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    create_service_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - service_requests
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: PO number
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The auth number
+                  examples:
+                  - '1234'
+                note:
+                  type: string
+                  description: The notes for the service request
+                  examples:
+                  - Initial note
+                vmrs_ck14_code:
+                  type: string
+                  description: VMRS CK14 code
+                vmrs_ck15_code:
+                  type: string
+                  description: VMRS CK15 code
+                vmrs_ck16_code:
+                  type: string
+                  description: VMRS CK16 code
+                vmrs_ck17_code:
+                  type: string
+                  description: VMRS CK17 code
+                cause_vmrs_ck18_code:
+                  type: string
+                  description: Cause VMRS CK18 code
+                complaint_vmrs_ck33_code:
+                  type: string
+                  description: Complaint VMRS CK33 code
+                complaint_vmrs_ck79_code:
+                  type: string
+                  description: Complaint VMRS CK79 code
+                asset_information:
+                  type: object
+                  description: The asset information when the service request was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                      examples:
+                      - mi
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: State of the breakdown
+                      examples:
+                      - CT
+                primary_contact:
+                  type: object
+                  description: Primary contact information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    relation:
+                      type: string
+                      examples:
+                      - Bobby
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                driver:
+                  type: object
+                  description: Driver information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the service request
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_at:
+                      type: string
+              required:
+              - complaint
+            relationships:
+              type: object
+              required:
+              - service_provider
+              - registered_asset
+              properties:
+                service_provider:
+                  description: Information of the service provider that will be requested
+                  $ref: '#/components/schemas/relationship_object'
+                registered_asset:
+                  description: Information of the registered asset that needs to be serviced
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  description: Optional linkage to an existing fleet contact to use as the primary contact for the service request. The linkage `id` is a contact identifier as returned by the contacts endpoints. When provided, its details take precedence over the descriptive `primary_contact` attribute.
+                  $ref: '#/components/schemas/relationship_object'
+    service_request_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - service_requests
+        attributes:
+          type: object
+          properties:
+            complaint:
+              type: string
+              description: Initially reported information from driver or other customer entity
+              examples:
+              - Broken truck
+            po_number:
+              type: string
+              description: PO number
+              examples:
+              - '1234'
+            auth_number:
+              type: string
+              description: The auth number
+              examples:
+              - '1234'
+            note:
+              type: string
+              description: The notes for the service request
+              examples:
+              - Initial note
+            reference_number:
+              type: number
+              description: Integer representation of the service request ID inside of the User Interface
+            status:
+              type: string
+              description: Status of the service request
+              examples:
+              - Pick-up
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the service request was updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the service request was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            asset_information:
+              type: object
+              description: The asset information when the service request was created
+              properties:
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                  examples:
+                  - mi
+            breakdown:
+              type: object
+              description: Information about the breakdown location
+              properties:
+                city:
+                  type: string
+                  description: City of breakdown
+                  examples:
+                  - North Haven
+                location:
+                  type: string
+                  description: Exact map location of the breakdown
+                  examples:
+                  - 41.395022,-72.856326
+                state:
+                  type: string
+                  description: State of the breakdown
+                  examples:
+                  - CT
+            primary_contact:
+              type: object
+              description: Primary contact information
+              properties:
+                first_name:
+                  type: string
+                  description: First name
+                  examples:
+                  - Martha
+                last_name:
+                  type: string
+                  description: Last name
+                  examples:
+                  - Wayne
+                email:
+                  type: string
+                  description: Contact email
+                  examples:
+                  - martha@wayne.com
+                relation:
+                  type: string
+                  examples:
+                  - Bobby
+                phone:
+                  type: object
+                  description: Phone information
+                  properties:
+                    mobile:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+                    work:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+            driver:
+              type: object
+              description: Driver information
+              properties:
+                first_name:
+                  type: string
+                  description: First name
+                  examples:
+                  - Martha
+                last_name:
+                  type: string
+                  description: Last name
+                  examples:
+                  - Wayne
+                email:
+                  type: string
+                  description: Contact email
+                  examples:
+                  - martha@wayne.com
+                phone:
+                  type: object
+                  description: Phone information
+                  properties:
+                    mobile:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+                    work:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+            metadata:
+              type: string
+              additionalProperties: true
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the service request
+              properties:
+                requested_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the service was requested'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_completion_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the completion time of the case'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_appointment_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the appointment time'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_downtime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+        relationships:
+          type: object
+          properties:
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+            service_provider:
+              $ref: '#/components/schemas/relationship_object'
+            case:
+              $ref: '#/components/schemas/relationship_object'
+            primary_contact:
+              description: The contact designated as the primary contact for the service request. Resolved from the service request's descriptive primary contact information against the fleet's contacts; absent when no matching contact is found.
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    service_requests:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_request_properties-data'
+        meta:
+          type: object
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

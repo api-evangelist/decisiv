@@ -1,0 +1,978 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Sublet Associations API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Sublet Associations
+paths:
+  /service_management/{srm_account_id}/v1/sublet_associations:
+    get:
+      summary: Retrieves a list of sublet associations
+      tags:
+      - Sublet Associations
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sublet_case
+            - parent_case
+        description: The relationships to be included.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: e45cf094-4141-4ab0-b2a5-90271aaa137d
+                  type: sublet_associations
+                  attributes:
+                    reason: Text description of the reason for the association
+                  relationships:
+                    parent_case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    sublet_case:
+                      data:
+                        type: sublet_cases
+                        id: dc8b7b66-288c-4072-9e31-3df871d5e561
+              schema:
+                $ref: '#/components/schemas/sublet_associations'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a sublet association for two cases
+      tags:
+      - Sublet Associations
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Creates a Case for the specified Sublet Association
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: e45cf094-4141-4ab0-b2a5-90271aaa137d
+                  type: sublet_associations
+                  attributes:
+                    reason: Text description of the reason for the association
+                  relationships:
+                    parent_case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    sublet_case:
+                      data:
+                        type: sublet_cases
+                        id: dc8b7b66-288c-4072-9e31-3df871d5e561
+              schema:
+                $ref: '#/components/schemas/sublet_association'
+        '400':
+          description: Empty body error / Invalid type in relationships error
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Empty body error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_schema:001
+                      title: Request must be validated against exactly one of the documented schemas
+                      detail: Occurs when an invalid schema is provided
+                Invalid type in relationships error:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''{{invalid_resource}}'' is an invalid resource'
+                      code: '''wrong-type'' is an invalid resource'
+                      source:
+                        pointer: /data/relationships/parent_case|sublet_case/type
+        '401':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '412':
+          description: Association not allowed
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '412'
+                  code: decisiv:sublet_associations:007
+                  title: Ineligible Account
+                  detail: Service Provider account does not participate in any configured Sublet Association Program
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Invalid relationship uuid format error / Parent case not found for the requested Account error / Sublet case not found or not owned by service provider error / Case closed error / Sublet case older than 30 days error / Cases with different asset associated error / Same case error / Cases already associated
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid relationship uuid format error:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/parent_case|sublet_case/data/id
+                Parent case not found for the requested Account error:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:sublet_associations:008
+                      title: Parent Case Not Found
+                      detail: Parent Case not found for the requested Account
+                      source:
+                        pointer: /data/relationships/parent_case/data/id
+                Case closed error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Closed case not eligible
+                      detail: Cases in the closed state cannot be modified
+                      code: decisiv:sublet_associations:001
+                      source:
+                        pointer: /data/relationships/'parent_case|sublet_case'/id
+                Sublet case older than 30 days error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Invalid Action Request
+                      detail: Case should have been created in the last 30 days
+                      code: decisiv:sublet_associations:002
+                      source:
+                        pointer: /data/relationships/sublet_case/id
+                Sublet case not found or not owned by service provider error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Sublet Case Not Found
+                      detail: The identified sublet case can not be found
+                      code: decisiv:sublet_requests:006
+                      source:
+                        pointer: /data/relationships/sublet_case/data/id
+                Cases with different asset associated error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Invalid Action Request
+                      detail: Cases must be associated with the same asset
+                      code: decisiv:sublet_associations:004
+                      source:
+                        pointer: /data/relationships/sublet_case/id
+                Same case error:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Invalid Action Request
+                      detail: Case cannot be associated with itself
+                      code: decisiv:sublet_associations:005
+                      source:
+                        pointer: /data/relationships
+                Cases already associated:
+                  value:
+                    errors:
+                    - status: '422'
+                      title: Invalid Action Request
+                      detail: Parent case and sublet case have already been associated
+                      code: decisiv:sublet_associations:006
+                      source:
+                        pointer: /data/relationships
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_sublet_association'
+            examples:
+              Sublet Association:
+                value:
+                  data:
+                    type: sublet_associations
+                    attributes:
+                      reason: Text description of the reason for the association
+                    relationships:
+                      parent_case:
+                        data:
+                          type: cases
+                          id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                      sublet_case:
+                        data:
+                          type: in_network_cases
+                          id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+  /service_management/{srm_account_id}/v1/sublet_associations/{id}:
+    get:
+      summary: List details on a specific sublet associations
+      tags:
+      - Sublet Associations
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show details for sublet association
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: e45cf094-4141-4ab0-b2a5-90271aaa137d
+                  type: sublet_associations
+                  attributes:
+                    reason: Text description of the reason for the association
+                  relationships:
+                    parent_case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    sublet_case:
+                      data:
+                        type: sublet_cases
+                        id: dc8b7b66-288c-4072-9e31-3df871d5e561
+              schema:
+                $ref: '#/components/schemas/sublet_association'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    sublet_association:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_associations
+            attributes:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for create the association
+                  examples:
+                  - Text description of the reason for the association
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                sublet_case:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - sublet_case
+              - parent_case
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    sublet_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                po_number:
+                  type: string
+                  description: Purchase Order number
+                  maxLength: 40
+                auth_number:
+                  type: string
+                  description: Authorization number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                reference_number:
+                  type: integer
+                  description: Integer representation of the sublet request ID inside of the User Interface
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  example: Hold (auth)
+                pricing:
+                  type: object
+                  description: Total price
+                  properties:
+                    parts_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation parts
+                    labor_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation labor
+                    taxes_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation taxes
+                    total:
+                      type: string
+                      format: decimal
+                      description: Total price
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      example: 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      example: TR3847
+                    invoice_date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` format
+                      example: '2025-04-10T13:30:41Z'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the sublet request
+                  properties:
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2025-04-10T13:10:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase was marked as completed and closed'
+                      example: '2025-04-10T13:30:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2025-04-10T13:15:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase started'
+                      example: '2025-04-10T12:00:41Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was created'
+                  example: 2025-04-10 12:30:41 UTC
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
+                  example: 2025-04-10 13:21:41 UTC
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    create_sublet_association:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - sublet_associations
+            attributes:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for create the association
+                  examples:
+                  - Text description of the reason for the association
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                sublet_case:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - parent_case
+              - sublet_case
+          required:
+          - type
+          - attributes
+          - relationships
+    parent_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  example: Broken truck
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  example: '1234'
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  example: '1234'
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  example: '1234'
+                reference_number:
+                  type: number
+                  description: Integer representation of the Case ID inside of the User Interface
+                closed:
+                  type: boolean
+                  description: Indicates whether the case has been closed.
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  example: Hold (auth)
+                status:
+                  type: string
+                  description: Status of the case
+                  example: Pick-up
+                invoice:
+                  type: object
+                  description: The invoice information for the case
+                  properties:
+                    total:
+                      type: number
+                      description: The total amount of the invoice
+                    number:
+                      type: number
+                      description: The invoice number
+                    invoice_date:
+                      type: string
+                      description: The date of the invoice
+                      example: '2022-04-14T05:23:45Z'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the case
+                  properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      example: '2022-04-14T05:23:45Z'
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      example: '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      example: '2022-04-14T05:23:45Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2022-04-14T05:23:45Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2022-04-14T05:23:45Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      example: '2022-04-14T05:23:45Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      example: '2022-04-14T05:23:45Z'
+                asset_information:
+                  type: object
+                  description: The asset information when the case was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
+                      example: mi
+                    unit_number:
+                      type: string
+                      description: The unit number
+                    cargo:
+                      type: object
+                      properties:
+                        unit:
+                          type: string
+                          description: The unit number
+                        loaded:
+                          type: boolean
+                          description: Indicates whether the cargo is loaded.
+                        load:
+                          type: number
+                          description: The load amount
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      example: North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      example: 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: State of the breakdown
+                      example: CT
+          required:
+          - attributes
+          - type
+          - id
+    sublet_association_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - sublet_associations
+        attributes:
+          type: object
+          properties:
+            reason:
+              type: string
+              description: Reason for create the association
+              examples:
+              - Text description of the reason for the association
+        relationships:
+          type: object
+          properties:
+            parent_case:
+              $ref: '#/components/schemas/relationship_object'
+            sublet_case:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - sublet_case
+          - parent_case
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    sublet_associations:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_association_properties-data'
+        meta:
+          type: object
+        included:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/parent_case'
+            - $ref: '#/components/schemas/sublet_case'
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

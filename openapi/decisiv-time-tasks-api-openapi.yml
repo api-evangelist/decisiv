@@ -1,0 +1,1111 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Time Tasks API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Time Tasks
+paths:
+  /service_management/{srm_account_id}/v1/time_tasks:
+    get:
+      summary: Retrieves a list of time tasks
+      tags:
+      - Time Tasks
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - employee
+            - subject
+        description: The relationships to be included.
+      - name: filter[event_timestamps.stopped_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.stopped_at:gt, using exact matching search
+      - name: filter[event_timestamps.stopped_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.stopped_at:lt, using exact matching search
+      - name: filter[event_timestamps.stopped_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.stopped_at:gte, using exact matching search
+      - name: filter[event_timestamps.stopped_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.stopped_at:lte, using exact matching search
+      - name: filter[event_timestamps.stopped_at:blank]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.stopped_at:blank, using exact matching search
+      - name: filter[event_timestamps.started_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.started_at:gt, using exact matching search
+      - name: filter[event_timestamps.started_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.started_at:lt, using exact matching search
+      - name: filter[event_timestamps.started_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.started_at:gte, using exact matching search
+      - name: filter[event_timestamps.started_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given event_timestamps.started_at:lte, using exact matching search
+      - name: filter[employee.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given employee.id, using exact matching search
+      - name: filter[subject.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the time tasks for the given subject.id, using exact matching search
+      - name: subject.type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - line_items
+        description: Filters the time tasks for the given subject.type, using exact matching search
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 8b4cb314-19f7-46ec-9393-2db04d7996fc
+                  type: time_tasks
+                  attributes:
+                    description: Change oil
+                    event_timestamps:
+                      started_at: '2025-04-10T13:28:31Z'
+                      stopped_at: '2025-04-10T13:28:31Z'
+                    created_at: 2025-04-10 13:28:31 UTC
+                    updated_at: 2025-04-10 13:28:31 UTC
+                  relationships:
+                    subject:
+                      data:
+                        type: line_items
+                        id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                    employee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/time_tasks'
+        '400':
+          description: Account filter is missing / Invalid filter / Invalid filter value / Invalid employee filter format / Invalid subject filter format / Invalid datetime filter
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                Invalid filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid filter value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:filters:002
+                      title: Invalid filter value
+                      detail: '''invalid_value'' is not a valid value for filter. Expected values: line_items'
+                      source:
+                        pointer: /filter/[subject.type]
+                Invalid employee filter format:
+                  value:
+                    errors:
+                    - code: decisiv:filters:009
+                      title: Invalid Filter Format
+                      detail: Invalid format for `employee.id`
+                      status: '400'
+                      source:
+                        parameter: filter[employee.id]
+                Invalid subject filter format:
+                  value:
+                    errors:
+                    - code: decisiv:filters:009
+                      title: Invalid Filter Format
+                      detail: Invalid format for `subject.id`
+                      status: '400'
+                      source:
+                        parameter: filter[subject.id]
+                Invalid datetime filter:
+                  value:
+                    errors:
+                    - code: decisiv:filters:010
+                      detail: Invalid filter value `{{invalid_filter}}`. Expected an ISO 8601 timestamp.
+                      status: '400'
+                      source:
+                        parameter: filter[event_timestamps.started_at:gte]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a new time task
+      tags:
+      - Time Tasks
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: The request has been fulfilled and a new resource is available.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8b4cb314-19f7-46ec-9393-2db04d7996fc
+                  type: time_tasks
+                  attributes:
+                    description: Change oil
+                    event_timestamps:
+                      started_at: '2025-04-10T13:28:31Z'
+                      stopped_at: '2025-04-10T13:28:31Z'
+                    created_at: 2025-04-10 13:28:31 UTC
+                    updated_at: 2025-04-10 13:28:31 UTC
+                  relationships:
+                    subject:
+                      data:
+                        type: line_items
+                        id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                    employee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/time_task'
+        '400':
+          description: Account filter is missing / Required key not provided / Invalid ID format for employee relationship / Invalid ID format for subject relationship
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: 400
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/event_timestamps/started_at
+                Invalid ID format for employee relationship:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/employee/data/id
+                Invalid ID format for subject relationship:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:relationships:001
+                      title: Invalid ID format requested
+                      detail: Provided ID in relationships must be a valid UUID format
+                      source:
+                        pointer: /data/relationships/subject/data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  title: Record not found
+                  source:
+                    parameter: srm_account_id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Employee not found / Subject not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Employee not found:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/employee/data/id
+                Subject not found:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data/relationships/subject/data/id
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_time_task'
+            examples:
+              Time Task:
+                value:
+                  data:
+                    type: time_tasks
+                    attributes:
+                      description: Change oil
+                      event_timestamps:
+                        started_at: '2025-04-10T13:28:31Z'
+                        stopped_at: '2025-04-10T13:28:31Z'
+                    relationships:
+                      subject:
+                        data:
+                          type: line_items
+                          id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                      employee:
+                        data:
+                          type: internal_users
+                          id: 6383dc89-05b6-4572-8979-a6257f3597ec
+  /service_management/{srm_account_id}/v1/time_tasks/{id}:
+    get:
+      summary: Retrieves a time task
+      tags:
+      - Time Tasks
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - employee
+            - subject
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8b4cb314-19f7-46ec-9393-2db04d7996fc
+                  type: time_tasks
+                  attributes:
+                    description: Change oil
+                    event_timestamps:
+                      started_at: '2025-04-10T13:28:31Z'
+                      stopped_at: '2025-04-10T13:28:31Z'
+                    created_at: 2025-04-10 13:28:31 UTC
+                    updated_at: 2025-04-10 13:28:31 UTC
+                  relationships:
+                    subject:
+                      data:
+                        type: line_items
+                        id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                    employee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/time_task'
+        '400':
+          description: Account filter is missing / Invalid ID format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                Invalid ID format:
+                  value:
+                    errors:
+                    - title: Invalid UUID Format
+                      detail: The `ID` value does not contain a valid UUID format
+                      code: '107'
+                      status: '400'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found / Time Task not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account not found:
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Record not found
+                      source:
+                        parameter: srm_account_id
+                Time Task not found:
+                  value:
+                    errors:
+                    - status: '404'
+                      code: decisiv:resource:001
+                      title: Resource Identifier - Not Found
+                      detail: The parent resource could not be found
+                      source:
+                        parameter: id
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates a Time task
+      tags:
+      - Time Tasks
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update the time task
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8b4cb314-19f7-46ec-9393-2db04d7996fc
+                  type: time_tasks
+                  attributes:
+                    description: Change oil
+                    event_timestamps:
+                      started_at: '2025-04-10T13:28:31Z'
+                      stopped_at: '2025-04-10T13:28:31Z'
+                    created_at: 2025-04-10 13:28:31 UTC
+                    updated_at: 2025-04-10 13:28:31 UTC
+                  relationships:
+                    subject:
+                      data:
+                        type: line_items
+                        id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                    employee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+              schema:
+                $ref: '#/components/schemas/time_task'
+        '400':
+          description: Account filter is missing / Invalid type / Path ID mismatch / Invalid ID format
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                Invalid type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''wrong-type'' is an invalid resource'
+                      source:
+                        pointer: /data/type
+                Path ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:002
+                      title: Invalid JSON:API Resource specified in request
+                      detail: '''79327cde-d5ce-4ce6-bdba-eebab125ae2d'' is an invalid resource'
+                      source:
+                        pointer: /data/id
+                Invalid ID format:
+                  value:
+                    errors:
+                    - title: Invalid UUID Format
+                      detail: The `ID` value does not contain a valid UUID format
+                      code: '107'
+                      status: '400'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Account not found / Time Task not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account not found:
+                  value:
+                    errors:
+                    - status: '404'
+                      title: Record not found
+                      source:
+                        parameter: srm_account_id
+                Time Task not found:
+                  value:
+                    errors:
+                    - status: '404'
+                      code: decisiv:resource:001
+                      title: Resource Identifier - Not Found
+                      detail: The parent resource could not be found
+                      source:
+                        parameter: id
+        '422':
+          description: Invalid Period Error
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Invalid Period for Timestamp
+                  detail: Timestamp can not be in the future
+                  code: decisiv:request_attributes:012
+                  status: 422
+                  source:
+                    pointer: /data/attributes/event_timestamps/stopped_at
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/time_task_update'
+            examples:
+              Time Task:
+                value:
+                  data:
+                    id: 8b4cb314-19f7-46ec-9393-2db04d7996fc
+                    type: time_tasks
+                    attributes:
+                      description: Change oil
+                      event_timestamps:
+                        stopped_at: '2025-04-10T13:28:31Z'
+    delete:
+      summary: Deletes a time task
+      tags:
+      - Time Tasks
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deletes an attachment
+          content: {}
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: The resource is read-only and cannot be updated or deleted
+                  code: decisiv:resource:003
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    time_tasks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/time_task'
+        meta:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    time_task_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for time task
+                  maxLength: 255
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the time task
+                  properties:
+                    stopped_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
+                      example: '2022-04-14T05:23:45Z'
+          required:
+          - type
+          - id
+          - attributes
+    create_time_task:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - time_tasks
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for time task
+                  maxLength: 255
+                event_timestamps:
+                  type: object
+                  required:
+                  - started_at
+                  description: All the timestamps related to the time task
+                  properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Time task was initiated'
+                      example: '2022-04-14T05:23:45Z'
+                    stopped_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
+                      example: '2022-04-14T05:23:45Z'
+              required:
+              - event_timestamps
+            relationships:
+              type: object
+              properties:
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                employee:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    time_task:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - time_tasks
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for time task
+                  maxLength: 255
+                event_timestamps:
+                  type: object
+                  required:
+                  - started_at
+                  description: All the timestamps related to the time task
+                  properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Time task was initiated'
+                      example: '2022-04-14T05:23:45Z'
+                    stopped_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
+                      example: '2022-04-14T05:23:45Z'
+              required:
+              - event_timestamps
+            relationships:
+              type: object
+              properties:
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                employee:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

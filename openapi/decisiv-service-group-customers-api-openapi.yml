@@ -1,0 +1,1043 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Service Group - Customers API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Service Group - Customers
+paths:
+  /service_management/{srm_account_id}/v1/service_group/customers:
+    get:
+      summary: List all Customers from Service group
+      tags:
+      - Service Group - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[external_reference.business_system]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `business_system` attribute.
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `name` attribute.
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 3
+        description: List `customers` that match partially the `name` attribute.
+      - name: filter[city]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `city` attribute.
+      - name: filter[state]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `customers` matching the *exact* `state` attribute.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of customers
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data: null
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                - id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                  type: registered_customers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    phone: '+12025550128'
+                    fax: '+12025550129'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    external_reference:
+                      business_system: ES-2112
+                  relationships:
+                    srm_account:
+                      data:
+                        type: srm_accounts
+                        id: 2addba31-878e-40de-b3d6-6aee375250dc
+                    service_location:
+                      data:
+                        type: service_providers
+                        id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+              schema:
+                $ref: '#/components/schemas/customers'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/service_group/customers/{id}:
+    get:
+      summary: List details on a specific Customer from Service group
+      tags:
+      - Service Group - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Show details for requested Customer
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/customer_by_id'
+              examples:
+                Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data: null
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                Registered Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: registered_customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data:
+                            type: srm_accounts
+                            id: 2addba31-878e-40de-b3d6-6aee375250dc
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                Service Group Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: service_group_customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data: null
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                Service Group Registered Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: service_group_registered_customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data:
+                            type: srm_accounts
+                            id: 2addba31-878e-40de-b3d6-6aee375250dc
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      summary: Updates a Customer from Service group
+      tags:
+      - Service Group - Customers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update of Customer
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/customer'
+              examples:
+                Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data: null
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                Registered Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: registered_customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data:
+                            type: srm_accounts
+                            id: 2addba31-878e-40de-b3d6-6aee375250dc
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                Service Group Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: service_group_customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data: null
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                Service Group Registered Customer:
+                  value:
+                    data:
+                      id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                      type: service_group_registered_customers
+                      attributes:
+                        name: Joe's Garage
+                        address1: 9009 Sunset Blvd
+                        address2: Door 5
+                        city: West Hollywood
+                        state: CA
+                        postal_code: '90069'
+                        phone: '+12025550128'
+                        fax: '+12025550129'
+                        country: US
+                        email: roxy.by.proxy@decisivgenerated.email
+                        external_reference:
+                          business_system: ES-2112
+                      relationships:
+                        srm_account:
+                          data:
+                            type: srm_accounts
+                            id: 2addba31-878e-40de-b3d6-6aee375250dc
+                        service_location:
+                          data:
+                            type: service_providers
+                            id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '400'
+                  code: decisiv:request_schema:001
+                  title: Request must be validated against exactly one of the documented schemas
+                  detail: Occurs when an invalid schema is provided
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/update_customer'
+              - $ref: '#/components/schemas/update_registered_customer'
+            examples:
+              Customer:
+                value:
+                  data:
+                    id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    type: customers
+                    attributes:
+                      name: Joe's Garage
+                      address1: 9009 Sunset Blvd
+                      address2: Door 5
+                      city: West Hollywood
+                      state: CA
+                      postal_code: '90069'
+                      phone: '+12025550128'
+                      fax: '+12025550129'
+                      country: US
+                      email: roxy.by.proxy@decisivgenerated.email
+                      external_reference:
+                        business_system: ES-2112
+              Registered Customer:
+                value:
+                  data:
+                    id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+                    type: registered_customers
+                    attributes:
+                      external_reference:
+                        business_system: ES-2112
+components:
+  schemas:
+    customers:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_properties-data'
+        meta:
+          type: object
+    customer_by_id:
+      example:
+        data:
+          id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+          type: customers
+          attributes:
+            name: Joe's Garage
+            address1: 9009 Sunset Blvd
+            address2: Door 5
+            city: West Hollywood
+            state: CA
+            postal_code: '90069'
+            phone: '+12025550128'
+            fax: '+12025550129'
+            country: US
+            email: roxy.by.proxy@decisivgenerated.email
+            notes: Premium customer - call ahead
+            account_number: ACC-1234
+            external_reference:
+              business_system: ES-2112
+          relationships:
+            srm_account:
+              data: null
+            service_location:
+              data:
+                type: service_providers
+                id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customers
+              - registered_customers
+              - service_group_customers
+              - service_group_registered_customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+            relationships:
+              type: object
+              properties:
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+                service_location:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+      required:
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    customer_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - customers
+          - registered_customers
+          - service_group_customers
+          - service_group_registered_customers
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the customer
+              maxLength: 100
+            address1:
+              type: string
+              description: Primary address information
+              maxLength: 100
+            address2:
+              type: string
+              description: Secondary address information
+              maxLength: 100
+            city:
+              type: string
+              description: City in which the business resides
+              maxLength: 100
+            state:
+              type: string
+              description: Second part of the `ISO 3166-2` code indicating the state
+              minLength: 1
+              maxLength: 3
+              example: NJ
+            country:
+              type: string
+              description: '`ISO 3166-1` alpha-2 code indicating the country'
+              minLength: 2
+              maxLength: 2
+              example: US
+            postal_code:
+              type: string
+              description: Postal ZIP Code
+              maxLength: 20
+            phone:
+              type: string
+              description: Telephone number, must conform to E.164 standard
+              maxLength: 60
+            fax:
+              type: string
+              description: Fax number, must conform to E.164 standard
+              maxLength: 60
+            email:
+              type: string
+              description: Email contact information
+              maxLength: 128
+            notes:
+              type: string
+              description: Free-form notes about the customer
+              example: Premium customer - call ahead
+            account_number:
+              type: string
+              description: Account number for the customer (applies to MVP/OEM accounts)
+              maxLength: 36
+              example: ACC-1234
+            external_reference:
+              type: object
+              description: Reference Identifiers used outside of Decisiv SRM
+              properties:
+                customer_number:
+                  type: string
+                  description: Number used to identify Customer record in external system
+                  minLength: 1
+                  maxLength: 40
+                  deprecated: true
+                business_system:
+                  type: string
+                  description: Number used to identify Customer record in external system
+                  minLength: 1
+                  maxLength: 40
+        relationships:
+          type: object
+          properties:
+            srm_account:
+              $ref: '#/components/schemas/relationship_object'
+            service_location:
+              $ref: '#/components/schemas/relationship_object'
+    update_registered_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - registered_customers
+            attributes:
+              type: object
+              properties:
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+          required:
+          - attributes
+          - type
+          - id
+    update_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+          required:
+          - attributes
+          - type
+          - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customers
+              - registered_customers
+              - service_group_customers
+              - service_group_registered_customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+            relationships:
+              type: object
+              properties:
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+                service_location:
+                  $ref: '#/components/schemas/relationship_object'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

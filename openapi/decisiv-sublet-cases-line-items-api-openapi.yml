@@ -1,0 +1,437 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Sublet Cases Line Items API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Sublet Cases Line Items
+paths:
+  /service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/line_items:
+    get:
+      summary: Retrieves a list of sublet cases line items
+      tags:
+      - Sublet Cases Line Items
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: sublet_case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The sublet case UUID
+        required: true
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of line items for the sublet case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: e4353f9d-0938-4fb1-8d81-4b8796219c2c
+                  type: sublet_case_line_items
+                  attributes:
+                    status: null
+                    name: Air Dryer Cartridge, Replacement
+                    opcode: T3789-0-04
+                    pricing:
+                      estimated_total: '330.00'
+                      fixed_total: null
+                      labor:
+                        estimated_total: '140.00'
+                        fixed_total: null
+                      parts:
+                        estimated_total: '140.00'
+                      additional_charges:
+                        estimated_total: '50.00'
+                    labor:
+                      time: 2
+                      skill_level: null
+                    parts:
+                    - number: '8675309'
+                      name: Filter
+                      quantity: 2
+                    additional_charges:
+                    - code: SHOP_SUPPLIES
+                      description: Shop supplies fee
+                      amount: '50.00'
+                      category: Service
+                      sales_tax_rate: '0.00'
+                      sales_tax_amount: '0.00'
+                      total_amount: '50.00'
+                    vmrs:
+                      code_key: '33'
+                      code_key_name: Component Code
+                      code: 023-000-000
+                      description: Engine
+              schema:
+                $ref: '#/components/schemas/sublet_case_line_items'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    sublet_case_line_items:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_case_line_item_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    sublet_case_line_item_properties-data:
+      type: object
+      description: 'A sublet case line item represents a single repair operation on the case — typically a labor task or a parts replacement performed by a sublet vendor.
+
+        '
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - sublet_case_line_items
+        attributes:
+          type: object
+          properties:
+            status:
+              type:
+              - string
+              - 'null'
+              description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values.
+              maxLength: 255
+              example: approved
+            name:
+              type:
+              - string
+              - 'null'
+              description: Name of the operation line item
+              maxLength: 510
+              example: Air Dryer Cartridge, Replacement
+            opcode:
+              type:
+              - string
+              - 'null'
+              description: Unique operation code
+              maxLength: 255
+              example: T3789-0-04
+            pricing:
+              type: object
+              description: Pricing breakdown for the line item.
+              properties:
+                estimated_total:
+                  type:
+                  - string
+                  - 'null'
+                  format: decimal
+                  description: Estimated total for the line item, dynamically calculated from labor time, parts, and additional charges. Null when the line item is fixed-price.
+                  example: '330.00'
+                fixed_total:
+                  type:
+                  - string
+                  - 'null'
+                  format: decimal
+                  description: Fixed total for the line item — a flat-rate price tied to a fixed-price opcode, not dynamically calculated. Null when the line item is estimated.
+                  example: '425.00'
+                labor:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Estimated labor price, calculated from labor time. Null when labor is fixed-price.
+                      example: '140.00'
+                    fixed_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Fixed labor price for fixed-price labor, not dynamically calculated. Null when labor is estimated.
+                      example: '180.00'
+                parts:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type: string
+                      format: decimal
+                      description: Estimated total for parts, calculated from the parts list.
+                      example: '140.00'
+                additional_charges:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type: string
+                      format: decimal
+                      description: Sum of additional charges on the line item.
+                      example: '50.00'
+            additional_charges:
+              type:
+              - array
+              - 'null'
+              description: Additional charges associated with the line item; null when none are present.
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Code of the additional charge
+                    example: FLAT
+                  description:
+                    type: string
+                    description: Description of the additional charge
+                    example: Flat fee
+                  amount:
+                    type: string
+                    format: decimal
+                    description: Amount of the additional charge
+                    example: '100.00'
+                  category:
+                    type:
+                    - string
+                    - 'null'
+                    description: Category of the additional charge
+                    example: Service
+                  sales_tax_rate:
+                    type: string
+                    format: decimal
+                    description: Sales tax rate applied to the additional charge
+                    example: '1.00'
+                  sales_tax_amount:
+                    type: string
+                    format: decimal
+                    description: Sales tax amount for the additional charge
+                    example: '1.00'
+                  total_amount:
+                    type: string
+                    format: decimal
+                    description: Total amount for the additional charge
+                    example: '101.00'
+            parts:
+              type: array
+              description: Parts associated with the line item
+              items:
+                type: object
+                properties:
+                  number:
+                    type: string
+                    description: Part number
+                    example: '8675309'
+                  name:
+                    type: string
+                    description: Part name
+                    example: Filter
+                  quantity:
+                    type: integer
+                    description: Quantity of the part
+                    example: 2
+            labor:
+              type: object
+              description: Labor associated with line item
+              properties:
+                time:
+                  type: number
+                  description: Labor hours required for the operation.
+                  example: 2
+                skill_level:
+                  type:
+                  - string
+                  - 'null'
+                  description: Labor skill level applied to the operation. Values are configurable per account — see `GET /skill_levels` for the accepted values.
+                  example: C
+            vmrs:
+              type:
+              - object
+              - 'null'
+              description: Vehicle Maintenance Reporting Standards (VMRS) coding for the line item, currently exposing Component Code (CK33). Null when no component code is assigned.
+              properties:
+                code_key:
+                  type: string
+                  description: VMRS code key — the numeric category designator within the VMRS standard (e.g., "33" identifies Component Code).
+                  example: '33'
+                code_key_name:
+                  type: string
+                  description: Human-readable name of the VMRS code key.
+                  example: Component Code
+                code:
+                  type: string
+                  description: VMRS code value within the code key (e.g., "023-000-000" identifies "Engine" within Component Code).
+                  example: 023-000-000
+                description:
+                  type: string
+                  description: Human-readable description of the VMRS code.
+                  example: Engine
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

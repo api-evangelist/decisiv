@@ -1,0 +1,1226 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Depots API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Depots
+paths:
+  /asset_management/{srm_account_id}/v1/depots:
+    get:
+      operationId: listDepots
+      description: Lists all depots for the requested account.
+      summary: List all Depots for the requested account
+      tags:
+      - Depots
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[city]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `depots` for the given `city`, using *exact* matching search.
+      - name: filter[state]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 2
+          maxLength: 2
+        description: Filters the `depots` for the given `state`, using *exact* matching search.
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `depots` for the given `name`, using *exact* matching search.
+      - name: filter[phone]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `depots` for the given `phone`, using *exact* matching search.
+      - name: filter[external_reference.fms]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `depots` for the given `external_reference.fms`, using *exact* matching search.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - registered_assets
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of depots
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                  type: depots
+                  attributes:
+                    name: Depot Company Test 1
+                    address1: 186 Donella Corners
+                    address2: 2487 Bertie Rapid
+                    city: New York
+                    state: NY
+                    postal_code: 48119-722
+                    phone: 236-776-0649
+                    fax: 236-776-0649
+                    email: test@test.com
+                    note: This is a depot
+                    external_reference:
+                      fms: ''
+                    metadata: {}
+                    country: US
+              schema:
+                $ref: '#/components/schemas/depots'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      operationId: createDepot
+      description: Creates a new depot or updates an existing one matched by external_reference.fms for the specific Dealer.
+      summary: Create or update a depot for the specific Dealer
+      tags:
+      - Depots
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updates an existing depot matched by `external_reference.fms`
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                  type: depots
+                  attributes:
+                    name: Depot Company Test 1
+                    address1: 186 Donella Corners
+                    address2: 2487 Bertie Rapid
+                    city: New York
+                    state: NY
+                    postal_code: 48119-722
+                    phone: 236-776-0649
+                    fax: 236-776-0649
+                    email: test@test.com
+                    note: This is a depot
+                    external_reference:
+                      fms: FMS-10001
+                    metadata: {}
+                    country: US
+              schema:
+                $ref: '#/components/schemas/depot'
+        '201':
+          description: Creates a new depot for the specified Dealer
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                  type: depots
+                  attributes:
+                    name: Depot Company Test 1
+                    address1: 186 Donella Corners
+                    address2: 2487 Bertie Rapid
+                    city: New York
+                    state: NY
+                    postal_code: 48119-722
+                    phone: 236-776-0649
+                    fax: 236-776-0649
+                    email: test@test.com
+                    note: This is a depot
+                    external_reference:
+                      fms: ''
+                    metadata: {}
+                    country: US
+              schema:
+                $ref: '#/components/schemas/depot'
+        '400':
+          description: Account filter is missing / Required key not provided / Required value not provided
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/name
+                Required value not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Email with invalid host / Email with long local part / Email with long domain part / Email with invalid format / Invalid country / Empty country / Empty state / Invalid state / State does not match country / This response may occur when there is an error during the request processing.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Email with invalid host:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:001
+                      title: Invalid Email - Domain Resolution
+                      detail: Email domain name could not be resolved by DNS
+                      source:
+                        pointer: /data/attributes/email
+                Email with long local part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:002
+                      title: Invalid Email - Local Part Length
+                      detail: Local-part exceeds maximum length of 64 octets
+                      source:
+                        pointer: /data/attributes/email
+                Email with long domain part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:003
+                      title: Invalid Email - Domain Length
+                      detail: Email domain length exceeds 255 characters
+                      source:
+                        pointer: /data/attributes/email
+                Email with invalid format:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:004
+                      title: Invalid Email - Invalid Syntax
+                      detail: Email address does not match correct syntax in RFC 3696
+                      source:
+                        pointer: /data/attributes/email
+                Invalid country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:001
+                      title: 'Invalid format for country value, must be ISO 3166-1 alpha-2. Valid values are: `{{valid_values}}`'
+                      detail: 'Invalid country value. Valid values are: US, CA, EC, MX, CL, JP'
+                      source:
+                        pointer: /data/attributes/country
+                Empty country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/country
+                Empty state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/state
+                Invalid state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:002
+                      title: Invalid State
+                      detail: Invalid format for state value, must be ISO 3166-2
+                      source:
+                        pointer: /data/attributes/state
+                State does not match country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:004
+                      title: Mismatch between State and Country
+                      detail: Triggered when state does not exists in the country.
+                      source:
+                        pointer: /data/attributes/state
+                This response may occur when there is an error during the request processing.:
+                  value:
+                    errors:
+                    - code: '422'
+                      detail: Validation Error
+                      status: '422'
+                      title: Validation Error
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/depot'
+            examples:
+              Depot:
+                value:
+                  data:
+                    id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    type: depots
+                    attributes:
+                      name: Depot Company Test 1
+                      address1: 186 Donella Corners
+                      address2: 2487 Bertie Rapid
+                      city: New York
+                      state: NY
+                      postal_code: 48119-722
+                      phone: 236-776-0649
+                      fax: 236-776-0649
+                      email: test@test.com
+                      note: This is a depot
+                      external_reference:
+                        fms: ''
+                      country: US
+  /asset_management/{srm_account_id}/v1/depots/{id}:
+    get:
+      operationId: getDepot
+      description: Retrieves details for a specific depot location by its ID.
+      summary: Retrieve a depot location
+      tags:
+      - Depots
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Return a depot
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                  type: depots
+                  attributes:
+                    name: Depot Company Test 1
+                    address1: 186 Donella Corners
+                    address2: 2487 Bertie Rapid
+                    city: New York
+                    state: NY
+                    postal_code: 48119-722
+                    phone: 236-776-0649
+                    fax: 236-776-0649
+                    email: test@test.com
+                    note: This is a depot
+                    external_reference:
+                      fms: ''
+                    metadata: {}
+                    country: US
+              schema:
+                $ref: '#/components/schemas/depot'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    patch:
+      operationId: updateDepot
+      description: Updates an existing depot for the specific Dealer.
+      summary: Update a depot for the specific Dealer
+      tags:
+      - Depots
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Updates a Depot for the specified Dealer
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                  type: depots
+                  attributes:
+                    name: Depot Company Test 1
+                    address1: 186 Donella Corners
+                    address2: 2487 Bertie Rapid
+                    city: New York
+                    state: NY
+                    postal_code: 48119-722
+                    phone: 236-776-0649
+                    fax: 236-776-0649
+                    email: test@test.com
+                    note: This is a depot
+                    external_reference:
+                      fms: ''
+                    metadata: {}
+                    country: US
+              schema:
+                $ref: '#/components/schemas/depot'
+        '400':
+          description: Account filter is missing / Required key not provided / Required value not provided / Path ID mismatch
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account filter is missing:
+                  value:
+                    errors:
+                    - title: Required filter is missing
+                      detail: 'Required filter must be provided. Valid required filters: srm_account_id'
+                      code: decisiv:filters:006
+                      status: '400'
+                      source:
+                        parameter: filter[srm_account_id]
+                Required key not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/name
+                Required value not provided:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes
+                Path ID mismatch:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:resource:006
+                      title: Invalid JSON:API Resource specified in request
+                      detail: The "id" provided does not match the resource ID in the URL
+                      source:
+                        pointer: /data/id
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflicts with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:depots:001
+                  title: Resource Identifier - Deactivated Depot
+                  detail: Operations on deactivated depots are inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Email with invalid host / Email with long local part / Email with long domain part / Email with invalid format / Invalid country / Empty country / Empty state / Invalid state / State does not match country / This response may occur when there is an error during the request processing.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Email with invalid host:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:001
+                      title: Invalid Email - Domain Resolution
+                      detail: Email domain name could not be resolved by DNS
+                      source:
+                        pointer: /data/attributes/email
+                Email with long local part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:002
+                      title: Invalid Email - Local Part Length
+                      detail: Local-part exceeds maximum length of 64 octets
+                      source:
+                        pointer: /data/attributes/email
+                Email with long domain part:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:003
+                      title: Invalid Email - Domain Length
+                      detail: Email domain length exceeds 255 characters
+                      source:
+                        pointer: /data/attributes/email
+                Email with invalid format:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:email:004
+                      title: Invalid Email - Invalid Syntax
+                      detail: Email address does not match correct syntax in RFC 3696
+                      source:
+                        pointer: /data/attributes/email
+                Invalid country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:001
+                      title: 'Invalid format for country value, must be ISO 3166-1 alpha-2. Valid values are: `{{valid_values}}`'
+                      detail: 'Invalid country value. Valid values are: US, CA, EC, MX, CL, JP'
+                      source:
+                        pointer: /data/attributes/country
+                Empty country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/country
+                Empty state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:000
+                      title: Country or State value missing. Both values must be provided.
+                      source:
+                        pointer: /data/attributes/state
+                Invalid state:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:002
+                      title: Invalid State
+                      detail: Invalid format for state value, must be ISO 3166-2
+                      source:
+                        pointer: /data/attributes/state
+                State does not match country:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:location:004
+                      title: Mismatch between State and Country
+                      detail: Triggered when state does not exists in the country.
+                      source:
+                        pointer: /data/attributes/state
+                This response may occur when there is an error during the request processing.:
+                  value:
+                    errors:
+                    - code: '422'
+                      detail: Validation Error
+                      status: '422'
+                      title: Validation Error
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/depot'
+            examples:
+              Depot:
+                value:
+                  data:
+                    type: depots
+                    id: 8bc855e7-6e79-46a1-9e0c-0a039c4d2e44
+                    attributes:
+                      name: Depot Company Test 1
+                      address1: 186 Donella Corners
+                      address2: 2487 Bertie Rapid
+                      city: New York
+                      state: NY
+                      postal_code: 48119-722
+                      phone: 236-776-0649
+                      fax: 236-776-0649
+                      email: test@test.com
+                      note: This is a depot
+                      external_reference:
+                        fms: ''
+                      country: US
+  /asset_management/{srm_account_id}/v1/depots/{id}/deactivate:
+    post:
+      operationId: deactivateDepot
+      summary: Deactivates a Depot, removing it from the Account
+      tags:
+      - Depots
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      description: 'Endpoint provides the ability to deactivate and remove a `Depot` from the specified `Asset Management` account.
+
+
+        Once a `depot` is *deactivated* it will be accessible for historical purposes by calling:
+
+        * `GET /deactivated_depots`
+
+        * `GET /deactivated_depots/:id`
+
+
+        Depots which have been made inactive in error can be reactivated if needed.'
+      responses:
+        '204':
+          description: Successful deactivation of a Depot
+          content: {}
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: invalid is not allowed.
+                  code: '002'
+                  status: '400'
+                - title: Bad Request
+                  detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                  code: decisiv:silence_webhook_events:001
+                  status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '409':
+          description: This response may occur when the request conflict with the current state of the target resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '409'
+                  code: decisiv:depots:001
+                  title: Resource Identifier - Deactivated Depot
+                  detail: Operations are deactivated, the depot is inaccessible through this interface.
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: This response may occur when there is an error during the request processing.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: decisiv:depots:002
+                  detail: Depot cannot be deactivated, it contains related assets.
+                  status: '422'
+                  title: Validation Error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    depots:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/depot_properties-data'
+        meta:
+          type: object
+    depot_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - depots
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the depot
+              maxLength: 255
+              example: Depot Company Test 1
+            address1:
+              type: string
+              description: Primary address line for the depot
+              maxLength: 255
+              example: Some street
+            address2:
+              type: string
+              description: Secondary address line for the depot
+              maxLength: 255
+              example: Some complement
+            city:
+              type: string
+              description: City where the depot is located
+              maxLength: 255
+              example: New York
+            state:
+              type: string
+              description: Second part of the `ISO 3166-2` code indicating the state
+              maxLength: 10
+              example: NY
+            country:
+              type: string
+              description: '`ISO 3166-1` alpha-2 code indicating the country'
+              maxLength: 10
+              example: US
+            postal_code:
+              type: string
+              description: Postal or ZIP code for the depot location
+              maxLength: 20
+              example: '123456'
+            phone:
+              type: string
+              description: Contact phone number for the depot
+              maxLength: 30
+              example: +1 321 321321
+            fax:
+              type:
+              - string
+              - 'null'
+              description: Contact fax number for the depot
+              maxLength: 30
+              example: +1 321 321321
+            email:
+              type: string
+              description: Contact email address. Validated for syntax and deliverable domain — addresses whose domain has no resolvable DNS host are rejected.
+              maxLength: 254
+              example: test@test.com
+            note:
+              type:
+              - string
+              - 'null'
+              description: Free-form notes about the depot
+              maxLength: 1000
+              example: Tricky depot
+            external_reference:
+              type: object
+              properties:
+                fms:
+                  type: string
+                  maxLength: 40
+                  example: COMPANY FMS
+            metadata:
+              type: object
+              additionalProperties: true
+          required:
+          - name
+          - email
+      required:
+      - attributes
+      - type
+      - id
+    depot:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - depots
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the depot
+                  maxLength: 255
+                  example: Depot Company Test 1
+                address1:
+                  type: string
+                  description: Primary address line for the depot
+                  maxLength: 255
+                  example: Some street
+                address2:
+                  type: string
+                  description: Secondary address line for the depot
+                  maxLength: 255
+                  example: Some complement
+                city:
+                  type: string
+                  description: City where the depot is located
+                  maxLength: 255
+                  example: New York
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  maxLength: 10
+                  example: NY
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  maxLength: 10
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal or ZIP code for the depot location
+                  maxLength: 20
+                  example: '123456'
+                phone:
+                  type: string
+                  description: Contact phone number for the depot
+                  maxLength: 30
+                  example: +1 321 321321
+                fax:
+                  type:
+                  - string
+                  - 'null'
+                  description: Contact fax number for the depot
+                  maxLength: 30
+                  example: +1 321 321321
+                email:
+                  type: string
+                  description: Contact email address. Validated for syntax and deliverable domain — addresses whose domain has no resolvable DNS host are rejected.
+                  maxLength: 254
+                  example: test@test.com
+                note:
+                  type:
+                  - string
+                  - 'null'
+                  description: Free-form notes about the depot
+                  maxLength: 1000
+                  example: Tricky depot
+                external_reference:
+                  type: object
+                  properties:
+                    fms:
+                      type: string
+                      maxLength: 40
+                      example: COMPANY FMS
+                metadata:
+                  type: object
+                  additionalProperties: true
+              required:
+              - name
+              - email
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

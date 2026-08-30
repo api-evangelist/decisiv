@@ -1,0 +1,357 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Registered Components Relationships API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Registered Components Relationships
+paths:
+  /asset_management/{srm_account_id}/v1/registered_components/{component_id}/relationships/registered_asset:
+    patch:
+      summary: Add, Update or Remove a Registered Asset from Registered Component
+      operationId: updateRegisteredComponentRelationship
+      description: Updates the registered asset relationship for a registered component.
+      tags:
+      - Registered Components Relationships
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: component_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The component UUID
+        required: true
+      responses:
+        '200':
+          description: Show details for changed Registered Asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 3e5f4d4d-8a3d-43d7-8b55-73a0b38adbf9
+                  type: registered_components
+                  attributes:
+                    name: Rear View Safety RVS-770613
+                    make: Rear View Safety
+                    model: RVS-770613
+                    year: 2011
+                    serial_number: 33CA97CF
+                    event_timestamps:
+                      installed_on: '2025-04-07T18:58:31Z'
+                    metadata:
+                      series: 24SK
+                  relationships:
+                    registered_asset:
+                      data:
+                        type: registered_assets
+                        id: 552fb6b4-bbce-452b-bb60-8f40ca6e8eb3
+              schema:
+                $ref: '#/components/schemas/registered_component'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource. / Feature for this action is not available
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                ? This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+                : value:
+                    errors:
+                    - title: Forbidden
+                      detail: User does not have permission to perform this action on the requested resource(s)
+                      code: decisiv:access:001
+                      status: '403'
+                Feature for this action is not available:
+                  value:
+                    errors:
+                    - status: '403'
+                      code: decisiv:account:002
+                      title: Feature Unavailable
+                      detail: Requested feature or action not available for this account
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: User does not have the underlying permission
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '422'
+                  code: decisiv:permissions:001
+                  title: Missing Permission
+                  detail: Provided resource does not have the required permission to complete the request.
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/registered_asset_change'
+              - $ref: '#/components/schemas/registered_asset_remove'
+            examples:
+              Change Registered Asset:
+                value:
+                  data:
+                    type: registered_asset
+                    id: 8a520cb4-9eb4-4caf-823a-e0d0d82dc768
+              Remove Registered Asset:
+                value:
+                  data: null
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    registered_asset_change:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+    registered_component:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              example: registered_components
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Description of component
+                  minLength: 1
+                  maxLength: 255
+                serial_number:
+                  type: string
+                  description: Production number of the component
+                  minLength: 1
+                  maxLength: 255
+                make:
+                  type: string
+                  description: Brand of the component
+                  minLength: 1
+                  maxLength: 255
+                model:
+                  type: string
+                  description: Name of the component product from the manufacturer
+                  minLength: 1
+                  maxLength: 255
+                year:
+                  type: integer
+                  description: Calendar year the component model was released
+                  minLength: 4
+                  maxLength: 4
+                  minimum: 1000
+                  maximum: 9999
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the component
+                  properties:
+                    installed_on:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the component was installed'
+                      example: '2022-04-14T05:23:45Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the component was created'
+                  example: '2022-04-14T05:23:45Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the component was updated'
+                  example: '2022-04-14T05:23:45Z'
+                metadata:
+                  type: object
+                  additionalProperties: true
+            relationships:
+              type: object
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    registered_asset_remove:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: 'null'
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

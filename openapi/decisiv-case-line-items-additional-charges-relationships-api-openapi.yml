@@ -1,0 +1,357 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Case Line Items - Additional Charges - Relationships API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Line Items - Additional Charges - Relationships
+paths:
+  ? /service_management/{srm_account_id}/v1/cases/{case_uuid}/line_items/{line_item_uuid}/additional_charges/{id}/relationships/category
+  : patch:
+      summary: Update an additional charge category
+      tags:
+      - Case Line Items - Additional Charges - Relationships
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: line_item_uuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: Successful update of Additional Charge
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: ff0d0f58-9195-4071-a59c-96844600c2bb
+                  type: line_item_additional_charges
+                  attributes:
+                    description: Tax for sales done in the shop
+                    code: TAX-123
+                    pricing:
+                      amount: '15.00'
+                      sales_tax_amount: '2.06'
+                      total_amount: '27.06'
+                    created_at: '2025-04-10T13:28:31Z'
+                    updated_at: '2025-04-10T13:28:31Z'
+                  relationships:
+                    category:
+                      data:
+                        type: additional_charge_categories
+                        id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+              schema:
+                $ref: '#/components/schemas/additional_charge'
+        '400':
+          description: Invalid resource error
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '400'
+                  code: decisiv:resource:002
+                  title: Invalid JSON:API Resource specified in request
+                  detail: '''{{invalid_resource}}'' is an invalid resource'
+                  source: /data/type
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: Required key not populated error / Required key not provided error / Subject not found
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Required key not populated error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source: /data/attributes/content
+                Required key not provided error:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source: /data/attributes/content
+                Subject not found:
+                  value:
+                    errors:
+                    - status: 422
+                      code: decisiv:request_attributes:003
+                      title: Identifier not found
+                      detail: Identifier not found
+                      source:
+                        pointer: /data//data/id
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/update_relationship_additional_charges'
+            examples:
+              Update Additional Charge:
+                value:
+                  data:
+                    type: additional_charge_categories
+                    id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    update_relationship_additional_charges:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+              format: uuid
+          required:
+          - type
+          - id
+      required:
+      - data
+    additional_charge:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_item_additional_charges
+            attributes:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '8.25'
+                    sales_tax_amount:
+                      type: string
+                      description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '1.25'
+                    total_amount:
+                      type: string
+                      description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '9.50'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was created'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was updated'
+              required:
+              - code
+              - description
+              - pricing
+            relationships:
+              type: object
+              properties:
+                category:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

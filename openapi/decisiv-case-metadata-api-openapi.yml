@@ -1,0 +1,465 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Case Metadata API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Metadata
+paths:
+  /service_management/{srm_account_id}/v1/cases/{case_id}/metadata:
+    post:
+      summary: Creates new metadata for a selected case
+      tags:
+      - Case Metadata
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      responses:
+        '201':
+          description: Creates new metadata for case record
+          content:
+            application/vnd.api+json:
+              example:
+                id: 0938140f-b7ab-4241-be54-a3d18a1db1b3
+                type: case_metadata
+                attributes:
+                  metadata:
+                    case_metadata: Metadata for case
+                    case_other_value: '2.30'
+                    case_other_integer: '80000'
+                    case_other_date: '2025-04-10T13:28:31Z'
+              schema:
+                $ref: '#/components/schemas/case_metadata_persisted'
+        '400':
+          description: Invalid Filter / Wrong Key / Wrong Value / Empty Value / Invalid Length / Unique Keys
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Wrong Key:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid Metadata key
+                      detail: null
+                      code: decisiv:metadata:001
+                      source:
+                        pointer: /data/attributes/metadata/0/key
+                Wrong Value:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid Metadata value
+                      detail: null
+                      code: decisiv:metadata:002
+                      source:
+                        pointer: /data/attributes/metadata/0/value
+                Empty Value:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      code: decisiv:request_attributes:002
+                      source:
+                        pointer: /data/attributes/metadata/0/value
+                Invalid Length:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Metadata object is too big
+                      detail: null
+                      code: decisiv:metadata:003
+                      source:
+                        pointer: /data/attributes/metadata
+                Unique Keys:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Immutable Attribute
+                      detail: The resource attribute is immutable through this particular endpoint
+                      code: decisiv:request_attributes:005
+                      source:
+                        pointer: /data/attributes/metadata
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/case_metadata'
+            examples:
+              Metadata with many key/values:
+                value:
+                  data:
+                    type: case_metadata
+                    attributes:
+                      metadata:
+                      - key: case_metadata
+                        value: Metadata for case
+                      - key: case_other_value
+                        value: '2.30'
+                      - key: case_other_integer
+                        value: '80000'
+                      - key: case_other_date
+                        value: '2025-04-10T13:28:31Z'
+  /service_management/{srm_account_id}/v1/cases/{case_id}/metadata/{metadata_key}:
+    patch:
+      summary: Updates a specific metadata key
+      tags:
+      - Case Metadata
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: metadata_key
+        in: path
+        schema:
+          type: string
+          format: string
+        description: The metadata key
+        required: true
+      responses:
+        '200':
+          description: Updates the metadata key
+          content:
+            application/vnd.api+json:
+              example:
+                id: 0938140f-b7ab-4241-be54-a3d18a1db1b3
+                type: case_metadata
+                attributes:
+                  metadata:
+                    case_metadata: Metadata for case
+                    case_other_value: '2.30'
+                    case_other_integer: '80000'
+                    case_other_date: '2025-04-10T13:28:31Z'
+              schema:
+                $ref: '#/components/schemas/case_metadata_persisted'
+        '400':
+          description: Invalid Filter / Wrong Value / Empty/Null Value / Invalid Length
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid Filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Wrong Value:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      code: decisiv:request_attributes:004
+                      source:
+                        pointer: /data/attributes/value
+                Empty/Null Value:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      code: decisiv:request_attributes:002
+                      source:
+                        pointer: /data/attributes/value
+                Invalid Length:
+                  value:
+                    errors:
+                    - status: '400'
+                      title: Character Limit Exceeded
+                      detail: Field length can not exceed {{limit}} characters
+                      code: decisiv:request_attributes:014
+                      source:
+                        pointer: /data/attributes/value
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '429':
+          description: This response will often be associated as a result of an over abundance of calls by a specific Application, Account, or IP Address resulting in a required cool off period.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '429'
+                  detail: The maximum number of requests for this application has been far exceeded with the given credentials.
+                  status: '429'
+                  title: Too Many Requests
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/patch_case_metadata'
+            examples:
+              Metadata with many key/values:
+                value:
+                  id: metadata_key
+                  type: case_metadata
+                  attributes:
+                    value: The updated value goes here
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    case_metadata:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - case_metadata
+            attributes:
+              type: object
+              properties:
+                metadata:
+                  type: array
+                  description: Metadata about the case
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Metadata key has to start and end with a letter or number, be lower snake case
+                        minLength: 1
+                        maxLength: 50
+                        pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                        example: some_key
+                      value:
+                        type: string
+                        description: The metadata value must be a string with 500 characters or less
+                        minLength: 1
+                        maxLength: 500
+                        example: The value goes here
+              required:
+              - metadata
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    case_metadata_persisted:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                metadata:
+                  type: object
+                  description: Metadata object with the key and values.
+                  example: '{foo: "bar", name: "mr. nobody"}'
+                  minProperties: 1
+                  maxProperties: 50
+                  properties: {}
+    patch_case_metadata:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - value
+              properties:
+                value:
+                  type: string
+                  description: The metadata value must be a string with 500 characters or less
+                  minLength: 1
+                  maxLength: 500
+                  example: The value goes here
+          required:
+          - type
+          - attributes
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

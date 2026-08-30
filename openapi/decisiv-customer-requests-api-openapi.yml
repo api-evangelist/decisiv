@@ -1,0 +1,1304 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Customer Requests API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Customer Requests
+paths:
+  /service_management/{srm_account_id}/v1/customer_requests:
+    get:
+      summary: Retrieves a list of customer requests
+      tags:
+      - Customer Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - case
+            - customer
+            - customer.srm_account
+        description: The relationships to be included.
+      - name: filter[case.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the customer requests for the given case.id, using exact matching search
+      - name: filter[event_timestamps.requested_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the customer requests for the given event_timestamps.requested_at:gt, using exact matching search
+      - name: filter[event_timestamps.requested_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the customer requests for the given event_timestamps.requested_at:lt, using exact matching search
+      - name: filter[event_timestamps.requested_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the customer requests for the given event_timestamps.requested_at:gte, using exact matching search
+      - name: filter[event_timestamps.requested_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the customer requests for the given event_timestamps.requested_at:lte, using exact matching search
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - accepted
+          - declined
+          - canceled
+        description: Filters the customer requests for the given status, using exact matching search
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 31a9810e-70d1-40a3-8c9c-495ff6ce003b
+                  type: customer_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    status: accepted
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      name: Rutherford d'Brave
+                      email: rutherford@decisivgenerated.email
+                      phone: '+15555551138'
+                    driver:
+                      name: Wilson
+                      email: driver@decisivgenerated.email
+                      phone: '+15555551888'
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    event_timestamps:
+                      requested_at: '2025-04-10T13:28:31Z'
+                      requested_appointment_time: '2025-04-10T13:28:31Z'
+                      requested_completion_time: '2025-04-10T13:28:31Z'
+                      asset_downtime: '2025-04-10T13:28:31Z'
+                      confirmed_appointment_at: '2025-04-10T13:28:31Z'
+                    metadata: null
+                    created_at: null
+                    updated_at: null
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/customer_requests/31a9810e-70d1-40a3-8c9c-495ff6ce003b
+                  relationships:
+                    case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    customer:
+                      data:
+                        type: registered_customers
+                        id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+              schema:
+                $ref: '#/components/schemas/customer_requests'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/customer_request/{id}:
+    get:
+      summary: Retrieves a customer request
+      tags:
+      - Customer Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 31a9810e-70d1-40a3-8c9c-495ff6ce003b
+                  type: customer_requests
+                  attributes:
+                    complaint: transmission leaks on left side
+                    status: accepted
+                    po_number: PO836743
+                    auth_number: AUTH984107
+                    note: Initial Note
+                    asset_information:
+                      odometer_value: 1234566
+                      odometer_unit: mi
+                    reference_number: 123245
+                    primary_contact:
+                      name: Rutherford d'Brave
+                      email: rutherford@decisivgenerated.email
+                      phone: '+15555551138'
+                    driver:
+                      name: Wilson
+                      email: driver@decisivgenerated.email
+                      phone: '+15555551888'
+                    breakdown:
+                      location: Dorris
+                      city: South Lake Tahoe
+                      state: KY
+                    event_timestamps:
+                      requested_at: '2025-04-10T13:28:31Z'
+                      requested_appointment_time: '2025-04-10T13:28:31Z'
+                      requested_completion_time: '2025-04-10T13:28:31Z'
+                      asset_downtime: '2025-04-10T13:28:31Z'
+                      confirmed_appointment_at: '2025-04-10T13:28:31Z'
+                    metadata: null
+                    created_at: null
+                    updated_at: null
+                  links:
+                    self: https://srm-api.decisivapps.com/api/service_management/{srm_account_id}/v1/customer_requests/31a9810e-70d1-40a3-8c9c-495ff6ce003b
+                  relationships:
+                    case:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    customer:
+                      data:
+                        type: registered_customers
+                        id: 014ee85e-a183-4bf7-b4d7-67e758fa2b2a
+              schema:
+                $ref: '#/components/schemas/customer_request'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: This response represents requests to a module or endpoint which can not immediately be accessed due to the Account permissions and subscriptions in the Decisiv Platform.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Precondition Required
+                  detail: Precondition Required
+                  code: '428'
+                  status: '428'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/customer_request/{id}/accept:
+    post:
+      summary: Retrieves a customer request
+      tags:
+      - Customer Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: de7110b4-21a4-45f7-8621-51c6e701f371
+                  type: customer_request_responses
+                  attributes:
+                    status: accepted
+                    note: There's one condition tho
+                    event_timestamps:
+                      confirmed_appointment_at: '2025-06-19T12:41:30Z'
+                  relationships:
+                    customer_request:
+                      data:
+                        type: customer_requests
+                        id: 31a9810e-70d1-40a3-8c9c-495ff6ce003b
+              schema:
+                $ref: '#/components/schemas/customer_request_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: Account does not have access to module / Invalid status for customer request
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account does not have access to module:
+                  value:
+                    errors:
+                    - title: Precondition Required
+                      detail: Precondition Required
+                      code: '428'
+                      status: '428'
+                Invalid status for customer request:
+                  value:
+                    errors:
+                    - status: '428'
+                      code: decisiv:customer_requests:001
+                      title: Response not allowed for status
+                      detail: Only Customer Requests with a status of Pending may be accepted or declined by the requesting account
+                      source:
+                        pointer: /data/attributes/status
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/customer_request_response_accept'
+            examples:
+              CustomerRequest:
+                value:
+                  data:
+                    type: customer_request_responses
+                    attributes:
+                      note: There's one condition tho
+                      event_timestamps:
+                        confirmed_appointment_at: '2025-06-19T12:41:30Z'
+  /service_management/{srm_account_id}/v1/customer_request/{id}/decline:
+    post:
+      summary: Retrieves a customer request
+      tags:
+      - Customer Requests
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      responses:
+        '200':
+          description: The request has succeeded. It may or may not return a single resource of collection of resources.
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: de7110b4-21a4-45f7-8621-51c6e701f371
+                  type: customer_request_responses
+                  attributes:
+                    status: declined
+                    note: There's one condition tho
+                  relationships:
+                    customer_request:
+                      data:
+                        type: customer_requests
+                        id: 31a9810e-70d1-40a3-8c9c-495ff6ce003b
+              schema:
+                $ref: '#/components/schemas/customer_request_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '428':
+          description: Account does not have access to module / Invalid status for customer request
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Account does not have access to module:
+                  value:
+                    errors:
+                    - title: Precondition Required
+                      detail: Precondition Required
+                      code: '428'
+                      status: '428'
+                Invalid status for customer request:
+                  value:
+                    errors:
+                    - status: '428'
+                      code: decisiv:customer_requests:001
+                      title: Response not allowed for status
+                      detail: Only Customer Requests with a status of Pending may be accepted or declined by the requesting account
+                      source:
+                        pointer: /data/attributes/status
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/customer_request_response_decline'
+            examples:
+              CustomerRequest:
+                value:
+                  data:
+                    type: customer_request_responses
+                    attributes:
+                      note: There's one condition tho
+components:
+  schemas:
+    customer_request_response:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customer_request_responses
+            attributes:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Status of the customer request
+                  enum:
+                  - pending
+                  - canceled
+                  - declined
+                  - accepted
+                  example: pending
+                  maxLength: 255
+                note:
+                  type: string
+                  description: The notes for the customer request
+                  example: Initial note
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the customer request
+            relationships:
+              type: object
+              properties:
+                customer_request:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    customer_request_response_decline:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                note:
+                  type: string
+                  description: Details on Approving the Customer's Request
+                  example: There is one condition tho
+    customer_request_response_accept:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                note:
+                  type: string
+                  description: Details on Approving the Customer's Request
+                  example: There is one condition tho
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the customer request response
+                  properties:
+                    confirmed_appointment_at:
+                      type: string
+                      description: '`ISO 8601` timestamp indicating when appointment was scheduled'
+                      example: '2025-06-18T12:41:31Z'
+                      format: date-time
+    customer_request_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - customer_requests
+        attributes:
+          type: object
+          properties:
+            complaint:
+              type: string
+              description: Initially reported information from driver or other customer entity
+              maxLength: 6000
+              examples:
+              - Broken truck
+            po_number:
+              type: string
+              description: PO number
+              maxLength: 40
+              examples:
+              - '1234'
+            auth_number:
+              type: string
+              description: The auth number
+              maxLength: 40
+              examples:
+              - '1234'
+            note:
+              type: string
+              description: The notes for the customer request
+              examples:
+              - Initial note
+            reference_number:
+              type: number
+              description: Integer representation of the customer request ID inside of the User Interface
+            status:
+              type: string
+              description: Status of the customer request
+              enum:
+              - pending
+              - canceled
+              - declined
+              - accepted
+              maxLength: 255
+              examples:
+              - pending
+            updated_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the customer request was updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type:
+              - string
+              - 'null'
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the customer request was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            asset_information:
+              type: object
+              description: The asset information when the customer request was created
+              properties:
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                  enum:
+                  - mi
+                  - km
+                  examples:
+                  - mi
+            breakdown:
+              type: object
+              description: Information about the breakdown location
+              properties:
+                city:
+                  type: string
+                  description: City of breakdown
+                  maxLength: 255
+                  examples:
+                  - North Haven
+                location:
+                  type: string
+                  description: Exact map location of the breakdown
+                  maxLength: 255
+                  examples:
+                  - 41.395022,-72.856326
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                  minLength: 1
+                  maxLength: 3
+                  examples:
+                  - NJ
+            primary_contact:
+              type: object
+              description: Primary contact information
+              properties:
+                first_name:
+                  type: string
+                  description: First name
+                  maxLength: 100
+                  examples:
+                  - Martha
+                last_name:
+                  type: string
+                  description: Last name
+                  maxLength: 100
+                  examples:
+                  - Wayne
+                email:
+                  type: string
+                  description: Contact email
+                  examples:
+                  - martha@wayne.com
+                relation:
+                  type: string
+                  examples:
+                  - Bobby
+                phone:
+                  type: object
+                  description: Phone information
+                  properties:
+                    mobile:
+                      type: string
+                      maxLength: 32
+                      examples:
+                      - (582) 123-1234
+                    work:
+                      type: string
+                      maxLength: 32
+                      examples:
+                      - (582) 123-1234
+            driver:
+              type: object
+              description: Driver information
+              properties:
+                first_name:
+                  type: string
+                  description: First name
+                  maxLength: 100
+                  examples:
+                  - Martha
+                last_name:
+                  type: string
+                  description: Last name
+                  maxLength: 100
+                  examples:
+                  - Wayne
+                email:
+                  type: string
+                  description: Contact email
+                  examples:
+                  - martha@wayne.com
+                phone:
+                  type: object
+                  description: Phone information
+                  properties:
+                    mobile:
+                      type: string
+                      maxLength: 32
+                      examples:
+                      - (582) 123-1234
+                    work:
+                      type: string
+                      maxLength: 32
+                      examples:
+                      - (582) 123-1234
+            metadata:
+              type: object
+              properties: {}
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the customer request
+              properties:
+                requested_at:
+                  type:
+                  - string
+                  - 'null'
+                  description: '`ISO 8601` timestamp indicating when the service was requested'
+                  format: date-time
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_completion_time:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the completion time of the case'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_appointment_time:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the appointment time'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                confirmed_appointment_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the service provider confirmed the appointment with the customer'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_downtime:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+        relationships:
+          type: object
+          properties:
+            case:
+              $ref: '#/components/schemas/relationship_object'
+            customer:
+              $ref: '#/components/schemas/relationship_object'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - attributes
+      - type
+      - id
+    customer_requests:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_request_properties-data'
+        meta:
+          type: object
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    customer_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customer_requests
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: PO number
+                  maxLength: 40
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The auth number
+                  maxLength: 40
+                  examples:
+                  - '1234'
+                note:
+                  type: string
+                  description: The notes for the customer request
+                  examples:
+                  - Initial note
+                reference_number:
+                  type: number
+                  description: Integer representation of the customer request ID inside of the User Interface
+                status:
+                  type: string
+                  description: Status of the customer request
+                  enum:
+                  - pending
+                  - canceled
+                  - declined
+                  - accepted
+                  maxLength: 255
+                  examples:
+                  - pending
+                updated_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the customer request was updated'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                created_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the customer request was created'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_information:
+                  type: object
+                  description: The asset information when the customer request was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                      enum:
+                      - mi
+                      - km
+                      examples:
+                      - mi
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      maxLength: 255
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      maxLength: 255
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                primary_contact:
+                  type: object
+                  description: Primary contact information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      maxLength: 100
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      maxLength: 100
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    relation:
+                      type: string
+                      examples:
+                      - Bobby
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          maxLength: 32
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          maxLength: 32
+                          examples:
+                          - (582) 123-1234
+                driver:
+                  type: object
+                  description: Driver information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      maxLength: 100
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      maxLength: 100
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          maxLength: 32
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          maxLength: 32
+                          examples:
+                          - (582) 123-1234
+                metadata:
+                  type: object
+                  properties: {}
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the customer request
+                  properties:
+                    requested_at:
+                      type:
+                      - string
+                      - 'null'
+                      description: '`ISO 8601` timestamp indicating when the service was requested'
+                      format: date-time
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_completion_time:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    confirmed_appointment_at:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the service provider confirmed the appointment with the customer'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+            relationships:
+              type: object
+              properties:
+                case:
+                  $ref: '#/components/schemas/relationship_object'
+                customer:
+                  $ref: '#/components/schemas/relationship_object'
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - attributes
+          - type
+          - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

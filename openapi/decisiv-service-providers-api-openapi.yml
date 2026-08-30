@@ -1,0 +1,1120 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Service Providers API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Service Providers across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Service Providers
+paths:
+  /asset_management/{srm_account_id}/v1/service_providers:
+    get:
+      summary: List all Service Providers available for the requested account
+      operationId: listServiceProviders
+      tags:
+      - Service Providers
+      description: 'You need to use at least one of the filters: filter[name], filter[name:like], filter[geolocation.point] or filter[state].'
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[geolocation.point]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filters the service providers for the given `geolocation.point`, using geolocation search. Format: `lat,lon`'
+      - name: filter[geolocation.radius]
+        in: query
+        required: false
+        schema:
+          type: integer
+          minLength: 1
+          maxLength: 100
+        description: Used combined with `geolocation.point` filter. Default value `20` if not present
+      - name: filter[geolocation.radius_unit]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Used combined with `geolocation.point` and `geolocation.radius` filters. Valid values: `mi` and `km`. Default value `mi` if not present'
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 4
+          maxLength: 100
+        description: Filters the service providers for the given name, using *partial* matching search. Cannot be combined with `filter[name]`.
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 4
+          maxLength: 100
+        description: Filters the service providers for the given name, using *exact* matching search. Cannot be combined with `filter[name:like]`.
+      - name: filter[state]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `service_provider` matching the *exact* `state` attribute.
+      - name: filter[service_networks.name]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `service_provider` matching the *exact* `service network name` attribute.
+      - name: filter[service_networks.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `service_provider` matching the *exact* `service network id` attribute.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of Service Providers
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 49babff7-536d-4262-b267-de66a19452cf
+                  type: service_providers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    phone: (939) 555-0113
+                    fax: (939) 555-0113
+                    location:
+                      latitude: 34.090674
+                      longitude: -118.387979
+                    external_reference:
+                      srm_account_id: AAA-123
+                  relationships:
+                    service_networks:
+                      data:
+                        type: service_networks
+                        id: 73225f34-c108-42a4-98d1-2da354ebff89
+              schema:
+                $ref: '#/components/schemas/service_providers'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Conflicting filters:
+                  value:
+                    errors:
+                    - title: Conflicting filters
+                      detail: Cannot combine filter[name] with its :like variant. Use only one.
+                      code: decisiv:filters:012
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Filter value too long:
+                  value:
+                    errors:
+                    - title: Maximum character length not met
+                      detail: Filter value must be less than 4096 characters
+                      code: decisiv:filters:008
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter characters:
+                  value:
+                    errors:
+                    - title: Invalid filter characters
+                      detail: Filter value for filter[name] contains invalid characters.
+                      code: decisiv:filters:013
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+                Invalid filter shape:
+                  value:
+                    errors:
+                    - title: Invalid filter value shape
+                      detail: Filter value for filter[name] must be a string.
+                      code: decisiv:filters:014
+                      status: '400'
+                      source:
+                        parameter: filter[name]
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/service_providers/{id}:
+    get:
+      summary: Retrieve a Service Provider available for the requested account
+      operationId: getServiceProvider
+      description: Returns details for a specific Service Provider by ID.
+      tags:
+      - Service Providers
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns list of Service Providers
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 49babff7-536d-4262-b267-de66a19452cf
+                  type: service_providers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    phone: (939) 555-0113
+                    fax: (939) 555-0113
+                    location:
+                      latitude: 34.090674
+                      longitude: -118.387979
+                    external_reference:
+                      srm_account_id: AAA-123
+                  relationships:
+                    service_networks:
+                      data:
+                        type: service_networks
+                        id: 73225f34-c108-42a4-98d1-2da354ebff89
+              schema:
+                $ref: '#/components/schemas/service_provider'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/service_providers:
+    get:
+      summary: List all Service Providers for the requested account
+      tags:
+      - Service Providers
+      description: 'You need to use at least one of the filters: filter[name], filter[name:like], filter[geolocation.point] or filter[state].'
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Return specified included relationships upon request. Valid relationships are: `service_networks`'
+      - name: filter[name]
+        in: query
+        required: false
+        schema:
+          type: string
+          minimum: 3
+        description: List `service_provider` matching the *exact* `name` attribute. Cannot be combined with `filter[name:like]`.
+      - name: filter[name:like]
+        in: query
+        required: false
+        schema:
+          type: string
+          minimum: 3
+        description: List `service_provider` that match partially the `name` attribute. Cannot be combined with `filter[name]`.
+      - name: filter[geolocation.point]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'List `service_provider` for the given geolocation.point, using geolocation search. Format: `lat,lon`'
+      - name: filter[geolocation.radius]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Used combined with `geolocation.point filter`. Maximum value of 100
+      - name: filter[geolocation.radius_unit]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Used combined with `geolocation.point` and `geolocation.radius` filters. Valid values: `mi` and `km`'
+      - name: filter[state]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `service_provider` matching the *exact* `state` attribute.
+      - name: filter[service_networks.name]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: List `service_provider` matching the *exact* `service_networks.name` attribute.
+      - name: filter[service_networks.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: List `service_provider` matching the *exact* `service_networks.id` attribute.
+      responses:
+        '200':
+          description: Returns list of service providers
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                  type: service_providers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    phone: (939) 555-0113
+                    fax: (939) 555-0113
+                    location:
+                      latitude: 34.090674
+                      longitude: -118.387979
+              schema:
+                $ref: '#/components/schemas/service_providers_2'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+                - status: '400'
+                  code: decisiv:filters:007
+                  title: Minimum character length not met
+                  detail: Filter value must be at least 3 characters
+                  source:
+                    pointer: /filter/name
+                - title: Maximum character length not met
+                  detail: Filter value must be less than 255 characters
+                  code: decisiv:filters:008
+                  status: '400'
+                  source:
+                    parameter: filter[name]
+                - status: '400'
+                  code: decisiv:filters:007
+                  title: Minimum character length not met
+                  detail: Filter value must be at least 3 characters
+                  source:
+                    pointer: /filter/name:like
+                - title: Maximum character length not met
+                  detail: Filter value must be less than 255 characters
+                  code: decisiv:filters:008
+                  status: '400'
+                  source:
+                    parameter: filter[name:like]
+                - title: Conflicting filters
+                  detail: Cannot combine filter[name] with its :like variant. Use only one.
+                  code: decisiv:filters:012
+                  status: '400'
+                  source:
+                    parameter: filter[name]
+                - title: Maximum character length not met
+                  detail: Filter value must be less than 4096 characters
+                  code: decisiv:filters:008
+                  status: '400'
+                  source:
+                    parameter: filter[name]
+                - title: Invalid filter characters
+                  detail: Filter value for filter[name] contains invalid characters.
+                  code: decisiv:filters:013
+                  status: '400'
+                  source:
+                    parameter: filter[name]
+                - title: Invalid filter value shape
+                  detail: Filter value for filter[name] must be a string.
+                  code: decisiv:filters:014
+                  status: '400'
+                  source:
+                    parameter: filter[name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/service_providers/{id}:
+    get:
+      summary: List details on a specific service provider
+      tags:
+      - Service Providers
+      parameters:
+      - name: srm_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show details for requested asset
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 65b8d7f1-77aa-4b62-9a62-7207da98bb94
+                  type: service_providers
+                  attributes:
+                    name: Joe's Garage
+                    address1: 9009 Sunset Blvd
+                    address2: Door 5
+                    city: West Hollywood
+                    state: CA
+                    postal_code: '90069'
+                    country: US
+                    email: roxy.by.proxy@decisivgenerated.email
+                    phone: (939) 555-0113
+                    fax: (939) 555-0113
+                    location:
+                      latitude: 34.090674
+                      longitude: -118.387979
+              schema:
+                $ref: '#/components/schemas/service_provider_2'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    service_provider:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the Service Provider
+                  minLength: 1
+                  maxLength: 150
+                address1:
+                  type: string
+                  description: Primary Address for the Service Provider
+                  minLength: 0
+                  maxLength: 255
+                address2:
+                  type: string
+                  description: Secondary address identifier
+                  minLength: 0
+                  maxLength: 255
+                city:
+                  type: string
+                  description: City which the Service Provider business resides
+                  minLength: 0
+                  maxLength: 30
+                state:
+                  type: string
+                  description: 2 Letter state abbreviation
+                  minLength: 0
+                  maxLength: 2
+                postal_code:
+                  type: string
+                  description: Postal zip code of the Service Provider location
+                  minLength: 0
+                  maxLength: 18
+                country:
+                  type: string
+                  description: Country of Service Povider, in `ISO 3166-1 alpha-2` format
+                  minLength: 0
+                  maxLength: 2
+                phone:
+                  type: string
+                  description: Telephone contact information for the Service Provider
+                  minLength: 0
+                  maxLength: 30
+                fax:
+                  type: string
+                  description: Fax information for the Service Provider
+                  minLength: 0
+                  maxLength: 30
+                email:
+                  type: string
+                  description: Email contact information for the Service Provider
+                  minLength: 0
+                  maxLength: 120
+                location:
+                  type: object
+                  description: Geolocation information about the Service Provider
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                    distance_from_geolocation:
+                      type: number
+                external_reference:
+                  type: object
+                  description: External reference information for the Service Provider
+                  properties:
+                    srm_account_id:
+                      type: string
+                      description: SRM Account ID for the Service Provider
+                      minLength: 7
+                      maxLength: 7
+            relationships:
+              type: object
+              properties:
+                service_networks:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+    service_providers:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_provider_properties-data'
+        meta:
+          type: object
+    service_provider_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the Service Provider
+              minLength: 1
+              maxLength: 150
+            address1:
+              type: string
+              description: Primary Address for the Service Provider
+              minLength: 0
+              maxLength: 255
+            address2:
+              type: string
+              description: Secondary address identifier
+              minLength: 0
+              maxLength: 255
+            city:
+              type: string
+              description: City which the Service Provider business resides
+              minLength: 0
+              maxLength: 30
+            state:
+              type: string
+              description: 2 Letter state abbreviation
+              minLength: 0
+              maxLength: 2
+            postal_code:
+              type: string
+              description: Postal zip code of the Service Provider location
+              minLength: 0
+              maxLength: 18
+            country:
+              type: string
+              description: Country of Service Povider, in `ISO 3166-1 alpha-2` format
+              minLength: 0
+              maxLength: 2
+            phone:
+              type: string
+              description: Telephone contact information for the Service Provider
+              minLength: 0
+              maxLength: 30
+            fax:
+              type: string
+              description: Fax information for the Service Provider
+              minLength: 0
+              maxLength: 30
+            email:
+              type: string
+              description: Email contact information for the Service Provider
+              minLength: 0
+              maxLength: 120
+            location:
+              type: object
+              description: Geolocation information about the Service Provider
+              properties:
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                distance_from_geolocation:
+                  type: number
+            external_reference:
+              type: object
+              description: External reference information for the Service Provider
+              properties:
+                srm_account_id:
+                  type: string
+                  description: SRM Account ID for the Service Provider
+                  minLength: 7
+                  maxLength: 7
+        relationships:
+          type: object
+          properties:
+            service_networks:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    service_provider_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - service_providers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                postal_code:
+                  type: string
+                country:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                fax:
+                  type: string
+                location:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                    distance_from_geolocation:
+                      type: number
+                      description: Present only when filtering by `geolocation.point`.
+            relationships:
+              type: object
+              properties:
+                service_networks:
+                  $ref: '#/components/schemas/relationship_objects'
+          required:
+          - attributes
+          - type
+          - id
+    service_providers_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_provider_properties-data_2'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    service_provider_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - service_providers
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            address1:
+              type: string
+            address2:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postal_code:
+              type: string
+            country:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            fax:
+              type: string
+            location:
+              type: object
+              properties:
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                distance_from_geolocation:
+                  type: number
+                  description: Present only when filtering by `geolocation.point`.
+        relationships:
+          type: object
+          properties:
+            service_networks:
+              $ref: '#/components/schemas/relationship_objects'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

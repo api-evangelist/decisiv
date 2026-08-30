@@ -1,0 +1,1592 @@
+openapi: 3.2.0
+info:
+  title: Decisiv Case Notes API
+  version: 0.48.24
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+  termsOfService: https://www.decisiv.com/terms-of-use
+  description: 'Operations tagged Case Notes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Case Notes
+paths:
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/notes:
+    get:
+      operationId: listCaseNotes
+      description: Retrieves a paginated list of notes for the specified case.
+      summary: List all notes for the requested case
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case uuid
+        required: true
+        schema:
+          type: string
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sender
+            - subject
+            - recipients
+            - participants
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of notes for the case
+          content:
+            application/vnd.api+json:
+              examples:
+                success:
+                  value:
+                    data:
+                    - id: 17cd5b9d-1f7b-480f-aebb-c72e5df56a0c
+                      type: notes
+                      attributes:
+                        message: This is my note
+                        public: false
+                      relationships:
+                        subject:
+                          data:
+                            type: cases
+                            id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                        sender:
+                          data:
+                            type: users
+                            id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                        recipients:
+                          data:
+                          - type: recipients
+                            id: 23592ac3-cec6-4f5b-849e-3cd046d14eb2
+                        participants:
+                          data:
+                          - type: participants
+                            id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/notes'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              examples:
+                invalid_filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              examples:
+                unauthorized:
+                  value:
+                    errors:
+                    - title: Access unauthorized
+                      detail: Access unauthorized
+                      code: decisiv::access_token:001
+                      status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              examples:
+                forbidden:
+                  value:
+                    errors:
+                    - title: Forbidden
+                      detail: User does not have permission to perform this action on the requested resource(s)
+                      code: decisiv:access:001
+                      status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              examples:
+                not_found:
+                  value:
+                    errors:
+                    - status: '404'
+                      code: decisiv:resource:001
+                      title: Resource Identifier - Not Found
+                      detail: The parent resource could not be found
+                      source:
+                        parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              examples:
+                failed_dependency:
+                  value:
+                    errors:
+                    - title: Failed Dependency
+                      detail: Failed Dependency
+                      code: '424'
+                      status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              examples:
+                gateway_timeout:
+                  value:
+                    errors:
+                    - code: '504'
+                      detail: Gateway timeout error
+                      status: '504'
+                      title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      operationId: createCaseNote
+      description: Creates a new note for the specified case.
+      summary: Creates a note for the requested case
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case ID
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - decisiv:asset_management:case:note_posted
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '201':
+          description: Created an note for the case
+          content:
+            application/vnd.api+json:
+              examples:
+                success:
+                  value:
+                    data:
+                      id: 17cd5b9d-1f7b-480f-aebb-c72e5df56a0c
+                      type: notes
+                      attributes:
+                        message: This is my note
+                        public: false
+                        created_at: '2025-04-07T18:58:31Z'
+                      relationships:
+                        subject:
+                          data:
+                            type: cases
+                            id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                        sender:
+                          data:
+                            type: users
+                            id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                        recipients:
+                          data:
+                          - type: recipients
+                            id: 23592ac3-cec6-4f5b-849e-3cd046d14eb2
+                        participants:
+                          data:
+                          - type: participants
+                            id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/note'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              examples:
+                invalid_filter:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                invalid_silence_events:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              examples:
+                not_found:
+                  value:
+                    errors:
+                    - status: '404'
+                      code: decisiv:resource:001
+                      title: Resource Identifier - Not Found
+                      detail: The parent resource could not be found
+                      source:
+                        parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_note'
+            examples:
+              Note with recipient:
+                value:
+                  data:
+                    type: notes
+                    attributes:
+                      message: This is my note
+                      public: false
+                    relationships:
+                      recipients:
+                      - data:
+                          type: recipients
+                          id: 23592ac3-cec6-4f5b-849e-3cd046d14eb2
+                      - data:
+                          type: recipients
+                          id: 23592ac3-cec6-4f5b-849e-3cd046d14eb2
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/notes/{id}:
+    get:
+      operationId: getCaseNote
+      description: Retrieves the details of a specific note by its ID.
+      summary: Shows the requested note
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case uuid
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sender
+            - subject
+            - recipients
+            - participants
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns the note
+          content:
+            application/vnd.api+json:
+              examples:
+                success:
+                  value:
+                    data:
+                      id: 17cd5b9d-1f7b-480f-aebb-c72e5df56a0c
+                      type: notes
+                      attributes:
+                        message: This is my note
+                        public: false
+                        created_at: '2023-10-01T12:00:00Z'
+                      relationships:
+                        subject:
+                          data:
+                            type: cases
+                            id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                        sender:
+                          data:
+                            type: users
+                            id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                        recipients:
+                          data:
+                          - type: recipients
+                            id: 23592ac3-cec6-4f5b-849e-3cd046d14eb2
+                        participants:
+                          data:
+                          - type: participants
+                            id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/note'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              examples:
+                unauthorized:
+                  value:
+                    errors:
+                    - title: Access unauthorized
+                      detail: Access unauthorized
+                      code: decisiv::access_token:001
+                      status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              examples:
+                forbidden:
+                  value:
+                    errors:
+                    - title: Forbidden
+                      detail: User does not have permission to perform this action on the requested resource(s)
+                      code: decisiv:access:001
+                      status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              examples:
+                not_found:
+                  value:
+                    errors:
+                    - status: '404'
+                      code: decisiv:resource:001
+                      title: Resource Identifier - Not Found
+                      detail: The parent resource could not be found
+                      source:
+                        parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              examples:
+                failed_dependency:
+                  value:
+                    errors:
+                    - title: Failed Dependency
+                      detail: Failed Dependency
+                      code: '424'
+                      status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              examples:
+                gateway_timeout:
+                  value:
+                    errors:
+                    - code: '504'
+                      detail: Gateway timeout error
+                      status: '504'
+                      title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /asset_management/{srm_account_id}/v1/cases/{case_id}/send_note_to_provider:
+    post:
+      operationId: sendNoteToProvider
+      description: Creates a note that will be sent to the provider for the specified case. This endpoint is deprecated.
+      deprecated: true
+      summary: Creates a note that will be sent to the provider for the requested case
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case ID
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - decisiv:asset_management:case:note_posted
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '201':
+          description: Created an note for the case
+          content:
+            application/vnd.api+json:
+              examples:
+                success:
+                  value:
+                    data:
+                      id: 17cd5b9d-1f7b-480f-aebb-c72e5df56a0c
+                      type: notes
+                      attributes:
+                        message: This is my note
+                        public: false
+                        created_at: '2023-10-01T12:00:00Z'
+                      relationships:
+                        subject:
+                          data:
+                            type: cases
+                            id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                        sender:
+                          data:
+                            type: users
+                            id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                        recipients:
+                          data:
+                          - type: recipients
+                            id: 23592ac3-cec6-4f5b-849e-3cd046d14eb2
+                        participants:
+                          data:
+                          - type: participants
+                            id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/note'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Filter not allowed:
+                  value:
+                    errors:
+                    - title: Filter not allowed
+                      detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                      code: decisiv:filters:001
+                      status: '400'
+                      source:
+                        parameter: filter[filter_name]
+                Invalid silence events header:
+                  value:
+                    errors:
+                    - title: Bad Request
+                      detail: Invalid value for X-DECISIV-SILENCE-EVENTS header
+                      code: decisiv:silence_webhook_events:001
+                      status: '400'
+                Missing required attribute key:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:001
+                      title: Missing required attribute key
+                      detail: Required key not provided in request body
+                      source:
+                        pointer: /data/attributes/message
+                Missing required attribute value:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:002
+                      title: Missing required attribute value
+                      detail: Required key must be populated
+                      source:
+                        pointer: /data/attributes/public
+                Invalid attribute type:
+                  value:
+                    errors:
+                    - status: '400'
+                      code: decisiv:request_attributes:004
+                      title: Invalid Attribute Type
+                      detail: Invalid type provided for the attribute
+                      source:
+                        pointer: /data/attributes/public
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: This response may occur when the request is well-formed but cannot be processed because recipients were provided in a provider note.
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Attribute Not Allowed:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:009
+                      title: Attribute Not Allowed
+                      detail: recipients is not allowed
+                      source:
+                        pointer: /data/relationships/recipients
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_note_to_provider'
+            examples:
+              Case:
+                value:
+                  data:
+                    type: notes
+                    attributes:
+                      message: This is my note
+                      public: false
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{case_id}/notes:
+    get:
+      summary: List notes for the requested case
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sender
+            - subject
+            - recipients
+            - participants
+        description: The relationships to be included.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns list of notes for the case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: 68d955e7-5679-418b-9d5d-6b35fc2b2c28
+                  type: notes
+                  attributes:
+                    message: This is my note
+                    public: false
+                    created_at: '2025-04-10T13:30:41Z'
+                  relationships:
+                    subject:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    sender:
+                      data:
+                        type: users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    recipients:
+                      data:
+                      - type: recipients
+                        id: 42c3f138-843a-4b7d-8d83-71b018da98fa
+                      - type: contacts
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    participants:
+                      data:
+                      - type: participants
+                        id: cb967209-0c68-42cc-ad8d-8413554b507f
+              schema:
+                $ref: '#/components/schemas/notes_2'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    post:
+      summary: Create a note for the requested case
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        description: The case ID
+        required: true
+        schema:
+          type: string
+      - name: X-DECISIV-SILENCE-EVENTS
+        in: header
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - decisiv:service_management:case:note_posted
+        description: Corresponding webhook events which can be muted for the given transaction
+      responses:
+        '201':
+          description: Created an note for the case
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 68d955e7-5679-418b-9d5d-6b35fc2b2c28
+                  type: notes
+                  attributes:
+                    message: This is my note
+                    public: false
+                    created_at: '2025-04-10T13:30:41Z'
+                  relationships:
+                    subject:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    sender:
+                      data:
+                        type: users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    recipients:
+                      data:
+                      - type: recipients
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    participants:
+                      data:
+                      - type: participants
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+              schema:
+                $ref: '#/components/schemas/note_2'
+        '400':
+          description: Path ID mismatch
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '400'
+                  code: decisiv:resource:002
+                  title: Invalid JSON:API Resource specified in request
+                  detail: '''79327cde-d5ce-4ce6-bdba-eebab125ae2d'' is an invalid resource'
+                  source:
+                    pointer: /data/id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: Case not found
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/create_case_note'
+            examples:
+              Note with recipients:
+                value:
+                  data:
+                    type: notes
+                    attributes:
+                      message: This is my note
+                      public: false
+                    relationships:
+                      recipients:
+                        data:
+                        - type: recipients
+                          id: 42c3f138-843a-4b7d-8d83-71b018da98fa
+                        - type: contacts
+                          id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+              Note with participant:
+                value:
+                  data:
+                    type: notes
+                    attributes:
+                      message: This is my note
+                      public: false
+                    relationships:
+                      recipients:
+                        data:
+                        - type: participants
+                          id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+  /service_management/{srm_account_id}/v1/cases/{case_id}/notes/{id}:
+    get:
+      summary: Retrieve a note for the requested case
+      tags:
+      - Case Notes
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: case_id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The case UUID
+        required: true
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The resource UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sender
+            - subject
+            - recipients
+            - participants
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Show details for requested Note
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: 68d955e7-5679-418b-9d5d-6b35fc2b2c28
+                  type: notes
+                  attributes:
+                    message: This is my note
+                    public: false
+                    created_at: '2025-04-10T13:30:41Z'
+                  relationships:
+                    subject:
+                      data:
+                        type: cases
+                        id: 487136d2-c4d6-424c-b018-f1ed8a740c6a
+                    sender:
+                      data:
+                        type: users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    recipients:
+                      data:
+                      - type: recipients
+                        id: 42c3f138-843a-4b7d-8d83-71b018da98fa
+                      - type: contacts
+                        id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+                    participants:
+                      data:
+                      - type: participants
+                        id: cb967209-0c68-42cc-ad8d-8413554b507f
+              schema:
+                $ref: '#/components/schemas/note_2'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Record not found
+                  detail: The requested record or one of its relationships could not be found
+                  code: '404'
+                  status: '404'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+    servers:
+    - url: https://srm-api.staging.decisivapps.com
+    - url: https://srm-api.decisivapps.com
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    create_note_to_provider:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message itself
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: If the message is public
+                  examples:
+                  - true
+              required:
+              - message
+              - public
+            relationships:
+              properties:
+                recipients:
+                  $ref: '#/components/schemas/relationship_object'
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - type
+          - attributes
+    notes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - notes
+              attributes:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The message itself
+                    example: This is a note
+                  public:
+                    type: boolean
+                    description: If the message is public
+                    example: true
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: '`ISO 8601` timestamp indicating when the note was created'
+                required:
+                - message
+                - public
+              relationships:
+                type: object
+                properties:
+                  subject:
+                    $ref: '#/components/schemas/relationship_object'
+                  sender:
+                    $ref: '#/components/schemas/relationship_object'
+                  recipients:
+                    $ref: '#/components/schemas/relationship_objects'
+                  participants:
+                    $ref: '#/components/schemas/relationship_objects'
+                required:
+                - recipients
+            required:
+            - type
+            - id
+            - attributes
+            - relationships
+        meta:
+          type: object
+    note:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message itself
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: If the message is public
+                  examples:
+                  - true
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the note was created'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+              required:
+              - message
+              - public
+            relationships:
+              type: object
+              properties:
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                sender:
+                  $ref: '#/components/schemas/relationship_object'
+                recipients:
+                  $ref: '#/components/schemas/relationship_objects'
+                participants:
+                  $ref: '#/components/schemas/relationship_objects'
+              required:
+              - recipients
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_note:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              required:
+              - message
+              - public
+              properties:
+                message:
+                  type: string
+                  description: The message itself
+                  example: This is a note
+                public:
+                  type: boolean
+                  description: If the message is public
+                  example: true
+            relationships:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: array
+                  description: The recipients that will receive the message, one or more allowed
+                  items:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        required:
+                        - type
+                        - id
+                        properties:
+                          type:
+                            type: string
+                            example: recipients
+                            enum:
+                            - recipients
+                            - participants
+                          id:
+                            type: string
+                            format: uuid
+                            description: The uuid of the receiving user, *one or more allowed*
+                            example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+    create_case_note:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          - relationships
+          properties:
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              required:
+              - message
+              - public
+              properties:
+                message:
+                  type: string
+                  example: This is a note
+                public:
+                  type: boolean
+                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  example: true
+            relationships:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: object
+                  description: Despite the key name, this accepts a single `participants` entry as an alternative to one or more `recipients`, `contacts`, or `registered_contacts` entries; the two groups can't be mixed.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      oneOf:
+                      - title: Recipients or contacts
+                        type: array
+                        minItems: 1
+                        items:
+                          type: object
+                          required:
+                          - type
+                          - id
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - recipients
+                              - contacts
+                              - registered_contacts
+                              example: recipients
+                            id:
+                              type: string
+                              format: uuid
+                              description: UUID of the recipient
+                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+                      - title: Single participant
+                        type: array
+                        minItems: 1
+                        maxItems: 1
+                        items:
+                          type: object
+                          required:
+                          - type
+                          - id
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - participants
+                              example: participants
+                            id:
+                              type: string
+                              format: uuid
+                              description: UUID of the participant
+                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+    notes_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/note_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    note_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  examples:
+                  - true
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp'
+              required:
+              - message
+              - public
+            relationships:
+              type: object
+              properties:
+                recipients:
+                  $ref: '#/components/schemas/relationship_objects'
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                sender:
+                  $ref: '#/components/schemas/relationship_object'
+                participants:
+                  $ref: '#/components/schemas/relationship_objects'
+              required:
+              - recipients
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    note_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - notes
+        attributes:
+          type: object
+          properties:
+            message:
+              type: string
+              examples:
+              - This is a note
+            public:
+              type: boolean
+              description: Notes with Public selected can be viewed from the Fleet case perspective.
+              examples:
+              - true
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp'
+          required:
+          - message
+          - public
+        relationships:
+          type: object
+          properties:
+            recipients:
+              $ref: '#/components/schemas/relationship_objects'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            sender:
+              $ref: '#/components/schemas/relationship_object'
+            participants:
+              $ref: '#/components/schemas/relationship_objects'
+          required:
+          - recipients
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+x-refined-from:
+- decisiv-asset-management-openapi.yml
+- decisiv-service-management-openapi.yml

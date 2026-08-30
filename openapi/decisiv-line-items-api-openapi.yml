@@ -1,0 +1,1303 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Service Management Line Items API
+  description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Line Items
+paths:
+  /service_management/{srm_account_id}/v1/line_items:
+    get:
+      summary: List line items across the account
+      operationId: listLineItems
+      description: 'Returns line items for the authenticated account, sourced directly from EstimateItem rather than a single case. Soft-deleted items are excluded.
+
+
+        This collection can be large, so it is always paginated and the response does not compute a total `record-count` (the `meta.record-count` value is `null`); use `page[number]`/`page[size]` to traverse results.
+
+        '
+      tags:
+      - Line Items
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[case.id]
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+        description: 'Restrict to a single case (estimate) UUID. Returns the same set as the nested `GET /cases/{case_id}/line_items` endpoint for that case.
+
+          '
+      - name: filter[assignee.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Restrict to line items assigned to the given internal user id(s). Accepts a comma-separated list. Equivalent to `filter[assignee.id:includes]`.
+
+          '
+      - name: filter[assignee.id:includes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Comma-separated internal user id(s); returns items assigned to any of them.
+      - name: filter[assignee.id:excludes]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Comma-separated internal user id(s); returns items NOT assigned to any of them. Unassigned items are excluded (SQL `NOT IN` semantics, mirroring the case-level assignee filter).
+
+          '
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - parts
+            - technician_stories
+            - assignee
+            - case
+        description: The relationships to be included.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 25
+          minimum: 1
+        description: Sets the desired maximum number of results per page
+      responses:
+        '200':
+          description: Returns the account's line items
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                  type: line_items
+                  attributes:
+                    complaint: CEL on
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    opcode: T3789-0-04
+                    price_code: SR37TYP
+                    name: Air Dryer Cartridge, Replacement
+                    description: All Engines All Years All Models All Makes for Air Dryer Cartridge, Replacement, Description
+                    labor:
+                      time: 2
+                      skill_level: A
+                    pricing:
+                      estimated_total: '300.00'
+                      fixed_total: null
+                      labor:
+                        estimated_total: '140.00'
+                        fixed_total: null
+                      parts:
+                        estimated_total: '140.00'
+                      core_price:
+                        estimated_total: '20.00'
+                      additional_charges:
+                        estimated_total: '450.0'
+                    paint:
+                      time: 1.5
+                      rate: 95
+                      total: 142.5
+                      skill_level: P1
+                    billing_classification: warranty
+                    under_warranty: true
+                    approval_group_tag: GROUP-A
+                    work_status:
+                      code: start
+                      reason: awaiting_parts
+                      timestamp: '2026-06-22T14:30:00Z'
+                      set_by_user:
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                        name: Jordan Tech
+                    approval_status:
+                      name: approved
+                      reason: labor_cost
+                      reason_description: Approved after review
+                      reviewed_by:
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                        name: Pat Reviewer
+                      reviewed_at: '2026-06-22T15:00:00Z'
+                    internal_label: approved
+                  relationships:
+                    parts:
+                      data:
+                      - type: line_item_parts
+                        id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                    technician_stories:
+                      data:
+                      - type: technician_stories
+                        id: b2610b45-a2e1-4abf-ad21-7f820bca4923
+                    assignee:
+                      data:
+                        type: internal_users
+                        id: 6383dc89-05b6-4572-8979-a6257f3597ec
+                    case:
+                      data:
+                        type: cases
+                        id: 9f0e9d3a-3b2a-4f6c-9c7e-2b1a0e5d6c7f
+                meta:
+                  record-count: null
+              schema:
+                $ref: '#/components/schemas/line_items'
+        '400':
+          description: Invalid request (e.g. unknown filter).
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '422':
+          description: A filter value failed validation (e.g. malformed `case.id`).
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/errors_response'
+              examples:
+                Invalid case id:
+                  value:
+                    errors:
+                    - status: '422'
+                      code: decisiv:request_attributes:010
+                      title: Invalid Attribute Value
+                      detail: Invalid uuid value provided
+                      source:
+                        parameter: filter[case.id]
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /service_management/{srm_account_id}/v1/line_items/{id}:
+    get:
+      summary: Retrieve a single line item by id
+      operationId: getLineItem
+      description: 'Retrieve a single line item scoped to the authenticated account, without needing to know its case.
+
+        '
+      tags:
+      - Line Items
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        schema:
+          type: string
+          format: uuid
+        description: The line item UUID
+        required: true
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - parts
+            - technician_stories
+            - assignee
+            - case
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Show details for the requested line item
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: ba889598-5f26-4481-90f7-2c172d42ca5f
+                  type: line_items
+                  attributes:
+                    complaint: CEL on
+                    cause: Diagnostic check required
+                    correction: Reset Diagnostics
+                    opcode: T3789-0-04
+                    price_code: SR37TYP
+                    name: Air Dryer Cartridge, Replacement
+                    description: All Engines All Years All Models All Makes for Air Dryer Cartridge, Replacement, Description
+                    labor:
+                      time: 2
+                      skill_level: A
+                    billing_classification: warranty
+                    under_warranty: true
+                    approval_group_tag: GROUP-A
+                    internal_label: approved
+                  relationships:
+                    parts:
+                      data:
+                      - type: line_item_parts
+                        id: 167f089e-339d-4d05-b175-9b10206c3cbf
+                    case:
+                      data:
+                        type: cases
+                        id: 9f0e9d3a-3b2a-4f6c-9c7e-2b1a0e5d6c7f
+              schema:
+                $ref: '#/components/schemas/line_item'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found (or belongs to another account).
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+components:
+  schemas:
+    line_items:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/line_item_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type:
+              - integer
+              - 'null'
+              description: Total count across all pages. An integer on the case-nested collection; null on the account-wide `GET /line_items` collection, which omits the count for performance.
+    line_item:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          description: 'A line_item represents a single operation (complaint/cause/correction) on the case.
+
+            '
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_items
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type:
+                  - string
+                  - 'null'
+                  description: Customer-reported issue that originated the operation.
+                  maxLength: 6000
+                cause:
+                  type:
+                  - string
+                  - 'null'
+                  description: Diagnosed cause of the issue.
+                  maxLength: 6000
+                correction:
+                  type:
+                  - string
+                  - 'null'
+                  description: Repair action performed (or to be performed) to address the cause.
+                  maxLength: 6000
+                internal_label:
+                  type:
+                  - string
+                  - 'null'
+                  description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values. `none` is always accepted and represents "no label".
+                  maxLength: 255
+                  example: approved
+                description:
+                  type:
+                  - string
+                  - 'null'
+                  description: Free-form notes on the operation, distinct from `complaint` / `cause` / `correction`.
+                  maxLength: 6000
+                price_code:
+                  type:
+                  - string
+                  - 'null'
+                  description: Dealer-defined identifier of a pricing tier used to look up custom labor and parts rates for the line item.
+                  maxLength: 255
+                approval_group_tag:
+                  type:
+                  - string
+                  - 'null'
+                  description: Free-form tag used to group line items together for approval workflows.
+                  maxLength: 255
+                  example: GROUP-A
+                billing_classification:
+                  type:
+                  - string
+                  - 'null'
+                  description: How the operation is billed, derived from the operation type. `billable` is the default (no special operation type); the remaining values indicate the operation is not directly billed to the customer.
+                  enum:
+                  - billable
+                  - warranty
+                  - policy
+                  - campaign
+                  - recall
+                  example: billable
+                under_warranty:
+                  type: boolean
+                  description: Whether the operation is classified as warranty work (a convenience flag derived from `billing_classification` / the operation type).
+                  example: false
+                labor:
+                  type: object
+                  description: Labor inputs for the operation — estimated hours (`time`) and the technician tier (`skill_level`) whose rate drives the calculated labor price in `pricing.labor`.
+                  properties:
+                    time:
+                      type:
+                      - number
+                      - 'null'
+                      description: Labor hours required for the operation.
+                      example: 2
+                    skill_level:
+                      type:
+                      - string
+                      - 'null'
+                      description: Labor skill level applied to the operation. Values are configurable per account — see `GET /skill_levels` for the accepted values.
+                      example: C
+                paint:
+                  type: object
+                  description: Paint inputs for the operation — estimated hours (`time`), hourly `rate`, calculated `total`, and the technician tier (`skill_level`).
+                  properties:
+                    time:
+                      type:
+                      - number
+                      - 'null'
+                      description: Paint hours required for the operation.
+                      example: 1.5
+                    rate:
+                      type:
+                      - number
+                      - 'null'
+                      description: Hourly paint labor rate applied to the operation.
+                      example: 95
+                    total:
+                      type:
+                      - number
+                      - 'null'
+                      description: Calculated paint total (time × rate).
+                      example: 142.5
+                    skill_level:
+                      type:
+                      - string
+                      - 'null'
+                      description: Paint skill level applied to the operation.
+                      example: P1
+                name:
+                  type:
+                  - string
+                  - 'null'
+                  description: Human-readable name of the operation performed (e.g. `Air Dryer Cartridge, Replacement`), distinct from `opcode` which is the short identifier.
+                  maxLength: 510
+                  example: Air Dryer Cartridge, Replacement
+                opcode:
+                  type: string
+                  description: Short identifier for the operation (e.g. `T3789-0-04`), drawn from the operation catalog or set on a custom operation. The serializer falls back through DMS-mapped opcode, source-system opcode, then the catalog opcode.
+                  maxLength: 255
+                  example: T3789-0-04
+                work_status:
+                  type:
+                  - object
+                  - 'null'
+                  description: The current work-status transition for the line item (its most recent status history record). Null when the operation has no work status yet.
+                  properties:
+                    code:
+                      type: string
+                      description: The work-status transition code.
+                      enum:
+                      - start
+                      - stop
+                      - complete
+                      - reopen
+                      example: start
+                    reason:
+                      type:
+                      - string
+                      - 'null'
+                      description: Standardized reason for the transition (primarily for `stop`). Null when the transition has no reason.
+                      enum:
+                      - break
+                      - meal
+                      - shift_change
+                      - reassigned
+                      - sick
+                      - injured
+                      - awaiting_approval
+                      - awaiting_parts
+                      - awaiting_tools
+                      - awaiting_tech_support
+                      - user_defined_1
+                      - user_defined_2
+                      - user_defined_3
+                      - user_defined_4
+                      - null
+                      example: awaiting_parts
+                    timestamp:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: When the transition occurred (ISO 8601).
+                    set_by_user:
+                      type:
+                      - object
+                      - 'null'
+                      description: The user the work status is attributed to.
+                      properties:
+                        id:
+                          type:
+                          - string
+                          - 'null'
+                          description: The user's identifier.
+                        name:
+                          type:
+                          - string
+                          - 'null'
+                          description: The user's full name.
+                approval_status:
+                  type:
+                  - object
+                  - 'null'
+                  description: The metadata-backed approval status for the line item. Null when no approval has been recorded.
+                  properties:
+                    name:
+                      type: string
+                      description: The approval status.
+                      enum:
+                      - requested
+                      - approved
+                      - declined
+                      - deferred
+                      example: approved
+                    reason:
+                      type:
+                      - string
+                      - 'null'
+                      description: Reason associated with the approval decision.
+                    reason_description:
+                      type:
+                      - string
+                      - 'null'
+                      description: Free-form description of the approval reason.
+                    reviewed_by:
+                      type:
+                      - object
+                      - 'null'
+                      description: The user who set the approval status.
+                      properties:
+                        id:
+                          type:
+                          - string
+                          - 'null'
+                          description: The reviewing user's identifier.
+                        name:
+                          type:
+                          - string
+                          - 'null'
+                          description: The reviewing user's full name.
+                    reviewed_at:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: When the approval status was last updated (ISO 8601).
+                pricing:
+                  type: object
+                  description: Server-computed pricing breakdown — top-level totals plus per-category sub-totals for `labor`, `parts`, `core_price`, and `additional_charges`. The top-level object and `labor` expose `fixed_total` for flat-rate operations; the other sub-totals expose `estimated_total` only.
+                  properties:
+                    estimated_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Estimated total for the line item, dynamically calculated from labor time, parts, and additional charges. Null when the line item is fixed-price.
+                      example: '330.00'
+                    fixed_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Fixed total for the line item — a flat-rate price tied to a fixed-price opcode, not dynamically calculated. Null when the line item is estimated.
+                      example: '425.00'
+                    labor:
+                      type: object
+                      properties:
+                        estimated_total:
+                          type:
+                          - string
+                          - 'null'
+                          format: decimal
+                          description: Estimated labor price, calculated from labor time. Null when labor is fixed-price.
+                          example: '140.00'
+                        fixed_total:
+                          type:
+                          - string
+                          - 'null'
+                          format: decimal
+                          description: Fixed labor price for fixed-price labor, not dynamically calculated. Null when labor is estimated.
+                          example: '180.00'
+                    parts:
+                      type: object
+                      properties:
+                        estimated_total:
+                          type: string
+                          format: decimal
+                          description: Estimated total for parts, calculated from the parts list.
+                          example: '140.00'
+                    additional_charges:
+                      type: object
+                      properties:
+                        estimated_total:
+                          type: string
+                          format: decimal
+                          description: Sum of additional charges on the line item.
+                          example: '50.00'
+                    core_price:
+                      type: object
+                      properties:
+                        estimated_total:
+                          type: string
+                          format: decimal
+                          description: Estimated total for core charges on the parts list.
+                vmrs:
+                  type: object
+                  description: 'Vehicle Maintenance Reporting Standards (VMRS) coding for the line item, exposing six VMRS code categories: reason for repair (CK14), operator report (CK82), component code (CK33), position (CK79), technician failure (CK18), and work accomplished (CK15). Each section is null when no code of that category is assigned.'
+                  properties:
+                    reason_for_repair:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies what caused an asset to come in for repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          example: '14'
+                        code:
+                          type: string
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          example: '01'
+                    operator_report:
+                      type:
+                      - array
+                      - 'null'
+                      description: Identifies what the operator reports as being the issue
+                      items:
+                        type: object
+                        properties:
+                          code_key:
+                            type: string
+                            description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                            example: '82'
+                          code:
+                            type: string
+                            description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                            example: '001'
+                    component:
+                      type:
+                      - object
+                      - 'null'
+                      description: Provides universal identifiers or generic terms for parts
+                      properties:
+                        code_key:
+                          type: string
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          example: '33'
+                        code:
+                          type: string
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          example: 023-000-000
+                    position:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies position based on industry-accepted conventions
+                      properties:
+                        code_key:
+                          type: string
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          example: '79'
+                        code:
+                          type: string
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          example: '03'
+                    technician_failure:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the technical failure diagnosed by the technician
+                      properties:
+                        code_key:
+                          type: string
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          example: '18'
+                        code:
+                          type: string
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          example: B1
+                    work_accomplished:
+                      type:
+                      - object
+                      - 'null'
+                      description: Identifies the repair action the technician performed
+                      properties:
+                        code_key:
+                          type: string
+                          description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                          example: '15'
+                        code:
+                          type: string
+                          description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                          example: A
+            relationships:
+              type: object
+              properties:
+                parts:
+                  description: Parts consumed or quoted on this line item, each contributing to `pricing.parts.estimated_total`. Returned as a JSON:API to-many relationship; expand via `include=parts`.
+                  $ref: '#/components/schemas/relationship_objects'
+                technician_stories:
+                  description: Technician-authored notes attached to this line item, capturing the diagnostic narrative around the complaint/cause/correction. To-many; expand via `include=technician_stories`.
+                  $ref: '#/components/schemas/relationship_objects'
+                assignee:
+                  description: The user assigned to perform the operation on this line item. To-one; expand via `include=assignee`.
+                  $ref: '#/components/schemas/relationship_object'
+                case:
+                  description: The case (estimate) this line item belongs to. To-one; only present when expanded via `include=case` (used by the account-wide `GET /line_items` collection).
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    line_item_properties-data:
+      type: object
+      description: 'A line_item represents a single operation (complaint/cause/correction) on the case.
+
+        '
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - line_items
+        attributes:
+          type: object
+          properties:
+            complaint:
+              type:
+              - string
+              - 'null'
+              description: Customer-reported issue that originated the operation.
+              maxLength: 6000
+            cause:
+              type:
+              - string
+              - 'null'
+              description: Diagnosed cause of the issue.
+              maxLength: 6000
+            correction:
+              type:
+              - string
+              - 'null'
+              description: Repair action performed (or to be performed) to address the cause.
+              maxLength: 6000
+            internal_label:
+              type:
+              - string
+              - 'null'
+              description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values. `none` is always accepted and represents "no label".
+              maxLength: 255
+              example: approved
+            description:
+              type:
+              - string
+              - 'null'
+              description: Free-form notes on the operation, distinct from `complaint` / `cause` / `correction`.
+              maxLength: 6000
+            price_code:
+              type:
+              - string
+              - 'null'
+              description: Dealer-defined identifier of a pricing tier used to look up custom labor and parts rates for the line item.
+              maxLength: 255
+            approval_group_tag:
+              type:
+              - string
+              - 'null'
+              description: Free-form tag used to group line items together for approval workflows.
+              maxLength: 255
+              example: GROUP-A
+            billing_classification:
+              type:
+              - string
+              - 'null'
+              description: How the operation is billed, derived from the operation type. `billable` is the default (no special operation type); the remaining values indicate the operation is not directly billed to the customer.
+              enum:
+              - billable
+              - warranty
+              - policy
+              - campaign
+              - recall
+              example: billable
+            under_warranty:
+              type: boolean
+              description: Whether the operation is classified as warranty work (a convenience flag derived from `billing_classification` / the operation type).
+              example: false
+            labor:
+              type: object
+              description: Labor inputs for the operation — estimated hours (`time`) and the technician tier (`skill_level`) whose rate drives the calculated labor price in `pricing.labor`.
+              properties:
+                time:
+                  type:
+                  - number
+                  - 'null'
+                  description: Labor hours required for the operation.
+                  example: 2
+                skill_level:
+                  type:
+                  - string
+                  - 'null'
+                  description: Labor skill level applied to the operation. Values are configurable per account — see `GET /skill_levels` for the accepted values.
+                  example: C
+            paint:
+              type: object
+              description: Paint inputs for the operation — estimated hours (`time`), hourly `rate`, calculated `total`, and the technician tier (`skill_level`).
+              properties:
+                time:
+                  type:
+                  - number
+                  - 'null'
+                  description: Paint hours required for the operation.
+                  example: 1.5
+                rate:
+                  type:
+                  - number
+                  - 'null'
+                  description: Hourly paint labor rate applied to the operation.
+                  example: 95
+                total:
+                  type:
+                  - number
+                  - 'null'
+                  description: Calculated paint total (time × rate).
+                  example: 142.5
+                skill_level:
+                  type:
+                  - string
+                  - 'null'
+                  description: Paint skill level applied to the operation.
+                  example: P1
+            name:
+              type:
+              - string
+              - 'null'
+              description: Human-readable name of the operation performed (e.g. `Air Dryer Cartridge, Replacement`), distinct from `opcode` which is the short identifier.
+              maxLength: 510
+              example: Air Dryer Cartridge, Replacement
+            opcode:
+              type: string
+              description: Short identifier for the operation (e.g. `T3789-0-04`), drawn from the operation catalog or set on a custom operation. The serializer falls back through DMS-mapped opcode, source-system opcode, then the catalog opcode.
+              maxLength: 255
+              example: T3789-0-04
+            work_status:
+              type:
+              - object
+              - 'null'
+              description: The current work-status transition for the line item (its most recent status history record). Null when the operation has no work status yet.
+              properties:
+                code:
+                  type: string
+                  description: The work-status transition code.
+                  enum:
+                  - start
+                  - stop
+                  - complete
+                  - reopen
+                  example: start
+                reason:
+                  type:
+                  - string
+                  - 'null'
+                  description: Standardized reason for the transition (primarily for `stop`). Null when the transition has no reason.
+                  enum:
+                  - break
+                  - meal
+                  - shift_change
+                  - reassigned
+                  - sick
+                  - injured
+                  - awaiting_approval
+                  - awaiting_parts
+                  - awaiting_tools
+                  - awaiting_tech_support
+                  - user_defined_1
+                  - user_defined_2
+                  - user_defined_3
+                  - user_defined_4
+                  - null
+                  example: awaiting_parts
+                timestamp:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: When the transition occurred (ISO 8601).
+                set_by_user:
+                  type:
+                  - object
+                  - 'null'
+                  description: The user the work status is attributed to.
+                  properties:
+                    id:
+                      type:
+                      - string
+                      - 'null'
+                      description: The user's identifier.
+                    name:
+                      type:
+                      - string
+                      - 'null'
+                      description: The user's full name.
+            approval_status:
+              type:
+              - object
+              - 'null'
+              description: The metadata-backed approval status for the line item. Null when no approval has been recorded.
+              properties:
+                name:
+                  type: string
+                  description: The approval status.
+                  enum:
+                  - requested
+                  - approved
+                  - declined
+                  - deferred
+                  example: approved
+                reason:
+                  type:
+                  - string
+                  - 'null'
+                  description: Reason associated with the approval decision.
+                reason_description:
+                  type:
+                  - string
+                  - 'null'
+                  description: Free-form description of the approval reason.
+                reviewed_by:
+                  type:
+                  - object
+                  - 'null'
+                  description: The user who set the approval status.
+                  properties:
+                    id:
+                      type:
+                      - string
+                      - 'null'
+                      description: The reviewing user's identifier.
+                    name:
+                      type:
+                      - string
+                      - 'null'
+                      description: The reviewing user's full name.
+                reviewed_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: When the approval status was last updated (ISO 8601).
+            pricing:
+              type: object
+              description: Server-computed pricing breakdown — top-level totals plus per-category sub-totals for `labor`, `parts`, `core_price`, and `additional_charges`. The top-level object and `labor` expose `fixed_total` for flat-rate operations; the other sub-totals expose `estimated_total` only.
+              properties:
+                estimated_total:
+                  type:
+                  - string
+                  - 'null'
+                  format: decimal
+                  description: Estimated total for the line item, dynamically calculated from labor time, parts, and additional charges. Null when the line item is fixed-price.
+                  example: '330.00'
+                fixed_total:
+                  type:
+                  - string
+                  - 'null'
+                  format: decimal
+                  description: Fixed total for the line item — a flat-rate price tied to a fixed-price opcode, not dynamically calculated. Null when the line item is estimated.
+                  example: '425.00'
+                labor:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Estimated labor price, calculated from labor time. Null when labor is fixed-price.
+                      example: '140.00'
+                    fixed_total:
+                      type:
+                      - string
+                      - 'null'
+                      format: decimal
+                      description: Fixed labor price for fixed-price labor, not dynamically calculated. Null when labor is estimated.
+                      example: '180.00'
+                parts:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type: string
+                      format: decimal
+                      description: Estimated total for parts, calculated from the parts list.
+                      example: '140.00'
+                additional_charges:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type: string
+                      format: decimal
+                      description: Sum of additional charges on the line item.
+                      example: '50.00'
+                core_price:
+                  type: object
+                  properties:
+                    estimated_total:
+                      type: string
+                      format: decimal
+                      description: Estimated total for core charges on the parts list.
+            vmrs:
+              type: object
+              description: 'Vehicle Maintenance Reporting Standards (VMRS) coding for the line item, exposing six VMRS code categories: reason for repair (CK14), operator report (CK82), component code (CK33), position (CK79), technician failure (CK18), and work accomplished (CK15). Each section is null when no code of that category is assigned.'
+              properties:
+                reason_for_repair:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies what caused an asset to come in for repair
+                  properties:
+                    code_key:
+                      type: string
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      example: '14'
+                    code:
+                      type: string
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      example: '01'
+                operator_report:
+                  type:
+                  - array
+                  - 'null'
+                  description: Identifies what the operator reports as being the issue
+                  items:
+                    type: object
+                    properties:
+                      code_key:
+                        type: string
+                        description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                        example: '82'
+                      code:
+                        type: string
+                        description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                        example: '001'
+                component:
+                  type:
+                  - object
+                  - 'null'
+                  description: Provides universal identifiers or generic terms for parts
+                  properties:
+                    code_key:
+                      type: string
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      example: '33'
+                    code:
+                      type: string
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      example: 023-000-000
+                position:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies position based on industry-accepted conventions
+                  properties:
+                    code_key:
+                      type: string
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      example: '79'
+                    code:
+                      type: string
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      example: '03'
+                technician_failure:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies the technical failure diagnosed by the technician
+                  properties:
+                    code_key:
+                      type: string
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      example: '18'
+                    code:
+                      type: string
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      example: B1
+                work_accomplished:
+                  type:
+                  - object
+                  - 'null'
+                  description: Identifies the repair action the technician performed
+                  properties:
+                    code_key:
+                      type: string
+                      description: VMRS code key — the category bucket within the ATA Vehicle Maintenance Reporting Standards (e.g. `14` Reason for Repair, `33` Component, `15` Work Accomplished).
+                      example: '15'
+                    code:
+                      type: string
+                      description: The VMRS code value selected within the parent `code_key`; meaning is scoped to that category.
+                      example: A
+        relationships:
+          type: object
+          properties:
+            parts:
+              description: Parts consumed or quoted on this line item, each contributing to `pricing.parts.estimated_total`. Returned as a JSON:API to-many relationship; expand via `include=parts`.
+              $ref: '#/components/schemas/relationship_objects'
+            technician_stories:
+              description: Technician-authored notes attached to this line item, capturing the diagnostic narrative around the complaint/cause/correction. To-many; expand via `include=technician_stories`.
+              $ref: '#/components/schemas/relationship_objects'
+            assignee:
+              description: The user assigned to perform the operation on this line item. To-one; expand via `include=assignee`.
+              $ref: '#/components/schemas/relationship_object'
+            case:
+              description: The case (estimate) this line item belongs to. To-one; only present when expanded via `include=case` (used by the account-wide `GET /line_items` collection).
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}

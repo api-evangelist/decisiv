@@ -1,0 +1,1102 @@
+openapi: 3.2.0
+info:
+  version: 0.48.24
+  termsOfService: https://www.decisiv.com/terms-of-use
+  contact:
+    name: Decisiv Support
+    email: support@decisiv.com
+    url: https://www.decisiv.com
+  title: Asset Management Estimates API
+  description: Inside of **Decisiv SRM Gateway**, the `Asset Management` module represents all interactions and functionality which an Account registered with a `Fleet subscription` can perform through an API interface.
+  license:
+    name: Proprietary
+    identifier: proprietary
+    url: https://www.decisiv.com/terms-of-use/
+servers:
+- url: https://srm-api.staging.decisivapps.com
+- url: https://srm-api.decisivapps.com
+security:
+- OAuth2AuthorizationCode: []
+  AccessToken: []
+- OAuth2Password: []
+  AccessToken: []
+tags:
+- name: Estimates
+paths:
+  /asset_management/{srm_account_id}/v1/estimates:
+    get:
+      operationId: listEstimates
+      description: Lists all estimates for the requested account.
+      summary: List all estimates for the requested account
+      tags:
+      - Estimates
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: filter[case.id]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `estimates` for the given `case.id`, using *exact* matching search.
+      - name: filter[case.reference_number]
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 2
+          maxLength: 2
+        description: Filters the `estimates` for the given `case.reference_number`, using *exact* matching search
+      - name: filter[status]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filters the `estimates` for the given status, using *exact* matching search. Valid values are: *approved, declined, requested*'
+      - name: filter[version:pending]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'Filters the `estimates` for the given `version:pending`, using *exact* matching search. Valid value is: *true*'
+      - name: filter[created_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `estimates` for the given `created_at:gt`, using *exact* matching search
+      - name: filter[created_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `estimates` for the given `created_at:gte`, using *exact* matching search
+      - name: filter[created_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `estimates` for the given `created_at:lt`, using *exact* matching search
+      - name: filter[created_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filters the `estimates` for the given `created_at:lte`, using *exact* matching search
+      - name: filter[event_timestamps.approval_requested_at:gt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list estimate versions whose approval was requested _greater than_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.approval_requested_at:gte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list estimate versions whose approval was requested _greater than or equal to_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.approval_requested_at:lt]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list estimate versions whose approval was requested _less than_ a specified `ISO 8601` timestamp.
+      - name: filter[event_timestamps.approval_requested_at:lte]
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Timebased filter to list estimate versions whose approval was requested _less than or equal to_ a specified `ISO 8601` timestamp.
+      - name: page[number]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired `page` when encountering larger result sets
+      - name: page[size]
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Sets the desired maximum number of results per page
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - case
+            - service_writer
+            - reviewer
+        description: The relationships to be included.
+      responses:
+        '200':
+          description: Returns list of estimates
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                - id: e85ac4b5-b1c9-4b0f-a35f-39fcd6c3e754
+                  type: estimates
+                  attributes:
+                    version: 1
+                    status: approved
+                    total: 100
+                    totals:
+                      shop_supplies: 30
+                      hazwaste: 25
+                      freight: 10
+                      tax: 5
+                      labor: 30
+                      core: 0
+                      parts: 0
+                    line_items:
+                    - id: 0b84c64c-75ec-4a42-a899-f6f1044d0951
+                      name: ''
+                      parts:
+                      - name: Oil Filter
+                        quantity: 1
+                      vmrs:
+                      - code_key: '33'
+                        code_key_name: Component Code
+                        code: 023-001-000
+                        description: Control Assembly - Mechanical, Clutch
+                      total: 1272
+                      totals:
+                        labor: 72
+                        parts: 1200
+                        core: 0
+                      status: approved
+                    event_timestamps:
+                      estimated_time_to_repair: '2025-04-07T18:58:31Z'
+                      reviewed_at: '2025-04-07T18:58:31Z'
+                      approval_requested_at: '2025-04-07T18:58:31Z'
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    service_writer:
+                      data:
+                        type: users
+                        id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    reviewer:
+                      data:
+                        type: users
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/estimates'
+        '400':
+          description: This response may occur when an invalid request has been provided to the server.  The request may be corrected by the consumer and resubmitted.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Filter not allowed
+                  detail: '''{{filter_name}}'' is not allowed. Valid filters: {{filters_list}}'
+                  code: decisiv:filters:001
+                  status: '400'
+                  source:
+                    parameter: filter[filter_name]
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /asset_management/{srm_account_id}/v1/estimates/{id}:
+    get:
+      operationId: getEstimate
+      description: Retrieves a specific estimate for the requested account by its ID.
+      summary: Retrieves an estimate for the requested account
+      tags:
+      - Estimates
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns an estimate
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: e85ac4b5-b1c9-4b0f-a35f-39fcd6c3e754
+                  type: estimates
+                  attributes:
+                    version: 1
+                    status: approved
+                    total: 100
+                    totals:
+                      shop_supplies: 30
+                      hazwaste: 25
+                      freight: 10
+                      tax: 5
+                      labor: 30
+                      core: 0
+                      parts: 0
+                    line_items:
+                    - id: 0b84c64c-75ec-4a42-a899-f6f1044d0951
+                      name: ''
+                      parts:
+                      - name: Oil Filter
+                        quantity: 1
+                      vmrs:
+                      - code_key: '33'
+                        code_key_name: Component Code
+                        code: 023-001-000
+                        description: Control Assembly - Mechanical, Clutch
+                      total: 1272
+                      totals:
+                        labor: 72
+                        parts: 1200
+                        core: 0
+                      status: approved
+                    event_timestamps:
+                      estimated_time_to_repair: '2025-04-07T18:58:31Z'
+                      reviewed_at: '2025-04-07T18:58:31Z'
+                      approval_requested_at: '2025-04-07T18:58:31Z'
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    service_writer:
+                      data:
+                        type: users
+                        id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    reviewer:
+                      data:
+                        type: users
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/estimate'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+  /asset_management/{srm_account_id}/v1/estimates/{id}/respond:
+    post:
+      operationId: respondToEstimate
+      description: Responds to an estimate by approving, declining, or deferring line items.
+      summary: Respond to an estimate
+      tags:
+      - Estimates
+      parameters:
+      - name: srm_account_id
+        in: path
+        description: The account ID for SRM
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The resource uuid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the updated estimate
+          content:
+            application/vnd.api+json:
+              example:
+                data:
+                  id: e85ac4b5-b1c9-4b0f-a35f-39fcd6c3e754
+                  type: estimates
+                  attributes:
+                    version: 1
+                    status: approved
+                    total: 100
+                    totals:
+                      shop_supplies: 30
+                      hazwaste: 25
+                      freight: 10
+                      tax: 5
+                      labor: 30
+                      core: 0
+                      parts: 0
+                    line_items:
+                    - id: 0b84c64c-75ec-4a42-a899-f6f1044d0951
+                      name: ''
+                      parts:
+                      - name: Oil Filter
+                        quantity: 1
+                      vmrs:
+                      - code_key: '33'
+                        code_key_name: Component Code
+                        code: 023-001-000
+                        description: Control Assembly - Mechanical, Clutch
+                      total: 1272
+                      totals:
+                        labor: 72
+                        parts: 1200
+                        core: 0
+                      status: approved
+                    event_timestamps:
+                      estimated_time_to_repair: '2025-04-07T18:58:31Z'
+                      reviewed_at: '2025-04-07T18:58:31Z'
+                      approval_requested_at: '2025-04-07T18:58:31Z'
+                    created_at: '2025-04-07T18:58:31Z'
+                    updated_at: '2025-04-07T18:58:31Z'
+                  relationships:
+                    service_writer:
+                      data:
+                        type: users
+                        id: 2e7cace7-d1a5-4b89-b34c-8fb751296746
+                    case:
+                      data:
+                        type: cases
+                        id: e3dd4797-3215-4522-a2a8-7f3ccdb1fd44
+                    reviewer:
+                      data:
+                        type: users
+                        id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+              schema:
+                $ref: '#/components/schemas/estimate'
+        '401':
+          description: This response may occur when the access token provided within the Authorization token has expired.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Access unauthorized
+                  detail: Access unauthorized
+                  code: decisiv::access_token:001
+                  status: '401'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '403':
+          description: This response may occur when the authenticated user embedded within the Authorization header does not have access to the requested resource.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Forbidden
+                  detail: User does not have permission to perform this action on the requested resource(s)
+                  code: decisiv:access:001
+                  status: '403'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '404':
+          description: This response may occur when the requested resource is not found.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - status: '404'
+                  code: decisiv:resource:001
+                  title: Resource Identifier - Not Found
+                  detail: The parent resource could not be found
+                  source:
+                    parameter: id
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '424':
+          description: This response may occur when there is an unresolved data dependency or configuration required inside of the Decisiv Platform preventing access to the requested action.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - title: Failed Dependency
+                  detail: Failed Dependency
+                  code: '424'
+                  status: '424'
+              schema:
+                $ref: '#/components/schemas/errors_response'
+        '504':
+          description: This response may occur when there is an unexpected system timeout.
+          content:
+            application/vnd.api+json:
+              example:
+                errors:
+                - code: '504'
+                  detail: Gateway timeout error
+                  status: '504'
+                  title: Gateway timeout error
+              schema:
+                $ref: '#/components/schemas/errors_response'
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              $ref: '#/components/schemas/response_estimate'
+            examples:
+              Estimate:
+                value:
+                  data:
+                    id: e85ac4b5-b1c9-4b0f-a35f-39fcd6c3e754
+                    type: estimates
+                    attributes:
+                      line_items:
+                      - id: 0fac6e56-0a2a-4fd9-abb5-18c0d72e3103
+                        status: deferred
+                        comments: Not approved
+                        reason: parts costs
+components:
+  schemas:
+    estimate:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - estimates
+            attributes:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  description: Version of the estimate
+                  examples:
+                  - 1
+                status:
+                  type: string
+                  description: Status of the estimate
+                  examples:
+                  - requested
+                total:
+                  type: number
+                  description: Total cost of the estimate
+                  examples:
+                  - 749.86
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the estimate was updated'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the estimate was created'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                totals:
+                  type: object
+                  description: The detailed description of expenses for the total
+                  properties:
+                    shop_supplies:
+                      type: number
+                      description: Detailed cost of shop supplies
+                      examples:
+                      - 749.86
+                    hazwaste:
+                      type: number
+                      description: Detailed cost of hazwaste
+                      examples:
+                      - 749.86
+                    freight:
+                      type: number
+                      description: Detailed cost of freight
+                      examples:
+                      - 749.86
+                    tax:
+                      type: number
+                      description: Detailed cost of tax
+                      examples:
+                      - 749.86
+                    labor:
+                      type: number
+                      description: Detailed cost of labor
+                      examples:
+                      - 749.86
+                    core:
+                      type: number
+                      description: Detailed cost of core
+                      examples:
+                      - 749.86
+                    parts:
+                      type: number
+                      description: Detailed cost of parts
+                      examples:
+                      - 749.86
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the estimate
+                  properties:
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    reviewed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the estimate was reviewed'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    approval_requested_at:
+                      type:
+                      - string
+                      - 'null'
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when approval was requested for this estimate version. Backed by `estimate_versions.created_at` — the same value exposed by the top-level `created_at` attribute.'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                line_items:
+                  type: array
+                  description: Line items inside the estimate
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: UUID of the line item
+                      name:
+                        type: string
+                        description: Name of the line item
+                      status:
+                        type: string
+                        description: Status of the line item
+                        examples:
+                        - requested
+                      total:
+                        type: number
+                        description: Total cost of the line item
+                        examples:
+                        - 749.86
+                      totals:
+                        type: object
+                        description: The detailed description of expenses for the total
+                        properties:
+                          labor:
+                            type: number
+                            description: Detailed cost of labor
+                            examples:
+                            - 749.86
+                          core:
+                            type: number
+                            description: Detailed cost of core
+                            examples:
+                            - 749.86
+                          parts:
+                            type: number
+                            description: Detailed cost of parts
+                            examples:
+                            - 749.86
+                      parts:
+                        type: array
+                        description: Line items parts in the estimate
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              examples:
+                              - hose
+                            quantity:
+                              type: integer
+                              examples:
+                              - 1
+                      vmrs:
+                        type: array
+                        description: Line items vrms in the estimate
+                        items:
+                          type: object
+                          properties:
+                            code_key:
+                              type: string
+                              examples:
+                              - '33'
+                            code_key_name:
+                              type: string
+                              examples:
+                              - Component Code
+                            code:
+                              type: string
+                              examples:
+                              - 013-007-024
+                            description:
+                              type: string
+                              examples:
+                              - Line - Air Coiled
+            relationships:
+              type: object
+              properties:
+                service_writer:
+                  $ref: '#/components/schemas/relationship_object'
+                reviewer:
+                  $ref: '#/components/schemas/relationship_object'
+                case:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    response_estimate:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                line_items:
+                  type: array
+                  description: Line Items inside the estimate
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: UUID of the line item
+                      status:
+                        type: string
+                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
+                        example: approved
+                        enum:
+                        - approved
+                        - declined
+                        - deferred
+                      comments:
+                        type: string
+                        example: Did not like the price
+                      reason:
+                        type: string
+                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
+                        example: defer
+                        enum:
+                        - defer
+                        - labor costs
+                        - parts costs
+                        - not interested
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    estimates:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/estimate_properties-data'
+        meta:
+          type: object
+    estimate_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - estimates
+        attributes:
+          type: object
+          properties:
+            version:
+              type: integer
+              description: Version of the estimate
+              examples:
+              - 1
+            status:
+              type: string
+              description: Status of the estimate
+              examples:
+              - requested
+            total:
+              type: number
+              description: Total cost of the estimate
+              examples:
+              - 749.86
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the estimate was updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the estimate was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            totals:
+              type: object
+              description: The detailed description of expenses for the total
+              properties:
+                shop_supplies:
+                  type: number
+                  description: Detailed cost of shop supplies
+                  examples:
+                  - 749.86
+                hazwaste:
+                  type: number
+                  description: Detailed cost of hazwaste
+                  examples:
+                  - 749.86
+                freight:
+                  type: number
+                  description: Detailed cost of freight
+                  examples:
+                  - 749.86
+                tax:
+                  type: number
+                  description: Detailed cost of tax
+                  examples:
+                  - 749.86
+                labor:
+                  type: number
+                  description: Detailed cost of labor
+                  examples:
+                  - 749.86
+                core:
+                  type: number
+                  description: Detailed cost of core
+                  examples:
+                  - 749.86
+                parts:
+                  type: number
+                  description: Detailed cost of parts
+                  examples:
+                  - 749.86
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the estimate
+              properties:
+                estimated_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                reviewed_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the estimate was reviewed'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                approval_requested_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when approval was requested for this estimate version. Backed by `estimate_versions.created_at` — the same value exposed by the top-level `created_at` attribute.'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+            line_items:
+              type: array
+              description: Line items inside the estimate
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: UUID of the line item
+                  name:
+                    type: string
+                    description: Name of the line item
+                  status:
+                    type: string
+                    description: Status of the line item
+                    examples:
+                    - requested
+                  total:
+                    type: number
+                    description: Total cost of the line item
+                    examples:
+                    - 749.86
+                  totals:
+                    type: object
+                    description: The detailed description of expenses for the total
+                    properties:
+                      labor:
+                        type: number
+                        description: Detailed cost of labor
+                        examples:
+                        - 749.86
+                      core:
+                        type: number
+                        description: Detailed cost of core
+                        examples:
+                        - 749.86
+                      parts:
+                        type: number
+                        description: Detailed cost of parts
+                        examples:
+                        - 749.86
+                  parts:
+                    type: array
+                    description: Line items parts in the estimate
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hose
+                        quantity:
+                          type: integer
+                          examples:
+                          - 1
+                  vmrs:
+                    type: array
+                    description: Line items vrms in the estimate
+                    items:
+                      type: object
+                      properties:
+                        code_key:
+                          type: string
+                          examples:
+                          - '33'
+                        code_key_name:
+                          type: string
+                          examples:
+                          - Component Code
+                        code:
+                          type: string
+                          examples:
+                          - 013-007-024
+                        description:
+                          type: string
+                          examples:
+                          - Line - Air Coiled
+        relationships:
+          type: object
+          properties:
+            service_writer:
+              $ref: '#/components/schemas/relationship_object'
+            reviewer:
+              $ref: '#/components/schemas/relationship_object'
+            case:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OAuth2AuthorizationCode:
+      type: oauth2
+      description: OAuth 2.0 Authorization Code flow. This is the required flow for new integrations. See https://api-docs.decisiv.net/docs/api/oauth/
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.decisiv.net/auth/api_gateway
+          tokenUrl: https://login.decisiv.net/oauth/token
+          refreshUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
+    OAuth2Password:
+      type: oauth2
+      description: '**Deprecated.** OAuth 2.0 Password flow. New integrations must use the Authorization Code flow (`OAuth2AuthorizationCode`); this flow remains available only during the migration window and will be removed in a future release. See https://api-docs.decisiv.net/docs/api/oauth/'
+      flows:
+        password:
+          tokenUrl: https://login.decisiv.net/oauth/token
+          scopes: {}
