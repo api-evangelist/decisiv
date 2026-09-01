@@ -34,15 +34,15 @@ modified: '2026-08-12'
 tags:
 - Company
 - commercial-vehicle
-- fleet-management
+- Fleet Management
 - service-relationship-management
-- telematics
-- asset-management
+- Telematics
+- Asset Management
 - maintenance-and-repair
-- heavy-duty-trucking
+- Heavy Duty Trucking
 - Transportation
-- dealer-management
-- json-api
+- Dealer Management
+- JSON:API
 - Webhook
 tags_raw:
 - Company
@@ -69,8 +69,8 @@ apis:
   tags:
   - Cases
   - Estimates
-  - service-locations
-  - xml
+  - Service Locations
+  - XML
   - Legacy
   tags_raw:
   - cases
