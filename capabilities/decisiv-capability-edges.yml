@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 24
+edge_count: 26
 edges:
 - tag: Registered Assets
   spec_file: decisiv-registered-assets-api-openapi.yml
@@ -196,6 +196,18 @@ edges:
     ... 'Cancel sublet request', schemas 'sublet_case', 'service_provider', 'parent_case'
   reason: Requests to sublet part of a vehicle repair to another service provider, with cancel/update
     lifecycle — repair work order management for commercial vehicles.
+- tag: Webhooks
+  spec_file: decisiv-webhooks-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.72
+  evidence: '''Create new webhook for the requested account'', ''Refresh webhook signing key'', schemas
+    webhook_create, update_webhook_request'
+  reason: Full lifecycle management of outbound webhook endpoints and their signing keys exposed to platform
+    integrators, which is exactly the frame's webhook & event subscription capability. Not raised higher
+    because webhook endpoints can also be read as pure integration plumbing.
+  recovered_from: sweep-20260828T235257Z-edges.json
 - tag: Case Actions
   spec_file: decisiv-case-actions-api-openapi.yml
   capability_id: BC-2430.20
@@ -270,3 +282,13 @@ edges:
     for Service Group Customer'; schemas contact, contact_update, create_contact
   reason: CRUD over contact records attached to service-provider customers is customer contact master
     data upkeep rather than any transport-specific capability.
+- tag: Webhooks Events
+  spec_file: decisiv-webhooks-events-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.7
+  evidence: '''List webhook events which are available for subscription by the designated account'''
+  reason: Publishes the catalogue of event types subscribable via webhooks — event schema/subscription
+    surface of the developer integration platform. Single read operation keeps confidence moderate.
+  recovered_from: sweep-20260828T235257Z-edges.json
