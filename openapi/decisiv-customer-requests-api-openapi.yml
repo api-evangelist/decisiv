@@ -219,6 +219,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CustomerRequests
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/customer_request/{id}:
     get:
       summary: Retrieves a customer request
@@ -363,6 +365,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CustomerRequestById
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/customer_request/{id}/accept:
     post:
       summary: Retrieves a customer request
@@ -500,6 +504,8 @@ paths:
                       note: There's one condition tho
                       event_timestamps:
                         confirmed_appointment_at: '2025-06-19T12:41:30Z'
+      operationId: postServiceManagementBySrmAccountIdV1CustomerRequestByIdAccept
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/customer_request/{id}/decline:
     post:
       summary: Retrieves a customer request
@@ -633,130 +639,19 @@ paths:
                     type: customer_request_responses
                     attributes:
                       note: There's one condition tho
+      operationId: postServiceManagementBySrmAccountIdV1CustomerRequestByIdDecline
+      x-operation-id-source: derived
 components:
   schemas:
-    customer_request_response:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - customer_request_responses
-            attributes:
-              type: object
-              properties:
-                status:
-                  type: string
-                  description: Status of the customer request
-                  enum:
-                  - pending
-                  - canceled
-                  - declined
-                  - accepted
-                  example: pending
-                  maxLength: 255
-                note:
-                  type: string
-                  description: The notes for the customer request
-                  example: Initial note
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the customer request
-            relationships:
-              type: object
-              properties:
-                customer_request:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
-    customer_request_response_decline:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                note:
-                  type: string
-                  description: Details on Approving the Customer's Request
-                  example: There is one condition tho
-    customer_request_response_accept:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                note:
-                  type: string
-                  description: Details on Approving the Customer's Request
-                  example: There is one condition tho
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the customer request response
-                  properties:
-                    confirmed_appointment_at:
-                      type: string
-                      description: '`ISO 8601` timestamp indicating when appointment was scheduled'
-                      example: '2025-06-18T12:41:31Z'
-                      format: date-time
+      - errors
     customer_request_properties-data:
       type: object
       properties:
@@ -998,43 +893,23 @@ components:
       - attributes
       - type
       - id
-    customer_requests:
+    customer_request_response_decline:
       type: object
       required:
       - data
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/customer_request_properties-data'
-        meta:
           type: object
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
           properties:
-            id:
-              type: string
             type:
               type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            attributes:
+              type: object
+              properties:
+                note:
+                  type: string
+                  description: Details on Approving the Customer's Request
+                  example: There is one condition tho
     customer_request:
       type: object
       required:
@@ -1281,6 +1156,139 @@ components:
           - attributes
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    customer_requests:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_request_properties-data'
+        meta:
+          type: object
+    customer_request_response_accept:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                note:
+                  type: string
+                  description: Details on Approving the Customer's Request
+                  example: There is one condition tho
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the customer request response
+                  properties:
+                    confirmed_appointment_at:
+                      type: string
+                      description: '`ISO 8601` timestamp indicating when appointment was scheduled'
+                      example: '2025-06-18T12:41:31Z'
+                      format: date-time
+    customer_request_response:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - customer_request_responses
+            attributes:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Status of the customer request
+                  enum:
+                  - pending
+                  - canceled
+                  - declined
+                  - accepted
+                  example: pending
+                  maxLength: 255
+                note:
+                  type: string
+                  description: The notes for the customer request
+                  example: Initial note
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the customer request
+            relationships:
+              type: object
+              properties:
+                customer_request:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

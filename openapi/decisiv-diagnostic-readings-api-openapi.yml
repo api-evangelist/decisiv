@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Diagnostic Readings across 2 of this provider''s published API definitions: decisiv-service-management-openapi.yml, decisiv-telematics-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Diagnostic Readings across 2 of this provider''s published API definitions: decisiv-service-management-openapi.json, decisiv-telematics-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -177,6 +177,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdDiagnosticReadings
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -746,6 +748,54 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    diagnostic_readings:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - diagnostic_readings
+              attributes:
+                $ref: '#/components/schemas/attributes'
+              relationships:
+                type: object
+                properties:
+                  faults:
+                    $ref: '#/components/schemas/relationship_objects'
+                  source_account:
+                    $ref: '#/components/schemas/relationship_object'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    format: uri
+                    description: Canonical URL of the diagnostic reading resource
+        meta:
+          type: object
     attributes:
       type: object
       properties:
@@ -904,6 +954,42 @@ components:
                 - audio
                 - website
                 - other
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -939,265 +1025,6 @@ components:
       required:
       - status
       - title
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    diagnostic_readings:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - type
-            - attributes
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                enum:
-                - diagnostic_readings
-              attributes:
-                $ref: '#/components/schemas/attributes'
-              relationships:
-                type: object
-                properties:
-                  faults:
-                    $ref: '#/components/schemas/relationship_objects'
-                  source_account:
-                    $ref: '#/components/schemas/relationship_object'
-              links:
-                type: object
-                properties:
-                  self:
-                    type: string
-                    format: uri
-                    description: Canonical URL of the diagnostic reading resource
-        meta:
-          type: object
-    create_diagnostic_reading:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - diagnostic_readings
-            attributes:
-              type: object
-              properties:
-                triggered_at:
-                  type: string
-                  format: date-time
-                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
-                sensor_readings:
-                  type: array
-                  description: Sensor readings captured at the time of the diagnostic
-                  items:
-                    type: object
-                    required:
-                    - name
-                    - value
-                    properties:
-                      name:
-                        type: string
-                        description: Name of the sensor
-                      description:
-                        type: string
-                        description: Description of the sensor
-                      value:
-                        type: string
-                        description: Sensor reading value
-                      unit_of_measure:
-                        type: string
-                        description: Unit of measure for the sensor reading
-                      classification_header:
-                        type: string
-                        description: Header group used to classify the reading in the UI
-                      key_data:
-                        type: boolean
-                        description: Flag indicating whether the reading should be highlighted in the UI
-                      localize:
-                        type: boolean
-                        description: Flag indicating whether the reading should be localized in the UI
-                components:
-                  type: array
-                  description: Components reported by the diagnostic
-                  items:
-                    type: object
-                    required:
-                    - name
-                    - version
-                    properties:
-                      name:
-                        type: string
-                        description: Name of the component
-                      description:
-                        type: string
-                        description: Description of the component
-                      version:
-                        type: string
-                        description: Component version
-                origin_id:
-                  type: string
-                  description: Unique identifier of the diagnostic record at the source system
-                origin:
-                  type: string
-                  description: Source system that produced the diagnostic data
-                location:
-                  type: object
-                  description: Geolocation information about the asset
-                  required:
-                  - latitude
-                  - longitude
-                  properties:
-                    latitude:
-                      type: string
-                      description: Asset latitude
-                    longitude:
-                      type: string
-                      description: Asset longitude
-                    altitude:
-                      oneOf:
-                      - type: number
-                        description: Asset altitude
-                      - type: string
-                        description: Asset altitude
-                    heading:
-                      oneOf:
-                      - type: number
-                        description: Asset heading
-                      - type: string
-                        description: Asset heading
-                asset_data:
-                  type: object
-                  description: Asset information
-                  properties:
-                    chassis_id:
-                      type: string
-                      description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
-                    device_id:
-                      type: string
-                      description: Telematic Device ID
-                      minLength: 0
-                      maxLength: 17
-                    make:
-                      type: string
-                      description: Brand of the asset
-                      minLength: 0
-                      maxLength: 10
-                    model:
-                      type: string
-                      description: Name of the asset product from the manufacturer
-                    serial_number:
-                      type: string
-                      description: Production number of the asset, *if `vin` is present, it needs to match the last 8-9 digits of it*
-                      minLength: 6
-                      maxLength: 14
-                    vin:
-                      type: string
-                      description: 17 digit vehicle identification number
-                      minLength: 0
-                      maxLength: 17
-                    year:
-                      type: string
-                      description: The year of the vehicle
-                external_resources:
-                  type: array
-                  description: External resources related to the diagnostic reading
-                  items:
-                    type: object
-                    properties:
-                      href:
-                        type: string
-                        format: url
-                        description: Location (URL) of the external resource
-                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
-                      title:
-                        type: string
-                        description: Title of the external resource
-                        minLength: 3
-                        maxLength: 75
-                      description:
-                        type: string
-                        description: Description of the resource
-                        minLength: 3
-                        maxLength: 150
-                      classification_header:
-                        type: string
-                        description: Classification of the external resource
-                        minLength: 3
-                        maxLength: 50
-                      type:
-                        type: string
-                        description: Type of the external resource
-                        enum:
-                        - document
-                        - image
-                        - video
-                        - audio
-                        - website
-                        - other
-              required:
-              - origin
-              - origin_id
-              - triggered_at
-              - asset_data
-          required:
-          - type
-          - attributes
-      required:
-      - data
     diagnostic_reading:
       type: object
       required:
@@ -1389,6 +1216,181 @@ components:
                   type: string
                   format: uri
                   description: Canonical URL of the diagnostic reading resource
+    create_diagnostic_reading:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - diagnostic_readings
+            attributes:
+              type: object
+              properties:
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
+                sensor_readings:
+                  type: array
+                  description: Sensor readings captured at the time of the diagnostic
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the sensor
+                      description:
+                        type: string
+                        description: Description of the sensor
+                      value:
+                        type: string
+                        description: Sensor reading value
+                      unit_of_measure:
+                        type: string
+                        description: Unit of measure for the sensor reading
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the reading in the UI
+                      key_data:
+                        type: boolean
+                        description: Flag indicating whether the reading should be highlighted in the UI
+                      localize:
+                        type: boolean
+                        description: Flag indicating whether the reading should be localized in the UI
+                components:
+                  type: array
+                  description: Components reported by the diagnostic
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - version
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the component
+                      description:
+                        type: string
+                        description: Description of the component
+                      version:
+                        type: string
+                        description: Component version
+                origin_id:
+                  type: string
+                  description: Unique identifier of the diagnostic record at the source system
+                origin:
+                  type: string
+                  description: Source system that produced the diagnostic data
+                location:
+                  type: object
+                  description: Geolocation information about the asset
+                  required:
+                  - latitude
+                  - longitude
+                  properties:
+                    latitude:
+                      type: string
+                      description: Asset latitude
+                    longitude:
+                      type: string
+                      description: Asset longitude
+                    altitude:
+                      oneOf:
+                      - type: number
+                        description: Asset altitude
+                      - type: string
+                        description: Asset altitude
+                    heading:
+                      oneOf:
+                      - type: number
+                        description: Asset heading
+                      - type: string
+                        description: Asset heading
+                asset_data:
+                  type: object
+                  description: Asset information
+                  properties:
+                    chassis_id:
+                      type: string
+                      description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+                    device_id:
+                      type: string
+                      description: Telematic Device ID
+                      minLength: 0
+                      maxLength: 17
+                    make:
+                      type: string
+                      description: Brand of the asset
+                      minLength: 0
+                      maxLength: 10
+                    model:
+                      type: string
+                      description: Name of the asset product from the manufacturer
+                    serial_number:
+                      type: string
+                      description: Production number of the asset, *if `vin` is present, it needs to match the last 8-9 digits of it*
+                      minLength: 6
+                      maxLength: 14
+                    vin:
+                      type: string
+                      description: 17 digit vehicle identification number
+                      minLength: 0
+                      maxLength: 17
+                    year:
+                      type: string
+                      description: The year of the vehicle
+                external_resources:
+                  type: array
+                  description: External resources related to the diagnostic reading
+                  items:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                        format: url
+                        description: Location (URL) of the external resource
+                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+                      title:
+                        type: string
+                        description: Title of the external resource
+                        minLength: 3
+                        maxLength: 75
+                      description:
+                        type: string
+                        description: Description of the resource
+                        minLength: 3
+                        maxLength: 150
+                      classification_header:
+                        type: string
+                        description: Classification of the external resource
+                        minLength: 3
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Type of the external resource
+                        enum:
+                        - document
+                        - image
+                        - video
+                        - audio
+                        - website
+                        - other
+              required:
+              - origin
+              - origin_id
+              - triggered_at
+              - asset_data
+          required:
+          - type
+          - attributes
+      required:
+      - data
   securitySchemes:
     AccessToken:
       type: http
@@ -1411,5 +1413,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-service-management-openapi.yml
-- decisiv-telematics-openapi.yml
+- decisiv-service-management-openapi.json
+- decisiv-telematics-openapi.json

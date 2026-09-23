@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Case Participants across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Case Participants across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -350,6 +350,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdParticipants
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -456,46 +458,22 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdParticipantsById
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
+      - errors
     participants:
       type: object
       required:
@@ -544,15 +522,6 @@ components:
           - attributes
           - type
           - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     participant_properties-data:
       type: object
       properties:
@@ -585,6 +554,41 @@ components:
       - attributes
       - type
       - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
     participant_2:
       type: object
       required:
@@ -690,5 +694,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

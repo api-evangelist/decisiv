@@ -917,6 +917,104 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    update_webhook_request:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                  description: URL where notifications are delivered. Must use the **https** scheme.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+          required:
+          - id
+          - type
+          - attributes
+      required:
+      - data
+    webhook_create:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              required:
+              - url
+              - events
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  pattern: ^https://
+                  description: URL where notifications are delivered. Must use the **https** scheme.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
     error_response:
       type: object
       properties:
@@ -952,71 +1050,6 @@ components:
       required:
       - status
       - title
-    webhook_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - id
-          - type
-          - attributes
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-              enum:
-              - webhooks
-            attributes:
-              type: object
-              properties:
-                url:
-                  type: string
-                  format: uri
-                  description: URL where notifications are delivered.
-                  example: https://example.com/receive-webhook-notification
-                events:
-                  type: array
-                  description: A list of events to which the webhook is subscribed.
-                  items:
-                    type: string
-                    description: Canonical name of the webhook event(s).
-                  minItems: 1
-                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
-                custom_headers:
-                  type: object
-                  description: Custom headers to include in the webhook request.
-                  additionalProperties:
-                    type: string
-                enabled:
-                  type: boolean
-                  default: true
-                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
-                signing_key:
-                  type: string
-                  description: Strong unique secret key that is auto-generated and used to sign webhook payloads. Only returned at webhook creation or when refreshing the signing key.
-                created_at:
-                  type: string
-                  format: date-time
-                  description: The moment when the webhook was created.
-                  example: '2022-04-12T03:04:05Z'
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: The moment when the webhook was last updated.
-                  example: '2022-04-14T05:23:45Z'
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     refresh_signing_key_response:
       type: object
       required:
@@ -1074,95 +1107,55 @@ components:
                   format: date-time
                   description: The moment when the webhook was last updated.
                   example: '2022-04-14T05:23:45Z'
-    webhook_create:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          properties:
-            type:
-              type: string
-              enum:
-              - webhooks
-            attributes:
-              type: object
-              required:
-              - url
-              - events
-              properties:
-                url:
-                  type: string
-                  format: uri
-                  pattern: ^https://
-                  description: URL where notifications are delivered. Must use the **https** scheme.
-                  example: https://example.com/receive-webhook-notification
-                events:
-                  type: array
-                  description: A list of events to which the webhook is subscribed.
-                  items:
-                    type: string
-                    description: Canonical name of the webhook event(s).
-                  minItems: 1
-                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
-                custom_headers:
-                  type: object
-                  description: Custom headers to include in the webhook request.
-                  additionalProperties:
-                    type: string
-                enabled:
-                  type: boolean
-                  default: true
-                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
-    update_webhook_request:
+    webhook:
       type: object
       properties:
-        data:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - webhooks
+        attributes:
           type: object
           properties:
-            id:
+            url:
               type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - webhooks
-            attributes:
+              format: uri
+              description: URL where notifications are delivered.
+              example: https://example.com/receive-webhook-notification
+            events:
+              type: array
+              description: A list of events to which the webhook is subscribed.
+              items:
+                type: string
+                description: Canonical name of the webhook event(s).
+              minItems: 1
+              example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+            custom_headers:
               type: object
-              properties:
-                url:
-                  type: string
-                  format: uri
-                  pattern: ^https://
-                  description: URL where notifications are delivered. Must use the **https** scheme.
-                  example: https://example.com/receive-webhook-notification
-                events:
-                  type: array
-                  description: A list of events to which the webhook is subscribed.
-                  items:
-                    type: string
-                    description: Canonical name of the webhook event(s).
-                  minItems: 1
-                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
-                custom_headers:
-                  type: object
-                  description: Custom headers to include in the webhook request.
-                  additionalProperties:
-                    type: string
-                enabled:
-                  type: boolean
-                  default: true
-                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
-          required:
-          - id
-          - type
-          - attributes
+              description: Custom headers to include in the webhook request.
+              additionalProperties:
+                type: string
+            enabled:
+              type: boolean
+              default: true
+              description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+            created_at:
+              type: string
+              format: date-time
+              description: The moment when the webhook was created.
+              example: '2022-04-12T03:04:05Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: The moment when the webhook was last updated.
+              example: '2022-04-14T05:23:45Z'
       required:
-      - data
+      - attributes
+      - type
+      - id
     update_webhook_response:
       example:
         data:
@@ -1268,55 +1261,62 @@ components:
             $ref: '#/components/schemas/webhook'
         meta:
           type: object
-    webhook:
+    webhook_by_id:
       type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - webhooks
-        attributes:
-          type: object
-          properties:
-            url:
-              type: string
-              format: uri
-              description: URL where notifications are delivered.
-              example: https://example.com/receive-webhook-notification
-            events:
-              type: array
-              description: A list of events to which the webhook is subscribed.
-              items:
-                type: string
-                description: Canonical name of the webhook event(s).
-              minItems: 1
-              example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
-            custom_headers:
-              type: object
-              description: Custom headers to include in the webhook request.
-              additionalProperties:
-                type: string
-            enabled:
-              type: boolean
-              default: true
-              description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
-            created_at:
-              type: string
-              format: date-time
-              description: The moment when the webhook was created.
-              example: '2022-04-12T03:04:05Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: The moment when the webhook was last updated.
-              example: '2022-04-14T05:23:45Z'
       required:
-      - attributes
-      - type
-      - id
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              enum:
+              - webhooks
+            attributes:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: URL where notifications are delivered.
+                  example: https://example.com/receive-webhook-notification
+                events:
+                  type: array
+                  description: A list of events to which the webhook is subscribed.
+                  items:
+                    type: string
+                    description: Canonical name of the webhook event(s).
+                  minItems: 1
+                  example: '["asset_management:case_created", "maintenance:scheduled_operation_due"]'
+                custom_headers:
+                  type: object
+                  description: Custom headers to include in the webhook request.
+                  additionalProperties:
+                    type: string
+                enabled:
+                  type: boolean
+                  default: true
+                  description: Delivery status of the webhook endpoint. *true* indicates the endpoint will receive notifications. **Endpoints are enabled by default.**
+                signing_key:
+                  type: string
+                  description: Strong unique secret key that is auto-generated and used to sign webhook payloads. Only returned at webhook creation or when refreshing the signing key.
+                created_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was created.
+                  example: '2022-04-12T03:04:05Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: The moment when the webhook was last updated.
+                  example: '2022-04-14T05:23:45Z'
   securitySchemes:
     AccessToken:
       type: http

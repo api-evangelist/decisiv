@@ -15,12 +15,12 @@ security:
 - OAuth2Password: []
   TransitionToken: []
 tags:
-- name: assets
+- name: Assets
 paths:
   /assets:
     get:
       tags:
-      - assets
+      - Assets
       description: Returns all assets in the system. Search is restricted to VIN only
       operationId: getAssets
       parameters:
@@ -50,9 +50,11 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/jsonapiErrorResponse'
+      summary: Get assets
+      x-summary-source: derived
     post:
       tags:
-      - assets
+      - Assets
       description: Creates a new Asset for use within the ecosystem
       operationId: addAsset
       responses:
@@ -81,12 +83,14 @@ paths:
               $ref: '#/components/schemas/jsonapiAssetObject'
         description: Asset object that will be added to the ecosystem
         required: true
+      summary: Add asset
+      x-summary-source: derived
     servers:
     - url: /api/v1/
   /assets/{asset_id}:
     get:
       tags:
-      - assets
+      - Assets
       description: Returns an asset based on the provided ID
       operationId: findAssetById
       parameters:
@@ -112,9 +116,11 @@ paths:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
         '504':
           $ref: '#/components/responses/GatewayTimeout'
+      summary: Find asset by id
+      x-summary-source: derived
     put:
       tags:
-      - assets
+      - Assets
       description: Updates an Asset record
       operationId: updateAsset
       parameters:
@@ -143,9 +149,11 @@ paths:
               $ref: '#/components/schemas/jsonapiAssetUpdateObject'
         description: Updated Asset object
         required: true
+      summary: Update asset
+      x-summary-source: derived
     delete:
       tags:
-      - assets
+      - Assets
       description: Removes a Customer Asset from a Customers' inventory based upon ID
       operationId: RemoveCustomerAssetById
       parameters:
@@ -165,12 +173,14 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
+      summary: Remove customer asset by id
+      x-summary-source: derived
     servers:
     - url: /api/v1/
   /assets/{asset_id}/campaigns:
     get:
       tags:
-      - assets
+      - Assets
       description: Campaign information for an asset
       operationId: assetCampaigns
       parameters:
@@ -194,12 +204,14 @@ paths:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
         '504':
           $ref: '#/components/responses/GatewayTimeout'
+      summary: Asset campaigns
+      x-summary-source: derived
     servers:
     - url: /api/v1/
   /assets/{asset_id}/recalls:
     get:
       tags:
-      - assets
+      - Assets
       description: Recall information for an asset
       operationId: assetRecalls
       parameters:
@@ -223,12 +235,14 @@ paths:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
         '504':
           $ref: '#/components/responses/GatewayTimeout'
+      summary: Asset recalls
+      x-summary-source: derived
     servers:
     - url: /api/v1/
   /assets/{asset_id}/warranties:
     get:
       tags:
-      - assets
+      - Assets
       description: Waranty information for an asset
       operationId: assetWarranties
       parameters:
@@ -252,12 +266,14 @@ paths:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
         '504':
           $ref: '#/components/responses/GatewayTimeout'
+      summary: Asset warranties
+      x-summary-source: derived
     servers:
     - url: /api/v1/
   /assets/{asset_id}/service_history:
     get:
       tags:
-      - assets
+      - Assets
       description: Returns the Service History for an Asset by ID
       operationId: findServiceHistoryById
       parameters:
@@ -290,12 +306,14 @@ paths:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
         '504':
           $ref: '#/components/responses/GatewayTimeout'
+      summary: Find service history by id
+      x-summary-source: derived
     servers:
     - url: /api/v1/
   /assets/{asset_id}/build_information:
     get:
       tags:
-      - assets
+      - Assets
       description: Returns the Build Information for an Asset by ID
       operationId: findBuildInformationById
       parameters:
@@ -324,115 +342,12 @@ paths:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
         '504':
           $ref: '#/components/responses/GatewayTimeout'
+      summary: Find build information by id
+      x-summary-source: derived
     servers:
     - url: /api/v1/
 components:
-  parameters:
-    assetId:
-      name: asset_id
-      in: path
-      description: UUID of Asset to fetch
-      required: true
-      schema:
-        type: string
-    caseIdParam:
-      name: filter[case_id]
-      in: query
-      description: 'Return records based on the given case_id, ex: 3243'
-      required: false
-      schema:
-        type: string
-        maxLength: 20
-        minLength: 1
-    vinParam:
-      name: filter[vin]
-      in: query
-      description: 17 character VIN number
-      required: true
-      schema:
-        type: string
-        maxLength: 17
-        minLength: 12
-    occurredBeforeParam:
-      name: filter[occurred_before]
-      in: query
-      description: 'Return records occurred before date, ex: 20170101 (YYYYMMDD)'
-      required: false
-      schema:
-        type: string
-        format: YYYYMMDD
-    historySort:
-      name: sort
-      in: query
-      description: 'Return records ordered by specified attribute, in ascending order. For descending order the sort attribute is prepended by a ''-''. '
-      required: false
-      schema:
-        type: string
-        enum:
-        - case_id
-        - -case_id
-        - occurred_at
-        - -occurred_at
-    occurredAfterParam:
-      name: filter[occurred_after]
-      in: query
-      description: 'Return records occurred after date, ex: 20170101 (YYYYMMDD)'
-      required: false
-      schema:
-        type: string
-        format: YYYYMMDD
-    assetId_2:
-      name: asset_id
-      in: path
-      description: ID of Customer Asset to fetch
-      required: true
-      schema:
-        type: integer
-    customerIdParam:
-      name: filter[customer_id]
-      in: query
-      required: false
-      description: ID of Customer to filter by
-      schema:
-        type: string
-    vinParam_2:
-      name: filter[vin]
-      in: query
-      description: 'Partial match for a VIN, ex: JN1AR5XXXXXX*'
-      required: false
-      schema:
-        type: string
-        maxLength: 17
-        minLength: 12
-    serialParam:
-      name: filter[serial_number]
-      in: query
-      description: 'Partial match for a serial number, ex: 2112*'
-      required: false
-      schema:
-        type: string
-        maxLength: 9
-        minLength: 3
-    unitNumberParam:
-      name: filter[unit_number]
-      in: query
-      required: false
-      description: Unit Number to filter collection by
-      schema:
-        type: string
-        minLength: 3
   schemas:
-    JSONAPI_BuildInformationLinks:
-      title: JSONAPI_BuildInformationLinks
-      type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
-      properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_BuildInformationLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_BuildInformationLink'
     JSONAPI_Error:
       title: JSONAPI_Error
       type: object
@@ -489,36 +404,48 @@ components:
         '
       items:
         $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
-    JSONAPI_AssetLinks:
-      title: JSONAPI_AssetLinks
+    JSONAPI_RecallsLink:
+      title: JSONAPI_RecallsLink
+      type: string
+      description: Link to the corresponding asset in the Platform API
+      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls
+    JSONAPI_ServiceHistoryLink:
+      title: JSONAPI_PlatformAPILink
+      type: string
+      description: Link to the corresponding asset in the Platform API
+      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history
+    JSONAPI_PaginationLinks:
+      title: JSONAPI_PaginationLinks
+      type: object
+      description: pagination links for a JSONAPI List
+      properties:
+        first:
+          type: string
+          example: https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=1&page%5Bsize%5D=20
+        next:
+          type: string
+          example: https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=2&page%5Bsize%5D=20
+    assetUpdate:
+      type: object
+      properties:
+        odometer_value:
+          type: integer
+          example: 25321
+        notes:
+          type: string
+          example: sample note
+          maxLength: 2000
+    JSONAPI_Links:
+      title: JSONAPI_Links
       type: object
       description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
 
         '
       properties:
         self:
-          $ref: '#/components/schemas/JSONAPI_AssetDocumentLink'
-        platform_api:
-          $ref: '#/components/schemas/JSONAPI_PlatformAPILink'
-    audit_details:
-      type: object
-      properties:
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp record was created
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp record was last updated
-        created_by:
-          type: string
-          description: Username of user which created the record
-          example: current_user
-        updated_by:
-          type: string
-          description: Username of user which last updated the record
-          example: current_user
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     serviceHistoryResponse:
       type: object
       properties:
@@ -621,28 +548,163 @@ components:
             description:
               type: string
               example: Rear Left Top/Upper
-    warrantyResponse:
+    JSONAPI_AssetDocumentLink:
+      title: JSONAPI_AssetDocumentLink
+      type: string
+      example: https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057
+    PreconditionFailedError:
       type: object
       properties:
-        oem_id:
+        title:
           type: string
-          example: THX1138
-        name:
+          example: Precondition Failed
+        detail:
           type: string
-          example: WHEEL BEARING INSPECTION
-        category:
+          example: An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail
+        code:
           type: string
-        start_date:
+          example: '412'
+        status:
           type: string
-          format: date-time
-        end_date:
-          type: string
-          format: date-time
+          example: '412'
+        meta:
+          type: object
+          properties:
+            retry_after:
+              type: integer
+              default: 5
+              example: 5
+              description: how long the user agent should wait (in seconds) before making a follow-up request
+      required:
+      - title
+      - detail
+      - code
+      - status
+      - meta
+    estimateItems:
+      type: array
+      items:
+        type: object
+        properties:
+          operation_name:
+            type: string
+          parts:
+            type: array
+            items:
+              properties:
+                name:
+                  type: string
+                number:
+                  type: string
+                approval_status:
+                  type: string
+                  example: sold
+                  enum:
+                  - sold
+                  - not sold
+                  - deferred
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
     JSONAPI_WarrantiesLink:
       title: JSONAPI_WarrantiesLink
       type: string
       description: Link to the corresponding asset in the Platform API
       example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/warranties
+    jsonapiRecallResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - attributes
+            - id
+            - type
+            properties:
+              attributes:
+                allOf:
+                - $ref: '#/components/schemas/warrantyResponse'
+              id:
+                type: string
+                example: VLV-RC-000-X1111
+              type:
+                type: string
+                example: recalls
+        links:
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Links'
+    jsonapiAssetsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              attributes:
+                allOf:
+                - $ref: '#/components/schemas/asset'
+                - type: object
+                  properties:
+                    serial_number:
+                      type: string
+                      example: DC591345
+                - $ref: '#/components/schemas/audit_details'
+              id:
+                type: string
+                example: 37ef3f02-2098-4fd3-b4e1-b2faa8e79057
+              type:
+                type: string
+                example: assets
+              relationships:
+                type: object
+                properties:
+                  build_information:
+                    type: object
+                    properties:
+                      links:
+                        allOf:
+                        - $ref: '#/components/schemas/JSONAPI_BuildInformationLinks'
+                  campaigns:
+                    type: object
+                    properties:
+                      links:
+                        allOf:
+                        - $ref: '#/components/schemas/JSONAPI_CampaignsLinks'
+                  recalls:
+                    type: object
+                    properties:
+                      links:
+                        allOf:
+                        - $ref: '#/components/schemas/JSONAPI_RecallsLinks'
+                  service_history:
+                    type: object
+                    properties:
+                      links:
+                        allOf:
+                        - $ref: '#/components/schemas/JSONAPI_ServiceHistoryLinks'
+                  warranties:
+                    type: object
+                    properties:
+                      links:
+                        allOf:
+                        - $ref: '#/components/schemas/JSONAPI_WarrantiesLinks'
+              links:
+                allOf:
+                - $ref: '#/components/schemas/JSONAPI_AssetLinks'
+        links:
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_PaginationLinks'
     tooManyRequestsResponseErrorWithExample:
       title: tooManyRequestsResponseErrorWithExample
       type: object
@@ -672,56 +734,48 @@ components:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
           example: Too Many Requests
-    JSONAPI_CampaignsLinks:
-      title: JSONAPI_CampaignsLinks
+    JSONAPI_Errors:
+      title: JSONAPI_Errors
+      type: array
+      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
+
+
+        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
+
+
+        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+
+        '
+      items:
+        $ref: '#/components/schemas/JSONAPI_Error'
+    JSONAPI_BuildInformationLinks:
+      title: JSONAPI_BuildInformationLinks
       type: object
       description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
 
         '
       properties:
         self:
-          $ref: '#/components/schemas/JSONAPI_CampaignsLink'
+          $ref: '#/components/schemas/JSONAPI_BuildInformationLink'
         related:
-          $ref: '#/components/schemas/JSONAPI_CampaignsLink'
-    jsonapiErrorResponse:
+          $ref: '#/components/schemas/JSONAPI_BuildInformationLink'
+    warrantyResponse:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/JSONAPI_Errors'
-    JSONAPI_DocumentLink:
-      title: JSONAPI_DocumentLink
-      type: string
-      description: 'A "JSON API" document link.
-
-        '
-    JSONAPI_ServiceHistoryLinks:
-      title: JSONAPI_ServiceHistoryLinks
-      type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
-      properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_ServiceHistoryLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_ServiceHistoryLink'
-    JSONAPI_BuildInformationLink:
-      title: JSONAPI_BuildInformationLink
-      type: string
-      description: Link to the corresponding asset in the Platform API
-      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information
-    assetUpdate:
-      type: object
-      properties:
-        odometer_value:
-          type: integer
-          example: 25321
-        notes:
+        oem_id:
           type: string
-          example: sample note
-          maxLength: 2000
+          example: THX1138
+        name:
+          type: string
+          example: WHEEL BEARING INSPECTION
+        category:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
     asset:
       type: object
       required:
@@ -830,27 +884,6 @@ components:
           minLength: 1
           maxLength: 2
           description: "VMRS Asset Type Mapping:\n  * `D` - Agricultural Equipment\n  * `A` - Airline Ground Support Equipment\n  * `F` - Asphalt, Road Surfacing/Maintenance Equipment\n  * `7` - Automobile\n  * `AH` - Auxiliary Mounted Heater\n  * `AP` - Auxiliary Power Unit (APU)\n  * `B` - Bus\n  * `G` - Compaction Equipment\n  * `C` - Container\n  * `CC` - Container Rails (Canadian Size & Weight Limits)\n  * `CU` - Container Rails (US)\n  * `8` - Converters (includes Converter Dollies, Tandem Axle Bogies, and Attachable Trailing Axles\n  * `I` - Crushing and Conveying Equipment\n  * `J` - Drilling Equipment\n  * `E` - Engineering and Construction Equipment\n  * `K` - Excavating Equipment\n  * `FE` - Foreign Equipment\n  * `4` - Full Trailer\n  * `T` - Full Trailer (Canadian Size & Weight Limits)\n  * `H` - Hoist and Derrick Equipment\n  * `LC` - Lawn Care Equipment\n  * `LT` - Lease Tractor\n  * `L` - Lifting Equipment\n  * `0` - Maintenance Facility Equipment\n  * `N` - Marine Equipment\n  * `M` - Material Handling Equipment\n  * `W` - Mini-Bus\n  * `U` - Mini-Van\n  * `MA` - Motorcycle/ATV\n  * `MW` - Mower\n  * `Z` - Other/Miscellaneous\n  * `P` - Pile Driving Equipment\n  * `X` - Power Delivery\n  * `Q` - Pumping Equipment\n  * `R` - Refrigeration\n  * `3` - Semi-Trailer\n  * `S` - Semi-Trailer (Canadian Size & Weight Limits)\n  * `6` - Service Vehicle\n  * `SH` - Snow Handling Equipment\n  * `O` - Stationary Equipment\n  * `9` - Terminal Equipment\n  * `2` - Tractor\n  * `5` - Tractor-Trailer Combination (Required for Uniform System of Accounts)\n  * `1` - Truck\n  * `V` - Tunneling Equipment\n  * `Y` - Van\n"
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        detail:
-          type: string
-        code:
-          type: string
-        status:
-          type: string
-      required:
-      - title
-      - detail
-      - code
-      - status
-    JSONAPI_CampaignsLink:
-      title: JSONAPI_CampaignsLink
-      type: string
-      description: Link to the corresponding asset in the Platform API
-      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns
     JSONAPI_WarrantiesLinks:
       title: JSONAPI_RelationshipsLinks
       type: object
@@ -862,6 +895,11 @@ components:
           $ref: '#/components/schemas/JSONAPI_WarrantiesLink'
         related:
           $ref: '#/components/schemas/JSONAPI_WarrantiesLink'
+    JSONAPI_CampaignsLink:
+      title: JSONAPI_CampaignsLink
+      type: string
+      description: Link to the corresponding asset in the Platform API
+      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/campaigns
     buildInformationResponse:
       type: object
       properties:
@@ -1005,57 +1043,27 @@ components:
           type: string
         vehicle_model_number:
           type: string
-    estimateItems:
-      type: array
-      items:
-        type: object
-        properties:
-          operation_name:
-            type: string
-          parts:
-            type: array
-            items:
-              properties:
-                name:
-                  type: string
-                number:
-                  type: string
-                approval_status:
-                  type: string
-                  example: sold
-                  enum:
-                  - sold
-                  - not sold
-                  - deferred
-    PreconditionFailedError:
+    jsonapiWarrantyResponse:
       type: object
       properties:
-        title:
-          type: string
-          example: Precondition Failed
-        detail:
-          type: string
-          example: An unmet requirement with record 37ef3f02-2098-4fd3-b4e1-b2faa8e79057 caused the request to fail
-        code:
-          type: string
-          example: '412'
-        status:
-          type: string
-          example: '412'
-        meta:
-          type: object
-          properties:
-            retry_after:
-              type: integer
-              default: 5
-              example: 5
-              description: how long the user agent should wait (in seconds) before making a follow-up request
-      required:
-      - title
-      - detail
-      - code
-      - status
-      - meta
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - attributes
+            - id
+            - type
+            properties:
+              attributes:
+                allOf:
+                - $ref: '#/components/schemas/warrantyResponse'
+              id:
+                type: string
+                example: '88'
+              type:
+                type: string
+                example: warranties
     jsonapiAssetUpdateObject:
       type: object
       required:
@@ -1073,6 +1081,60 @@ components:
             attributes:
               allOf:
               - $ref: '#/components/schemas/assetUpdate'
+    jsonapiServiceHistoryResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - attributes
+            - id
+            - type
+            properties:
+              attributes:
+                allOf:
+                - $ref: '#/components/schemas/serviceHistoryResponse'
+              id:
+                type: integer
+                example: 87
+              type:
+                type: string
+                example: service_history
+        links:
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Links'
+    JSONAPI_CampaignsLinks:
+      title: JSONAPI_CampaignsLinks
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_CampaignsLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_CampaignsLink'
+    jsonapiBuildInformationResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required:
+          - attributes
+          - id
+          - type
+          properties:
+            id:
+              type: string
+              example: 37ef3f02-2098-4fd3-b4e1-b2faa8e79057
+            type:
+              type: string
+              example: build_information
+            attributes:
+              allOf:
+              - $ref: '#/components/schemas/buildInformationResponse'
     jsonapiAssetObject:
       type: object
       required:
@@ -1108,6 +1170,99 @@ components:
               type:
                 type: string
                 example: campaigns
+    JSONAPI_DocumentLink:
+      title: JSONAPI_DocumentLink
+      type: string
+      description: 'A "JSON API" document link.
+
+        '
+    JSONAPI_RecallsLinks:
+      title: JSONAPI_RecallsLinks
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_RecallsLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_RecallsLink'
+    JSONAPI_ServiceHistoryLinks:
+      title: JSONAPI_ServiceHistoryLinks
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_ServiceHistoryLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_ServiceHistoryLink'
+    JSONAPI_BuildInformationLink:
+      title: JSONAPI_BuildInformationLink
+      type: string
+      description: Link to the corresponding asset in the Platform API
+      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/build_information
+    JSONAPI_AssetLinks:
+      title: JSONAPI_AssetLinks
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_AssetDocumentLink'
+        platform_api:
+          $ref: '#/components/schemas/JSONAPI_PlatformAPILink'
+    audit_details:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp record was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp record was last updated
+        created_by:
+          type: string
+          description: Username of user which created the record
+          example: current_user
+        updated_by:
+          type: string
+          description: Username of user which last updated the record
+          example: current_user
+    JSONAPI_PlatformAPILink:
+      title: JSONAPI_PlatformAPILink
+      type: string
+      description: Link to the corresponding asset in the Platform API
+      example: https://api.preview.decisivapps.com/platform_api/assets/2112
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        detail:
+          type: string
+        code:
+          type: string
+        status:
+          type: string
+      required:
+      - title
+      - detail
+      - code
+      - status
+    tooManyRequestsResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/tooManyRequestsResponseError'
     jsonapiAssetResponse:
       type: object
       properties:
@@ -1164,235 +1319,32 @@ components:
             links:
               allOf:
               - $ref: '#/components/schemas/JSONAPI_AssetLinks'
-    JSONAPI_Links:
-      title: JSONAPI_Links
+    UnprocessableEntityErrorFleetOwned:
       type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
       properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
-    JSONAPI_PaginationLinks:
-      title: JSONAPI_PaginationLinks
-      type: object
-      description: pagination links for a JSONAPI List
-      properties:
-        first:
+        title:
           type: string
-          example: https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=1&page%5Bsize%5D=20
-        next:
+          example: Asset not available for assignment to this account
+        detail:
           type: string
-          example: https://global-assets.preview.decisivapps.com/api/v1/assets?page%5Bnumber%5D=2&page%5Bsize%5D=20
-    jsonapiServiceHistoryResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - attributes
-            - id
-            - type
-            properties:
-              attributes:
-                allOf:
-                - $ref: '#/components/schemas/serviceHistoryResponse'
-              id:
-                type: integer
-                example: 87
-              type:
-                type: string
-                example: service_history
-        links:
-          allOf:
-          - $ref: '#/components/schemas/JSONAPI_Links'
-    JSONAPI_Errors:
-      title: JSONAPI_Errors
-      type: array
-      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
-
-
-        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
-
-
-        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
-
-        '
-      items:
-        $ref: '#/components/schemas/JSONAPI_Error'
-    JSONAPI_ServiceHistoryLink:
-      title: JSONAPI_PlatformAPILink
-      type: string
-      description: Link to the corresponding asset in the Platform API
-      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/service_history
-    JSONAPI_PlatformAPILink:
-      title: JSONAPI_PlatformAPILink
-      type: string
-      description: Link to the corresponding asset in the Platform API
-      example: https://api.preview.decisivapps.com/platform_api/assets/2112
-    jsonapiWarrantyResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - attributes
-            - id
-            - type
-            properties:
-              attributes:
-                allOf:
-                - $ref: '#/components/schemas/warrantyResponse'
-              id:
-                type: string
-                example: '88'
-              type:
-                type: string
-                example: warranties
-    jsonapiAssetsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - type
-            - attributes
-            properties:
-              attributes:
-                allOf:
-                - $ref: '#/components/schemas/asset'
-                - type: object
-                  properties:
-                    serial_number:
-                      type: string
-                      example: DC591345
-                - $ref: '#/components/schemas/audit_details'
-              id:
-                type: string
-                example: 37ef3f02-2098-4fd3-b4e1-b2faa8e79057
-              type:
-                type: string
-                example: assets
-              relationships:
-                type: object
-                properties:
-                  build_information:
-                    type: object
-                    properties:
-                      links:
-                        allOf:
-                        - $ref: '#/components/schemas/JSONAPI_BuildInformationLinks'
-                  campaigns:
-                    type: object
-                    properties:
-                      links:
-                        allOf:
-                        - $ref: '#/components/schemas/JSONAPI_CampaignsLinks'
-                  recalls:
-                    type: object
-                    properties:
-                      links:
-                        allOf:
-                        - $ref: '#/components/schemas/JSONAPI_RecallsLinks'
-                  service_history:
-                    type: object
-                    properties:
-                      links:
-                        allOf:
-                        - $ref: '#/components/schemas/JSONAPI_ServiceHistoryLinks'
-                  warranties:
-                    type: object
-                    properties:
-                      links:
-                        allOf:
-                        - $ref: '#/components/schemas/JSONAPI_WarrantiesLinks'
-              links:
-                allOf:
-                - $ref: '#/components/schemas/JSONAPI_AssetLinks'
-        links:
-          allOf:
-          - $ref: '#/components/schemas/JSONAPI_PaginationLinks'
-    JSONAPI_RecallsLinks:
-      title: JSONAPI_RecallsLinks
-      type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
-      properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_RecallsLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_RecallsLink'
-    jsonapiBuildInformationResponse:
-      type: object
-      properties:
-        data:
+          example: asset_id - Asset not available forassignment to this account
+        code:
+          type: string
+          example: '100'
+        source:
           type: object
-          required:
-          - attributes
-          - id
-          - type
           properties:
-            id:
+            pointer:
               type: string
-              example: 37ef3f02-2098-4fd3-b4e1-b2faa8e79057
-            type:
-              type: string
-              example: build_information
-            attributes:
-              allOf:
-              - $ref: '#/components/schemas/buildInformationResponse'
-    jsonapiRecallResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - attributes
-            - id
-            - type
-            properties:
-              attributes:
-                allOf:
-                - $ref: '#/components/schemas/warrantyResponse'
-              id:
-                type: string
-                example: VLV-RC-000-X1111
-              type:
-                type: string
-                example: recalls
-        links:
-          allOf:
-          - $ref: '#/components/schemas/JSONAPI_Links'
-    tooManyRequestsResponse:
-      type: object
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
-          type: array
-          allOf:
-          - $ref: '#/components/schemas/tooManyRequestsResponseError'
-    JSONAPI_AssetDocumentLink:
-      title: JSONAPI_AssetDocumentLink
-      type: string
-      example: https://global-assets.preview.decisivapps.com/v1/assets/37ef3f02-2098-4fd3-b4e1-b2faa8e79057
-    JSONAPI_RecallsLink:
-      title: JSONAPI_RecallsLink
-      type: string
-      description: Link to the corresponding asset in the Platform API
-      example: https://api.preview.decisivapps.com/api/v1/assets/68652a0c-d47e-11ed-810a-e2ee48e368d3/recalls
+              example: /data/attributes/asset_id
+        status:
+          type: string
+          example: '422'
+      required:
+      - title
+      - detail
+      - code
+      - status
     jsonapiCustomerAssetsResponse:
       type: object
       properties:
@@ -1427,6 +1379,43 @@ components:
           type: array
           allOf:
           - $ref: '#/components/schemas/JSONAPI_Errors'
+    customerAsset:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          description: Customer ID
+          example: 42
+        asset_id:
+          type: string
+          description: Asset UUID
+          example: c441e9ee-d990-4759-b6ab-00230ab6647e
+        vin:
+          type: string
+          minLength: 17
+          maxLength: 17
+          example: 1C4RJFATXDC591345
+        serial_number:
+          type: string
+          example: DC591345
+        unit_number:
+          type: string
+          description: Unit Number
+          example: VT84
+    jsonapiAssetCustomerObject:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: assets
+            attributes:
+              allOf:
+              - $ref: '#/components/schemas/assetCustomerId'
     jsonapiCustomerAssetResponse:
       type: object
       properties:
@@ -1460,69 +1449,6 @@ components:
 
         '
       example: http://link.to/resource
-    jsonapiAssetCustomerObject:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              example: assets
-            attributes:
-              allOf:
-              - $ref: '#/components/schemas/assetCustomerId'
-    UnprocessableEntityErrorFleetOwned:
-      type: object
-      properties:
-        title:
-          type: string
-          example: Asset not available for assignment to this account
-        detail:
-          type: string
-          example: asset_id - Asset not available forassignment to this account
-        code:
-          type: string
-          example: '100'
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              example: /data/attributes/asset_id
-        status:
-          type: string
-          example: '422'
-      required:
-      - title
-      - detail
-      - code
-      - status
-    customerAsset:
-      type: object
-      properties:
-        customer_id:
-          type: integer
-          description: Customer ID
-          example: 42
-        asset_id:
-          type: string
-          description: Asset UUID
-          example: c441e9ee-d990-4759-b6ab-00230ab6647e
-        vin:
-          type: string
-          minLength: 17
-          maxLength: 17
-          example: 1C4RJFATXDC591345
-        serial_number:
-          type: string
-          example: DC591345
-        unit_number:
-          type: string
-          description: Unit Number
-          example: VT84
     assetCustomerId:
       type: object
       properties:
@@ -1533,7 +1459,107 @@ components:
         customer_id:
           type: integer
           description: ID of Customer from /customers
+  parameters:
+    assetId:
+      name: asset_id
+      in: path
+      description: UUID of Asset to fetch
+      required: true
+      schema:
+        type: string
+    vinParam:
+      name: filter[vin]
+      in: query
+      description: 17 character VIN number
+      required: true
+      schema:
+        type: string
+        maxLength: 17
+        minLength: 12
+    historySort:
+      name: sort
+      in: query
+      description: 'Return records ordered by specified attribute, in ascending order. For descending order the sort attribute is prepended by a ''-''. '
+      required: false
+      schema:
+        type: string
+        enum:
+        - case_id
+        - -case_id
+        - occurred_at
+        - -occurred_at
+    occurredAfterParam:
+      name: filter[occurred_after]
+      in: query
+      description: 'Return records occurred after date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYMMDD
+    caseIdParam:
+      name: filter[case_id]
+      in: query
+      description: 'Return records based on the given case_id, ex: 3243'
+      required: false
+      schema:
+        type: string
+        maxLength: 20
+        minLength: 1
+    occurredBeforeParam:
+      name: filter[occurred_before]
+      in: query
+      description: 'Return records occurred before date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYMMDD
+    assetId_2:
+      name: asset_id
+      in: path
+      description: ID of Customer Asset to fetch
+      required: true
+      schema:
+        type: integer
+    vinParam_2:
+      name: filter[vin]
+      in: query
+      description: 'Partial match for a VIN, ex: JN1AR5XXXXXX*'
+      required: false
+      schema:
+        type: string
+        maxLength: 17
+        minLength: 12
+    customerIdParam:
+      name: filter[customer_id]
+      in: query
+      required: false
+      description: ID of Customer to filter by
+      schema:
+        type: string
+    serialParam:
+      name: filter[serial_number]
+      in: query
+      description: 'Partial match for a serial number, ex: 2112*'
+      required: false
+      schema:
+        type: string
+        maxLength: 9
+        minLength: 3
+    unitNumberParam:
+      name: filter[unit_number]
+      in: query
+      required: false
+      description: Unit Number to filter collection by
+      schema:
+        type: string
+        minLength: 3
   responses:
+    PreconditionFailed:
+      description: 412 Precondition Failed
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/PreconditionFailedError'
     BadRequest:
       description: 400 Bad Request
       content:
@@ -1546,12 +1572,6 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/Error'
-    PreconditionFailed:
-      description: 412 Precondition Failed
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/PreconditionFailedError'
     GatewayTimeout:
       description: 504 Gateway Timeout Error
       content:

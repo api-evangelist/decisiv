@@ -6,7 +6,7 @@ info:
     name: Decisiv Support
     email: support@decisiv.com
     url: https://www.decisiv.com
-  title: Service Management Case Line Items Relationships Assignee API
+  title: Service Management Case Line Items Relationships Assignee…
   description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
   license:
     name: Proprietary
@@ -199,20 +199,19 @@ paths:
                   data:
                     type: internal_users
                     id: 6383dc89-05b6-4572-8979-a6257f3597ec
+      operationId: patchServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdRelationshipsAssignee
+      x-operation-id-source: derived
 components:
   schemas:
-    assignee_change:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            id:
-              type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     line_item:
       type: object
       required:
@@ -623,6 +622,54 @@ components:
           - attributes
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    assignee_change:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -658,51 +705,6 @@ components:
       required:
       - status
       - title
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

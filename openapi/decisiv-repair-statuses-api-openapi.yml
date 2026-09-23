@@ -74,8 +74,19 @@ paths:
                   status: '403'
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1RepairStatuses
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     repair_statuses:
       type: object
       required:
@@ -91,15 +102,6 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     repair_status_properties-data:
       type: object
       properties:

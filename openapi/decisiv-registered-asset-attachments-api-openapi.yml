@@ -539,52 +539,15 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    attachments:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/attachment_properties-data'
-        meta:
-          type: object
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
+      - errors
     create_attachment:
       type: object
       required:
@@ -611,6 +574,98 @@ components:
           required:
           - attributes
           - type
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    attachment_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            description:
+              type: string
+              maxLength: 1024
+              description: The description of the file
+            filename:
+              type:
+              - string
+              - 'null'
+              maxLength: 256
+              description: The name of the file. Null when the attachment was created via URL.
+              example: example.pdf
+            size:
+              type:
+              - integer
+              - 'null'
+              maximum: 10485760
+              description: The file size in bytes (max allowed is 10 megabytes). Null when the attachment was created via URL.
+              example: 2684355
+            format:
+              type:
+              - string
+              - 'null'
+              description: The file content type. Null when the attachment was created via URL.
+              example: application/pdf
+            download_url:
+              type: string
+              description: A temporary URL to download the file, or the external URL when the attachment was created via URL.
+              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was created'
+              example: '2023-10-01T12:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was updated'
+              example: '2023-10-01T12:00:00Z'
+          required:
+          - download_url
+          - created_at
+          - updated_at
+        relationships:
+          type: object
+          properties:
+            publisher:
+              $ref: '#/components/schemas/relationship_object'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    attachments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/attachment_properties-data'
+        meta:
+          type: object
     attachment:
       type: object
       required:
@@ -680,96 +735,41 @@ components:
           - attributes
           - type
           - id
-    attachment_properties-data:
+    error_response:
       type: object
       properties:
-        id:
+        status:
           type: string
-          format: uuid
-        type:
+        title:
           type: string
-        attributes:
-          type: object
-          properties:
-            description:
-              type: string
-              maxLength: 1024
-              description: The description of the file
-            filename:
-              type:
-              - string
-              - 'null'
-              maxLength: 256
-              description: The name of the file. Null when the attachment was created via URL.
-              example: example.pdf
-            size:
-              type:
-              - integer
-              - 'null'
-              maximum: 10485760
-              description: The file size in bytes (max allowed is 10 megabytes). Null when the attachment was created via URL.
-              example: 2684355
-            format:
-              type:
-              - string
-              - 'null'
-              description: The file content type. Null when the attachment was created via URL.
-              example: application/pdf
-            download_url:
-              type: string
-              description: A temporary URL to download the file, or the external URL when the attachment was created via URL.
-              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the attachment was created'
-              example: '2023-10-01T12:00:00Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the attachment was updated'
-              example: '2023-10-01T12:00:00Z'
-          required:
-          - download_url
-          - created_at
-          - updated_at
-        relationships:
-          type: object
-          properties:
-            publisher:
-              $ref: '#/components/schemas/relationship_object'
-            subject:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
-    relationship_object:
-      type: object
-      properties:
-        data:
+        detail:
           type:
-          - object
+          - string
           - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
           properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

@@ -261,6 +261,15 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     recipients:
       type: object
       required:
@@ -272,41 +281,6 @@ components:
             $ref: '#/components/schemas/recipient_properties-data'
         meta:
           type: object
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     recipient:
       type: object
       required:
@@ -402,15 +376,41 @@ components:
       - attributes
       - type
       - id
-    errors_response:
+    error_response:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - errors
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

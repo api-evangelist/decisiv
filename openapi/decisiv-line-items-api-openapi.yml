@@ -30,9 +30,7 @@ paths:
       description: 'Returns line items for the authenticated account, sourced directly from EstimateItem rather than a single case. Soft-deleted items are excluded.
 
 
-        This collection can be large, so it is always paginated and the response does not compute a total `record-count` (the `meta.record-count` value is `null`); use `page[number]`/`page[size]` to traverse results.
-
-        '
+        This collection can be large, so it is always paginated and the response does not compute a total `record-count` (the `meta.record-count` value is `null`); use `page[number]`/`page[size]` to traverse results.'
       tags:
       - Line Items
       parameters:
@@ -249,9 +247,7 @@ paths:
     get:
       summary: Retrieve a single line item by id
       operationId: getLineItem
-      description: 'Retrieve a single line item scoped to the authenticated account, without needing to know its case.
-
-        '
+      description: Retrieve a single line item scoped to the authenticated account, without needing to know its case.
       tags:
       - Line Items
       parameters:
@@ -368,23 +364,15 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    line_items:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/line_item_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type:
-              - integer
-              - 'null'
-              description: Total count across all pages. An integer on the case-nested collection; null on the account-wide `GET /line_items` collection, which omits the count for performance.
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     line_item:
       type: object
       required:
@@ -795,41 +783,6 @@ components:
           - attributes
           - type
           - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     line_item_properties-data:
       type: object
       description: 'A line_item represents a single operation (complaint/cause/correction) on the case.
@@ -1235,6 +1188,40 @@ components:
       - attributes
       - type
       - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    line_items:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/line_item_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type:
+              - integer
+              - 'null'
+              description: Total count across all pages. An integer on the case-nested collection; null on the account-wide `GET /line_items` collection, which omits the count for performance.
     relationship_objects:
       type: object
       properties:
@@ -1254,32 +1241,41 @@ components:
             - type
       required:
       - data
-    relationship_object:
+    error_response:
       type: object
       properties:
-        data:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
           type:
-          - object
+          - string
           - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
           properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

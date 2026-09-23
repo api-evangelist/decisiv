@@ -154,6 +154,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseUuidAttachments
+      x-operation-id-source: derived
     post:
       summary: Creates an attachment for the requested sublet case
       tags:
@@ -308,6 +310,8 @@ paths:
                   type: string
                   format: binary
                   description: File to be uploaded
+      operationId: postServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseUuidAttachments
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/attachments/{id}:
     get:
       summary: Retrieves a sublet cases attachment
@@ -452,8 +456,36 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseUuidAttachmentsById
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     attachments:
       type: object
       required:
@@ -465,104 +497,6 @@ components:
             $ref: '#/components/schemas/properties-data'
         meta:
           type: object
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            description:
-              type: string
-              maxLength: 1024
-              description: The description of the file
-            filename:
-              type: string
-              maxLength: 256
-              description: The name of the file
-              example: example.pdf
-            size:
-              type: integer
-              maximum: 10485760
-              description: The file size in bytes (max allowed is 10 megabytes)
-              example: 2684355
-            format:
-              type: string
-              description: The file content type
-              example: application/pdf
-            download_url:
-              type: string
-              description: A temporary URL to download the file
-              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the attachment was created'
-              example: '2023-10-01T12:00:00Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the attachment was updated'
-              example: '2023-10-01T12:00:00Z'
-          required:
-          - filename
-          - size
-          - format
-          - download_url
-          - created_at
-          - updated_at
-        relationships:
-          type: object
-          properties:
-            publisher:
-              $ref: '#/components/schemas/relationship_object'
-            subject:
-              $ref: '#/components/schemas/relationship_object'
-            recipients:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
     attachment:
       type: object
       required:
@@ -631,32 +565,104 @@ components:
           - attributes
           - type
           - id
-    relationship_object:
+    properties-data:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
           properties:
-            id:
+            description:
               type: string
-            type:
+              maxLength: 1024
+              description: The description of the file
+            filename:
               type: string
+              maxLength: 256
+              description: The name of the file
+              example: example.pdf
+            size:
+              type: integer
+              maximum: 10485760
+              description: The file size in bytes (max allowed is 10 megabytes)
+              example: 2684355
+            format:
+              type: string
+              description: The file content type
+              example: application/pdf
+            download_url:
+              type: string
+              description: A temporary URL to download the file
+              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was created'
+              example: '2023-10-01T12:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was updated'
+              example: '2023-10-01T12:00:00Z'
           required:
-          - id
-          - type
+          - filename
+          - size
+          - format
+          - download_url
+          - created_at
+          - updated_at
+        relationships:
+          type: object
+          properties:
+            publisher:
+              $ref: '#/components/schemas/relationship_object'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            recipients:
+              $ref: '#/components/schemas/relationship_object'
       required:
-      - data
-    errors_response:
+      - attributes
+      - type
+      - id
+    error_response:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - errors
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

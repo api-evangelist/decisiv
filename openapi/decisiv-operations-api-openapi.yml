@@ -177,8 +177,19 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdApplicableOperations
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     applicable_operations:
       type: object
       required:
@@ -190,15 +201,6 @@ components:
             $ref: '#/components/schemas/applicable_operation'
         meta:
           type: object
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     error_response:
       type: object
       properties:

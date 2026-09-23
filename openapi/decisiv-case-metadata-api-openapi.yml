@@ -175,6 +175,8 @@ paths:
                         value: '80000'
                       - key: case_other_date
                         value: '2025-04-10T13:28:31Z'
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseIdMetadata
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/cases/{case_id}/metadata/{metadata_key}:
     patch:
       summary: Updates a specific metadata key
@@ -308,84 +310,19 @@ paths:
                   type: case_metadata
                   attributes:
                     value: The updated value goes here
+      operationId: patchServiceManagementBySrmAccountIdV1CasesByCaseIdMetadataByMetadataKey
+      x-operation-id-source: derived
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
-    case_metadata:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - case_metadata
-            attributes:
-              type: object
-              properties:
-                metadata:
-                  type: array
-                  description: Metadata about the case
-                  minItems: 1
-                  maxItems: 50
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        description: Metadata key has to start and end with a letter or number, be lower snake case
-                        minLength: 1
-                        maxLength: 50
-                        pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
-                        example: some_key
-                      value:
-                        type: string
-                        description: The metadata value must be a string with 500 characters or less
-                        minLength: 1
-                        maxLength: 500
-                        example: The value goes here
-              required:
-              - metadata
-          required:
-          - type
-          - attributes
-      required:
-      - data
+      - errors
     case_metadata_persisted:
       type: object
       required:
@@ -433,15 +370,82 @@ components:
           required:
           - type
           - attributes
-    errors_response:
+    case_metadata:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - case_metadata
+            attributes:
+              type: object
+              properties:
+                metadata:
+                  type: array
+                  description: Metadata about the case
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Metadata key has to start and end with a letter or number, be lower snake case
+                        minLength: 1
+                        maxLength: 50
+                        pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                        example: some_key
+                      value:
+                        type: string
+                        description: The metadata value must be a string with 500 characters or less
+                        minLength: 1
+                        maxLength: 500
+                        example: The value goes here
+              required:
+              - metadata
+          required:
+          - type
+          - attributes
       required:
-      - errors
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

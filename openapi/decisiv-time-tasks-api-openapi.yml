@@ -281,6 +281,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1TimeTasks
+      x-operation-id-source: derived
     post:
       summary: Create a new time task
       tags:
@@ -493,6 +495,8 @@ paths:
                         data:
                           type: internal_users
                           id: 6383dc89-05b6-4572-8979-a6257f3597ec
+      operationId: postServiceManagementBySrmAccountIdV1TimeTasks
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/time_tasks/{id}:
     get:
       summary: Retrieves a time task
@@ -654,6 +658,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1TimeTasksById
+      x-operation-id-source: derived
     patch:
       summary: Updates a Time task
       tags:
@@ -826,6 +832,8 @@ paths:
                       description: Change oil
                       event_timestamps:
                         stopped_at: '2025-04-10T13:28:31Z'
+      operationId: patchServiceManagementBySrmAccountIdV1TimeTasksById
+      x-operation-id-source: derived
     delete:
       summary: Deletes a time task
       tags:
@@ -883,87 +891,10 @@ paths:
                   status: '404'
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: deleteServiceManagementBySrmAccountIdV1TimeTasksById
+      x-operation-id-source: derived
 components:
   schemas:
-    time_tasks:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/time_task'
-        meta:
-          type: object
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    time_task_update:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                description:
-                  type: string
-                  description: Description for time task
-                  maxLength: 255
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the time task
-                  properties:
-                    stopped_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
-                      example: '2022-04-14T05:23:45Z'
-          required:
-          - type
-          - id
-          - attributes
     create_time_task:
       type: object
       required:
@@ -1011,6 +942,50 @@ components:
           required:
           - attributes
           - type
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
     relationship_object:
       type: object
       properties:
@@ -1028,15 +1003,6 @@ components:
           - type
       required:
       - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     time_task:
       type: object
       required:
@@ -1088,6 +1054,50 @@ components:
           - attributes
           - type
           - id
+    time_tasks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/time_task'
+        meta:
+          type: object
+    time_task_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for time task
+                  maxLength: 255
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the time task
+                  properties:
+                    stopped_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
+                      example: '2022-04-14T05:23:45Z'
+          required:
+          - type
+          - id
+          - attributes
   securitySchemes:
     AccessToken:
       type: http

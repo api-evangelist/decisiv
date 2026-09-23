@@ -172,6 +172,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseIdParticipantsByParticipantIdRecipients
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_id}/participants/{participant_id}/recipients/{id}:
     get:
       summary: List details on a specific recipient
@@ -296,8 +298,19 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseIdParticipantsByParticipantIdRecipientsById
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     recipients:
       type: object
       required:
@@ -313,6 +326,23 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     recipient:
       type: object
       required:
@@ -388,41 +418,6 @@ components:
           - attributes
           - type
           - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     recipient_properties-data:
       type: object
       description: A participant recipient — the addressable identity used to deliver case notifications. The `type` indicates which underlying record provides the contact details (a directly-attached recipient, a registered contact, an ad-hoc contact, or a service-group contact).
@@ -493,32 +488,41 @@ components:
       - attributes
       - type
       - id
-    relationship_object:
+    error_response:
       type: object
       properties:
-        data:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
           type:
-          - object
+          - string
           - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
           properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

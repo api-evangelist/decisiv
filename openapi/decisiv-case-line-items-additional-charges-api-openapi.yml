@@ -122,6 +122,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseUuidLineItemsByLineItemUuidAdditionalCharges
+      x-operation-id-source: derived
     post:
       summary: Creates an additional charge for the line item
       tags:
@@ -299,6 +301,8 @@ paths:
                         data:
                           type: additional_charge_categories
                           id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseUuidLineItemsByLineItemUuidAdditionalCharges
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/cases/{case_uuid}/line_items/{line_item_uuid}/additional_charges/{id}:
     get:
       summary: Show an Additional Charges for the requested line item
@@ -429,6 +433,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseUuidLineItemsByLineItemUuidAdditionalChargesById
+      x-operation-id-source: derived
     patch:
       summary: Update an additional charge
       tags:
@@ -614,6 +620,8 @@ paths:
                         data:
                           type: additional_charge_categories
                           id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+      operationId: patchServiceManagementBySrmAccountIdV1CasesByCaseUuidLineItemsByLineItemUuidAdditionalChargesById
+      x-operation-id-source: derived
     delete:
       summary: Delete an additional charge
       tags:
@@ -674,8 +682,52 @@ paths:
                   status: '404'
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: deleteServiceManagementBySrmAccountIdV1CasesByCaseUuidLineItemsByLineItemUuidAdditionalChargesById
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    technician_story:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - technician_stories
+            attributes:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: The story itself
+                  minLength: 1
+                  maxLength: 5000
+                  examples:
+                  - This is a story from the technician
+                created_at:
+                  type: string
+                  description: '`ISO 8601` timestamp indicating when the technician story was created'
+                  format: date-time
+          required:
+          - attributes
+          - type
+          - id
     additional_charge_properties-data:
       type: object
       properties:
@@ -791,6 +843,17 @@ components:
           - type
       required:
       - data
+    additional_charges:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/additional_charge_properties-data'
+        meta:
+          type: object
     create_additional_charge:
       type: object
       required:
@@ -912,17 +975,6 @@ components:
           - attributes
           - id
           - relationships
-    additional_charges:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/additional_charge_properties-data'
-        meta:
-          type: object
     additional_charge:
       type: object
       required:
@@ -987,48 +1039,6 @@ components:
               properties:
                 category:
                   $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    technician_story:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - technician_stories
-            attributes:
-              type: object
-              properties:
-                content:
-                  type: string
-                  description: The story itself
-                  minLength: 1
-                  maxLength: 5000
-                  examples:
-                  - This is a story from the technician
-                created_at:
-                  type: string
-                  description: '`ISO 8601` timestamp indicating when the technician story was created'
-                  format: date-time
           required:
           - attributes
           - type

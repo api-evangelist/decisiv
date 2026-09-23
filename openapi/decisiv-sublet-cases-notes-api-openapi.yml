@@ -167,6 +167,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseUuidNotes
+      x-operation-id-source: derived
     post:
       summary: Creates a note for the requested sublet case
       tags:
@@ -307,6 +309,8 @@ paths:
                         data:
                         - type: participants
                           id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+      operationId: postServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseUuidNotes
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/sublet_cases/{sublet_case_uuid}/notes/{id}:
     get:
       summary: List details on a specific note for the requested sublet case
@@ -440,141 +444,19 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1SubletCasesBySubletCaseUuidNotesById
+      x-operation-id-source: derived
 components:
   schemas:
-    create_case_note:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          - relationships
-          properties:
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              required:
-              - message
-              - public
-              properties:
-                message:
-                  type: string
-                  example: This is a note
-                public:
-                  type: boolean
-                  description: Notes with Public selected can be viewed from the Fleet case perspective.
-                  example: true
-            relationships:
-              type: object
-              required:
-              - recipients
-              properties:
-                recipients:
-                  type: object
-                  description: Despite the key name, this accepts a single `participants` entry as an alternative to one or more `recipients`, `contacts`, or `registered_contacts` entries; the two groups can't be mixed.
-                  required:
-                  - data
-                  properties:
-                    data:
-                      oneOf:
-                      - title: Recipients or contacts
-                        type: array
-                        minItems: 1
-                        items:
-                          type: object
-                          required:
-                          - type
-                          - id
-                          properties:
-                            type:
-                              type: string
-                              enum:
-                              - recipients
-                              - contacts
-                              - registered_contacts
-                              example: recipients
-                            id:
-                              type: string
-                              format: uuid
-                              description: UUID of the recipient
-                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-                      - title: Single participant
-                        type: array
-                        minItems: 1
-                        maxItems: 1
-                        items:
-                          type: object
-                          required:
-                          - type
-                          - id
-                          properties:
-                            type:
-                              type: string
-                              enum:
-                              - participants
-                              example: participants
-                            id:
-                              type: string
-                              format: uuid
-                              description: UUID of the participant
-                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    notes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/note_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     note:
       type: object
       required:
@@ -674,6 +556,106 @@ components:
       - relationships
       - type
       - id
+    create_case_note:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          - relationships
+          properties:
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              required:
+              - message
+              - public
+              properties:
+                message:
+                  type: string
+                  example: This is a note
+                public:
+                  type: boolean
+                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  example: true
+            relationships:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: object
+                  description: Despite the key name, this accepts a single `participants` entry as an alternative to one or more `recipients`, `contacts`, or `registered_contacts` entries; the two groups can't be mixed.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      oneOf:
+                      - title: Recipients or contacts
+                        type: array
+                        minItems: 1
+                        items:
+                          type: object
+                          required:
+                          - type
+                          - id
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - recipients
+                              - contacts
+                              - registered_contacts
+                              example: recipients
+                            id:
+                              type: string
+                              format: uuid
+                              description: UUID of the recipient
+                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+                      - title: Single participant
+                        type: array
+                        minItems: 1
+                        maxItems: 1
+                        items:
+                          type: object
+                          required:
+                          - type
+                          - id
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - participants
+                              example: participants
+                            id:
+                              type: string
+                              format: uuid
+                              description: UUID of the participant
+                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     relationship_objects:
       type: object
       properties:
@@ -693,32 +675,56 @@ components:
             - type
       required:
       - data
-    relationship_object:
+    error_response:
       type: object
       properties:
-        data:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
           type:
-          - object
+          - string
           - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
           properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    notes:
+      type: object
       required:
       - data
-    errors_response:
-      type: object
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/note_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http

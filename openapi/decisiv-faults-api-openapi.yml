@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Faults across 2 of this provider''s published API definitions: decisiv-service-management-openapi.yml, decisiv-telematics-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Faults across 2 of this provider''s published API definitions: decisiv-service-management-openapi.json, decisiv-telematics-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -189,6 +189,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdFaults
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -741,41 +743,73 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    faults:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - faults
+              attributes:
+                $ref: '#/components/schemas/properties-attributes'
+              relationships:
+                type: object
+                properties:
+                  diagnostic_reading:
+                    $ref: '#/components/schemas/relationship_object'
+                  source_account:
+                    $ref: '#/components/schemas/relationship_object'
+                  asset:
+                    $ref: '#/components/schemas/relationship_object'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    format: uri
+                    description: Canonical URL of the fault resource
+        meta:
+          type: object
     properties-attributes:
       type: object
       properties:
@@ -973,73 +1007,41 @@ components:
       - triggered_at
       - active
       - details
-    relationship_object:
+    error_response:
       type: object
       properties:
-        data:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
           type:
-          - object
+          - string
           - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    faults:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - type
-            - attributes
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                enum:
-                - faults
-              attributes:
-                $ref: '#/components/schemas/properties-attributes'
-              relationships:
-                type: object
-                properties:
-                  diagnostic_reading:
-                    $ref: '#/components/schemas/relationship_object'
-                  source_account:
-                    $ref: '#/components/schemas/relationship_object'
-                  asset:
-                    $ref: '#/components/schemas/relationship_object'
-              links:
-                type: object
-                properties:
-                  self:
-                    type: string
-                    format: uri
-                    description: Canonical URL of the fault resource
-        meta:
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
     create_fault:
       type: object
       properties:
@@ -1505,5 +1507,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-service-management-openapi.yml
-- decisiv-telematics-openapi.yml
+- decisiv-service-management-openapi.json
+- decisiv-telematics-openapi.json

@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Extended Asset Attributes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Extended Asset Attributes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -803,6 +803,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1ExtendedAssetAttributes
+      x-operation-id-source: derived
     post:
       summary: Create an Extended Asset Attribute
       tags:
@@ -1000,6 +1002,8 @@ paths:
                         data:
                           type: customer_assets
                           id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+      operationId: postServiceManagementBySrmAccountIdV1ExtendedAssetAttributes
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -1113,6 +1117,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1ExtendedAssetAttributesById
+      x-operation-id-source: derived
     patch:
       summary: Updates an Extended Asset Attribute
       tags:
@@ -1269,6 +1275,8 @@ paths:
                         data:
                           type: customer_assets
                           id: ed1641a8-fa41-478a-bd2e-dd72013096b0
+      operationId: patchServiceManagementBySrmAccountIdV1ExtendedAssetAttributesById
+      x-operation-id-source: derived
     delete:
       summary: Deletes an Extended Asset Attribute
       tags:
@@ -1336,11 +1344,143 @@ paths:
                   detail: OAuth Application does not have appropriate provisioning to access this resource
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: deleteServiceManagementBySrmAccountIdV1ExtendedAssetAttributesById
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    extended_asset_attribute:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the extended asset attribute
+                value:
+                  type: string
+                  description: Value of extended attribute for the asset
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the extended asset attribute was created'
+                  example: '2022-04-14T05:23:45Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the extended asset attribute was updated'
+                  example: '2022-04-14T05:23:45Z'
+              required:
+              - value
+            relationships:
+              type: object
+              properties:
+                account_extended_attribute:
+                  $ref: '#/components/schemas/relationship_object'
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - account_extended_attribute
+              - registered_asset
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    extended_asset_attributes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
+        meta:
+          type: object
+    extended_asset_attribute_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the extended asset attribute
+            value:
+              type: string
+              description: Value of extended attribute for the asset
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the extended asset attribute was created'
+              example: '2022-04-14T05:23:45Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the extended asset attribute was updated'
+              example: '2022-04-14T05:23:45Z'
+          required:
+          - value
+        relationships:
+          type: object
+          properties:
+            account_extended_attribute:
+              $ref: '#/components/schemas/relationship_object'
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - account_extended_attribute
+          - registered_asset
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
     error_response:
       type: object
       properties:
@@ -1401,178 +1541,6 @@ components:
                 value:
                   type: string
                   description: Value of extended attribute for the asset
-    extended_asset_attribute_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the extended asset attribute
-            value:
-              type: string
-              description: Value of extended attribute for the asset
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the extended asset attribute was created'
-              example: '2022-04-14T05:23:45Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the extended asset attribute was updated'
-              example: '2022-04-14T05:23:45Z'
-          required:
-          - value
-        relationships:
-          type: object
-          properties:
-            account_extended_attribute:
-              $ref: '#/components/schemas/relationship_object'
-            registered_asset:
-              $ref: '#/components/schemas/relationship_object'
-          required:
-          - account_extended_attribute
-          - registered_asset
-      required:
-      - attributes
-      - relationships
-      - type
-      - id
-    extended_asset_attributes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
-        meta:
-          type: object
-    extended_asset_attribute:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the extended asset attribute
-                value:
-                  type: string
-                  description: Value of extended attribute for the asset
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the extended asset attribute was created'
-                  example: '2022-04-14T05:23:45Z'
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the extended asset attribute was updated'
-                  example: '2022-04-14T05:23:45Z'
-              required:
-              - value
-            relationships:
-              type: object
-              properties:
-                account_extended_attribute:
-                  $ref: '#/components/schemas/relationship_object'
-                registered_asset:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - account_extended_attribute
-              - registered_asset
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    extended_asset_attribute_properties-data_2:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - extended_asset_attributes
-        attributes:
-          type: object
-          properties:
-            value:
-              type: string
-              description: Value of extended attribute for the asset
-            name:
-              type: string
-            created_at:
-              type: string
-              format: date-time
-              example: '2022-04-14T05:23:45Z'
-            updated_at:
-              type: string
-              format: date-time
-              example: '2022-04-14T05:23:45Z'
-          required:
-          - value
-        relationships:
-          type: object
-          properties:
-            account_extended_attribute:
-              $ref: '#/components/schemas/relationship_object'
-            customer_asset:
-              $ref: '#/components/schemas/relationship_object'
-          required:
-          - account_extended_attribute
-          - customer_asset
-      required:
-      - type
-      - attributes
-      - relationships
     extended_asset_attribute_2:
       type: object
       required:
@@ -1620,6 +1588,48 @@ components:
           - type
           - attributes
           - relationships
+    extended_asset_attribute_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - extended_asset_attributes
+        attributes:
+          type: object
+          properties:
+            value:
+              type: string
+              description: Value of extended attribute for the asset
+            name:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+              example: '2022-04-14T05:23:45Z'
+            updated_at:
+              type: string
+              format: date-time
+              example: '2022-04-14T05:23:45Z'
+          required:
+          - value
+        relationships:
+          type: object
+          properties:
+            account_extended_attribute:
+              $ref: '#/components/schemas/relationship_object'
+            customer_asset:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - account_extended_attribute
+          - customer_asset
+      required:
+      - type
+      - attributes
+      - relationships
   securitySchemes:
     AccessToken:
       type: http
@@ -1642,5 +1652,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

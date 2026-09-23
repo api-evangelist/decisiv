@@ -102,6 +102,8 @@ paths:
                   detail: Cases in the closed state of the Service Event lifecycle can not be closed again
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseIdActionsClose
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/cases/{case_id}/actions/open:
     post:
       summary: Open (re-open) a specific case
@@ -173,6 +175,8 @@ paths:
                   detail: Cases in the opened state of the Service Event lifecycle can not be opened again
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseIdActionsOpen
+      x-operation-id-source: derived
 components:
   schemas:
     errors_response:

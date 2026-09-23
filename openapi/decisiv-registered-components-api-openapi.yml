@@ -934,42 +934,16 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
-    registered_component_create:
+      - errors
+    registered_component:
       type: object
       required:
       - data
@@ -977,14 +951,14 @@ components:
         data:
           type: object
           properties:
+            id:
+              type: string
+              format: uuid
             type:
               type: string
               example: registered_components
             attributes:
               type: object
-              required:
-              - name
-              - serial_number
               properties:
                 name:
                   type: string
@@ -1022,20 +996,41 @@ components:
                       format: date-time
                       description: '`ISO 8601` timestamp indicating the component was installed'
                       example: '2022-04-14T05:23:45Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the component was created'
+                  example: '2022-04-14T05:23:45Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the component was updated'
+                  example: '2022-04-14T05:23:45Z'
                 metadata:
                   type: object
                   additionalProperties: true
             relationships:
               type: object
-              required:
-              - registered_asset
               properties:
                 registered_asset:
                   $ref: '#/components/schemas/relationship_object'
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
           required:
+          - id
           - type
-          - attributes
-          - relationships
+      required:
+      - data
     registered_component_patch:
       type: object
       required:
@@ -1109,88 +1104,6 @@ components:
           - id
           - type
           - attributes
-    registered_components:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/registered_component_properties-data'
-        meta:
-          type: object
-    registered_component:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              example: registered_components
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Description of component
-                  minLength: 1
-                  maxLength: 255
-                serial_number:
-                  type: string
-                  description: Production number of the component
-                  minLength: 1
-                  maxLength: 255
-                make:
-                  type: string
-                  description: Brand of the component
-                  minLength: 1
-                  maxLength: 255
-                model:
-                  type: string
-                  description: Name of the component product from the manufacturer
-                  minLength: 1
-                  maxLength: 255
-                year:
-                  type: integer
-                  description: Calendar year the component model was released
-                  minLength: 4
-                  maxLength: 4
-                  minimum: 1000
-                  maximum: 9999
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the component
-                  properties:
-                    installed_on:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the component was installed'
-                      example: '2022-04-14T05:23:45Z'
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the component was created'
-                  example: '2022-04-14T05:23:45Z'
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the component was updated'
-                  example: '2022-04-14T05:23:45Z'
-                metadata:
-                  type: object
-                  additionalProperties: true
-            relationships:
-              type: object
-              properties:
-                registered_asset:
-                  $ref: '#/components/schemas/relationship_object'
     registered_component_properties-data:
       type: object
       properties:
@@ -1257,32 +1170,119 @@ components:
           properties:
             registered_asset:
               $ref: '#/components/schemas/relationship_object'
-    relationship_object:
+    registered_components:
       type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
       required:
       - data
-    errors_response:
-      type: object
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/registered_component_properties-data'
+        meta:
+          type: object
+    registered_component_create:
+      type: object
       required:
-      - errors
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: registered_components
+            attributes:
+              type: object
+              required:
+              - name
+              - serial_number
+              properties:
+                name:
+                  type: string
+                  description: Description of component
+                  minLength: 1
+                  maxLength: 255
+                serial_number:
+                  type: string
+                  description: Production number of the component
+                  minLength: 1
+                  maxLength: 255
+                make:
+                  type: string
+                  description: Brand of the component
+                  minLength: 1
+                  maxLength: 255
+                model:
+                  type: string
+                  description: Name of the component product from the manufacturer
+                  minLength: 1
+                  maxLength: 255
+                year:
+                  type: integer
+                  description: Calendar year the component model was released
+                  minLength: 4
+                  maxLength: 4
+                  minimum: 1000
+                  maximum: 9999
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the component
+                  properties:
+                    installed_on:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the component was installed'
+                      example: '2022-04-14T05:23:45Z'
+                metadata:
+                  type: object
+                  additionalProperties: true
+            relationships:
+              type: object
+              required:
+              - registered_asset
+              properties:
+                registered_asset:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - type
+          - attributes
+          - relationships
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

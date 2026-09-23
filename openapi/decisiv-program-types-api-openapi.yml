@@ -113,6 +113,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1ProgramTypes
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/program_types/{id}:
     get:
       summary: List details on a specific Program Type
@@ -169,54 +171,19 @@ paths:
                       detail: The parent resource could not be found
                       source:
                         parameter: id
+      operationId: getServiceManagementBySrmAccountIdV1ProgramTypesById
+      x-operation-id-source: derived
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    program_types:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/program_type'
-        meta:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     program_type_by_id:
       example:
         data:
@@ -284,15 +251,52 @@ components:
           - attributes
           - type
           - id
-    errors_response:
+    error_response:
       type: object
       properties:
-        errors:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    program_types:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/program_type'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

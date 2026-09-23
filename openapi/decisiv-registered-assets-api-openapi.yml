@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Registered Assets across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Registered Assets across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -1615,7 +1615,17 @@ paths:
             - asset:deactivated
             - decisiv:asset_management:asset:deactivated
         description: Corresponding webhook events which can be muted for the given transaction
-      description: "Endpoint provides the ability to deactivate and remove a `Registered Asset` from the specified `Asset Management` account.\n\n Once an `asset` is *deactivated* it will be accessible for historical purposes by calling:\n * `GET /deactivated_assets`\n* `GET /deactivated_assets/:id`\n\nAssets which have been made inactive in error can be re-enabled for use on the platform through the `activate` child endpoint of the desired asset."
+      description: 'Endpoint provides the ability to deactivate and remove a `Registered Asset` from the specified `Asset Management` account.
+
+
+        Once an `asset` is *deactivated* it will be accessible for historical purposes by calling:
+
+        * `GET /deactivated_assets`
+
+        * `GET /deactivated_assets/:id`
+
+
+        Assets which have been made inactive in error can be re-enabled for use on the platform through the `activate` child endpoint of the desired asset.'
       responses:
         '204':
           description: Successful deativation of a Registered Asset
@@ -2732,110 +2742,14 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1RegisteredAssets
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    registered_assets:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/registered_asset_properties-data'
-        meta:
-          type: object
-    build_information:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/manufacturer_build_information'
-        meta:
-          type: object
-    manufacturer_build_information:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The manufactured asset identifier
-        type:
-          type: string
-          example: manufacturer_build_information
-        attributes:
-          type: object
-          properties:
-            manufacturer_specific_attributes:
-              type: object
-              additionalProperties: true
-              description: Vendor-specific build data for the asset. The structure varies by manufacturer.
-          required:
-          - manufacturer_specific_attributes
-      required:
-      - attributes
-      - type
-      - id
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    meter_data_odometer_registered_asset:
+    meter_data_switch_hours_registered_asset:
       type: object
       required:
       - data
@@ -2853,7 +2767,7 @@ components:
               properties:
                 meter_data:
                   type: array
-                  description: Odometer readings to record on the registered asset.
+                  description: Switch-on-hours meter readings to record on the registered asset.
                   items:
                     type: object
                     description: Type of meter data
@@ -2861,218 +2775,52 @@ components:
                       meter:
                         type: string
                         enum:
-                        - odometer
+                        - switch_on_hours
                         description: Meter data type to be changed
                       unit:
                         type: string
                         enum:
-                        - mi
-                        - km
-                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `switch_on_hours` is `hr`.
                       value:
-                        type: number
+                        type: integer
                         description: Reading value for the given meter data
-    registered_asset_properties-data:
+    meter_data_stand_hours_registered_asset:
       type: object
+      required:
+      - data
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - registered_assets
-        attributes:
+        data:
           type: object
           properties:
-            vin:
+            id:
               type: string
-              description: 17 digit vehicle identification number
-              minLength: 17
-              maxLength: 17
-            serial_number:
+              format: uuid
+            type:
               type: string
-              description: Production number of the asset
-              minLength: 6
-              maxLength: 36
-            unit_number:
-              type: string
-              maxLength: 255
-              description: Identification number commonly used on assets residing within a fleet
-            chassis_id:
-              type: string
-              maxLength: 255
-              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
-            fleet_info:
-              type: string
-              maxLength: 255
-              description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
-            make:
-              type: string
-              maxLength: 255
-              description: Brand of the asset
-            model:
-              type: string
-              maxLength: 255
-              description: Name of the asset product from the manufacturer
-            year:
-              type: integer
-              minimum: 1970
-              maximum: 2028
-              description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
-            odometer_value:
-              type: number
-              description: Integer representation about the asset odometer
-            odometer_unit:
-              type: string
-              description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
-              enum:
-              - mi
-              - km
-            engine_hours:
-              type:
-              - integer
-              - 'null'
-              description: Integer representation about the engine hours of asset
-            stand_by_hours:
-              type:
-              - integer
-              - 'null'
-              description: Integer representation about the stand by hours of asset
-            switch_on_hours:
-              type:
-              - integer
-              - 'null'
-              description: Integer representation about the switch on hours of asset
-            fuel_consumed_value:
-              type:
-              - integer
-              - 'null'
-              description: Integer representation of the total fuel consumed by the asset (stored in gallons)
-            fuel_consumed_unit:
-              type: string
-              description: Unit of measure for fuel consumed. Always returned as `gal`.
-              enum:
-              - gal
-            notes:
-              type: string
-              maxLength: 1000
-              description: Notes about the asset
-            gvwr:
+            attributes:
               type: object
-              description: Gross Vehicle Weight Rating
               properties:
-                value:
-                  type: string
-                  description: The numeral value for the weight
-                unit_of_measure:
-                  type: string
-                  description: The unit of measure used, can be `kg` or `lb`
-                  enum:
-                  - kg
-                  - lb
-            engine:
-              type: object
-              description: Engine data
-              properties:
-                make:
-                  type: string
-                  maxLength: 255
-                  description: The make of the engine
-                model:
-                  type: string
-                  maxLength: 255
-                  description: The model of the engine
-                displacement:
-                  type: string
-                  maxLength: 50
-                  description: The engine size related in liters or cubic inches
-                serial_number:
-                  type: string
-                  description: The engine serial number
-                  minLength: 1
-                  maxLength: 40
-            license:
-              type: object
-              description: License plate data
-              properties:
-                number:
-                  type: string
-                  maxLength: 50
-                  description: The number of the license plate
-                state:
-                  type: string
-                  minLength: 2
-                  maxLength: 10
-                  description: The second part of the ISO 3166-2 code indicates the license State
-                country:
-                  type: string
-                  enum:
-                  - US
-                  - CA
-                  - MX
-                  - EC
-                  minLength: 2
-                  maxLength: 2
-                  description: ISO 3166-1 alpha-2 code indicating the license Country
-                expiration:
-                  type: string
-                  format: date
-                  description: '`ISO 8601` date indicating when the license expires'
-                  example: '2029-06-18'
-            vmrs_asset_status:
-              type: string
-              description: 'Valid values are: 01, 02, 12, 13, 15, 16, 31, 33, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61'
-            vmrs:
-              type: object
-              description: VMRS classification of the asset.
-              properties:
-                asset_type:
-                  type: object
-                  description: VMRS Code Key 2 (Equipment Category).
-                  properties:
-                    code_key:
-                      type: string
-                      description: The VMRS code key identifier. Must be `"2"` when supplied on write.
-                      example: '2'
-                    code:
-                      type: string
-                      description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
-            metadata:
-              type: object
-              description: 'Arbitrary key-value pairs for custom asset metadata (max 50 entries). Keys: lowercase snake_case, 1-50 chars, alphanumeric start/end, no double underscores. Values: required strings, max 500 chars.'
-              minProperties: 1
-              maxProperties: 50
-              propertyNames:
-                minLength: 1
-                maxLength: 50
-                pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
-              additionalProperties:
-                type: string
-                minLength: 1
-                maxLength: 500
-        relationships:
-          type: object
-          properties:
-            depot:
-              $ref: '#/components/schemas/relationship_object'
-            srm_verified_asset:
-              $ref: '#/components/schemas/relationship_object'
-            extended_asset_attributes:
-              $ref: '#/components/schemas/relationship_objects'
-      required:
-      - attributes
-      - type
-      - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+                meter_data:
+                  type: array
+                  description: Stand-by-hours meter readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - stand_by_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `stand_by_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
     create_registered_asset:
       type: object
       required:
@@ -3257,6 +3005,25 @@ components:
           - attributes
           - relationships
           - type
+    deactivate_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+          required:
+          - attributes
+          - type
+          - id
     registered_asset:
       type: object
       required:
@@ -3490,7 +3257,16 @@ components:
                       value:
                         type: number
                         description: Reading value for the given meter data
-    meter_data_history:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    meter_data_odometer_registered_asset:
       type: object
       required:
       - data
@@ -3506,42 +3282,38 @@ components:
             attributes:
               type: object
               properties:
-                meter:
-                  type: string
-                  description: The meter type
-                  enum:
-                  - odometer
-                  - engine_hours
-                  - stand_by_hours
-                  - switch_on_hours
-                  - fuel_consumed
-                  example: odometer
-                value:
-                  type: integer
-                  description: The meter value
-                  example: 1234
-                unit:
-                  type: string
-                  enum:
-                  - mi
-                  - km
-                  - hr
-                  - gal
-                  example: mi
-                  description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`; `hr` for `engine_hours`, `stand_by_hours`, and `switch_on_hours`; `gal` for `fuel_consumed`
-                event_timestamps:
-                  type: object
-                  description: The timestamps of the meter event
-                  properties:
-                    retrieved_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time the meter was retrieved'
-                      example: '2023-01-31T18:21:23Z'
-                recorded_by:
-                  type: string
-                  description: The user who recorded the meter data
-                  example: user@****
+                meter_data:
+                  type: array
+                  description: Odometer readings to record on the registered asset.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - odometer
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - mi
+                        - km
+                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
+                      value:
+                        type: number
+                        description: Reading value for the given meter data
+    build_information:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/manufacturer_build_information'
+        meta:
+          type: object
     registered_asset_patch:
       type: object
       required:
@@ -3749,6 +3521,386 @@ components:
                         id:
                           type: string
                           example: The UUID of the depot
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    manufacturer_build_information:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The manufactured asset identifier
+        type:
+          type: string
+          example: manufacturer_build_information
+        attributes:
+          type: object
+          properties:
+            manufacturer_specific_attributes:
+              type: object
+              additionalProperties: true
+              description: Vendor-specific build data for the asset. The structure varies by manufacturer.
+          required:
+          - manufacturer_specific_attributes
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    transfer_registered_asset:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              additionalProperties: true
+            relationships:
+              type: object
+              properties:
+                depot:
+                  type: object
+                  description: The depot for the registered asset
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: depots
+                        id:
+                          type: string
+                          example: The UUID of the depot
+    registered_asset_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - registered_assets
+        attributes:
+          type: object
+          properties:
+            vin:
+              type: string
+              description: 17 digit vehicle identification number
+              minLength: 17
+              maxLength: 17
+            serial_number:
+              type: string
+              description: Production number of the asset
+              minLength: 6
+              maxLength: 36
+            unit_number:
+              type: string
+              maxLength: 255
+              description: Identification number commonly used on assets residing within a fleet
+            chassis_id:
+              type: string
+              maxLength: 255
+              description: Unique identifier consisting of a letter (chassis series) and six digits (chassis number)
+            fleet_info:
+              type: string
+              maxLength: 255
+              description: Free-form text associated with the asset. Shown as "Fleet Info" in the fleet UI. No defined format or meaning.
+            make:
+              type: string
+              maxLength: 255
+              description: Brand of the asset
+            model:
+              type: string
+              maxLength: 255
+              description: Name of the asset product from the manufacturer
+            year:
+              type: integer
+              minimum: 1970
+              maximum: 2028
+              description: 'Calendar year the asset model was released, minimum: 1970, maximum: two years from now'
+            odometer_value:
+              type: number
+              description: Integer representation about the asset odometer
+            odometer_unit:
+              type: string
+              description: ' The unit of measure for odometer value represented in standard or metric (mi = Miles or km = Kilometers)'
+              enum:
+              - mi
+              - km
+            engine_hours:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation about the engine hours of asset
+            stand_by_hours:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation about the stand by hours of asset
+            switch_on_hours:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation about the switch on hours of asset
+            fuel_consumed_value:
+              type:
+              - integer
+              - 'null'
+              description: Integer representation of the total fuel consumed by the asset (stored in gallons)
+            fuel_consumed_unit:
+              type: string
+              description: Unit of measure for fuel consumed. Always returned as `gal`.
+              enum:
+              - gal
+            notes:
+              type: string
+              maxLength: 1000
+              description: Notes about the asset
+            gvwr:
+              type: object
+              description: Gross Vehicle Weight Rating
+              properties:
+                value:
+                  type: string
+                  description: The numeral value for the weight
+                unit_of_measure:
+                  type: string
+                  description: The unit of measure used, can be `kg` or `lb`
+                  enum:
+                  - kg
+                  - lb
+            engine:
+              type: object
+              description: Engine data
+              properties:
+                make:
+                  type: string
+                  maxLength: 255
+                  description: The make of the engine
+                model:
+                  type: string
+                  maxLength: 255
+                  description: The model of the engine
+                displacement:
+                  type: string
+                  maxLength: 50
+                  description: The engine size related in liters or cubic inches
+                serial_number:
+                  type: string
+                  description: The engine serial number
+                  minLength: 1
+                  maxLength: 40
+            license:
+              type: object
+              description: License plate data
+              properties:
+                number:
+                  type: string
+                  maxLength: 50
+                  description: The number of the license plate
+                state:
+                  type: string
+                  minLength: 2
+                  maxLength: 10
+                  description: The second part of the ISO 3166-2 code indicates the license State
+                country:
+                  type: string
+                  enum:
+                  - US
+                  - CA
+                  - MX
+                  - EC
+                  minLength: 2
+                  maxLength: 2
+                  description: ISO 3166-1 alpha-2 code indicating the license Country
+                expiration:
+                  type: string
+                  format: date
+                  description: '`ISO 8601` date indicating when the license expires'
+                  example: '2029-06-18'
+            vmrs_asset_status:
+              type: string
+              description: 'Valid values are: 01, 02, 12, 13, 15, 16, 31, 33, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61'
+            vmrs:
+              type: object
+              description: VMRS classification of the asset.
+              properties:
+                asset_type:
+                  type: object
+                  description: VMRS Code Key 2 (Equipment Category).
+                  properties:
+                    code_key:
+                      type: string
+                      description: The VMRS code key identifier. Must be `"2"` when supplied on write.
+                      example: '2'
+                    code:
+                      type: string
+                      description: The VMRS Code Key 2 code (e.g. `"D"`, `"1"`, `"R"`). Must match an active value from `GET /vmrs/asset_types`.
+            metadata:
+              type: object
+              description: 'Arbitrary key-value pairs for custom asset metadata (max 50 entries). Keys: lowercase snake_case, 1-50 chars, alphanumeric start/end, no double underscores. Values: required strings, max 500 chars.'
+              minProperties: 1
+              maxProperties: 50
+              propertyNames:
+                minLength: 1
+                maxLength: 50
+                pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+              additionalProperties:
+                type: string
+                minLength: 1
+                maxLength: 500
+        relationships:
+          type: object
+          properties:
+            depot:
+              $ref: '#/components/schemas/relationship_object'
+            srm_verified_asset:
+              $ref: '#/components/schemas/relationship_object'
+            extended_asset_attributes:
+              $ref: '#/components/schemas/relationship_objects'
+      required:
+      - attributes
+      - type
+      - id
+    meter_data_history:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                meter:
+                  type: string
+                  description: The meter type
+                  enum:
+                  - odometer
+                  - engine_hours
+                  - stand_by_hours
+                  - switch_on_hours
+                  - fuel_consumed
+                  example: odometer
+                value:
+                  type: integer
+                  description: The meter value
+                  example: 1234
+                unit:
+                  type: string
+                  enum:
+                  - mi
+                  - km
+                  - hr
+                  - gal
+                  example: mi
+                  description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`; `hr` for `engine_hours`, `stand_by_hours`, and `switch_on_hours`; `gal` for `fuel_consumed`
+                event_timestamps:
+                  type: object
+                  description: The timestamps of the meter event
+                  properties:
+                    retrieved_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time the meter was retrieved'
+                      example: '2023-01-31T18:21:23Z'
+                recorded_by:
+                  type: string
+                  description: The user who recorded the meter data
+                  example: user@****
+    registered_assets:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/registered_asset_properties-data'
+        meta:
+          type: object
     meter_data_fuel_consumed_registered_asset:
       type: object
       required:
@@ -3788,146 +3940,6 @@ components:
                       value:
                         type: number
                         description: Reading value for the given meter data. Decimal values are accepted and rounded to the nearest integer when stored.
-    transfer_registered_asset:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              additionalProperties: true
-            relationships:
-              type: object
-              properties:
-                depot:
-                  type: object
-                  description: The depot for the registered asset
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          example: depots
-                        id:
-                          type: string
-                          example: The UUID of the depot
-    meter_data_stand_hours_registered_asset:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                meter_data:
-                  type: array
-                  description: Stand-by-hours meter readings to record on the registered asset.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - stand_by_hours
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - hr
-                        description: Unit of measurement for given meter data. Valid unit for `stand_by_hours` is `hr`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-    meter_data_switch_hours_registered_asset:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                meter_data:
-                  type: array
-                  description: Switch-on-hours meter readings to record on the registered asset.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - switch_on_hours
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - hr
-                        description: Unit of measurement for given meter data. Valid unit for `switch_on_hours` is `hr`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    deactivate_registered_asset:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-          required:
-          - attributes
-          - type
-          - id
     registered_asset_properties-data_2:
       type: object
       properties:
@@ -4060,5 +4072,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

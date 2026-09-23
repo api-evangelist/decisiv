@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Case Notes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Case Notes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -780,6 +780,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdNotes
+      x-operation-id-source: derived
     post:
       summary: Create a note for the requested case
       tags:
@@ -933,6 +935,8 @@ paths:
                         data:
                         - type: participants
                           id: bd763ee6-b2f2-49fc-a375-7fb5346ee19d
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseIdNotes
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -1083,138 +1087,22 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdNotesById
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    create_note_to_provider:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              properties:
-                message:
-                  type: string
-                  description: The message itself
-                  examples:
-                  - This is a note
-                public:
-                  type: boolean
-                  description: If the message is public
-                  examples:
-                  - true
-              required:
-              - message
-              - public
-            relationships:
-              properties:
-                recipients:
-                  $ref: '#/components/schemas/relationship_object'
-                srm_account:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - type
-          - attributes
-    notes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                enum:
-                - notes
-              attributes:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: The message itself
-                    example: This is a note
-                  public:
-                    type: boolean
-                    description: If the message is public
-                    example: true
-                  created_at:
-                    type: string
-                    format: date-time
-                    description: '`ISO 8601` timestamp indicating when the note was created'
-                required:
-                - message
-                - public
-              relationships:
-                type: object
-                properties:
-                  subject:
-                    $ref: '#/components/schemas/relationship_object'
-                  sender:
-                    $ref: '#/components/schemas/relationship_object'
-                  recipients:
-                    $ref: '#/components/schemas/relationship_objects'
-                  participants:
-                    $ref: '#/components/schemas/relationship_objects'
-                required:
-                - recipients
-            required:
-            - type
-            - id
-            - attributes
-            - relationships
-        meta:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     note:
       type: object
       required:
@@ -1270,6 +1158,95 @@ components:
           - relationships
           - type
           - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    create_note_to_provider:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message itself
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: If the message is public
+                  examples:
+                  - true
+              required:
+              - message
+              - public
+            relationships:
+              properties:
+                recipients:
+                  $ref: '#/components/schemas/relationship_object'
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - type
+          - attributes
     relationship_objects:
       type: object
       properties:
@@ -1289,32 +1266,6 @@ components:
             - type
       required:
       - data
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     create_note:
       type: object
       required:
@@ -1369,90 +1320,7 @@ components:
                             format: uuid
                             description: The uuid of the receiving user, *one or more allowed*
                             example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-    create_case_note:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          - relationships
-          properties:
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              required:
-              - message
-              - public
-              properties:
-                message:
-                  type: string
-                  example: This is a note
-                public:
-                  type: boolean
-                  description: Notes with Public selected can be viewed from the Fleet case perspective.
-                  example: true
-            relationships:
-              type: object
-              required:
-              - recipients
-              properties:
-                recipients:
-                  type: object
-                  description: Despite the key name, this accepts a single `participants` entry as an alternative to one or more `recipients`, `contacts`, or `registered_contacts` entries; the two groups can't be mixed.
-                  required:
-                  - data
-                  properties:
-                    data:
-                      oneOf:
-                      - title: Recipients or contacts
-                        type: array
-                        minItems: 1
-                        items:
-                          type: object
-                          required:
-                          - type
-                          - id
-                          properties:
-                            type:
-                              type: string
-                              enum:
-                              - recipients
-                              - contacts
-                              - registered_contacts
-                              example: recipients
-                            id:
-                              type: string
-                              format: uuid
-                              description: UUID of the recipient
-                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-                      - title: Single participant
-                        type: array
-                        minItems: 1
-                        maxItems: 1
-                        items:
-                          type: object
-                          required:
-                          - type
-                          - id
-                          properties:
-                            type:
-                              type: string
-                              enum:
-                              - participants
-                              example: participants
-                            id:
-                              type: string
-                              format: uuid
-                              description: UUID of the participant
-                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-    notes_2:
+    notes:
       type: object
       required:
       - data
@@ -1460,13 +1328,53 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/note_properties-data'
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - notes
+              attributes:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The message itself
+                    example: This is a note
+                  public:
+                    type: boolean
+                    description: If the message is public
+                    example: true
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: '`ISO 8601` timestamp indicating when the note was created'
+                required:
+                - message
+                - public
+              relationships:
+                type: object
+                properties:
+                  subject:
+                    $ref: '#/components/schemas/relationship_object'
+                  sender:
+                    $ref: '#/components/schemas/relationship_object'
+                  recipients:
+                    $ref: '#/components/schemas/relationship_objects'
+                  participants:
+                    $ref: '#/components/schemas/relationship_objects'
+                required:
+                - recipients
+            required:
+            - type
+            - id
+            - attributes
+            - relationships
         meta:
           type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
     note_2:
       type: object
       required:
@@ -1566,6 +1474,104 @@ components:
       - relationships
       - type
       - id
+    create_case_note:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          - relationships
+          properties:
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              required:
+              - message
+              - public
+              properties:
+                message:
+                  type: string
+                  example: This is a note
+                public:
+                  type: boolean
+                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  example: true
+            relationships:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: object
+                  description: Despite the key name, this accepts a single `participants` entry as an alternative to one or more `recipients`, `contacts`, or `registered_contacts` entries; the two groups can't be mixed.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      oneOf:
+                      - title: Recipients or contacts
+                        type: array
+                        minItems: 1
+                        items:
+                          type: object
+                          required:
+                          - type
+                          - id
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - recipients
+                              - contacts
+                              - registered_contacts
+                              example: recipients
+                            id:
+                              type: string
+                              format: uuid
+                              description: UUID of the recipient
+                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+                      - title: Single participant
+                        type: array
+                        minItems: 1
+                        maxItems: 1
+                        items:
+                          type: object
+                          required:
+                          - type
+                          - id
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - participants
+                              example: participants
+                            id:
+                              type: string
+                              format: uuid
+                              description: UUID of the participant
+                              example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+    notes_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/note_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http
@@ -1588,5 +1594,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

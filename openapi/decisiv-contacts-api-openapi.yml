@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Contacts across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Contacts across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -962,6 +962,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CustomersByCustomerIdContacts
+      x-operation-id-source: derived
     post:
       summary: Create a Contact
       tags:
@@ -1191,6 +1193,8 @@ paths:
                       - method_type: mobile
                         value: '+1234567890'
                         notify: true
+      operationId: postServiceManagementBySrmAccountIdV1CustomersByCustomerIdContacts
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -1314,6 +1318,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CustomersByCustomerIdContactsById
+      x-operation-id-source: derived
     patch:
       summary: Updates Contact
       tags:
@@ -1553,6 +1559,8 @@ paths:
                       - method_type: mobile
                         value: '+1234567890'
                         notify: true
+      operationId: patchServiceManagementBySrmAccountIdV1CustomersByCustomerIdContactsById
+      x-operation-id-source: derived
     delete:
       summary: Deletes a Contact
       tags:
@@ -1630,11 +1638,247 @@ paths:
                   detail: OAuth Application does not have appropriate provisioning to access this resource
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: deleteServiceManagementBySrmAccountIdV1CustomersByCustomerIdContactsById
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    contact_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - contacts
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: First name of the contact
+              minLength: 2
+              maxLength: 100
+            last_name:
+              type: string
+              description: Last name of the contact
+              minLength: 2
+              maxLength: 100
+            notes:
+              type: string
+              description: Notes about the contact
+              minLength: 2
+              maxLength: 200
+            address1:
+              type: string
+              description: Primary address information
+              maxLength: 100
+            address2:
+              type: string
+              description: Secondary address information
+              maxLength: 100
+            city:
+              type: string
+              description: City in which the business resides
+              maxLength: 100
+            state:
+              type: string
+              description: Second part of the `ISO 3166-2` code indicating the state
+              minLength: 1
+              maxLength: 3
+              example: NJ
+            country:
+              type: string
+              description: '`ISO 3166-1` alpha-2 code indicating the country'
+              minLength: 2
+              maxLength: 2
+              example: US
+            postal_code:
+              type: string
+              description: Postal ZIP Code
+              maxLength: 20
+            communication:
+              type: array
+              description: Array of communication methods for the contact
+              items:
+                type: object
+                properties:
+                  method_type:
+                    type: string
+                    description: Type of communication method (e.g., email, mobile)
+                    enum:
+                    - email
+                    - mobile
+                  value:
+                    type: string
+                    description: Value of the communication method (e.g., email address, phone number)
+                    minLength: 2
+                    maxLength: 254
+                  notify:
+                    type: boolean
+                    description: Indicates if notifications should be sent to this contact
+                required:
+                - method_type
+                - value
+                - notify
+          required:
+          - first_name
+          - last_name
+          - communication
+        relationships:
+          type: object
+          required:
+          - depot
+          properties:
+            depot:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    contacts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/contact_properties-data'
+        meta:
+          type: object
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    contact:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  minLength: 2
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  minLength: 2
+                  maxLength: 100
+                notes:
+                  type: string
+                  description: Notes about the contact
+                  minLength: 2
+                  maxLength: 200
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        description: Value of the communication method (e.g., email address, phone number)
+                        minLength: 2
+                        maxLength: 254
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+            relationships:
+              type: object
+              required:
+              - depot
+              properties:
+                depot:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
     contact_by_id:
       example:
         data:
@@ -1759,102 +2003,6 @@ components:
           - id
       required:
       - data
-    contact_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - contacts
-        attributes:
-          type: object
-          properties:
-            first_name:
-              type: string
-              description: First name of the contact
-              minLength: 2
-              maxLength: 100
-            last_name:
-              type: string
-              description: Last name of the contact
-              minLength: 2
-              maxLength: 100
-            notes:
-              type: string
-              description: Notes about the contact
-              minLength: 2
-              maxLength: 200
-            address1:
-              type: string
-              description: Primary address information
-              maxLength: 100
-            address2:
-              type: string
-              description: Secondary address information
-              maxLength: 100
-            city:
-              type: string
-              description: City in which the business resides
-              maxLength: 100
-            state:
-              type: string
-              description: Second part of the `ISO 3166-2` code indicating the state
-              minLength: 1
-              maxLength: 3
-              example: NJ
-            country:
-              type: string
-              description: '`ISO 3166-1` alpha-2 code indicating the country'
-              minLength: 2
-              maxLength: 2
-              example: US
-            postal_code:
-              type: string
-              description: Postal ZIP Code
-              maxLength: 20
-            communication:
-              type: array
-              description: Array of communication methods for the contact
-              items:
-                type: object
-                properties:
-                  method_type:
-                    type: string
-                    description: Type of communication method (e.g., email, mobile)
-                    enum:
-                    - email
-                    - mobile
-                  value:
-                    type: string
-                    description: Value of the communication method (e.g., email address, phone number)
-                    minLength: 2
-                    maxLength: 254
-                  notify:
-                    type: boolean
-                    description: Indicates if notifications should be sent to this contact
-                required:
-                - method_type
-                - value
-                - notify
-          required:
-          - first_name
-          - last_name
-          - communication
-        relationships:
-          type: object
-          required:
-          - depot
-          properties:
-            depot:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - relationships
-      - type
-      - id
     error_response:
       type: object
       properties:
@@ -1890,7 +2038,68 @@ components:
       required:
       - status
       - title
-    contact:
+    contact_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - contacts
+          - service_group_contacts
+          - registered_contacts
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: First name of the contact
+              maxLength: 100
+            last_name:
+              type: string
+              description: Last name of the contact
+              maxLength: 100
+            communication:
+              type: array
+              description: Array of communication methods for the contact
+              items:
+                type: object
+                properties:
+                  method_type:
+                    type: string
+                    description: Type of communication method (e.g., email, mobile)
+                    enum:
+                    - email
+                    - mobile
+                  value:
+                    type:
+                    - string
+                    - 'null'
+                    description: Value of the communication method (e.g., email address, phone number)
+                    maxLength: 128
+                  notify:
+                    type: boolean
+                    description: Indicates if notifications should be sent to this contact
+                required:
+                - method_type
+                - value
+                - notify
+          required:
+          - first_name
+          - last_name
+          - communication
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - id
+      - type
+      - attributes
+    contact_update:
       type: object
       required:
       - data
@@ -1911,46 +2120,11 @@ components:
                 first_name:
                   type: string
                   description: First name of the contact
-                  minLength: 2
                   maxLength: 100
                 last_name:
                   type: string
                   description: Last name of the contact
-                  minLength: 2
                   maxLength: 100
-                notes:
-                  type: string
-                  description: Notes about the contact
-                  minLength: 2
-                  maxLength: 200
-                address1:
-                  type: string
-                  description: Primary address information
-                  maxLength: 100
-                address2:
-                  type: string
-                  description: Secondary address information
-                  maxLength: 100
-                city:
-                  type: string
-                  description: City in which the business resides
-                  maxLength: 100
-                state:
-                  type: string
-                  description: Second part of the `ISO 3166-2` code indicating the state
-                  minLength: 1
-                  maxLength: 3
-                  example: NJ
-                country:
-                  type: string
-                  description: '`ISO 3166-1` alpha-2 code indicating the country'
-                  minLength: 2
-                  maxLength: 2
-                  example: US
-                postal_code:
-                  type: string
-                  description: Postal ZIP Code
-                  maxLength: 20
                 communication:
                   type: array
                   description: Array of communication methods for the contact
@@ -1966,8 +2140,77 @@ components:
                       value:
                         type: string
                         description: Value of the communication method (e.g., email address, phone number)
-                        minLength: 2
-                        maxLength: 254
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+          required:
+          - attributes
+          - type
+          - id
+    contacts_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/contact_properties-data_2'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    contact_2:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+              - service_group_contacts
+              - registered_contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type:
+                        - string
+                        - 'null'
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
                       notify:
                         type: boolean
                         description: Indicates if notifications should be sent to this contact
@@ -1979,55 +2222,70 @@ components:
               - first_name
               - last_name
               - communication
-            relationships:
+            links:
               type: object
-              required:
-              - depot
               properties:
-                depot:
-                  $ref: '#/components/schemas/relationship_object'
+                self:
+                  type: string
           required:
-          - attributes
-          - relationships
-          - type
           - id
-    relationship_object:
+          - type
+          - attributes
+      required:
+      - data
+    create_contact:
       type: object
       properties:
         data:
-          type:
-          - object
-          - 'null'
+          type: object
           properties:
-            id:
-              type: string
             type:
               type: string
+              enum:
+              - contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
           required:
-          - id
           - type
+          - attributes
       required:
       - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    contacts:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/contact_properties-data'
-        meta:
-          type: object
     contact_by_id_2:
       example:
         data:
@@ -2108,254 +2366,6 @@ components:
           - id
       required:
       - data
-    contact_properties-data_2:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - contacts
-          - service_group_contacts
-          - registered_contacts
-        attributes:
-          type: object
-          properties:
-            first_name:
-              type: string
-              description: First name of the contact
-              maxLength: 100
-            last_name:
-              type: string
-              description: Last name of the contact
-              maxLength: 100
-            communication:
-              type: array
-              description: Array of communication methods for the contact
-              items:
-                type: object
-                properties:
-                  method_type:
-                    type: string
-                    description: Type of communication method (e.g., email, mobile)
-                    enum:
-                    - email
-                    - mobile
-                  value:
-                    type:
-                    - string
-                    - 'null'
-                    description: Value of the communication method (e.g., email address, phone number)
-                    maxLength: 128
-                  notify:
-                    type: boolean
-                    description: Indicates if notifications should be sent to this contact
-                required:
-                - method_type
-                - value
-                - notify
-          required:
-          - first_name
-          - last_name
-          - communication
-        links:
-          type: object
-          properties:
-            self:
-              type: string
-      required:
-      - id
-      - type
-      - attributes
-    contact_2:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - contacts
-              - service_group_contacts
-              - registered_contacts
-            attributes:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: First name of the contact
-                  maxLength: 100
-                last_name:
-                  type: string
-                  description: Last name of the contact
-                  maxLength: 100
-                communication:
-                  type: array
-                  description: Array of communication methods for the contact
-                  items:
-                    type: object
-                    properties:
-                      method_type:
-                        type: string
-                        description: Type of communication method (e.g., email, mobile)
-                        enum:
-                        - email
-                        - mobile
-                      value:
-                        type:
-                        - string
-                        - 'null'
-                        description: Value of the communication method (e.g., email address, phone number)
-                        maxLength: 128
-                      notify:
-                        type: boolean
-                        description: Indicates if notifications should be sent to this contact
-                    required:
-                    - method_type
-                    - value
-                    - notify
-              required:
-              - first_name
-              - last_name
-              - communication
-            links:
-              type: object
-              properties:
-                self:
-                  type: string
-          required:
-          - id
-          - type
-          - attributes
-      required:
-      - data
-    contact_update:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - contacts
-            attributes:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: First name of the contact
-                  maxLength: 100
-                last_name:
-                  type: string
-                  description: Last name of the contact
-                  maxLength: 100
-                communication:
-                  type: array
-                  description: Array of communication methods for the contact
-                  items:
-                    type: object
-                    properties:
-                      method_type:
-                        type: string
-                        description: Type of communication method (e.g., email, mobile)
-                        enum:
-                        - email
-                        - mobile
-                      value:
-                        type: string
-                        description: Value of the communication method (e.g., email address, phone number)
-                        maxLength: 128
-                      notify:
-                        type: boolean
-                        description: Indicates if notifications should be sent to this contact
-                    required:
-                    - method_type
-                    - value
-                    - notify
-          required:
-          - attributes
-          - type
-          - id
-    create_contact:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - contacts
-            attributes:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: First name of the contact
-                  maxLength: 100
-                last_name:
-                  type: string
-                  description: Last name of the contact
-                  maxLength: 100
-                communication:
-                  type: array
-                  description: Array of communication methods for the contact
-                  items:
-                    type: object
-                    properties:
-                      method_type:
-                        type: string
-                        description: Type of communication method (e.g., email, mobile)
-                        enum:
-                        - email
-                        - mobile
-                      value:
-                        type: string
-                        description: Value of the communication method (e.g., email address, phone number)
-                        maxLength: 128
-                      notify:
-                        type: boolean
-                        description: Indicates if notifications should be sent to this contact
-                    required:
-                    - method_type
-                    - value
-                    - notify
-              required:
-              - first_name
-              - last_name
-              - communication
-          required:
-          - type
-          - attributes
-      required:
-      - data
-    contacts_2:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/contact_properties-data_2'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http
@@ -2378,5 +2388,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

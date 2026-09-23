@@ -965,141 +965,15 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    depots:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/depot_properties-data'
-        meta:
-          type: object
-    depot_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - depots
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the depot
-              maxLength: 255
-              example: Depot Company Test 1
-            address1:
-              type: string
-              description: Primary address line for the depot
-              maxLength: 255
-              example: Some street
-            address2:
-              type: string
-              description: Secondary address line for the depot
-              maxLength: 255
-              example: Some complement
-            city:
-              type: string
-              description: City where the depot is located
-              maxLength: 255
-              example: New York
-            state:
-              type: string
-              description: Second part of the `ISO 3166-2` code indicating the state
-              maxLength: 10
-              example: NY
-            country:
-              type: string
-              description: '`ISO 3166-1` alpha-2 code indicating the country'
-              maxLength: 10
-              example: US
-            postal_code:
-              type: string
-              description: Postal or ZIP code for the depot location
-              maxLength: 20
-              example: '123456'
-            phone:
-              type: string
-              description: Contact phone number for the depot
-              maxLength: 30
-              example: +1 321 321321
-            fax:
-              type:
-              - string
-              - 'null'
-              description: Contact fax number for the depot
-              maxLength: 30
-              example: +1 321 321321
-            email:
-              type: string
-              description: Contact email address. Validated for syntax and deliverable domain — addresses whose domain has no resolvable DNS host are rejected.
-              maxLength: 254
-              example: test@test.com
-            note:
-              type:
-              - string
-              - 'null'
-              description: Free-form notes about the depot
-              maxLength: 1000
-              example: Tricky depot
-            external_reference:
-              type: object
-              properties:
-                fms:
-                  type: string
-                  maxLength: 40
-                  example: COMPANY FMS
-            metadata:
-              type: object
-              additionalProperties: true
-          required:
-          - name
-          - email
+            $ref: '#/components/schemas/error_response'
       required:
-      - attributes
-      - type
-      - id
+      - errors
     depot:
       type: object
       required:
@@ -1194,15 +1068,141 @@ components:
           - attributes
           - type
           - id
-    errors_response:
+    depot_properties-data:
       type: object
       properties:
-        errors:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - depots
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the depot
+              maxLength: 255
+              example: Depot Company Test 1
+            address1:
+              type: string
+              description: Primary address line for the depot
+              maxLength: 255
+              example: Some street
+            address2:
+              type: string
+              description: Secondary address line for the depot
+              maxLength: 255
+              example: Some complement
+            city:
+              type: string
+              description: City where the depot is located
+              maxLength: 255
+              example: New York
+            state:
+              type: string
+              description: Second part of the `ISO 3166-2` code indicating the state
+              maxLength: 10
+              example: NY
+            country:
+              type: string
+              description: '`ISO 3166-1` alpha-2 code indicating the country'
+              maxLength: 10
+              example: US
+            postal_code:
+              type: string
+              description: Postal or ZIP code for the depot location
+              maxLength: 20
+              example: '123456'
+            phone:
+              type: string
+              description: Contact phone number for the depot
+              maxLength: 30
+              example: +1 321 321321
+            fax:
+              type:
+              - string
+              - 'null'
+              description: Contact fax number for the depot
+              maxLength: 30
+              example: +1 321 321321
+            email:
+              type: string
+              description: Contact email address. Validated for syntax and deliverable domain — addresses whose domain has no resolvable DNS host are rejected.
+              maxLength: 254
+              example: test@test.com
+            note:
+              type:
+              - string
+              - 'null'
+              description: Free-form notes about the depot
+              maxLength: 1000
+              example: Tricky depot
+            external_reference:
+              type: object
+              properties:
+                fms:
+                  type: string
+                  maxLength: 40
+                  example: COMPANY FMS
+            metadata:
+              type: object
+              additionalProperties: true
+          required:
+          - name
+          - email
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    depots:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/depot_properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

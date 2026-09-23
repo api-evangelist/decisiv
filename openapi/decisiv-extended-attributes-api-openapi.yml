@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Extended Attributes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Extended Attributes across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -361,6 +361,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1ExtendedAttributes
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -484,233 +486,22 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1ExtendedAttributesById
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
-    extended_attribute:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Description of extended attribute
-                  minLength: 1
-                  maxLength: 255
-                schema:
-                  type: object
-                  oneOf:
-                  - type: object
-                    description: String with enum validation
-                    required:
-                    - type
-                    - enum
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      enum:
-                        type: array
-                        items:
-                          type: string
-                  - type: object
-                    description: String with length validation
-                    required:
-                    - type
-                    - minLength
-                    - maxLength
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      minLength:
-                        type: integer
-                      maxLength:
-                        type: integer
-                  - type: object
-                    description: String with pattern validation
-                    required:
-                    - type
-                    - pattern
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      pattern:
-                        type: string
-                  - type: object
-                    description: Integer with range validation
-                    required:
-                    - type
-                    - minimum
-                    - maximum
-                    properties:
-                      type:
-                        type: integer
-                        example: 42
-                      minimum:
-                        type: integer
-                      maximum:
-                        type: integer
-                  - type: object
-                    description: Integer with enum validation
-                    required:
-                    - type
-                    - enum
-                    properties:
-                      type:
-                        type: integer
-                        example: 42
-                      enum:
-                        type: array
-                        items:
-                          type: integer
-                  - type: object
-                    description: Number with range validation
-                    required:
-                    - type
-                    - minimum
-                    - maximum
-                    properties:
-                      type:
-                        type: number
-                        example: 3.14
-                      minimum:
-                        type: number
-                      maximum:
-                        type: number
-                  - type: object
-                    description: Boolean
-                    required:
-                    - type
-                    properties:
-                      type:
-                        type: boolean
-                        example: true
-                  - type: object
-                    description: Datetime
-                    required:
-                    - type
-                    - format
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      format:
-                        type: string
-                        example: date-time
-                  - type: object
-                    description: Date
-                    required:
-                    - type
-                    - format
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      format:
-                        type: string
-                        example: date
-                  - type: object
-                    description: Time
-                    required:
-                    - type
-                    - format
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      format:
-                        type: string
-                        example: time
-                  - type: object
-                    description: Email
-                    required:
-                    - type
-                    - format
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      format:
-                        type: string
-                        example: email
-                  - type: object
-                    description: URI
-                    required:
-                    - type
-                    - format
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      format:
-                        type: string
-                        example: uri
-                  - type: object
-                    description: UUID
-                    required:
-                    - type
-                    - format
-                    properties:
-                      type:
-                        type: string
-                        example: string
-                      format:
-                        type: string
-                        example: uuid
-          required:
-          - attributes
-          - type
-          - id
+      - errors
     extended_attribute_properties-data:
       type: object
       properties:
@@ -904,15 +695,412 @@ components:
             $ref: '#/components/schemas/extended_attribute_properties-data'
         meta:
           type: object
-    errors_response:
+    extended_attribute:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Description of extended attribute
+                  minLength: 1
+                  maxLength: 255
+                schema:
+                  type: object
+                  oneOf:
+                  - type: object
+                    description: String with enum validation
+                    required:
+                    - type
+                    - enum
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      enum:
+                        type: array
+                        items:
+                          type: string
+                  - type: object
+                    description: String with length validation
+                    required:
+                    - type
+                    - minLength
+                    - maxLength
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      minLength:
+                        type: integer
+                      maxLength:
+                        type: integer
+                  - type: object
+                    description: String with pattern validation
+                    required:
+                    - type
+                    - pattern
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      pattern:
+                        type: string
+                  - type: object
+                    description: Integer with range validation
+                    required:
+                    - type
+                    - minimum
+                    - maximum
+                    properties:
+                      type:
+                        type: integer
+                        example: 42
+                      minimum:
+                        type: integer
+                      maximum:
+                        type: integer
+                  - type: object
+                    description: Integer with enum validation
+                    required:
+                    - type
+                    - enum
+                    properties:
+                      type:
+                        type: integer
+                        example: 42
+                      enum:
+                        type: array
+                        items:
+                          type: integer
+                  - type: object
+                    description: Number with range validation
+                    required:
+                    - type
+                    - minimum
+                    - maximum
+                    properties:
+                      type:
+                        type: number
+                        example: 3.14
+                      minimum:
+                        type: number
+                      maximum:
+                        type: number
+                  - type: object
+                    description: Boolean
+                    required:
+                    - type
+                    properties:
+                      type:
+                        type: boolean
+                        example: true
+                  - type: object
+                    description: Datetime
+                    required:
+                    - type
+                    - format
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      format:
+                        type: string
+                        example: date-time
+                  - type: object
+                    description: Date
+                    required:
+                    - type
+                    - format
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      format:
+                        type: string
+                        example: date
+                  - type: object
+                    description: Time
+                    required:
+                    - type
+                    - format
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      format:
+                        type: string
+                        example: time
+                  - type: object
+                    description: Email
+                    required:
+                    - type
+                    - format
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      format:
+                        type: string
+                        example: email
+                  - type: object
+                    description: URI
+                    required:
+                    - type
+                    - format
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      format:
+                        type: string
+                        example: uri
+                  - type: object
+                    description: UUID
+                    required:
+                    - type
+                    - format
+                    properties:
+                      type:
+                        type: string
+                        example: string
+                      format:
+                        type: string
+                        example: uuid
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - errors
+      - status
+      - title
+    extended_attribute_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - extended_attributes
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Description of extended attribute
+              minLength: 1
+              maxLength: 255
+            schema:
+              type: object
+              oneOf:
+              - type: object
+                description: String with enum validation
+                required:
+                - type
+                - enum
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  enum:
+                    type: array
+                    items:
+                      type: string
+              - type: object
+                description: String with length validation
+                required:
+                - type
+                - minLength
+                - maxLength
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  minLength:
+                    type: integer
+                  maxLength:
+                    type: integer
+              - type: object
+                description: String with pattern validation
+                required:
+                - type
+                - pattern
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  pattern:
+                    type: string
+              - type: object
+                description: Integer with range validation
+                required:
+                - type
+                - minimum
+                - maximum
+                properties:
+                  type:
+                    type: integer
+                    example: integer
+                  minimum:
+                    type: integer
+                  maximum:
+                    type: integer
+              - type: object
+                description: Integer with enum validation
+                required:
+                - type
+                - enum
+                properties:
+                  type:
+                    type: integer
+                    example: integer
+                  enum:
+                    type: array
+                    items:
+                      type: integer
+              - type: object
+                description: Number with range validation
+                required:
+                - type
+                - minimum
+                - maximum
+                properties:
+                  type:
+                    type: number
+                    example: number
+                  minimum:
+                    type: number
+                  maximum:
+                    type: number
+              - type: object
+                description: Boolean
+                required:
+                - type
+                properties:
+                  type:
+                    type: boolean
+                    example: boolean
+              - type: object
+                description: Datetime
+                required:
+                - type
+                - format
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  format:
+                    type: string
+                    example: date-time
+              - type: object
+                description: Date
+                required:
+                - type
+                - format
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  format:
+                    type: string
+                    example: date
+              - type: object
+                description: Time
+                required:
+                - type
+                - format
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  format:
+                    type: string
+                    example: time
+              - type: object
+                description: Email
+                required:
+                - type
+                - format
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  format:
+                    type: string
+                    example: email
+              - type: object
+                description: URI
+                required:
+                - type
+                - format
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  format:
+                    type: string
+                    example: uri
+              - type: object
+                description: UUID
+                required:
+                - type
+                - format
+                properties:
+                  type:
+                    type: string
+                    example: string
+                  format:
+                    type: string
+                    example: uuid
+      required:
+      - attributes
+      - type
+      - id
     extended_attribute_2:
       type: object
       required:
@@ -1102,190 +1290,6 @@ components:
           - attributes
           - type
           - id
-    extended_attribute_properties-data_2:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - extended_attributes
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Description of extended attribute
-              minLength: 1
-              maxLength: 255
-            schema:
-              type: object
-              oneOf:
-              - type: object
-                description: String with enum validation
-                required:
-                - type
-                - enum
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  enum:
-                    type: array
-                    items:
-                      type: string
-              - type: object
-                description: String with length validation
-                required:
-                - type
-                - minLength
-                - maxLength
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  minLength:
-                    type: integer
-                  maxLength:
-                    type: integer
-              - type: object
-                description: String with pattern validation
-                required:
-                - type
-                - pattern
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  pattern:
-                    type: string
-              - type: object
-                description: Integer with range validation
-                required:
-                - type
-                - minimum
-                - maximum
-                properties:
-                  type:
-                    type: integer
-                    example: integer
-                  minimum:
-                    type: integer
-                  maximum:
-                    type: integer
-              - type: object
-                description: Integer with enum validation
-                required:
-                - type
-                - enum
-                properties:
-                  type:
-                    type: integer
-                    example: integer
-                  enum:
-                    type: array
-                    items:
-                      type: integer
-              - type: object
-                description: Number with range validation
-                required:
-                - type
-                - minimum
-                - maximum
-                properties:
-                  type:
-                    type: number
-                    example: number
-                  minimum:
-                    type: number
-                  maximum:
-                    type: number
-              - type: object
-                description: Boolean
-                required:
-                - type
-                properties:
-                  type:
-                    type: boolean
-                    example: boolean
-              - type: object
-                description: Datetime
-                required:
-                - type
-                - format
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  format:
-                    type: string
-                    example: date-time
-              - type: object
-                description: Date
-                required:
-                - type
-                - format
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  format:
-                    type: string
-                    example: date
-              - type: object
-                description: Time
-                required:
-                - type
-                - format
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  format:
-                    type: string
-                    example: time
-              - type: object
-                description: Email
-                required:
-                - type
-                - format
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  format:
-                    type: string
-                    example: email
-              - type: object
-                description: URI
-                required:
-                - type
-                - format
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  format:
-                    type: string
-                    example: uri
-              - type: object
-                description: UUID
-                required:
-                - type
-                - format
-                properties:
-                  type:
-                    type: string
-                    example: string
-                  format:
-                    type: string
-                    example: uuid
-      required:
-      - attributes
-      - type
-      - id
   securitySchemes:
     AccessToken:
       type: http
@@ -1308,5 +1312,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Cases across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Cases across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -684,9 +684,7 @@ paths:
     get:
       summary: List cases for the requested account
       operationId: listCases
-      description: 'Returns a paginated list of cases for the requested SRM account. Supports filtering by service provider, customer asset, customer, repair status, repair order number, and event timestamps.
-
-        '
+      description: Returns a paginated list of cases for the requested SRM account. Supports filtering by service provider, customer asset, customer, repair status, repair order number, and event timestamps.
       tags:
       - Cases
       parameters:
@@ -1985,6 +1983,15 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     cases:
       type: object
       required:
@@ -1996,286 +2003,153 @@ components:
             $ref: '#/components/schemas/properties-data'
         meta:
           type: object
-    error_response:
+    relationship_object:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
+        data:
           type:
-          - string
+          - object
           - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
           properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
       required:
-      - status
-      - title
-    properties-data:
+      - data
+    update_case:
       type: object
+      required:
+      - data
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - cases
-        attributes:
+        data:
           type: object
           properties:
-            complaint:
+            id:
               type: string
-              description: Initially reported information from driver or other customer entity
-              examples:
-              - Broken truck
-            po_number:
+              format: uuid
+            type:
               type: string
-              description: The Purchase Order number
-              examples:
-              - '1234'
-            auth_number:
-              type: string
-              description: The Authorization number
-              examples:
-              - '1234'
-            ro_number:
-              type: string
-              description: The Repair Order number
-              examples:
-              - '1234'
-            reference_number:
-              type: number
-              description: Integer representation of the Case ID inside of the User Interface
-            closed:
-              type: boolean
-              description: Indicates whether the case has been closed.
-            repair_status:
-              type: string
-              description: Status of the repair
-              examples:
-              - Hold (auth)
-            status:
-              type: string
-              description: Status of the case
-              examples:
-              - Pick-up
-            invoice:
+              enum:
+              - cases
+            attributes:
               type: object
-              description: The invoice information for the case
               properties:
-                total:
-                  type: number
-                  description: The total amount of the invoice
-                number:
+                complaint:
                   type: string
-                  description: The invoice number
-                invoice_date:
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
                   type: string
-                  format: date
-                  description: The date of the invoice
+                  description: PO number
                   examples:
-                  - '2025-04-07'
-            event_timestamps:
-              type: object
-              description: All the timestamps related to the case
-              properties:
-                started_at:
+                  - '1234'
+                auth_number:
                   type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                  description: The auth number
                   examples:
-                  - '2022-04-14T05:23:45Z'
-                requested_completion_time:
+                  - '1234'
+                correction:
                   type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the completion time of the case'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                requested_appointment_time:
+                  description: Correction details for the case
+                  writeOnly: true
+                  maxLength: 6000
+                status:
                   type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the appointment time'
+                  description: Status of the case
                   examples:
-                  - '2022-04-14T05:23:45Z'
-                actual_time_to_repair:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                estimated_time_to_repair:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                followup_time:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                asset_arrived:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the Asset arrived'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                asset_checked_in:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the check-in was performed'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                closed_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                asset_uptime:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                asset_downtime:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-            pricing:
-              type: object
-              description: Financial totals for the case, sourced directly from the Estimate
-              properties:
-                parts_total:
-                  type: number
-                  description: Total cost of parts
-                  examples:
-                  - 432.5
-                labor_total:
-                  type: number
-                  description: Total cost of labor
-                  examples:
-                  - 250
-                core_total:
-                  type: number
-                  description: Total cost of cores
-                  examples:
-                  - 75
-                tax:
-                  type: number
-                  description: Total tax amount
-                  examples:
-                  - 32.18
-                haz_waste:
-                  type: number
-                  description: Total hazardous waste charge
-                  examples:
-                  - 15
-            asset_information:
-              type: object
-              description: The asset information when the case was created
-              properties:
-                odometer_value:
-                  type: number
-                  description: Integer representation about the asset odometer
-                odometer_unit:
-                  type: string
-                  description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
-                  examples:
-                  - mi
-                unit_number:
-                  type: string
-                  description: The unit number
-                cargo:
+                  - Pick-up
+                event_timestamps:
                   type: object
+                  description: All the timestamps related to the case
                   properties:
-                    unit:
-                      type:
-                      - string
-                      - 'null'
-                      description: The unit number
-                    loaded:
-                      type: boolean
-                      description: Indicates whether the cargo is loaded.
-                    load:
-                      type:
-                      - string
-                      - 'null'
-                      description: The load amount
-            breakdown:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                ro_number:
+                  type: string
+            relationships:
               type: object
-              description: Information about the breakdown location
+              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; `id` must be the `uuid` of one of the fleet''s own registered contacts.'
               properties:
-                city:
-                  type: string
-                  description: City of breakdown
-                  examples:
-                  - North Haven
-                location:
-                  type: string
-                  description: Exact map location of the breakdown
-                  examples:
-                  - 41.395022,-72.856326
-                state:
-                  type: string
-                  description: State of the breakdown
-                  examples:
-                  - CT
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the case was last updated'
-              examples:
-              - '2022-04-14T05:23:45Z'
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the case was created'
-              examples:
-              - '2022-04-14T05:23:45Z'
-        relationships:
-          type: object
-          properties:
-            registered_asset:
-              $ref: '#/components/schemas/relationship_object'
-            service_provider:
-              $ref: '#/components/schemas/relationship_object'
-            assignee:
-              $ref: '#/components/schemas/relationship_object'
-            billing_contact:
-              $ref: '#/components/schemas/relationship_object'
-            primary_contact:
-              $ref: '#/components/schemas/relationship_object'
-            estimates:
-              $ref: '#/components/schemas/relationship_objects'
+                billing_contact:
+                  type: object
+                  description: Billing contact on the case.
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                          - registered_contacts
+                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                primary_contact:
+                  type: object
+                  description: Primary contact on the case.
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                          - registered_contacts
+                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+          required:
+          - id
+          - type
+          - attributes
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
       required:
-      - attributes
-      - type
-      - id
+      - data
     case:
       type: object
       required:
@@ -2526,7 +2400,287 @@ components:
           - attributes
           - type
           - id
-    update_case:
+    properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - cases
+        attributes:
+          type: object
+          properties:
+            complaint:
+              type: string
+              description: Initially reported information from driver or other customer entity
+              examples:
+              - Broken truck
+            po_number:
+              type: string
+              description: The Purchase Order number
+              examples:
+              - '1234'
+            auth_number:
+              type: string
+              description: The Authorization number
+              examples:
+              - '1234'
+            ro_number:
+              type: string
+              description: The Repair Order number
+              examples:
+              - '1234'
+            reference_number:
+              type: number
+              description: Integer representation of the Case ID inside of the User Interface
+            closed:
+              type: boolean
+              description: Indicates whether the case has been closed.
+            repair_status:
+              type: string
+              description: Status of the repair
+              examples:
+              - Hold (auth)
+            status:
+              type: string
+              description: Status of the case
+              examples:
+              - Pick-up
+            invoice:
+              type: object
+              description: The invoice information for the case
+              properties:
+                total:
+                  type: number
+                  description: The total amount of the invoice
+                number:
+                  type: string
+                  description: The invoice number
+                invoice_date:
+                  type: string
+                  format: date
+                  description: The date of the invoice
+                  examples:
+                  - '2025-04-07'
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the case
+              properties:
+                started_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_completion_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the completion time of the case'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_appointment_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the appointment time'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                actual_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                estimated_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                followup_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_arrived:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_checked_in:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                closed_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_uptime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_downtime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+            pricing:
+              type: object
+              description: Financial totals for the case, sourced directly from the Estimate
+              properties:
+                parts_total:
+                  type: number
+                  description: Total cost of parts
+                  examples:
+                  - 432.5
+                labor_total:
+                  type: number
+                  description: Total cost of labor
+                  examples:
+                  - 250
+                core_total:
+                  type: number
+                  description: Total cost of cores
+                  examples:
+                  - 75
+                tax:
+                  type: number
+                  description: Total tax amount
+                  examples:
+                  - 32.18
+                haz_waste:
+                  type: number
+                  description: Total hazardous waste charge
+                  examples:
+                  - 15
+            asset_information:
+              type: object
+              description: The asset information when the case was created
+              properties:
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
+                  examples:
+                  - mi
+                unit_number:
+                  type: string
+                  description: The unit number
+                cargo:
+                  type: object
+                  properties:
+                    unit:
+                      type:
+                      - string
+                      - 'null'
+                      description: The unit number
+                    loaded:
+                      type: boolean
+                      description: Indicates whether the cargo is loaded.
+                    load:
+                      type:
+                      - string
+                      - 'null'
+                      description: The load amount
+            breakdown:
+              type: object
+              description: Information about the breakdown location
+              properties:
+                city:
+                  type: string
+                  description: City of breakdown
+                  examples:
+                  - North Haven
+                location:
+                  type: string
+                  description: Exact map location of the breakdown
+                  examples:
+                  - 41.395022,-72.856326
+                state:
+                  type: string
+                  description: State of the breakdown
+                  examples:
+                  - CT
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the case was last updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the case was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+        relationships:
+          type: object
+          properties:
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+            service_provider:
+              $ref: '#/components/schemas/relationship_object'
+            assignee:
+              $ref: '#/components/schemas/relationship_object'
+            billing_contact:
+              $ref: '#/components/schemas/relationship_object'
+            primary_contact:
+              $ref: '#/components/schemas/relationship_object'
+            estimates:
+              $ref: '#/components/schemas/relationship_objects'
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    case_update_meter_data_odometer_meter:
       type: object
       required:
       - data
@@ -2544,66 +2698,266 @@ components:
             attributes:
               type: object
               properties:
+                meter_data:
+                  type: array
+                  description: Odometer readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - odometer
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - mi
+                        - km
+                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
+    case_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  maxLength: 40
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
                 complaint:
                   type: string
                   description: Initially reported information from driver or other customer entity
-                  examples:
-                  - Broken truck
-                po_number:
+                  maxLength: 6000
+                cause:
                   type: string
-                  description: PO number
-                  examples:
-                  - '1234'
-                auth_number:
-                  type: string
-                  description: The auth number
-                  examples:
-                  - '1234'
+                  description: Documentation of the technical failure assessed by the Service Location
+                  maxLength: 6000
                 correction:
                   type: string
-                  description: Correction details for the case
-                  writeOnly: true
+                  description: Summary of the actual work accomplished to address the reported issue
                   maxLength: 6000
-                status:
+                repair_status:
                   type: string
-                  description: Status of the case
+                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
                   examples:
-                  - Pick-up
+                  - asset_ready
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      maximum: 999999.99
+                      examples:
+                      - 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      maxLength: 255
+                      examples:
+                      - TR3847
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` date format (not datetime).
+                      examples:
+                      - '2025-06-19'
+                tag_number:
+                  type: string
+                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
+                  maxLength: 40
                 event_timestamps:
                   type: object
-                  description: All the timestamps related to the case
+                  description: Timestamp attributes reflecting key events surrounding the case
                   properties:
-                    requested_completion_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the case'
-                      examples:
-                      - '2022-04-14T05:23:45Z'
                     followup_time:
                       type: string
                       format: date-time
                       description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
                       examples:
-                      - '2022-04-14T05:23:45Z'
-                ro_number:
-                  type: string
+                      - '2025-10-10T13:30:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      examples:
+                      - '2025-04-10T13:00:41Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      examples:
+                      - '2025-04-10T13:10:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      examples:
+                      - '2025-04-10T13:15:41Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      examples:
+                      - '2025-04-10T12:30:41Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      examples:
+                      - '2025-04-10T11:30:41Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2025-04-10T10:30:41Z'
+                    asset_departed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
+                      examples:
+                      - '2025-04-10T13:30:41Z'
+                breakdown:
+                  type: object
+                  description: Information about the location of the Service Provider
+                  properties:
+                    location:
+                      type: string
+                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
+                      maxLength: 255
+                    city:
+                      type: string
+                      description: Breakdown City name
+                      maxLength: 255
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                    country:
+                      type: string
+                      description: '`ISO 3166-1` alpha-2 code indicating the breakdown Country'
+                      minLength: 2
+                      maxLength: 2
+                      examples:
+                      - US
+                vmrs:
+                  type: object
+                  description: Case-level VMRS codes. Each code is provided as a `{ code_key, code }` object, consistent with `vmrs.asset_type`.
+                  properties:
+                    reason_for_repair:
+                      type: object
+                      description: VMRS Code Key 14 — identifies what caused the asset to come in for repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '14'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 14 value
+                          example: '01'
+                    repair_priority:
+                      type: object
+                      description: VMRS Code Key 16 — priority assigned to the repair
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '16'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 16 value
+                          example: '1'
+                    repair_site:
+                      type: object
+                      description: VMRS Code Key 17 — relative location where the repair takes place
+                      properties:
+                        code_key:
+                          type: string
+                          description: The VMRS code key identifier
+                          example: '17'
+                        code:
+                          type: string
+                          description: A valid VMRS Code Key 17 value
+                          example: '1'
             relationships:
               type: object
-              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; `id` must be the `uuid` of one of the fleet''s own registered contacts.'
+              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; the `type` must match the enum listed for that relationship, and `id` must be a UUID.'
               properties:
-                billing_contact:
+                assignee:
                   type: object
-                  description: Billing contact on the case.
+                  description: Internal user assigned to the case.
                   properties:
                     data:
-                      type: object
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - internal_users
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                driver:
+                  type: object
+                  description: Driver contact on the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
                       properties:
                         type:
                           type: string
                           enum:
                           - contacts
-                          - registered_contacts
-                          - recipients
                         id:
                           type: string
                           format: uuid
@@ -2617,14 +2971,98 @@ components:
                   description: Primary contact on the case.
                   properties:
                     data:
-                      type: object
+                      type:
+                      - object
+                      - 'null'
                       properties:
                         type:
                           type: string
                           enum:
                           - contacts
-                          - registered_contacts
-                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                billing_contact:
+                  type: object
+                  description: Billing contact on the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                program_type:
+                  type: object
+                  description: Program type assigned to the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - program_types
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                shipping_customer:
+                  type: object
+                  description: Customer to which parts/services will be shipped.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - customers
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                billing_customer:
+                  type: object
+                  description: Customer that will be billed for the case.
+                  properties:
+                    data:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - customers
                         id:
                           type: string
                           format: uuid
@@ -2637,51 +3075,6 @@ components:
           - id
           - type
           - attributes
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     cases_2:
       type: object
       required:
@@ -3225,6 +3618,48 @@ components:
           - attributes
           - type
           - id
+    case_update_meter_data_eng_hours:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Engine-hours meter readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - engine_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `engine_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
     case_2:
       type: object
       required:
@@ -3709,401 +4144,6 @@ components:
           - relationships
           - type
           - id
-    case_update:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                auth_number:
-                  type: string
-                  description: The Authorization number
-                  maxLength: 40
-                po_number:
-                  type: string
-                  description: The Purchase Order number
-                  maxLength: 40
-                ro_number:
-                  type: string
-                  description: The Repair Order number
-                  maxLength: 40
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  maxLength: 6000
-                cause:
-                  type: string
-                  description: Documentation of the technical failure assessed by the Service Location
-                  maxLength: 6000
-                correction:
-                  type: string
-                  description: Summary of the actual work accomplished to address the reported issue
-                  maxLength: 6000
-                repair_status:
-                  type: string
-                  description: ID of the repair status from `GET /service_management/{srm_account_id}/v1/repair_statuses.`
-                  examples:
-                  - asset_ready
-                invoice:
-                  type: object
-                  description: Invoice details
-                  properties:
-                    total:
-                      type: number
-                      description: Total amount for the invoice
-                      maximum: 999999.99
-                      examples:
-                      - 432.5
-                    number:
-                      type: string
-                      description: Number of the invoice
-                      maxLength: 255
-                      examples:
-                      - TR3847
-                    date:
-                      type: string
-                      format: date
-                      description: Date of the invoice in `ISO 8601` date format (not datetime).
-                      examples:
-                      - '2025-06-19'
-                tag_number:
-                  type: string
-                  description: 'Tag #, sometimes called Repair Tag, or Key Tag, is a tag that is attached to the truck keys when a truck is dropped off, so shop personnel can easily find the keys on a tag board and know which case/RO that set of keys/truck belonged to.'
-                  maxLength: 40
-                event_timestamps:
-                  type: object
-                  description: Timestamp attributes reflecting key events surrounding the case
-                  properties:
-                    followup_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
-                      examples:
-                      - '2025-10-10T13:30:41Z'
-                    closed_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
-                      examples:
-                      - '2025-04-10T13:30:41Z'
-                    asset_uptime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
-                      examples:
-                      - '2025-04-10T13:00:41Z'
-                    actual_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
-                      examples:
-                      - '2025-04-10T13:10:41Z'
-                    estimated_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
-                      examples:
-                      - '2025-04-10T13:15:41Z'
-                    asset_checked_in:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
-                      examples:
-                      - '2025-04-10T12:30:41Z'
-                    asset_arrived:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
-                      examples:
-                      - '2025-04-10T11:30:41Z'
-                    asset_downtime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                      examples:
-                      - '2025-04-10T10:30:41Z'
-                    asset_departed_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset departed the service location'
-                      examples:
-                      - '2025-04-10T13:30:41Z'
-                breakdown:
-                  type: object
-                  description: Information about the location of the Service Provider
-                  properties:
-                    location:
-                      type: string
-                      description: Location field accepts City and/or State (eg. Newark or Newark, NJ to be unambiguous) or GPS coordinates (eg. 37.50, -77.33).
-                      maxLength: 255
-                    city:
-                      type: string
-                      description: Breakdown City name
-                      maxLength: 255
-                    state:
-                      type: string
-                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
-                      minLength: 1
-                      maxLength: 3
-                      examples:
-                      - NJ
-                    country:
-                      type: string
-                      description: '`ISO 3166-1` alpha-2 code indicating the breakdown Country'
-                      minLength: 2
-                      maxLength: 2
-                      examples:
-                      - US
-                vmrs:
-                  type: object
-                  description: Case-level VMRS codes. Each code is provided as a `{ code_key, code }` object, consistent with `vmrs.asset_type`.
-                  properties:
-                    reason_for_repair:
-                      type: object
-                      description: VMRS Code Key 14 — identifies what caused the asset to come in for repair
-                      properties:
-                        code_key:
-                          type: string
-                          description: The VMRS code key identifier
-                          example: '14'
-                        code:
-                          type: string
-                          description: A valid VMRS Code Key 14 value
-                          example: '01'
-                    repair_priority:
-                      type: object
-                      description: VMRS Code Key 16 — priority assigned to the repair
-                      properties:
-                        code_key:
-                          type: string
-                          description: The VMRS code key identifier
-                          example: '16'
-                        code:
-                          type: string
-                          description: A valid VMRS Code Key 16 value
-                          example: '1'
-                    repair_site:
-                      type: object
-                      description: VMRS Code Key 17 — relative location where the repair takes place
-                      properties:
-                        code_key:
-                          type: string
-                          description: The VMRS code key identifier
-                          example: '17'
-                        code:
-                          type: string
-                          description: A valid VMRS Code Key 17 value
-                          example: '1'
-            relationships:
-              type: object
-              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; the `type` must match the enum listed for that relationship, and `id` must be a UUID.'
-              properties:
-                assignee:
-                  type: object
-                  description: Internal user assigned to the case.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - internal_users
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                driver:
-                  type: object
-                  description: Driver contact on the case.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - contacts
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                primary_contact:
-                  type: object
-                  description: Primary contact on the case.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - contacts
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                billing_contact:
-                  type: object
-                  description: Billing contact on the case.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - contacts
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                program_type:
-                  type: object
-                  description: Program type assigned to the case.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - program_types
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                shipping_customer:
-                  type: object
-                  description: Customer to which parts/services will be shipped.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - customers
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                billing_customer:
-                  type: object
-                  description: Customer that will be billed for the case.
-                  properties:
-                    data:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - customers
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-          required:
-          - id
-          - type
-          - attributes
-    case_update_meter_data_odometer_meter:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                meter_data:
-                  type: array
-                  description: Odometer readings to record on the case.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - odometer
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - mi
-                        - km
-                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-          required:
-          - attributes
-          - type
-          - id
     case_update_meter_data_switch_hours:
       type: object
       required:
@@ -4146,48 +4186,6 @@ components:
           - attributes
           - type
           - id
-    case_update_meter_data_eng_hours:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                meter_data:
-                  type: array
-                  description: Engine-hours meter readings to record on the case.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - engine_hours
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - hr
-                        description: Unit of measurement for given meter data. Valid unit for `engine_hours` is `hr`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-          required:
-          - attributes
-          - type
-          - id
   securitySchemes:
     AccessToken:
       type: http
@@ -4210,5 +4208,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

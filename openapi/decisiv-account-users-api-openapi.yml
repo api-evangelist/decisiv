@@ -345,58 +345,99 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    account_users:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    communication_preferences:
+      type: object
+      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      properties:
+        visible_as_external_recipient:
+          type: boolean
+          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
+        visible_as_internal_recipient:
+          type: boolean
+          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
+        visible_as_workflow_assignee:
+          type: boolean
+          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
+      example:
+        visible_as_external_recipient: true
+        visible_as_internal_recipient: true
+        visible_as_workflow_assignee: true
+    account_user_update:
       type: object
       required:
       - data
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/account_user'
-        included:
-          type: array
-          items:
-            $ref: '#/components/schemas/role'
-        meta:
           type: object
-        links:
-          type: object
-    error_response:
+          required:
+          - type
+          - id
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - account_users
+            id:
+              type: string
+              format: uuid
+              description: The account user's UUID. Must match the `:id` in the URL.
+            attributes:
+              type: object
+              required:
+              - communication_preferences
+              properties:
+                communication_preferences:
+                  $ref: '#/components/schemas/communication_preferences'
+    role:
       type: object
       properties:
-        status:
+        id:
           type: string
-        title:
+          format: uuid
+        type:
           type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
+          enum:
+          - roles
+        attributes:
           type: object
           properties:
-            parameter:
+            name:
+              type: string
+              description: Name of the role
+            description:
               type:
               - string
               - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
       required:
-      - status
-      - title
+      - attributes
+      - type
+      - id
+    account_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/account_user'
     account_user_create:
       type: object
       required:
@@ -557,99 +598,58 @@ components:
       - attributes
       - type
       - id
-    role:
+    account_users:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/account_user'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+    error_response:
       type: object
       properties:
-        id:
+        status:
           type: string
-          format: uuid
-        type:
+        title:
           type: string
-          enum:
-          - roles
-        attributes:
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
           properties:
-            name:
-              type: string
-              description: Name of the role
-            description:
+            parameter:
               type:
               - string
               - 'null'
-              description: Description of the role
-            public:
-              type: boolean
-              description: Whether the role is public (from a subscribed service) or private (owned by the account)
-            permissions:
-              type: array
-              description: List of permissions granted by this role
-              items:
-                type: string
-      required:
-      - attributes
-      - type
-      - id
-    account_user_update:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
           type: object
-          required:
-          - type
-          - id
-          - attributes
-          properties:
-            type:
-              type: string
-              enum:
-              - account_users
-            id:
-              type: string
-              format: uuid
-              description: The account user's UUID. Must match the `:id` in the URL.
-            attributes:
-              type: object
-              required:
-              - communication_preferences
-              properties:
-                communication_preferences:
-                  $ref: '#/components/schemas/communication_preferences'
-    communication_preferences:
-      type: object
-      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
-      properties:
-        visible_as_external_recipient:
-          type: boolean
-          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
-        visible_as_internal_recipient:
-          type: boolean
-          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
-        visible_as_workflow_assignee:
-          type: boolean
-          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
-      example:
-        visible_as_external_recipient: true
-        visible_as_internal_recipient: true
-        visible_as_workflow_assignee: true
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - errors
-    account_user_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/account_user'
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

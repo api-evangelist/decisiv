@@ -571,6 +571,32 @@ paths:
                         reason: parts costs
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     estimate:
       type: object
       required:
@@ -769,114 +795,6 @@ components:
           - attributes
           - type
           - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    response_estimate:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                line_items:
-                  type: array
-                  description: Line Items inside the estimate
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        description: UUID of the line item
-                      status:
-                        type: string
-                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
-                        example: approved
-                        enum:
-                        - approved
-                        - declined
-                        - deferred
-                      comments:
-                        type: string
-                        example: Did not like the price
-                      reason:
-                        type: string
-                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
-                        example: defer
-                        enum:
-                        - defer
-                        - labor costs
-                        - parts costs
-                        - not interested
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    estimates:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/estimate_properties-data'
-        meta:
-          type: object
     estimate_properties-data:
       type: object
       properties:
@@ -1070,15 +988,97 @@ components:
       - attributes
       - type
       - id
-    errors_response:
+    response_estimate:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                line_items:
+                  type: array
+                  description: Line Items inside the estimate
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: UUID of the line item
+                      status:
+                        type: string
+                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
+                        example: approved
+                        enum:
+                        - approved
+                        - declined
+                        - deferred
+                      comments:
+                        type: string
+                        example: Did not like the price
+                      reason:
+                        type: string
+                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
+                        example: defer
+                        enum:
+                        - defer
+                        - labor costs
+                        - parts costs
+                        - not interested
+    error_response:
       type: object
       properties:
-        errors:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    estimates:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/estimate_properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

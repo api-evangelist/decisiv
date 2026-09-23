@@ -11,7 +11,7 @@ info:
     identifier: proprietary
     url: https://www.decisiv.com/terms-of-use/
   termsOfService: https://www.decisiv.com/terms-of-use
-  description: 'Operations tagged Case Participant Recipients across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.yml, decisiv-service-management-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Case Participant Recipients across 2 of this provider''s published API definitions: decisiv-asset-management-openapi.json, decisiv-service-management-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://srm-api.staging.decisivapps.com
 - url: https://srm-api.decisivapps.com
@@ -426,6 +426,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdParticipantsByParticipantIdRecipients
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
@@ -553,11 +555,82 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdParticipantsByParticipantIdRecipientsById
+      x-operation-id-source: derived
     servers:
     - url: https://srm-api.staging.decisivapps.com
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    participant_recipients:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/participant_recipient_properties-data'
+        meta:
+          type: object
+    participant_recipient_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Full recipient name
+              example: John Doe
+            email:
+              type: string
+              description: Recipient email
+              example: support@support.com
+            phone:
+              type: string
+              description: Recipient mobile phone
+              example: '12345678910'
+        relationships:
+          type: object
+          properties:
+            affiliation:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
     participant_recipient:
       type: object
       required:
@@ -595,17 +668,6 @@ components:
           - attributes
           - type
           - id
-    participant_recipients:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/participant_recipient_properties-data'
-        meta:
-          type: object
     error_response:
       type: object
       properties:
@@ -641,64 +703,6 @@ components:
       required:
       - status
       - title
-    participant_recipient_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Full recipient name
-              example: John Doe
-            email:
-              type: string
-              description: Recipient email
-              example: support@support.com
-            phone:
-              type: string
-              description: Recipient mobile phone
-              example: '12345678910'
-        relationships:
-          type: object
-          properties:
-            affiliation:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     recipients:
       type: object
       required:
@@ -881,5 +885,5 @@ components:
           tokenUrl: https://login.decisiv.net/oauth/token
           scopes: {}
 x-refined-from:
-- decisiv-asset-management-openapi.yml
-- decisiv-service-management-openapi.yml
+- decisiv-asset-management-openapi.json
+- decisiv-service-management-openapi.json

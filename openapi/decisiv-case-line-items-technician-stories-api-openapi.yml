@@ -141,6 +141,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdTechnicianStories
+      x-operation-id-source: derived
     post:
       summary: Creates a technician story for the line item
       tags:
@@ -278,6 +280,8 @@ paths:
                     type: technician_stories
                     attributes:
                       content: Technician story description
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdTechnicianStories
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/cases/{case_id}/line_items/{line_item_id}/technician_stories/{id}:
     get:
       summary: List all the technician stories for the selected line item
@@ -387,74 +391,10 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdTechnicianStoriesById
+      x-operation-id-source: derived
 components:
   schemas:
-    create_technician_story:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - technician_stories
-            attributes:
-              type: object
-              required:
-              - content
-              properties:
-                content:
-                  type: string
-                  description: The story itself
-                  minLength: 1
-                  maxLength: 5000
-                  examples:
-                  - This is a story from the technician
-                created_at:
-                  type: string
-                  description: '`ISO 8601` timestamp indicating when the technician story was created'
-                  format: date-time
-          required:
-          - type
-          - attributes
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     errors_response:
       type: object
       properties:
@@ -497,6 +437,72 @@ components:
           - attributes
           - type
           - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    create_technician_story:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - technician_stories
+            attributes:
+              type: object
+              required:
+              - content
+              properties:
+                content:
+                  type: string
+                  description: The story itself
+                  minLength: 1
+                  maxLength: 5000
+                  examples:
+                  - This is a story from the technician
+                created_at:
+                  type: string
+                  description: '`ISO 8601` timestamp indicating when the technician story was created'
+                  format: date-time
+          required:
+          - type
+          - attributes
   securitySchemes:
     AccessToken:
       type: http

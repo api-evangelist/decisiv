@@ -27,9 +27,7 @@ paths:
     get:
       summary: List line items for the requested case
       operationId: listCaseLineItems
-      description: 'A line item represents a single operation on the case — the atomic complaint/cause/correction unit billed against it, carrying labor, parts, and VMRS coding.
-
-        '
+      description: A line item represents a single operation on the case — the atomic complaint/cause/correction unit billed against it, carrying labor, parts, and VMRS coding.
       tags:
       - Case Line Items
       parameters:
@@ -246,9 +244,7 @@ paths:
     post:
       summary: Create a line item for the requested case
       operationId: createCaseLineItem
-      description: 'A line item represents a single operation on the case; multiple may exist per case.
-
-        '
+      description: A line item represents a single operation on the case; multiple may exist per case.
       tags:
       - Case Line Items
       parameters:
@@ -672,9 +668,7 @@ paths:
     patch:
       summary: Update a line item for the requested case
       operationId: updateCaseLineItem
-      description: 'Reassigning the line item''s `assignee` is not supported on this endpoint.
-
-        '
+      description: Reassigning the line item's `assignee` is not supported on this endpoint.
       tags:
       - Case Line Items
       parameters:
@@ -884,9 +878,7 @@ paths:
     delete:
       summary: Delete a line item for the requested case
       operationId: deleteCaseLineItem
-      description: 'Related parts and technician stories are deleted transitively.
-
-        '
+      description: Related parts and technician stories are deleted transitively.
       tags:
       - Case Line Items
       parameters:
@@ -980,6 +972,15 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     update_line_item:
       type: object
       description: 'PATCH body for a case line item. Note that `assignee` reassignment is not supported on PATCH — set the assignee on create and manage subsequent changes via the relationship endpoint.
@@ -1142,58 +1143,6 @@ components:
           - type
           - attributes
           - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     line_item:
       type: object
       required:
@@ -2009,23 +1958,21 @@ components:
       - attributes
       - type
       - id
-    relationship_objects:
+    relationship_object:
       type: object
       properties:
         data:
-          type: array
-          items:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
             type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
+              type: string
+          required:
+          - id
+          - type
       required:
       - data
     line_items:
@@ -2227,15 +2174,60 @@ components:
           required:
           - type
           - attributes
-    errors_response:
+    relationship_objects:
       type: object
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
       required:
-      - errors
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

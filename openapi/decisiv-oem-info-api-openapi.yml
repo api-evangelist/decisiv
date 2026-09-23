@@ -50,37 +50,10 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/jsonapiErrorResponse'
+      summary: Get vin information
+      x-summary-source: derived
 components:
   schemas:
-    vinResponse:
-      type: object
-      properties:
-        engine_make:
-          type: string
-          example: Cummins
-        engine_name:
-          type: string
-          example: ISX12G
-        make:
-          type: string
-          example: Kenworth
-        model:
-          type: string
-          example: T680
-        year:
-          type: string
-          example: 2017
-    JSONAPI_Links:
-      title: JSONAPI_Links
-      type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
-      properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     JSONAPI_Errors:
       title: JSONAPI_Errors
       type: array
@@ -95,6 +68,12 @@ components:
         '
       items:
         $ref: '#/components/schemas/JSONAPI_Error'
+    JSONAPI_DocumentLink:
+      title: JSONAPI_DocumentLink
+      type: string
+      description: 'A "JSON API" document link.
+
+        '
     JSONAPI_Error:
       title: JSONAPI_Error
       type: object
@@ -143,35 +122,39 @@ components:
         title:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
-    tooManyRequestsResponseErrorWithExample:
-      title: tooManyRequestsResponseErrorWithExample
-      type: object
-      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
-
-        An error object MAY have the following members.
+    tooManyRequestsResponseError:
+      title: Too Many Requests
+      type: array
+      description: 'Access restricted for a given user or application due to undesired behavior
 
         '
+      items:
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+    vinResponse:
+      type: object
       properties:
-        code:
+        engine_make:
           type: string
-          description: an application-specific error code, expressed as a string value.
-          example: '429'
-        detail:
+          example: Cummins
+        engine_name:
           type: string
-          description: 'A human-readable explanation specific to this occurrence of the problem.
-
-            Like `title`, this field''s value can be localized.
-
-            '
-          example: The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.
-        status:
+          example: ISX12G
+        make:
           type: string
-          description: the HTTP status code applicable to this problem, expressed as a string value.
-          example: '429'
-        title:
+          example: Kenworth
+        model:
           type: string
-          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
-          example: Too Many Requests
+          example: T680
+        year:
+          type: string
+          example: 2017
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
     VinValidationError:
       type: object
       properties:
@@ -207,21 +190,62 @@ components:
       - meta
       - status
       - source
-    jsonapiErrorResponse:
+    tooManyRequestsResponseErrorWithExample:
+      title: tooManyRequestsResponseErrorWithExample
       type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/JSONAPI_Errors'
-    tooManyRequestsResponseError:
-      title: Too Many Requests
-      type: array
-      description: 'Access restricted for a given user or application due to undesired behavior
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
 
         '
-      items:
-        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+      properties:
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+          example: '429'
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+          example: The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+          example: '429'
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+          example: Too Many Requests
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+        detail:
+          type: string
+        code:
+          type: string
+        status:
+          type: string
+      required:
+      - title
+      - detail
+      - code
+      - status
+    JSONAPI_Links:
+      title: JSONAPI_Links
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     jsonapiVinResponse:
       type: object
       properties:
@@ -261,31 +285,9 @@ components:
           type: array
           allOf:
           - $ref: '#/components/schemas/tooManyRequestsResponseError'
-    JSONAPI_DocumentLink:
-      title: JSONAPI_DocumentLink
-      type: string
-      description: 'A "JSON API" document link.
-
-        '
-    Error:
-      type: object
-      properties:
-        title:
-          type: string
-        detail:
-          type: string
-        code:
-          type: string
-        status:
-          type: string
-      required:
-      - title
-      - detail
-      - code
-      - status
   responses:
-    GatewayTimeout:
-      description: 504 Gateway Timeout Error
+    BadGateway:
+      description: 502 Bad Gateway Error
       content:
         application/vnd.api+json:
           schema:
@@ -296,8 +298,8 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/VinValidationError'
-    BadGateway:
-      description: 502 Bad Gateway Error
+    GatewayTimeout:
+      description: 504 Gateway Timeout Error
       content:
         application/vnd.api+json:
           schema:

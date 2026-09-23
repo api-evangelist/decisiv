@@ -202,86 +202,6 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    ecosystem_user_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/ecosystem_user'
-    ecosystem_user:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The user's UUID
-        type:
-          type: string
-          enum:
-          - ecosystem_users
-        attributes:
-          type: object
-          properties:
-            first_name:
-              type: string
-            last_name:
-              type: string
-            email:
-              type: string
-              format: email
-              description: User's email address. Also used as the username.
-            job_role:
-              type: string
-              description: Free-text label describing the user's job role (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
-            external_reference:
-              type: object
-              description: Identifiers available for the user from external systems
-              properties:
-                business_system:
-                  type:
-                  - string
-                  - 'null'
-                  description: External business-system identifier for this user, when one has been linked
-      required:
-      - attributes
-      - type
-      - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     ecosystem_user_create:
       type: object
       required:
@@ -364,15 +284,6 @@ components:
                       type: string
                       maxLength: 100
                       description: External business-system identifier (optional)
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     ecosystem_users:
       type: object
       required:
@@ -386,6 +297,95 @@ components:
           type: object
         links:
           type: object
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    ecosystem_user_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/ecosystem_user'
+    ecosystem_user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - ecosystem_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+              format: email
+              description: User's email address. Also used as the username.
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

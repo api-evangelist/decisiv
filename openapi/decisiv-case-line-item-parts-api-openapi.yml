@@ -163,6 +163,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdParts
+      x-operation-id-source: derived
     post:
       summary: Create a estimate item part
       tags:
@@ -341,6 +343,8 @@ paths:
                         data:
                           type: internal_users
                           id: 6383dc89-05b6-4572-8979-a6257f3597ec
+      operationId: postServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdParts
+      x-operation-id-source: derived
   /service_management/{srm_account_id}/v1/cases/{case_id}/line_items/{line_item_id}/parts/{id}:
     get:
       summary: List details on a specific part for the requested line item
@@ -484,6 +488,8 @@ paths:
                   title: Gateway timeout error
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdPartsById
+      x-operation-id-source: derived
     patch:
       summary: Update a specific part
       tags:
@@ -661,6 +667,8 @@ paths:
                         data:
                           type: internal_users
                           id: 6383dc89-05b6-4572-8979-a6257f3597ec
+      operationId: patchServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdPartsById
+      x-operation-id-source: derived
     delete:
       summary: Delete an estimate item part
       tags:
@@ -721,8 +729,100 @@ paths:
                   status: '404'
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: deleteServiceManagementBySrmAccountIdV1CasesByCaseIdLineItemsByLineItemIdPartsById
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    part_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - line_item_parts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Part name of materials associated with the item
+              maxLength: 510
+            quantity:
+              type: string
+              description: Count of specific parts associated with the item
+              maxLength: 11
+              pattern: ^[0-9]{1,9}\.[0-9]{2}$
+            quantity_shipped:
+              type:
+              - string
+              - 'null'
+              description: Count of parts that have been shipped for the item, emitted as an integer-formatted string for consistency with quantity
+            quantity_backordered:
+              type:
+              - string
+              - 'null'
+              description: Count of parts that are backordered for the item, emitted as an integer-formatted string for consistency with quantity
+            number:
+              type: string
+              description: Part number of material associated with the item
+              maxLength: 100
+            unit_price:
+              type: string
+              description: Unit cost of each part associated with the item
+              maxLength: 11
+              pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            core:
+              type: object
+              description: Information about the core parts
+              properties:
+                quantity:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Count of specific core parts associated with the item
+                price:
+                  type: string
+                  description: Unit cost of each core part associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
+        relationships:
+          type: object
+          properties:
+            salesperson:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     create_estimate_item_part:
       type: object
       required:
@@ -801,105 +901,81 @@ components:
           required:
           - type
           - attributes
-    error_response:
+    update_estimate_item_part:
       type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
       required:
-      - status
-      - title
-    part_properties-data:
-      type: object
+      - data
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - line_item_parts
-        attributes:
+        data:
           type: object
           properties:
-            name:
+            type:
               type: string
-              description: Part name of materials associated with the item
-              maxLength: 510
-            quantity:
-              type: string
-              description: Count of specific parts associated with the item
-              maxLength: 11
-              pattern: ^[0-9]{1,9}\.[0-9]{2}$
-            quantity_shipped:
-              type:
-              - string
-              - 'null'
-              description: Count of parts that have been shipped for the item, emitted as an integer-formatted string for consistency with quantity
-            quantity_backordered:
-              type:
-              - string
-              - 'null'
-              description: Count of parts that are backordered for the item, emitted as an integer-formatted string for consistency with quantity
-            number:
-              type: string
-              description: Part number of material associated with the item
-              maxLength: 100
-            unit_price:
-              type: string
-              description: Unit cost of each part associated with the item
-              maxLength: 11
-              pattern: ^[0-9]{1,7}\.[0-9]{4}$
-            core:
+            attributes:
               type: object
-              description: Information about the core parts
               properties:
-                quantity:
-                  type:
-                  - integer
-                  - 'null'
-                  description: Count of specific core parts associated with the item
-                price:
+                name:
                   type: string
-                  description: Unit cost of each core part associated with the item
+                  description: Part name of materials associated with the item
+                  maxLength: 510
+                quantity:
+                  type: string
+                  description: Count of specific parts associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,9}\.[0-9]{2}$
+                quantity_shipped:
+                  type: string
+                  description: Count of parts that have been shipped, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                  maxLength: 9
+                  pattern: ^[0-9]{1,9}$
+                quantity_backordered:
+                  type: string
+                  description: Count of parts that are backordered, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                  maxLength: 9
+                  pattern: ^[0-9]{1,9}$
+                number:
+                  type: string
+                  description: Part number of material associated with the item
+                  maxLength: 100
+                unit_price:
+                  type: string
+                  description: Unit cost of each part associated with the item
                   maxLength: 11
                   pattern: ^[0-9]{1,7}\.[0-9]{4}$
-        relationships:
-          type: object
-          properties:
-            salesperson:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
+                core:
+                  type: object
+                  description: Information about the core parts
+                  properties:
+                    quantity:
+                      type: string
+                      description: Quantity for the core charge as a decimal-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
+                      maxLength: 11
+                      pattern: ^-?[0-9]{1,9}(\.[0-9]{1,2})?$
+                    price:
+                      type: string
+                      description: Unit cost of each core part associated with the item
+                      maxLength: 11
+                      pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            relationships:
+              type: object
+              properties:
+                salesperson:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+          required:
+          - type
+          - attributes
     case:
       type: object
       required:
@@ -1384,92 +1460,41 @@ components:
           - relationships
           - type
           - id
-    parts:
+    error_response:
       type: object
-      required:
-      - data
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/part_properties-data'
-        meta:
-          type: object
-    update_estimate_item_part:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
           properties:
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Part name of materials associated with the item
-                  maxLength: 510
-                quantity:
-                  type: string
-                  description: Count of specific parts associated with the item
-                  maxLength: 11
-                  pattern: ^[0-9]{1,9}\.[0-9]{2}$
-                quantity_shipped:
-                  type: string
-                  description: Count of parts that have been shipped, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
-                  maxLength: 9
-                  pattern: ^[0-9]{1,9}$
-                quantity_backordered:
-                  type: string
-                  description: Count of parts that are backordered, as an integer-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
-                  maxLength: 9
-                  pattern: ^[0-9]{1,9}$
-                number:
-                  type: string
-                  description: Part number of material associated with the item
-                  maxLength: 100
-                unit_price:
-                  type: string
-                  description: Unit cost of each part associated with the item
-                  maxLength: 11
-                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
-                core:
-                  type: object
-                  description: Information about the core parts
-                  properties:
-                    quantity:
-                      type: string
-                      description: Quantity for the core charge as a decimal-formatted string. Response bodies emit this field as an integer; the request side accepts the contract's string form.
-                      maxLength: 11
-                      pattern: ^-?[0-9]{1,9}(\.[0-9]{1,2})?$
-                    price:
-                      type: string
-                      description: Unit cost of each core part associated with the item
-                      maxLength: 11
-                      pattern: ^[0-9]{1,7}\.[0-9]{4}$
-            relationships:
-              type: object
-              properties:
-                salesperson:
-                  type: object
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-          required:
-          - type
-          - attributes
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
     part:
       type: object
       required:
@@ -1539,32 +1564,17 @@ components:
           - attributes
           - type
           - id
-    relationship_object:
+    parts:
       type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
       required:
       - data
-    errors_response:
-      type: object
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/part_properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

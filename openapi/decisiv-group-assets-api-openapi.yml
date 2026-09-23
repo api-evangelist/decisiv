@@ -46,6 +46,8 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
+      summary: Group assets
+      x-summary-source: derived
   /group_assets/{asset_id}:
     delete:
       tags:
@@ -69,36 +71,10 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/tooManyRequestsResponse'
+      summary: Remove group customer asset by id
+      x-summary-source: derived
 components:
-  parameters:
-    assetId:
-      name: asset_id
-      in: path
-      description: ID of Customer Asset to fetch
-      required: true
-      schema:
-        type: integer
-    requiredVinParam:
-      name: filter[vin]
-      in: query
-      description: 'Exact match for a VIN, ex: JN1AR5XXXXXX*'
-      required: true
-      schema:
-        type: string
-        maxLength: 17
-        minLength: 12
   schemas:
-    JSONAPI_Links:
-      title: JSONAPI_Links
-      type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
-      properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     JSONAPI_Errors:
       title: JSONAPI_Errors
       type: array
@@ -113,6 +89,44 @@ components:
         '
       items:
         $ref: '#/components/schemas/JSONAPI_Error'
+    JSONAPI_DocumentLink:
+      title: JSONAPI_DocumentLink
+      type: string
+      description: 'A "JSON API" document link.
+
+        '
+      example: http://link.to/resource
+    customerAsset:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          description: Customer ID
+          example: 42
+        asset_id:
+          type: string
+          description: Asset UUID
+          example: c441e9ee-d990-4759-b6ab-00230ab6647e
+        vin:
+          type: string
+          minLength: 17
+          maxLength: 17
+          example: 1C4RJFATXDC591345
+        serial_number:
+          type: string
+          example: DC591345
+        unit_number:
+          type: string
+          description: Unit Number
+          example: VT84
+    tooManyRequestsResponseError:
+      title: Too Many Requests
+      type: array
+      description: 'Access restricted for a given user or application due to undesired behavior
+
+        '
+      items:
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
     JSONAPI_Error:
       title: JSONAPI_Error
       type: object
@@ -161,6 +175,15 @@ components:
         title:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Errors'
     jsonapiCustomerAssetsResponse:
       type: object
       properties:
@@ -186,6 +209,36 @@ components:
         links:
           allOf:
           - $ref: '#/components/schemas/JSONAPI_Links'
+    audit_details:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp record was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp record was last updated
+        created_by:
+          type: string
+          description: Username of user which created the record
+          example: current_user
+        updated_by:
+          type: string
+          description: Username of user which last updated the record
+          example: current_user
+    JSONAPI_Links:
+      title: JSONAPI_Links
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     tooManyRequestsResponseErrorWithExample:
       title: tooManyRequestsResponseErrorWithExample
       type: object
@@ -215,30 +268,6 @@ components:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
           example: Too Many Requests
-    jsonapiErrorResponse:
-      type: object
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/JSONAPI_Errors'
-          type: array
-          allOf:
-          - $ref: '#/components/schemas/JSONAPI_Errors'
-    tooManyRequestsResponseError:
-      title: Too Many Requests
-      type: array
-      description: 'Access restricted for a given user or application due to undesired behavior
-
-        '
-      items:
-        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
-    JSONAPI_DocumentLink:
-      title: JSONAPI_DocumentLink
-      type: string
-      description: 'A "JSON API" document link.
-
-        '
-      example: http://link.to/resource
     badRequestVINFilterMissingErrorWithExample:
       title: badRequestFilterMissingErrorWithExample
       type: object
@@ -274,29 +303,14 @@ components:
             parameter:
               type: string
               example: filter
-    customerAsset:
-      type: object
-      properties:
-        customer_id:
-          type: integer
-          description: Customer ID
-          example: 42
-        asset_id:
-          type: string
-          description: Asset UUID
-          example: c441e9ee-d990-4759-b6ab-00230ab6647e
-        vin:
-          type: string
-          minLength: 17
-          maxLength: 17
-          example: 1C4RJFATXDC591345
-        serial_number:
-          type: string
-          example: DC591345
-        unit_number:
-          type: string
-          description: Unit Number
-          example: VT84
+    badRequestVINFilterMissingResponseError:
+      title: Bad Request
+      type: array
+      description: 'Request is not sent as expected
+
+        '
+      items:
+        $ref: '#/components/schemas/badRequestVINFilterMissingErrorWithExample'
     tooManyRequestsResponse:
       type: object
       properties:
@@ -306,33 +320,23 @@ components:
           type: array
           allOf:
           - $ref: '#/components/schemas/tooManyRequestsResponseError'
-    badRequestVINFilterMissingResponseError:
-      title: Bad Request
-      type: array
-      description: 'Request is not sent as expected
-
-        '
-      items:
-        $ref: '#/components/schemas/badRequestVINFilterMissingErrorWithExample'
-    audit_details:
-      type: object
-      properties:
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp record was created
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp record was last updated
-        created_by:
-          type: string
-          description: Username of user which created the record
-          example: current_user
-        updated_by:
-          type: string
-          description: Username of user which last updated the record
-          example: current_user
+  parameters:
+    assetId:
+      name: asset_id
+      in: path
+      description: ID of Customer Asset to fetch
+      required: true
+      schema:
+        type: integer
+    requiredVinParam:
+      name: filter[vin]
+      in: query
+      description: 'Exact match for a VIN, ex: JN1AR5XXXXXX*'
+      required: true
+      schema:
+        type: string
+        maxLength: 17
+        minLength: 12
   securitySchemes:
     TransitionToken:
       type: apiKey

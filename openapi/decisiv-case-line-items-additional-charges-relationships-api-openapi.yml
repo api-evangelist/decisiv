@@ -6,7 +6,7 @@ info:
     name: Decisiv Support
     email: support@decisiv.com
     url: https://www.decisiv.com
-  title: Service Management Case Line Items - Additional Charges - Relationships API
+  title: Service Management Case Line Items - Additional Charges…
   description: The **Decisiv SRM Gateway** `Service Management` module provides the API functionality for managing an asset's case lifecycle from a Service Providers perspective.
   license:
     name: Proprietary
@@ -187,8 +187,19 @@ paths:
                   data:
                     type: additional_charge_categories
                     id: aa3e7935-bfe2-475e-9be2-80ccef5477c8
+      operationId: patchServiceManagementBySrmAccountIdV1CasesByCaseUuidLineItemsByLineItemUuidAdditionalChargesByIdRelationshipsCategory
+      x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     error_response:
       type: object
       properties:
@@ -325,15 +336,6 @@ components:
           - attributes
           - type
           - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

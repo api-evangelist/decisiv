@@ -72,6 +72,8 @@ paths:
                   status: '403'
               schema:
                 $ref: '#/components/schemas/errors_response'
+      operationId: getServiceManagementBySrmAccountIdV1LineItemInternalLabels
+      x-operation-id-source: derived
 components:
   schemas:
     errors_response:
