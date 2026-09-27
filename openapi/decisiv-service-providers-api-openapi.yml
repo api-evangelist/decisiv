@@ -702,107 +702,6 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    service_provider:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the Service Provider
-                  minLength: 1
-                  maxLength: 150
-                address1:
-                  type: string
-                  description: Primary Address for the Service Provider
-                  minLength: 0
-                  maxLength: 255
-                address2:
-                  type: string
-                  description: Secondary address identifier
-                  minLength: 0
-                  maxLength: 255
-                city:
-                  type: string
-                  description: City which the Service Provider business resides
-                  minLength: 0
-                  maxLength: 30
-                state:
-                  type: string
-                  description: 2 Letter state abbreviation
-                  minLength: 0
-                  maxLength: 2
-                postal_code:
-                  type: string
-                  description: Postal zip code of the Service Provider location
-                  minLength: 0
-                  maxLength: 18
-                country:
-                  type: string
-                  description: Country of Service Povider, in `ISO 3166-1 alpha-2` format
-                  minLength: 0
-                  maxLength: 2
-                phone:
-                  type: string
-                  description: Telephone contact information for the Service Provider
-                  minLength: 0
-                  maxLength: 30
-                fax:
-                  type: string
-                  description: Fax information for the Service Provider
-                  minLength: 0
-                  maxLength: 30
-                email:
-                  type: string
-                  description: Email contact information for the Service Provider
-                  minLength: 0
-                  maxLength: 120
-                location:
-                  type: object
-                  description: Geolocation information about the Service Provider
-                  properties:
-                    latitude:
-                      type: number
-                    longitude:
-                      type: number
-                    distance_from_geolocation:
-                      type: number
-                external_reference:
-                  type: object
-                  description: External reference information for the Service Provider
-                  properties:
-                    srm_account_id:
-                      type: string
-                      description: SRM Account ID for the Service Provider
-                      minLength: 7
-                      maxLength: 7
-            relationships:
-              type: object
-              properties:
-                service_networks:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
     error_response:
       type: object
       properties:
@@ -953,6 +852,194 @@ components:
               $ref: '#/components/schemas/relationship_object'
       required:
       - attributes
+    service_provider:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the Service Provider
+                  minLength: 1
+                  maxLength: 150
+                address1:
+                  type: string
+                  description: Primary Address for the Service Provider
+                  minLength: 0
+                  maxLength: 255
+                address2:
+                  type: string
+                  description: Secondary address identifier
+                  minLength: 0
+                  maxLength: 255
+                city:
+                  type: string
+                  description: City which the Service Provider business resides
+                  minLength: 0
+                  maxLength: 30
+                state:
+                  type: string
+                  description: 2 Letter state abbreviation
+                  minLength: 0
+                  maxLength: 2
+                postal_code:
+                  type: string
+                  description: Postal zip code of the Service Provider location
+                  minLength: 0
+                  maxLength: 18
+                country:
+                  type: string
+                  description: Country of Service Povider, in `ISO 3166-1 alpha-2` format
+                  minLength: 0
+                  maxLength: 2
+                phone:
+                  type: string
+                  description: Telephone contact information for the Service Provider
+                  minLength: 0
+                  maxLength: 30
+                fax:
+                  type: string
+                  description: Fax information for the Service Provider
+                  minLength: 0
+                  maxLength: 30
+                email:
+                  type: string
+                  description: Email contact information for the Service Provider
+                  minLength: 0
+                  maxLength: 120
+                location:
+                  type: object
+                  description: Geolocation information about the Service Provider
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                    distance_from_geolocation:
+                      type: number
+                external_reference:
+                  type: object
+                  description: External reference information for the Service Provider
+                  properties:
+                    srm_account_id:
+                      type: string
+                      description: SRM Account ID for the Service Provider
+                      minLength: 7
+                      maxLength: 7
+            relationships:
+              type: object
+              properties:
+                service_networks:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    service_providers_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_provider_properties-data_2'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    service_provider_properties-data_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - service_providers
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            address1:
+              type: string
+            address2:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postal_code:
+              type: string
+            country:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            fax:
+              type: string
+            location:
+              type: object
+              properties:
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                distance_from_geolocation:
+                  type: number
+                  description: Present only when filtering by `geolocation.point`.
+        relationships:
+          type: object
+          properties:
+            service_networks:
+              $ref: '#/components/schemas/relationship_objects'
+      required:
+      - attributes
+      - type
+      - id
     service_provider_2:
       type: object
       required:
@@ -1011,93 +1098,6 @@ components:
           - attributes
           - type
           - id
-    service_providers_2:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/service_provider_properties-data_2'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    service_provider_properties-data_2:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - service_providers
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-            address1:
-              type: string
-            address2:
-              type: string
-            city:
-              type: string
-            state:
-              type: string
-            postal_code:
-              type: string
-            country:
-              type: string
-            email:
-              type: string
-              format: email
-            phone:
-              type: string
-            fax:
-              type: string
-            location:
-              type: object
-              properties:
-                latitude:
-                  type: number
-                longitude:
-                  type: number
-                distance_from_geolocation:
-                  type: number
-                  description: Present only when filtering by `geolocation.point`.
-        relationships:
-          type: object
-          properties:
-            service_networks:
-              $ref: '#/components/schemas/relationship_objects'
-      required:
-      - attributes
-      - type
-      - id
   securitySchemes:
     AccessToken:
       type: http

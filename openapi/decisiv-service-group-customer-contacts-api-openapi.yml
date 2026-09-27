@@ -798,76 +798,56 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    contacts:
       type: object
+      required:
+      - data
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    contact_properties-data:
+            $ref: '#/components/schemas/contact_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    error_response:
       type: object
       properties:
-        id:
+        status:
           type: string
-          format: uuid
-        type:
+        title:
           type: string
-          enum:
-          - contacts
-          - service_group_contacts
-          - registered_contacts
-        attributes:
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
           properties:
-            first_name:
-              type: string
-              description: First name of the contact
-              maxLength: 100
-            last_name:
-              type: string
-              description: Last name of the contact
-              maxLength: 100
-            communication:
-              type: array
-              description: Array of communication methods for the contact
-              items:
-                type: object
-                properties:
-                  method_type:
-                    type: string
-                    description: Type of communication method (e.g., email, mobile)
-                    enum:
-                    - email
-                    - mobile
-                  value:
-                    type:
-                    - string
-                    - 'null'
-                    description: Value of the communication method (e.g., email address, phone number)
-                    maxLength: 128
-                  notify:
-                    type: boolean
-                    description: Indicates if notifications should be sent to this contact
-                required:
-                - method_type
-                - value
-                - notify
-          required:
-          - first_name
-          - last_name
-          - communication
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
         links:
           type: object
-          properties:
-            self:
-              type: string
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - id
-      - type
-      - attributes
+      - status
+      - title
     contact_update:
       type: object
       required:
@@ -921,21 +901,6 @@ components:
           - attributes
           - type
           - id
-    contacts:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/contact_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
     contact:
       type: object
       properties:
@@ -998,59 +963,6 @@ components:
                   type: string
           required:
           - id
-          - type
-          - attributes
-      required:
-      - data
-    create_contact:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - contacts
-            attributes:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: First name of the contact
-                  maxLength: 100
-                last_name:
-                  type: string
-                  description: Last name of the contact
-                  maxLength: 100
-                communication:
-                  type: array
-                  description: Array of communication methods for the contact
-                  items:
-                    type: object
-                    properties:
-                      method_type:
-                        type: string
-                        description: Type of communication method (e.g., email, mobile)
-                        enum:
-                        - email
-                        - mobile
-                      value:
-                        type: string
-                        description: Value of the communication method (e.g., email address, phone number)
-                        maxLength: 128
-                      notify:
-                        type: boolean
-                        description: Indicates if notifications should be sent to this contact
-                    required:
-                    - method_type
-                    - value
-                    - notify
-              required:
-              - first_name
-              - last_name
-              - communication
-          required:
           - type
           - attributes
       required:
@@ -1135,41 +1047,129 @@ components:
           - id
       required:
       - data
-    error_response:
+    contact_properties-data:
       type: object
       properties:
-        status:
+        id:
           type: string
-        title:
+          format: uuid
+        type:
           type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
+          enum:
+          - contacts
+          - service_group_contacts
+          - registered_contacts
+        attributes:
           type: object
           properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
+            first_name:
+              type: string
+              description: First name of the contact
+              maxLength: 100
+            last_name:
+              type: string
+              description: Last name of the contact
+              maxLength: 100
+            communication:
+              type: array
+              description: Array of communication methods for the contact
+              items:
+                type: object
+                properties:
+                  method_type:
+                    type: string
+                    description: Type of communication method (e.g., email, mobile)
+                    enum:
+                    - email
+                    - mobile
+                  value:
+                    type:
+                    - string
+                    - 'null'
+                    description: Value of the communication method (e.g., email address, phone number)
+                    maxLength: 128
+                  notify:
+                    type: boolean
+                    description: Indicates if notifications should be sent to this contact
+                required:
+                - method_type
+                - value
+                - notify
+          required:
+          - first_name
+          - last_name
+          - communication
         links:
           type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+          properties:
+            self:
+              type: string
       required:
-      - status
-      - title
+      - id
+      - type
+      - attributes
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_contact:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+          required:
+          - type
+          - attributes
+      required:
+      - data
   securitySchemes:
     AccessToken:
       type: http

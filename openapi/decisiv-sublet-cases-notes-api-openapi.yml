@@ -448,15 +448,124 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    error_response:
       type: object
       properties:
-        errors:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    relationship_objects:
+      type: object
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
       required:
-      - errors
+      - data
+    note_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - notes
+        attributes:
+          type: object
+          properties:
+            message:
+              type: string
+              examples:
+              - This is a note
+            public:
+              type: boolean
+              description: Notes with Public selected can be viewed from the Fleet case perspective.
+              examples:
+              - true
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp'
+          required:
+          - message
+          - public
+        relationships:
+          type: object
+          properties:
+            recipients:
+              $ref: '#/components/schemas/relationship_objects'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            sender:
+              $ref: '#/components/schemas/relationship_object'
+            participants:
+              $ref: '#/components/schemas/relationship_objects'
+          required:
+          - recipients
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
     note:
       type: object
       required:
@@ -509,53 +618,30 @@ components:
           - relationships
           - type
           - id
-    note_properties-data:
+    errors_response:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - notes
-        attributes:
-          type: object
-          properties:
-            message:
-              type: string
-              examples:
-              - This is a note
-            public:
-              type: boolean
-              description: Notes with Public selected can be viewed from the Fleet case perspective.
-              examples:
-              - true
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp'
-          required:
-          - message
-          - public
-        relationships:
-          type: object
-          properties:
-            recipients:
-              $ref: '#/components/schemas/relationship_objects'
-            subject:
-              $ref: '#/components/schemas/relationship_object'
-            sender:
-              $ref: '#/components/schemas/relationship_object'
-            participants:
-              $ref: '#/components/schemas/relationship_objects'
-          required:
-          - recipients
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - attributes
-      - relationships
-      - type
-      - id
+      - errors
+    notes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/note_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     create_case_note:
       type: object
       required:
@@ -639,92 +725,6 @@ components:
                               format: uuid
                               description: UUID of the participant
                               example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    notes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/note_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http

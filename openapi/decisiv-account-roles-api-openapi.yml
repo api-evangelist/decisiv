@@ -161,68 +161,6 @@ paths:
           description: Role not found for this account
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    role_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/role'
-    role:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - roles
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the role
-            description:
-              type:
-              - string
-              - 'null'
-              description: Description of the role
-            public:
-              type: boolean
-              description: Whether the role is public (from a subscribed service) or private (owned by the account)
-            permissions:
-              type: array
-              description: List of permissions granted by this role
-              items:
-                type: string
-      required:
-      - attributes
-      - type
-      - id
-    roles:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/role'
-        meta:
-          type: object
-        links:
-          type: object
     error_response:
       type: object
       properties:
@@ -258,6 +196,68 @@ components:
       required:
       - status
       - title
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
+      required:
+      - attributes
+      - type
+      - id
+    role_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/role'
+    roles:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

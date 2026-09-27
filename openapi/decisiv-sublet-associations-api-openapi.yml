@@ -482,283 +482,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    sublet_associations:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/sublet_association_properties-data'
-        meta:
-          type: object
-        included:
-          type: array
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/parent_case'
-            - $ref: '#/components/schemas/sublet_case'
-    create_sublet_association:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - sublet_associations
-            attributes:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  description: Reason for create the association
-                  examples:
-                  - Text description of the reason for the association
-            relationships:
-              type: object
-              properties:
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                sublet_case:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - parent_case
-              - sublet_case
-          required:
-          - type
-          - attributes
-          - relationships
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    sublet_association:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - sublet_associations
-            attributes:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  description: Reason for create the association
-                  examples:
-                  - Text description of the reason for the association
-            relationships:
-              type: object
-              properties:
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                sublet_case:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - sublet_case
-              - parent_case
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
-    sublet_association_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - sublet_associations
-        attributes:
-          type: object
-          properties:
-            reason:
-              type: string
-              description: Reason for create the association
-              examples:
-              - Text description of the reason for the association
-        relationships:
-          type: object
-          properties:
-            parent_case:
-              $ref: '#/components/schemas/relationship_object'
-            sublet_case:
-              $ref: '#/components/schemas/relationship_object'
-          required:
-          - sublet_case
-          - parent_case
-      required:
-      - attributes
-      - relationships
-      - type
-      - id
-    sublet_case:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - sublet_cases
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  maxLength: 6000
-                po_number:
-                  type: string
-                  description: Purchase Order number
-                  maxLength: 40
-                auth_number:
-                  type: string
-                  description: Authorization number
-                  maxLength: 40
-                ro_number:
-                  type: string
-                  description: The Repair Order number
-                  maxLength: 40
-                cause:
-                  type: string
-                  description: Documentation of the technical failure assessed by the Service Location
-                reference_number:
-                  type: integer
-                  description: Integer representation of the sublet request ID inside of the User Interface
-                correction:
-                  type: string
-                  description: Summary of the actual work accomplished to address the reported issue
-                repair_status:
-                  type: string
-                  description: Status of the repair
-                  example: Hold (auth)
-                pricing:
-                  type: object
-                  description: Total price
-                  properties:
-                    parts_total:
-                      type: string
-                      format: decimal
-                      description: Total price for operation parts
-                    labor_total:
-                      type: string
-                      format: decimal
-                      description: Total price for operation labor
-                    taxes_total:
-                      type: string
-                      format: decimal
-                      description: Total price for operation taxes
-                    total:
-                      type: string
-                      format: decimal
-                      description: Total price
-                invoice:
-                  type: object
-                  description: Invoice details
-                  properties:
-                    total:
-                      type: number
-                      description: Total amount for the invoice
-                      example: 432.5
-                    number:
-                      type: string
-                      description: Number of the invoice
-                      example: TR3847
-                    invoice_date:
-                      type: string
-                      format: date
-                      description: Date of the invoice in `ISO 8601` format
-                      example: '2025-04-10T13:30:41Z'
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the sublet request
-                  properties:
-                    actual_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
-                      example: '2025-04-10T13:10:41Z'
-                    closed_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the SubletCase was marked as completed and closed'
-                      example: '2025-04-10T13:30:41Z'
-                    estimated_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
-                      example: '2025-04-10T13:15:41Z'
-                    started_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the SubletCase started'
-                      example: '2025-04-10T12:00:41Z'
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the attachment was created'
-                  example: 2025-04-10 12:30:41 UTC
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
-                  example: 2025-04-10 13:21:41 UTC
-            relationships:
-              type: object
-              properties:
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                service_provider:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
     error_response:
       type: object
       properties:
@@ -794,6 +517,23 @@ components:
       required:
       - status
       - title
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     parent_case:
       type: object
       required:
@@ -961,6 +701,266 @@ components:
           - attributes
           - type
           - id
+    sublet_association:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_associations
+            attributes:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for create the association
+                  examples:
+                  - Text description of the reason for the association
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                sublet_case:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - sublet_case
+              - parent_case
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    sublet_associations:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_association_properties-data'
+        meta:
+          type: object
+        included:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/parent_case'
+            - $ref: '#/components/schemas/sublet_case'
+    sublet_association_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - sublet_associations
+        attributes:
+          type: object
+          properties:
+            reason:
+              type: string
+              description: Reason for create the association
+              examples:
+              - Text description of the reason for the association
+        relationships:
+          type: object
+          properties:
+            parent_case:
+              $ref: '#/components/schemas/relationship_object'
+            sublet_case:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - sublet_case
+          - parent_case
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    sublet_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                po_number:
+                  type: string
+                  description: Purchase Order number
+                  maxLength: 40
+                auth_number:
+                  type: string
+                  description: Authorization number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                reference_number:
+                  type: integer
+                  description: Integer representation of the sublet request ID inside of the User Interface
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  example: Hold (auth)
+                pricing:
+                  type: object
+                  description: Total price
+                  properties:
+                    parts_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation parts
+                    labor_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation labor
+                    taxes_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation taxes
+                    total:
+                      type: string
+                      format: decimal
+                      description: Total price
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      example: 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      example: TR3847
+                    invoice_date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` format
+                      example: '2025-04-10T13:30:41Z'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the sublet request
+                  properties:
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2025-04-10T13:10:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase was marked as completed and closed'
+                      example: '2025-04-10T13:30:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2025-04-10T13:15:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase started'
+                      example: '2025-04-10T12:00:41Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was created'
+                  example: 2025-04-10 12:30:41 UTC
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
+                  example: 2025-04-10 13:21:41 UTC
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_sublet_association:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - sublet_associations
+            attributes:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for create the association
+                  examples:
+                  - Text description of the reason for the association
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                sublet_case:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - parent_case
+              - sublet_case
+          required:
+          - type
+          - attributes
+          - relationships
   securitySchemes:
     AccessToken:
       type: http

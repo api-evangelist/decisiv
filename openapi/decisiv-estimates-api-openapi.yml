@@ -571,15 +571,52 @@ paths:
                         reason: parts costs
 components:
   schemas:
-    errors_response:
+    estimates:
       type: object
+      required:
+      - data
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/estimate_properties-data'
+        meta:
+          type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - errors
+      - status
+      - title
     relationship_object:
       type: object
       properties:
@@ -597,6 +634,253 @@ components:
           - type
       required:
       - data
+    response_estimate:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                line_items:
+                  type: array
+                  description: Line Items inside the estimate
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: UUID of the line item
+                      status:
+                        type: string
+                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
+                        example: approved
+                        enum:
+                        - approved
+                        - declined
+                        - deferred
+                      comments:
+                        type: string
+                        example: Did not like the price
+                      reason:
+                        type: string
+                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
+                        example: defer
+                        enum:
+                        - defer
+                        - labor costs
+                        - parts costs
+                        - not interested
+    estimate_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - estimates
+        attributes:
+          type: object
+          properties:
+            version:
+              type: integer
+              description: Version of the estimate
+              examples:
+              - 1
+            status:
+              type: string
+              description: Status of the estimate
+              examples:
+              - requested
+            total:
+              type: number
+              description: Total cost of the estimate
+              examples:
+              - 749.86
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the estimate was updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the estimate was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            totals:
+              type: object
+              description: The detailed description of expenses for the total
+              properties:
+                shop_supplies:
+                  type: number
+                  description: Detailed cost of shop supplies
+                  examples:
+                  - 749.86
+                hazwaste:
+                  type: number
+                  description: Detailed cost of hazwaste
+                  examples:
+                  - 749.86
+                freight:
+                  type: number
+                  description: Detailed cost of freight
+                  examples:
+                  - 749.86
+                tax:
+                  type: number
+                  description: Detailed cost of tax
+                  examples:
+                  - 749.86
+                labor:
+                  type: number
+                  description: Detailed cost of labor
+                  examples:
+                  - 749.86
+                core:
+                  type: number
+                  description: Detailed cost of core
+                  examples:
+                  - 749.86
+                parts:
+                  type: number
+                  description: Detailed cost of parts
+                  examples:
+                  - 749.86
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the estimate
+              properties:
+                estimated_time_to_repair:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                reviewed_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the estimate was reviewed'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                approval_requested_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when approval was requested for this estimate version. Backed by `estimate_versions.created_at` — the same value exposed by the top-level `created_at` attribute.'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+            line_items:
+              type: array
+              description: Line items inside the estimate
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: UUID of the line item
+                  name:
+                    type: string
+                    description: Name of the line item
+                  status:
+                    type: string
+                    description: Status of the line item
+                    examples:
+                    - requested
+                  total:
+                    type: number
+                    description: Total cost of the line item
+                    examples:
+                    - 749.86
+                  totals:
+                    type: object
+                    description: The detailed description of expenses for the total
+                    properties:
+                      labor:
+                        type: number
+                        description: Detailed cost of labor
+                        examples:
+                        - 749.86
+                      core:
+                        type: number
+                        description: Detailed cost of core
+                        examples:
+                        - 749.86
+                      parts:
+                        type: number
+                        description: Detailed cost of parts
+                        examples:
+                        - 749.86
+                  parts:
+                    type: array
+                    description: Line items parts in the estimate
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hose
+                        quantity:
+                          type: integer
+                          examples:
+                          - 1
+                  vmrs:
+                    type: array
+                    description: Line items vrms in the estimate
+                    items:
+                      type: object
+                      properties:
+                        code_key:
+                          type: string
+                          examples:
+                          - '33'
+                        code_key_name:
+                          type: string
+                          examples:
+                          - Component Code
+                        code:
+                          type: string
+                          examples:
+                          - 013-007-024
+                        description:
+                          type: string
+                          examples:
+                          - Line - Air Coiled
+        relationships:
+          type: object
+          properties:
+            service_writer:
+              $ref: '#/components/schemas/relationship_object'
+            reviewer:
+              $ref: '#/components/schemas/relationship_object'
+            case:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     estimate:
       type: object
       required:
@@ -795,290 +1079,6 @@ components:
           - attributes
           - type
           - id
-    estimate_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - estimates
-        attributes:
-          type: object
-          properties:
-            version:
-              type: integer
-              description: Version of the estimate
-              examples:
-              - 1
-            status:
-              type: string
-              description: Status of the estimate
-              examples:
-              - requested
-            total:
-              type: number
-              description: Total cost of the estimate
-              examples:
-              - 749.86
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the estimate was updated'
-              examples:
-              - '2022-04-14T05:23:45Z'
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the estimate was created'
-              examples:
-              - '2022-04-14T05:23:45Z'
-            totals:
-              type: object
-              description: The detailed description of expenses for the total
-              properties:
-                shop_supplies:
-                  type: number
-                  description: Detailed cost of shop supplies
-                  examples:
-                  - 749.86
-                hazwaste:
-                  type: number
-                  description: Detailed cost of hazwaste
-                  examples:
-                  - 749.86
-                freight:
-                  type: number
-                  description: Detailed cost of freight
-                  examples:
-                  - 749.86
-                tax:
-                  type: number
-                  description: Detailed cost of tax
-                  examples:
-                  - 749.86
-                labor:
-                  type: number
-                  description: Detailed cost of labor
-                  examples:
-                  - 749.86
-                core:
-                  type: number
-                  description: Detailed cost of core
-                  examples:
-                  - 749.86
-                parts:
-                  type: number
-                  description: Detailed cost of parts
-                  examples:
-                  - 749.86
-            event_timestamps:
-              type: object
-              description: All the timestamps related to the estimate
-              properties:
-                estimated_time_to_repair:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                reviewed_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the estimate was reviewed'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                approval_requested_at:
-                  type:
-                  - string
-                  - 'null'
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when approval was requested for this estimate version. Backed by `estimate_versions.created_at` — the same value exposed by the top-level `created_at` attribute.'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-            line_items:
-              type: array
-              description: Line items inside the estimate
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: UUID of the line item
-                  name:
-                    type: string
-                    description: Name of the line item
-                  status:
-                    type: string
-                    description: Status of the line item
-                    examples:
-                    - requested
-                  total:
-                    type: number
-                    description: Total cost of the line item
-                    examples:
-                    - 749.86
-                  totals:
-                    type: object
-                    description: The detailed description of expenses for the total
-                    properties:
-                      labor:
-                        type: number
-                        description: Detailed cost of labor
-                        examples:
-                        - 749.86
-                      core:
-                        type: number
-                        description: Detailed cost of core
-                        examples:
-                        - 749.86
-                      parts:
-                        type: number
-                        description: Detailed cost of parts
-                        examples:
-                        - 749.86
-                  parts:
-                    type: array
-                    description: Line items parts in the estimate
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          examples:
-                          - hose
-                        quantity:
-                          type: integer
-                          examples:
-                          - 1
-                  vmrs:
-                    type: array
-                    description: Line items vrms in the estimate
-                    items:
-                      type: object
-                      properties:
-                        code_key:
-                          type: string
-                          examples:
-                          - '33'
-                        code_key_name:
-                          type: string
-                          examples:
-                          - Component Code
-                        code:
-                          type: string
-                          examples:
-                          - 013-007-024
-                        description:
-                          type: string
-                          examples:
-                          - Line - Air Coiled
-        relationships:
-          type: object
-          properties:
-            service_writer:
-              $ref: '#/components/schemas/relationship_object'
-            reviewer:
-              $ref: '#/components/schemas/relationship_object'
-            case:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
-    response_estimate:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                line_items:
-                  type: array
-                  description: Line Items inside the estimate
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        description: UUID of the line item
-                      status:
-                        type: string
-                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
-                        example: approved
-                        enum:
-                        - approved
-                        - declined
-                        - deferred
-                      comments:
-                        type: string
-                        example: Did not like the price
-                      reason:
-                        type: string
-                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
-                        example: defer
-                        enum:
-                        - defer
-                        - labor costs
-                        - parts costs
-                        - not interested
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    estimates:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/estimate_properties-data'
-        meta:
-          type: object
   securitySchemes:
     AccessToken:
       type: http

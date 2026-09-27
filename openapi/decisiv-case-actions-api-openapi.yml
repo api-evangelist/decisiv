@@ -188,27 +188,6 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
-    close_case:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-          required:
-          - attributes
-          - type
-          - id
     error_response:
       type: object
       properties:
@@ -244,6 +223,27 @@ components:
       required:
       - status
       - title
+    close_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+          required:
+          - attributes
+          - type
+          - id
   securitySchemes:
     AccessToken:
       type: http

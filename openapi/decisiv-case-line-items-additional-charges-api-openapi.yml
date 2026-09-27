@@ -686,48 +686,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    technician_story:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - technician_stories
-            attributes:
-              type: object
-              properties:
-                content:
-                  type: string
-                  description: The story itself
-                  minLength: 1
-                  maxLength: 5000
-                  examples:
-                  - This is a story from the technician
-                created_at:
-                  type: string
-                  description: '`ISO 8601` timestamp indicating when the technician story was created'
-                  format: date-time
-          required:
-          - attributes
-          - type
-          - id
     additional_charge_properties-data:
       type: object
       properties:
@@ -826,6 +784,74 @@ components:
       required:
       - status
       - title
+    additional_charge:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_item_additional_charges
+            attributes:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '8.25'
+                    sales_tax_amount:
+                      type: string
+                      description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '1.25'
+                    total_amount:
+                      type: string
+                      description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '9.50'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was created'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was updated'
+              required:
+              - code
+              - description
+              - pricing
+            relationships:
+              type: object
+              properties:
+                category:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
     relationship_object:
       type: object
       properties:
@@ -843,6 +869,39 @@ components:
           - type
       required:
       - data
+    technician_story:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - technician_stories
+            attributes:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: The story itself
+                  minLength: 1
+                  maxLength: 5000
+                  examples:
+                  - This is a story from the technician
+                created_at:
+                  type: string
+                  description: '`ISO 8601` timestamp indicating when the technician story was created'
+                  format: date-time
+          required:
+          - attributes
+          - type
+          - id
     additional_charges:
       type: object
       required:
@@ -919,6 +978,15 @@ components:
           - type
           - attributes
           - relationships
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     update_additional_charge:
       type: object
       required:
@@ -975,74 +1043,6 @@ components:
           - attributes
           - id
           - relationships
-    additional_charge:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - line_item_additional_charges
-            attributes:
-              type: object
-              properties:
-                code:
-                  type: string
-                  description: The code for the additional charge
-                  maxLength: 20
-                  example: TAX-123
-                description:
-                  type: string
-                  description: The description for the additional charge
-                  maxLength: 255
-                  example: Required state tax for the service
-                pricing:
-                  type: object
-                  description: Pricing information for the additional charge
-                  properties:
-                    amount:
-                      type: string
-                      description: The amount for the additional charge, formatted as a decimal with two decimal places
-                      pattern: ^-?\d{1,7}\.\d{2}$
-                      example: '8.25'
-                    sales_tax_amount:
-                      type: string
-                      description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
-                      pattern: ^-?\d{1,7}\.\d{2}$
-                      example: '1.25'
-                    total_amount:
-                      type: string
-                      description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
-                      pattern: ^-?\d{1,7}\.\d{2}$
-                      example: '9.50'
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the additional charge was created'
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the additional charge was updated'
-              required:
-              - code
-              - description
-              - pricing
-            relationships:
-              type: object
-              properties:
-                category:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
   securitySchemes:
     AccessToken:
       type: http

@@ -131,15 +131,6 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     departments:
       type: object
       required:
@@ -155,6 +146,15 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     error_response:
       type: object
       properties:

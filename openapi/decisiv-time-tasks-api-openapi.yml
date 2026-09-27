@@ -895,6 +895,153 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    time_task:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - time_tasks
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for time task
+                  maxLength: 255
+                event_timestamps:
+                  type: object
+                  required:
+                  - started_at
+                  description: All the timestamps related to the time task
+                  properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Time task was initiated'
+                      example: '2022-04-14T05:23:45Z'
+                    stopped_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
+                      example: '2022-04-14T05:23:45Z'
+              required:
+              - event_timestamps
+            relationships:
+              type: object
+              properties:
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                employee:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    time_task_update:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Description for time task
+                  maxLength: 255
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the time task
+                  properties:
+                    stopped_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
+                      example: '2022-04-14T05:23:45Z'
+          required:
+          - type
+          - id
+          - attributes
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    time_tasks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/time_task'
+        meta:
+          type: object
     create_time_task:
       type: object
       required:
@@ -951,153 +1098,6 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    time_task:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - time_tasks
-            attributes:
-              type: object
-              properties:
-                description:
-                  type: string
-                  description: Description for time task
-                  maxLength: 255
-                event_timestamps:
-                  type: object
-                  required:
-                  - started_at
-                  description: All the timestamps related to the time task
-                  properties:
-                    started_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Time task was initiated'
-                      example: '2022-04-14T05:23:45Z'
-                    stopped_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
-                      example: '2022-04-14T05:23:45Z'
-              required:
-              - event_timestamps
-            relationships:
-              type: object
-              properties:
-                subject:
-                  $ref: '#/components/schemas/relationship_object'
-                employee:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
-    time_tasks:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/time_task'
-        meta:
-          type: object
-    time_task_update:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                description:
-                  type: string
-                  description: Description for time task
-                  maxLength: 255
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the time task
-                  properties:
-                    stopped_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the Time task'
-                      example: '2022-04-14T05:23:45Z'
-          required:
-          - type
-          - id
-          - attributes
   securitySchemes:
     AccessToken:
       type: http

@@ -901,15 +901,688 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    update_sublet_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_requests
+            attributes:
+              type: object
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
       type: object
       properties:
-        errors:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    sublet_requests:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/sublet_request_properties-data'
+        meta:
+          type: object
+        included:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/service_provider'
+            - $ref: '#/components/schemas/parent_case'
+            - $ref: '#/components/schemas/sublet_case'
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
       required:
-      - errors
+      - data
+    sublet_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_requests
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                status:
+                  type: string
+                  enum:
+                  - pending
+                  - canceled
+                  - declined
+                  - accepted
+                  description: Status of the sublet request
+                  maxLength: 255
+                po_number:
+                  type: string
+                  description: Purchase Order number
+                  maxLength: 40
+                auth_number:
+                  type: string
+                  description: Authorization number
+                  maxLength: 40
+                note:
+                  type: string
+                  description: The notes for the sublet request
+                reference_number:
+                  type: integer
+                  description: Integer representation of the sublet request ID inside of the User Interface
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      maxLength: 255
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      maxLength: 255
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the sublet request
+                  properties:
+                    requested_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the sublet was requested'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the sublet request was created'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the sublet request was last updated'
+                primary_contact:
+                  type: object
+                  description: The primary contact on the sublet request.
+                  properties:
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    relation:
+                      type: string
+                      description: Relationship of the contact to the service request (e.g. Driver, Fleet Manager).
+                    phone:
+                      type: object
+                      properties:
+                        mobile:
+                          type: string
+                        work:
+                          type: string
+                driver:
+                  type: object
+                  description: The driver contact on the sublet request.
+                  properties:
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    phone:
+                      type: object
+                      properties:
+                        mobile:
+                          type: string
+                        work:
+                          type: string
+              required:
+              - complaint
+            relationships:
+              type: object
+              properties:
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                sublet_case:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - service_provider
+              - parent_case
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    parent_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  example: Broken truck
+                po_number:
+                  type: string
+                  description: The Purchase Order number
+                  example: '1234'
+                auth_number:
+                  type: string
+                  description: The Authorization number
+                  example: '1234'
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  example: '1234'
+                reference_number:
+                  type: number
+                  description: Integer representation of the Case ID inside of the User Interface
+                closed:
+                  type: boolean
+                  description: Indicates whether the case has been closed.
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  example: Hold (auth)
+                status:
+                  type: string
+                  description: Status of the case
+                  example: Pick-up
+                invoice:
+                  type: object
+                  description: The invoice information for the case
+                  properties:
+                    total:
+                      type: number
+                      description: The total amount of the invoice
+                    number:
+                      type: number
+                      description: The invoice number
+                    invoice_date:
+                      type: string
+                      description: The date of the invoice
+                      example: '2022-04-14T05:23:45Z'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the case
+                  properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      example: '2022-04-14T05:23:45Z'
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      example: '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      example: '2022-04-14T05:23:45Z'
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2022-04-14T05:23:45Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2022-04-14T05:23:45Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_arrived:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_checked_in:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
+                      example: '2022-04-14T05:23:45Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_uptime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
+                      example: '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      example: '2022-04-14T05:23:45Z'
+                asset_information:
+                  type: object
+                  description: The asset information when the case was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
+                      example: mi
+                    unit_number:
+                      type: string
+                      description: The unit number
+                    cargo:
+                      type: object
+                      properties:
+                        unit:
+                          type: string
+                          description: The unit number
+                        loaded:
+                          type: boolean
+                          description: Indicates whether the cargo is loaded.
+                        load:
+                          type: number
+                          description: The load amount
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      example: North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      example: 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: State of the breakdown
+                      example: CT
+          required:
+          - attributes
+          - type
+          - id
+    create_sublet_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - sublet_requests
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                status:
+                  type: string
+                  enum:
+                  - pending
+                  - canceled
+                  - declined
+                  - accepted
+                  description: Status of the sublet request
+                  maxLength: 255
+                po_number:
+                  type: string
+                  description: Purchase Order number
+                  maxLength: 40
+                auth_number:
+                  type: string
+                  description: Authorization number
+                  maxLength: 40
+                note:
+                  type: string
+                  description: The notes for the sublet request
+                reference_number:
+                  type: integer
+                  description: Integer representation of the sublet request ID inside of the User Interface
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      maxLength: 255
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      maxLength: 255
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
+                      minLength: 1
+                      maxLength: 3
+                      examples:
+                      - NJ
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the sublet request
+                  properties:
+                    requested_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the sublet was requested'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                primary_contact:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    relation:
+                      type: string
+                    phone:
+                      type: object
+                driver:
+                  type: object
+                  properties:
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    phone:
+                      type: object
+              required:
+              - complaint
+            relationships:
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - parent_case
+              - service_provider
+          required:
+          - type
+          - attributes
+          - relationships
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    sublet_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - sublet_cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                po_number:
+                  type: string
+                  description: Purchase Order number
+                  maxLength: 40
+                auth_number:
+                  type: string
+                  description: Authorization number
+                  maxLength: 40
+                ro_number:
+                  type: string
+                  description: The Repair Order number
+                  maxLength: 40
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                reference_number:
+                  type: integer
+                  description: Integer representation of the sublet request ID inside of the User Interface
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                repair_status:
+                  type: string
+                  description: Status of the repair
+                  example: Hold (auth)
+                pricing:
+                  type: object
+                  description: Total price
+                  properties:
+                    parts_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation parts
+                    labor_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation labor
+                    taxes_total:
+                      type: string
+                      format: decimal
+                      description: Total price for operation taxes
+                    total:
+                      type: string
+                      format: decimal
+                      description: Total price
+                invoice:
+                  type: object
+                  description: Invoice details
+                  properties:
+                    total:
+                      type: number
+                      description: Total amount for the invoice
+                      example: 432.5
+                    number:
+                      type: string
+                      description: Number of the invoice
+                      example: TR3847
+                    invoice_date:
+                      type: string
+                      format: date
+                      description: Date of the invoice in `ISO 8601` format
+                      example: '2025-04-10T13:30:41Z'
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the sublet request
+                  properties:
+                    actual_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
+                      example: '2025-04-10T13:10:41Z'
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase was marked as completed and closed'
+                      example: '2025-04-10T13:30:41Z'
+                    estimated_time_to_repair:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
+                      example: '2025-04-10T13:15:41Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the SubletCase started'
+                      example: '2025-04-10T12:00:41Z'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was created'
+                  example: 2025-04-10 12:30:41 UTC
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
+                  example: 2025-04-10 13:21:41 UTC
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
     sublet_request_properties-data:
       type: object
       properties:
@@ -1115,688 +1788,15 @@ components:
           - attributes
           - type
           - id
-    relationship_object:
+    errors_response:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    sublet_request:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - sublet_requests
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  maxLength: 6000
-                status:
-                  type: string
-                  enum:
-                  - pending
-                  - canceled
-                  - declined
-                  - accepted
-                  description: Status of the sublet request
-                  maxLength: 255
-                po_number:
-                  type: string
-                  description: Purchase Order number
-                  maxLength: 40
-                auth_number:
-                  type: string
-                  description: Authorization number
-                  maxLength: 40
-                note:
-                  type: string
-                  description: The notes for the sublet request
-                reference_number:
-                  type: integer
-                  description: Integer representation of the sublet request ID inside of the User Interface
-                breakdown:
-                  type: object
-                  description: Information about the breakdown location
-                  properties:
-                    city:
-                      type: string
-                      description: City of breakdown
-                      maxLength: 255
-                      examples:
-                      - North Haven
-                    location:
-                      type: string
-                      description: Exact map location of the breakdown
-                      maxLength: 255
-                      examples:
-                      - 41.395022,-72.856326
-                    state:
-                      type: string
-                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
-                      minLength: 1
-                      maxLength: 3
-                      examples:
-                      - NJ
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the sublet request
-                  properties:
-                    requested_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the sublet was requested'
-                    requested_appointment_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the appointment time'
-                    requested_completion_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the case'
-                    asset_downtime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the sublet request was created'
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the sublet request was last updated'
-                primary_contact:
-                  type: object
-                  description: The primary contact on the sublet request.
-                  properties:
-                    first_name:
-                      type: string
-                    last_name:
-                      type: string
-                    email:
-                      type: string
-                    relation:
-                      type: string
-                      description: Relationship of the contact to the service request (e.g. Driver, Fleet Manager).
-                    phone:
-                      type: object
-                      properties:
-                        mobile:
-                          type: string
-                        work:
-                          type: string
-                driver:
-                  type: object
-                  description: The driver contact on the sublet request.
-                  properties:
-                    first_name:
-                      type: string
-                    last_name:
-                      type: string
-                    email:
-                      type: string
-                    phone:
-                      type: object
-                      properties:
-                        mobile:
-                          type: string
-                        work:
-                          type: string
-              required:
-              - complaint
-            relationships:
-              type: object
-              properties:
-                service_provider:
-                  $ref: '#/components/schemas/relationship_object'
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                sublet_case:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - service_provider
-              - parent_case
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
-    sublet_case:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - sublet_cases
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  maxLength: 6000
-                po_number:
-                  type: string
-                  description: Purchase Order number
-                  maxLength: 40
-                auth_number:
-                  type: string
-                  description: Authorization number
-                  maxLength: 40
-                ro_number:
-                  type: string
-                  description: The Repair Order number
-                  maxLength: 40
-                cause:
-                  type: string
-                  description: Documentation of the technical failure assessed by the Service Location
-                reference_number:
-                  type: integer
-                  description: Integer representation of the sublet request ID inside of the User Interface
-                correction:
-                  type: string
-                  description: Summary of the actual work accomplished to address the reported issue
-                repair_status:
-                  type: string
-                  description: Status of the repair
-                  example: Hold (auth)
-                pricing:
-                  type: object
-                  description: Total price
-                  properties:
-                    parts_total:
-                      type: string
-                      format: decimal
-                      description: Total price for operation parts
-                    labor_total:
-                      type: string
-                      format: decimal
-                      description: Total price for operation labor
-                    taxes_total:
-                      type: string
-                      format: decimal
-                      description: Total price for operation taxes
-                    total:
-                      type: string
-                      format: decimal
-                      description: Total price
-                invoice:
-                  type: object
-                  description: Invoice details
-                  properties:
-                    total:
-                      type: number
-                      description: Total amount for the invoice
-                      example: 432.5
-                    number:
-                      type: string
-                      description: Number of the invoice
-                      example: TR3847
-                    invoice_date:
-                      type: string
-                      format: date
-                      description: Date of the invoice in `ISO 8601` format
-                      example: '2025-04-10T13:30:41Z'
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the sublet request
-                  properties:
-                    actual_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
-                      example: '2025-04-10T13:10:41Z'
-                    closed_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the SubletCase was marked as completed and closed'
-                      example: '2025-04-10T13:30:41Z'
-                    estimated_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
-                      example: '2025-04-10T13:15:41Z'
-                    started_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the SubletCase started'
-                      example: '2025-04-10T12:00:41Z'
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the attachment was created'
-                  example: 2025-04-10 12:30:41 UTC
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the attachment was updated'
-                  example: 2025-04-10 13:21:41 UTC
-            relationships:
-              type: object
-              properties:
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                service_provider:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
-    update_sublet_request:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - sublet_requests
-            attributes:
-              type: object
-          required:
-          - attributes
-          - type
-          - id
-    relationship_objects:
-      type: object
-      properties:
-        data:
+        errors:
           type: array
           items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
-    create_sublet_request:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - sublet_requests
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  maxLength: 6000
-                status:
-                  type: string
-                  enum:
-                  - pending
-                  - canceled
-                  - declined
-                  - accepted
-                  description: Status of the sublet request
-                  maxLength: 255
-                po_number:
-                  type: string
-                  description: Purchase Order number
-                  maxLength: 40
-                auth_number:
-                  type: string
-                  description: Authorization number
-                  maxLength: 40
-                note:
-                  type: string
-                  description: The notes for the sublet request
-                reference_number:
-                  type: integer
-                  description: Integer representation of the sublet request ID inside of the User Interface
-                breakdown:
-                  type: object
-                  description: Information about the breakdown location
-                  properties:
-                    city:
-                      type: string
-                      description: City of breakdown
-                      maxLength: 255
-                      examples:
-                      - North Haven
-                    location:
-                      type: string
-                      description: Exact map location of the breakdown
-                      maxLength: 255
-                      examples:
-                      - 41.395022,-72.856326
-                    state:
-                      type: string
-                      description: Second part of the `ISO 3166-2` code indicating the breakdown State
-                      minLength: 1
-                      maxLength: 3
-                      examples:
-                      - NJ
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the sublet request
-                  properties:
-                    requested_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the sublet was requested'
-                    requested_appointment_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the appointment time'
-                    requested_completion_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the case'
-                    asset_downtime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                primary_contact:
-                  type: object
-                  properties:
-                    first_name:
-                      type: string
-                    last_name:
-                      type: string
-                    email:
-                      type: string
-                    relation:
-                      type: string
-                    phone:
-                      type: object
-                driver:
-                  type: object
-                  properties:
-                    first_name:
-                      type: string
-                    last_name:
-                      type: string
-                    email:
-                      type: string
-                    phone:
-                      type: object
-              required:
-              - complaint
-            relationships:
-              properties:
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                service_provider:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - parent_case
-              - service_provider
-          required:
-          - type
-          - attributes
-          - relationships
-    sublet_requests:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/sublet_request_properties-data'
-        meta:
-          type: object
-        included:
-          type: array
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/service_provider'
-            - $ref: '#/components/schemas/parent_case'
-            - $ref: '#/components/schemas/sublet_case'
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    parent_case:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  example: Broken truck
-                po_number:
-                  type: string
-                  description: The Purchase Order number
-                  example: '1234'
-                auth_number:
-                  type: string
-                  description: The Authorization number
-                  example: '1234'
-                ro_number:
-                  type: string
-                  description: The Repair Order number
-                  example: '1234'
-                reference_number:
-                  type: number
-                  description: Integer representation of the Case ID inside of the User Interface
-                closed:
-                  type: boolean
-                  description: Indicates whether the case has been closed.
-                repair_status:
-                  type: string
-                  description: Status of the repair
-                  example: Hold (auth)
-                status:
-                  type: string
-                  description: Status of the case
-                  example: Pick-up
-                invoice:
-                  type: object
-                  description: The invoice information for the case
-                  properties:
-                    total:
-                      type: number
-                      description: The total amount of the invoice
-                    number:
-                      type: number
-                      description: The invoice number
-                    invoice_date:
-                      type: string
-                      description: The date of the invoice
-                      example: '2022-04-14T05:23:45Z'
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the case
-                  properties:
-                    started_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
-                      example: '2022-04-14T05:23:45Z'
-                    requested_completion_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the case'
-                      example: '2022-04-14T05:23:45Z'
-                    requested_appointment_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the appointment time'
-                      example: '2022-04-14T05:23:45Z'
-                    actual_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time spent to repair the asset'
-                      example: '2022-04-14T05:23:45Z'
-                    estimated_time_to_repair:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the time estimated to repair the asset'
-                      example: '2022-04-14T05:23:45Z'
-                    followup_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
-                      example: '2022-04-14T05:23:45Z'
-                    asset_arrived:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset arrived'
-                      example: '2022-04-14T05:23:45Z'
-                    asset_checked_in:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the check-in was performed'
-                      example: '2022-04-14T05:23:45Z'
-                    closed_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
-                      example: '2022-04-14T05:23:45Z'
-                    asset_uptime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset became operational, once again'
-                      example: '2022-04-14T05:23:45Z'
-                    asset_downtime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                      example: '2022-04-14T05:23:45Z'
-                asset_information:
-                  type: object
-                  description: The asset information when the case was created
-                  properties:
-                    odometer_value:
-                      type: number
-                      description: Integer representation about the asset odometer
-                    odometer_unit:
-                      type: string
-                      description: Abbreviation for the asset odometer unit (e.g., `mi` for miles or `km` for kilometers).
-                      example: mi
-                    unit_number:
-                      type: string
-                      description: The unit number
-                    cargo:
-                      type: object
-                      properties:
-                        unit:
-                          type: string
-                          description: The unit number
-                        loaded:
-                          type: boolean
-                          description: Indicates whether the cargo is loaded.
-                        load:
-                          type: number
-                          description: The load amount
-                breakdown:
-                  type: object
-                  description: Information about the breakdown location
-                  properties:
-                    city:
-                      type: string
-                      description: City of breakdown
-                      example: North Haven
-                    location:
-                      type: string
-                      description: Exact map location of the breakdown
-                      example: 41.395022,-72.856326
-                    state:
-                      type: string
-                      description: State of the breakdown
-                      example: CT
-          required:
-          - attributes
-          - type
-          - id
+      - errors
   securitySchemes:
     AccessToken:
       type: http

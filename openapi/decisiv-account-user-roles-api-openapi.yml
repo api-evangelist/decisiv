@@ -118,32 +118,41 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    errors_response:
+    error_response:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - errors
-    communication_preferences:
-      type: object
-      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
-      properties:
-        visible_as_external_recipient:
-          type: boolean
-          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
-        visible_as_internal_recipient:
-          type: boolean
-          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
-        visible_as_workflow_assignee:
-          type: boolean
-          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
-      example:
-        visible_as_external_recipient: true
-        visible_as_internal_recipient: true
-        visible_as_workflow_assignee: true
+      - status
+      - title
     add_account_user_roles_request:
       type: object
       required:
@@ -171,6 +180,23 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/account_user'
+    communication_preferences:
+      type: object
+      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      properties:
+        visible_as_external_recipient:
+          type: boolean
+          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
+        visible_as_internal_recipient:
+          type: boolean
+          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
+        visible_as_workflow_assignee:
+          type: boolean
+          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
+      example:
+        visible_as_external_recipient: true
+        visible_as_internal_recipient: true
+        visible_as_workflow_assignee: true
     account_user:
       type: object
       properties:
@@ -268,41 +294,15 @@ components:
       - attributes
       - type
       - id
-    error_response:
+    errors_response:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
+      - errors
   securitySchemes:
     AccessToken:
       type: http

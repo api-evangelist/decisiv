@@ -483,15 +483,90 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    errors_response:
+    error_response:
       type: object
       properties:
-        errors:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    accounts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/account'
+        included:
+          type: array
+          description: Populated with the related `roles` resources when the request includes `?include=roles`.
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
       required:
-      - errors
+      - attributes
+      - type
+      - id
     account:
       type: object
       properties:
@@ -740,90 +815,15 @@ components:
             $ref: '#/components/schemas/role'
       required:
       - data
-    role:
+    errors_response:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - roles
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the role
-            description:
-              type:
-              - string
-              - 'null'
-              description: Description of the role
-            public:
-              type: boolean
-              description: Whether the role is public (from a subscribed service) or private (owned by the account)
-            permissions:
-              type: array
-              description: List of permissions granted by this role
-              items:
-                type: string
-      required:
-      - attributes
-      - type
-      - id
-    accounts:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/account'
-        included:
-          type: array
-          description: Populated with the related `roles` resources when the request includes `?include=roles`.
-          items:
-            $ref: '#/components/schemas/role'
-        meta:
-          type: object
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
+      - errors
   securitySchemes:
     AccessToken:
       type: http

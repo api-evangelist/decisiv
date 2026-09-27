@@ -191,15 +191,22 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    update_relationship_additional_charges:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+              format: uuid
+          required:
+          - type
+          - id
       required:
-      - errors
+      - data
     error_response:
       type: object
       properties:
@@ -235,39 +242,6 @@ components:
       required:
       - status
       - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    update_relationship_additional_charges:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            id:
-              type: string
-              format: uuid
-          required:
-          - type
-          - id
-      required:
-      - data
     additional_charge:
       type: object
       required:
@@ -336,6 +310,32 @@ components:
           - attributes
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

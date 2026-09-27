@@ -216,15 +216,62 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    skill_level_properties-data:
       type: object
       properties:
-        errors:
+        id:
+          type: string
+          description: Customer-defined skill level identifier
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - skill_levels
+        attributes:
+          type: object
+          properties:
+            description:
+              type: string
+              description: Description for skill level
+              maxLength: 255
+            pricing:
+              type: object
+              description: Pricing details for the skill level
+              properties:
+                labor:
+                  type: string
+                  pattern: ^\d+\.\d{2}$
+                  description: Labor value for the skill level
+                  example: '50.00'
+              required:
+              - labor
+          required:
+          - description
+          - pricing
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - attributes
+      - type
+      - id
+    skill_levels:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/skill_level_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     skill_level:
       type: object
       required:
@@ -271,62 +318,6 @@ components:
           - attributes
           - type
           - id
-    skill_levels:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/skill_level_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
-    skill_level_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Customer-defined skill level identifier
-          minLength: 1
-        type:
-          type: string
-          enum:
-          - skill_levels
-        attributes:
-          type: object
-          properties:
-            description:
-              type: string
-              description: Description for skill level
-              maxLength: 255
-            pricing:
-              type: object
-              description: Pricing details for the skill level
-              properties:
-                labor:
-                  type: string
-                  pattern: ^\d+\.\d{2}$
-                  description: Labor value for the skill level
-                  example: '50.00'
-              required:
-              - labor
-          required:
-          - description
-          - pricing
-        links:
-          type: object
-          properties:
-            self:
-              type: string
-      required:
-      - attributes
-      - type
-      - id
     error_response:
       type: object
       properties:
@@ -362,6 +353,15 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

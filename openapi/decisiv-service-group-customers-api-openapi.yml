@@ -514,15 +514,97 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    customer_properties-data:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - customers
+          - registered_customers
+          - service_group_customers
+          - service_group_registered_customers
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the customer
+              maxLength: 100
+            address1:
+              type: string
+              description: Primary address information
+              maxLength: 100
+            address2:
+              type: string
+              description: Secondary address information
+              maxLength: 100
+            city:
+              type: string
+              description: City in which the business resides
+              maxLength: 100
+            state:
+              type: string
+              description: Second part of the `ISO 3166-2` code indicating the state
+              minLength: 1
+              maxLength: 3
+              example: NJ
+            country:
+              type: string
+              description: '`ISO 3166-1` alpha-2 code indicating the country'
+              minLength: 2
+              maxLength: 2
+              example: US
+            postal_code:
+              type: string
+              description: Postal ZIP Code
+              maxLength: 20
+            phone:
+              type: string
+              description: Telephone number, must conform to E.164 standard
+              maxLength: 60
+            fax:
+              type: string
+              description: Fax number, must conform to E.164 standard
+              maxLength: 60
+            email:
+              type: string
+              description: Email contact information
+              maxLength: 128
+            notes:
+              type: string
+              description: Free-form notes about the customer
+              example: Premium customer - call ahead
+            account_number:
+              type: string
+              description: Account number for the customer (applies to MVP/OEM accounts)
+              maxLength: 36
+              example: ACC-1234
+            external_reference:
+              type: object
+              description: Reference Identifiers used outside of Decisiv SRM
+              properties:
+                customer_number:
+                  type: string
+                  description: Number used to identify Customer record in external system
+                  minLength: 1
+                  maxLength: 40
+                  deprecated: true
+                business_system:
+                  type: string
+                  description: Number used to identify Customer record in external system
+                  minLength: 1
+                  maxLength: 40
+        relationships:
+          type: object
+          properties:
+            srm_account:
+              $ref: '#/components/schemas/relationship_object'
+            service_location:
+              $ref: '#/components/schemas/relationship_object'
     customer_by_id:
       example:
         data:
@@ -684,23 +766,6 @@ components:
       required:
       - status
       - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     update_registered_customer:
       type: object
       required:
@@ -738,6 +803,23 @@ components:
           - attributes
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     customer:
       type: object
       required:
@@ -834,6 +916,17 @@ components:
                   $ref: '#/components/schemas/relationship_object'
                 service_location:
                   $ref: '#/components/schemas/relationship_object'
+    customers:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_properties-data'
+        meta:
+          type: object
     update_customer:
       type: object
       required:
@@ -924,108 +1017,15 @@ components:
           - attributes
           - type
           - id
-    customer_properties-data:
+    errors_response:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - customers
-          - registered_customers
-          - service_group_customers
-          - service_group_registered_customers
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the customer
-              maxLength: 100
-            address1:
-              type: string
-              description: Primary address information
-              maxLength: 100
-            address2:
-              type: string
-              description: Secondary address information
-              maxLength: 100
-            city:
-              type: string
-              description: City in which the business resides
-              maxLength: 100
-            state:
-              type: string
-              description: Second part of the `ISO 3166-2` code indicating the state
-              minLength: 1
-              maxLength: 3
-              example: NJ
-            country:
-              type: string
-              description: '`ISO 3166-1` alpha-2 code indicating the country'
-              minLength: 2
-              maxLength: 2
-              example: US
-            postal_code:
-              type: string
-              description: Postal ZIP Code
-              maxLength: 20
-            phone:
-              type: string
-              description: Telephone number, must conform to E.164 standard
-              maxLength: 60
-            fax:
-              type: string
-              description: Fax number, must conform to E.164 standard
-              maxLength: 60
-            email:
-              type: string
-              description: Email contact information
-              maxLength: 128
-            notes:
-              type: string
-              description: Free-form notes about the customer
-              example: Premium customer - call ahead
-            account_number:
-              type: string
-              description: Account number for the customer (applies to MVP/OEM accounts)
-              maxLength: 36
-              example: ACC-1234
-            external_reference:
-              type: object
-              description: Reference Identifiers used outside of Decisiv SRM
-              properties:
-                customer_number:
-                  type: string
-                  description: Number used to identify Customer record in external system
-                  minLength: 1
-                  maxLength: 40
-                  deprecated: true
-                business_system:
-                  type: string
-                  description: Number used to identify Customer record in external system
-                  minLength: 1
-                  maxLength: 40
-        relationships:
-          type: object
-          properties:
-            srm_account:
-              $ref: '#/components/schemas/relationship_object'
-            service_location:
-              $ref: '#/components/schemas/relationship_object'
-    customers:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/customer_properties-data'
-        meta:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

@@ -87,21 +87,6 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
-    repair_statuses:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/repair_status_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
     repair_status_properties-data:
       type: object
       properties:
@@ -168,6 +153,21 @@ components:
       required:
       - status
       - title
+    repair_statuses:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/repair_status_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http

@@ -465,15 +465,6 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     participants:
       type: object
       required:
@@ -485,6 +476,82 @@ components:
             $ref: '#/components/schemas/participant_properties-data'
         meta:
           type: object
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    participant_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Participant name
+              example: Pilot Travel Centers
+            scopes:
+              type: array
+              description: A list of scopes to which the participant belongs.
+              items:
+                type: string
+                description: Name of the scope
+              minItems: 1
+              example:
+              - service_provider
+              - billing_customer
+              - customer
+              - originator
+              - other
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     participant:
       type: object
       required:
@@ -522,7 +589,7 @@ components:
           - attributes
           - type
           - id
-    participant_properties-data:
+    participant_properties-data_2:
       type: object
       properties:
         id:
@@ -530,6 +597,8 @@ components:
           format: uuid
         type:
           type: string
+          enum:
+          - participants
         attributes:
           type: object
           properties:
@@ -543,52 +612,22 @@ components:
               items:
                 type: string
                 description: Name of the scope
+                enum:
+                - customer
+                - billing_customer
+                - shipping_customer
+                - service_provider
+                - originator
+                - external_advisor
               minItems: 1
               example:
               - service_provider
               - billing_customer
-              - customer
-              - originator
-              - other
+              - shipping_customer
       required:
       - attributes
       - type
       - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     participant_2:
       type: object
       required:
@@ -633,45 +672,6 @@ components:
           - attributes
           - type
           - id
-    participant_properties-data_2:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - participants
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Participant name
-              example: Pilot Travel Centers
-            scopes:
-              type: array
-              description: A list of scopes to which the participant belongs.
-              items:
-                type: string
-                description: Name of the scope
-                enum:
-                - customer
-                - billing_customer
-                - shipping_customer
-                - service_provider
-                - originator
-                - external_advisor
-              minItems: 1
-              example:
-              - service_provider
-              - billing_customer
-              - shipping_customer
-      required:
-      - attributes
-      - type
-      - id
   securitySchemes:
     AccessToken:
       type: http
