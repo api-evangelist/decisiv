@@ -146,15 +146,6 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     error_response:
       type: object
       properties:
@@ -210,6 +201,15 @@ components:
       - attributes
       - type
       - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

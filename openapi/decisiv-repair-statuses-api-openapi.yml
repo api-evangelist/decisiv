@@ -78,15 +78,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     repair_status_properties-data:
       type: object
       properties:
@@ -118,6 +109,21 @@ components:
       - attributes
       - type
       - id
+    repair_statuses:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/repair_status_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     error_response:
       type: object
       properties:
@@ -153,21 +159,15 @@ components:
       required:
       - status
       - title
-    repair_statuses:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/repair_status_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

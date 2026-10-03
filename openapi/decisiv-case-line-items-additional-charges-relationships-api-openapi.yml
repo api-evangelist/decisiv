@@ -191,22 +191,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    update_relationship_additional_charges:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            id:
-              type: string
-              format: uuid
-          required:
-          - type
-          - id
-      required:
-      - data
     error_response:
       type: object
       properties:
@@ -242,6 +226,15 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     additional_charge:
       type: object
       required:
@@ -310,6 +303,22 @@ components:
           - attributes
           - type
           - id
+    update_relationship_additional_charges:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+              format: uuid
+          required:
+          - type
+          - id
+      required:
+      - data
     relationship_object:
       type: object
       properties:
@@ -327,15 +336,6 @@ components:
           - type
       required:
       - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

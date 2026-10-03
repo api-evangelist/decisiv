@@ -362,17 +362,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    sublet_cases:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/sublet_case'
-        meta:
-          type: object
     error_response:
       type: object
       properties:
@@ -408,6 +397,15 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     relationship_object:
       type: object
       properties:
@@ -554,15 +552,17 @@ components:
           - attributes
           - type
           - id
-    errors_response:
+    sublet_cases:
       type: object
+      required:
+      - data
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/sublet_case'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

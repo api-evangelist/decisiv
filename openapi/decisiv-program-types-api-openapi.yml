@@ -175,6 +175,17 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    program_types:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/program_type'
+        meta:
+          type: object
     error_response:
       type: object
       properties:
@@ -210,17 +221,15 @@ components:
       required:
       - status
       - title
-    program_types:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/program_type'
-        meta:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     program_type_by_id:
       example:
         data:
@@ -288,15 +297,6 @@ components:
           - attributes
           - type
           - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

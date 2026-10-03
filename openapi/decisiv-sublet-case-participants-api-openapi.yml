@@ -228,17 +228,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    participants:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/participant_properties-data'
-        meta:
-          type: object
     error_response:
       type: object
       properties:
@@ -274,6 +263,15 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     participant_properties-data:
       type: object
       properties:
@@ -313,15 +311,6 @@ components:
       - attributes
       - type
       - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     participant:
       type: object
       required:
@@ -366,6 +355,17 @@ components:
           - attributes
           - type
           - id
+    participants:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/participant_properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

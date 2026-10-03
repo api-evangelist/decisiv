@@ -2491,23 +2491,7 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    vmrs_repair_sites:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/vmrs_repair_site_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total number of VMRS Repair Site records across all pages.
-              example: 3
-    vmrs_asset_type_properties-data:
+    vmrs_technician_part_failure_code_properties-data:
       type: object
       required:
       - id
@@ -2516,12 +2500,12 @@ components:
       properties:
         id:
           type: string
-          description: The Code Key 2 `code` value (natural key).
+          description: The Code Key 18 `code` value (natural key).
           example: '01'
         type:
           type: string
           enum:
-          - decisiv_vmrs_asset_types
+          - decisiv_vmrs_technician_part_failure_codes
         attributes:
           type: object
           required:
@@ -2532,27 +2516,289 @@ components:
           properties:
             code_key:
               type: string
-              description: VMRS Code Key number. Always `"2"` for asset type lookups.
-              example: '2'
+              description: VMRS Code Key number. Always `"18"` for technician part failure code lookups.
+              example: '18'
             code_key_name:
               type: string
               description: 'Human-readable label for the Code Key, sourced from the
 
-                `Vmrs::Coding` data table. For Code Key 2 this is
+                `Vmrs::Coding` data table. For Code Key 18 this is
 
-                `"Equipment Category"`.
+                `"Technician Part Failure Code"`.
 
                 '
-              example: Equipment Category
+              example: Technician Part Failure Code
             code:
               type: string
               maxLength: 2
-              description: The VMRS Code Key 2 code (e.g. `"01"`, `"D"`).
+              description: The VMRS Code Key 18 code (e.g. `"00"`, `"01"`).
               example: '01'
             description:
               type: string
-              description: Human-readable name for the asset type / equipment category.
-              example: Truck
+              description: Human-readable name for the technician part failure code.
+              example: Battered, Hammered
+    vmrs_technician_part_failure_codes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_technician_part_failure_code_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Technician Part Failure Code records across all pages.
+              example: 109
+    vmrs_components:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_component_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Component records across all pages.
+              example: 2
+    vmrs_positions:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_position_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Position records across all pages.
+              example: 162
+    vmrs_repair_priority_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 16 `code` value (natural key).
+          example: '1'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_repair_priorities
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"16"` for repair-priority lookups.
+              example: '16'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 16 this is
+
+                `"Repair Priority Class"`.
+
+                '
+              example: Repair Priority Class
+            code:
+              type: string
+              maxLength: 1
+              description: The VMRS Code Key 16 code (e.g. `"1"`, `"2"`, `"3"`).
+              example: '1'
+            description:
+              type: string
+              description: Human-readable name for the repair priority class.
+              example: Scheduled
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    vmrs_position_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 79 `code` value (natural key).
+          example: '01'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_positions
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"79"` for position lookups.
+              example: '79'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 79 this is
+
+                `"Position"`.
+
+                '
+              example: Position
+            code:
+              type: string
+              maxLength: 2
+              description: The VMRS Code Key 79 code (e.g. `"00"`, `"01"`).
+              example: '01'
+            description:
+              type: string
+              description: Human-readable name for the position.
+              example: Front
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    vmrs_repair_site_properties-data:
+      type: object
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The Code Key 17 `code` value (natural key).
+          example: '1'
+        type:
+          type: string
+          enum:
+          - decisiv_vmrs_repair_sites
+        attributes:
+          type: object
+          required:
+          - code_key
+          - code_key_name
+          - code
+          - description
+          properties:
+            code_key:
+              type: string
+              description: VMRS Code Key number. Always `"17"` for repair-site lookups.
+              example: '17'
+            code_key_name:
+              type: string
+              description: 'Human-readable label for the Code Key, sourced from the
+
+                `Vmrs::Coding` data table. For Code Key 17 this is
+
+                `"Repair Site"`.
+
+                '
+              example: Repair Site
+            code:
+              type: string
+              maxLength: 1
+              description: The VMRS Code Key 17 code (e.g. `"1"`, `"2"`, `"3"`).
+              example: '1'
+            description:
+              type: string
+              description: Human-readable name for the repair site.
+              example: Facility (Fleet)
+    vmrs_asset_types:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_asset_type_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Asset Type records across all pages.
+              example: 78
+    vmrs_operator_reports:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/vmrs_operator_report_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total number of VMRS Operator Report records across all pages.
+              example: 136
     vmrs_operator_report_properties-data:
       type: object
       required:
@@ -2599,51 +2845,23 @@ components:
               type: string
               description: Human-readable name for the operator report condition.
               example: Aim/Alignment (Out of Adjustment)
-    errors_response:
+    vmrs_work_accomplished_list:
       type: object
+      required:
+      - data
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
+            $ref: '#/components/schemas/vmrs_work_accomplished_properties-data'
+        meta:
           type: object
           properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    vmrs_component_properties-data:
+            record-count:
+              type: integer
+              description: Total number of VMRS Work Accomplished records across all pages.
+              example: 68
+    vmrs_work_accomplished_properties-data:
       type: object
       required:
       - id
@@ -2652,12 +2870,12 @@ components:
       properties:
         id:
           type: string
-          description: The Code Key 33 `code` value (natural key).
-          example: 001-000-000
+          description: The Code Key 15 `code` value (natural key).
+          example: '01'
         type:
           type: string
           enum:
-          - decisiv_vmrs_components
+          - decisiv_vmrs_work_accomplished
         attributes:
           type: object
           required:
@@ -2668,27 +2886,27 @@ components:
           properties:
             code_key:
               type: string
-              description: VMRS Code Key number. Always `"33"` for component lookups.
-              example: '33'
+              description: VMRS Code Key number. Always `"15"` for work accomplished lookups.
+              example: '15'
             code_key_name:
               type: string
               description: 'Human-readable label for the Code Key, sourced from the
 
-                `Vmrs::Coding` data table. For Code Key 33 this is
+                `Vmrs::Coding` data table. For Code Key 15 this is
 
-                `"Component"`.
+                `"Work Accomplished"`.
 
                 '
-              example: Component
+              example: Work Accomplished
             code:
               type: string
-              maxLength: 11
-              description: The VMRS Code Key 33 code (e.g. `"001-000-000"`).
-              example: 001-000-000
+              maxLength: 2
+              description: The VMRS Code Key 15 code (e.g. `"01"`, `"02"`).
+              example: '01'
             description:
               type: string
-              description: Human-readable name for the component.
-              example: Air Conditioning, Heating & Ventilating System
+              description: Human-readable short label for the work accomplished.
+              example: Adjust
     vmrs_reason_for_repair_properties-data:
       type: object
       required:
@@ -2744,114 +2962,6 @@ components:
 
                 '
               example: Maintenance
-    vmrs_technician_part_failure_code_properties-data:
-      type: object
-      required:
-      - id
-      - type
-      - attributes
-      properties:
-        id:
-          type: string
-          description: The Code Key 18 `code` value (natural key).
-          example: '01'
-        type:
-          type: string
-          enum:
-          - decisiv_vmrs_technician_part_failure_codes
-        attributes:
-          type: object
-          required:
-          - code_key
-          - code_key_name
-          - code
-          - description
-          properties:
-            code_key:
-              type: string
-              description: VMRS Code Key number. Always `"18"` for technician part failure code lookups.
-              example: '18'
-            code_key_name:
-              type: string
-              description: 'Human-readable label for the Code Key, sourced from the
-
-                `Vmrs::Coding` data table. For Code Key 18 this is
-
-                `"Technician Part Failure Code"`.
-
-                '
-              example: Technician Part Failure Code
-            code:
-              type: string
-              maxLength: 2
-              description: The VMRS Code Key 18 code (e.g. `"00"`, `"01"`).
-              example: '01'
-            description:
-              type: string
-              description: Human-readable name for the technician part failure code.
-              example: Battered, Hammered
-    vmrs_position_properties-data:
-      type: object
-      required:
-      - id
-      - type
-      - attributes
-      properties:
-        id:
-          type: string
-          description: The Code Key 79 `code` value (natural key).
-          example: '01'
-        type:
-          type: string
-          enum:
-          - decisiv_vmrs_positions
-        attributes:
-          type: object
-          required:
-          - code_key
-          - code_key_name
-          - code
-          - description
-          properties:
-            code_key:
-              type: string
-              description: VMRS Code Key number. Always `"79"` for position lookups.
-              example: '79'
-            code_key_name:
-              type: string
-              description: 'Human-readable label for the Code Key, sourced from the
-
-                `Vmrs::Coding` data table. For Code Key 79 this is
-
-                `"Position"`.
-
-                '
-              example: Position
-            code:
-              type: string
-              maxLength: 2
-              description: The VMRS Code Key 79 code (e.g. `"00"`, `"01"`).
-              example: '01'
-            description:
-              type: string
-              description: Human-readable name for the position.
-              example: Front
-    vmrs_operator_reports:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/vmrs_operator_report_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total number of VMRS Operator Report records across all pages.
-              example: 136
     vmrs_repair_priorities:
       type: object
       required:
@@ -2868,55 +2978,7 @@ components:
               type: integer
               description: Total number of VMRS Repair Priority records across all pages.
               example: 3
-    vmrs_work_accomplished_list:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/vmrs_work_accomplished_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total number of VMRS Work Accomplished records across all pages.
-              example: 68
-    vmrs_asset_types:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/vmrs_asset_type_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total number of VMRS Asset Type records across all pages.
-              example: 78
-    vmrs_components:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/vmrs_component_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total number of VMRS Component records across all pages.
-              example: 2
-    vmrs_repair_priority_properties-data:
+    vmrs_component_properties-data:
       type: object
       required:
       - id
@@ -2925,12 +2987,12 @@ components:
       properties:
         id:
           type: string
-          description: The Code Key 16 `code` value (natural key).
-          example: '1'
+          description: The Code Key 33 `code` value (natural key).
+          example: 001-000-000
         type:
           type: string
           enum:
-          - decisiv_vmrs_repair_priorities
+          - decisiv_vmrs_components
         attributes:
           type: object
           required:
@@ -2941,44 +3003,28 @@ components:
           properties:
             code_key:
               type: string
-              description: VMRS Code Key number. Always `"16"` for repair-priority lookups.
-              example: '16'
+              description: VMRS Code Key number. Always `"33"` for component lookups.
+              example: '33'
             code_key_name:
               type: string
               description: 'Human-readable label for the Code Key, sourced from the
 
-                `Vmrs::Coding` data table. For Code Key 16 this is
+                `Vmrs::Coding` data table. For Code Key 33 this is
 
-                `"Repair Priority Class"`.
+                `"Component"`.
 
                 '
-              example: Repair Priority Class
+              example: Component
             code:
               type: string
-              maxLength: 1
-              description: The VMRS Code Key 16 code (e.g. `"1"`, `"2"`, `"3"`).
-              example: '1'
+              maxLength: 11
+              description: The VMRS Code Key 33 code (e.g. `"001-000-000"`).
+              example: 001-000-000
             description:
               type: string
-              description: Human-readable name for the repair priority class.
-              example: Scheduled
-    vmrs_technician_part_failure_codes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/vmrs_technician_part_failure_code_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total number of VMRS Technician Part Failure Code records across all pages.
-              example: 109
-    vmrs_work_accomplished_properties-data:
+              description: Human-readable name for the component.
+              example: Air Conditioning, Heating & Ventilating System
+    vmrs_asset_type_properties-data:
       type: object
       required:
       - id
@@ -2987,12 +3033,12 @@ components:
       properties:
         id:
           type: string
-          description: The Code Key 15 `code` value (natural key).
+          description: The Code Key 2 `code` value (natural key).
           example: '01'
         type:
           type: string
           enum:
-          - decisiv_vmrs_work_accomplished
+          - decisiv_vmrs_asset_types
         attributes:
           type: object
           required:
@@ -3003,28 +3049,28 @@ components:
           properties:
             code_key:
               type: string
-              description: VMRS Code Key number. Always `"15"` for work accomplished lookups.
-              example: '15'
+              description: VMRS Code Key number. Always `"2"` for asset type lookups.
+              example: '2'
             code_key_name:
               type: string
               description: 'Human-readable label for the Code Key, sourced from the
 
-                `Vmrs::Coding` data table. For Code Key 15 this is
+                `Vmrs::Coding` data table. For Code Key 2 this is
 
-                `"Work Accomplished"`.
+                `"Equipment Category"`.
 
                 '
-              example: Work Accomplished
+              example: Equipment Category
             code:
               type: string
               maxLength: 2
-              description: The VMRS Code Key 15 code (e.g. `"01"`, `"02"`).
+              description: The VMRS Code Key 2 code (e.g. `"01"`, `"D"`).
               example: '01'
             description:
               type: string
-              description: Human-readable short label for the work accomplished.
-              example: Adjust
-    vmrs_positions:
+              description: Human-readable name for the asset type / equipment category.
+              example: Truck
+    vmrs_repair_sites:
       type: object
       required:
       - data
@@ -3032,60 +3078,14 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/vmrs_position_properties-data'
+            $ref: '#/components/schemas/vmrs_repair_site_properties-data'
         meta:
           type: object
           properties:
             record-count:
               type: integer
-              description: Total number of VMRS Position records across all pages.
-              example: 162
-    vmrs_repair_site_properties-data:
-      type: object
-      required:
-      - id
-      - type
-      - attributes
-      properties:
-        id:
-          type: string
-          description: The Code Key 17 `code` value (natural key).
-          example: '1'
-        type:
-          type: string
-          enum:
-          - decisiv_vmrs_repair_sites
-        attributes:
-          type: object
-          required:
-          - code_key
-          - code_key_name
-          - code
-          - description
-          properties:
-            code_key:
-              type: string
-              description: VMRS Code Key number. Always `"17"` for repair-site lookups.
-              example: '17'
-            code_key_name:
-              type: string
-              description: 'Human-readable label for the Code Key, sourced from the
-
-                `Vmrs::Coding` data table. For Code Key 17 this is
-
-                `"Repair Site"`.
-
-                '
-              example: Repair Site
-            code:
-              type: string
-              maxLength: 1
-              description: The VMRS Code Key 17 code (e.g. `"1"`, `"2"`, `"3"`).
-              example: '1'
-            description:
-              type: string
-              description: Human-readable name for the repair site.
-              example: Facility (Fleet)
+              description: Total number of VMRS Repair Site records across all pages.
+              example: 3
     vmrs_reasons_for_repair:
       type: object
       required:

@@ -1129,23 +1129,6 @@ components:
       required:
       - status
       - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     relationship_objects:
       type: object
       properties:
@@ -1165,152 +1148,15 @@ components:
             - type
       required:
       - data
-    create_note:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              required:
-              - message
-              - public
-              properties:
-                message:
-                  type: string
-                  description: The message itself
-                  example: This is a note
-                public:
-                  type: boolean
-                  description: If the message is public
-                  example: true
-            relationships:
-              type: object
-              required:
-              - recipients
-              properties:
-                recipients:
-                  type: array
-                  description: The recipients that will receive the message, one or more allowed
-                  items:
-                    type: object
-                    properties:
-                      data:
-                        type: object
-                        required:
-                        - type
-                        - id
-                        properties:
-                          type:
-                            type: string
-                            example: recipients
-                            enum:
-                            - recipients
-                            - participants
-                          id:
-                            type: string
-                            format: uuid
-                            description: The uuid of the receiving user, *one or more allowed*
-                            example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-    create_note_to_provider:
-      type: object
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              properties:
-                message:
-                  type: string
-                  description: The message itself
-                  examples:
-                  - This is a note
-                public:
-                  type: boolean
-                  description: If the message is public
-                  examples:
-                  - true
-              required:
-              - message
-              - public
-            relationships:
-              properties:
-                recipients:
-                  $ref: '#/components/schemas/relationship_object'
-                srm_account:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - type
-          - attributes
-    note:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              properties:
-                message:
-                  type: string
-                  description: The message itself
-                  examples:
-                  - This is a note
-                public:
-                  type: boolean
-                  description: If the message is public
-                  examples:
-                  - true
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the note was created'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-              required:
-              - message
-              - public
-            relationships:
-              type: object
-              properties:
-                subject:
-                  $ref: '#/components/schemas/relationship_object'
-                sender:
-                  $ref: '#/components/schemas/relationship_object'
-                recipients:
-                  $ref: '#/components/schemas/relationship_objects'
-                participants:
-                  $ref: '#/components/schemas/relationship_objects'
-              required:
-              - recipients
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
+      - errors
     notes:
       type: object
       required:
@@ -1366,63 +1212,61 @@ components:
             - relationships
         meta:
           type: object
-    errors_response:
+    create_note_to_provider:
       type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
       required:
-      - errors
-    note_properties-data:
-      type: object
+      - data
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - notes
-        attributes:
+        data:
           type: object
           properties:
-            message:
+            type:
               type: string
-              examples:
-              - This is a note
-            public:
-              type: boolean
-              description: Notes with Public selected can be viewed from the Fleet case perspective.
-              examples:
-              - true
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp'
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message itself
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: If the message is public
+                  examples:
+                  - true
+              required:
+              - message
+              - public
+            relationships:
+              properties:
+                recipients:
+                  $ref: '#/components/schemas/relationship_object'
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
           required:
-          - message
-          - public
-        relationships:
-          type: object
+          - type
+          - attributes
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
           properties:
-            recipients:
-              $ref: '#/components/schemas/relationship_objects'
-            subject:
-              $ref: '#/components/schemas/relationship_object'
-            sender:
-              $ref: '#/components/schemas/relationship_object'
-            participants:
-              $ref: '#/components/schemas/relationship_objects'
+            id:
+              type: string
+            type:
+              type: string
           required:
-          - recipients
+          - id
+          - type
       required:
-      - attributes
-      - relationships
-      - type
-      - id
-    note_2:
+      - data
+    note:
       type: object
       required:
       - data
@@ -1442,29 +1286,32 @@ components:
               properties:
                 message:
                   type: string
+                  description: The message itself
                   examples:
                   - This is a note
                 public:
                   type: boolean
-                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  description: If the message is public
                   examples:
                   - true
                 created_at:
                   type: string
                   format: date-time
-                  description: '`ISO 8601` timestamp'
+                  description: '`ISO 8601` timestamp indicating when the note was created'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
               required:
               - message
               - public
             relationships:
               type: object
               properties:
-                recipients:
-                  $ref: '#/components/schemas/relationship_objects'
                 subject:
                   $ref: '#/components/schemas/relationship_object'
                 sender:
                   $ref: '#/components/schemas/relationship_object'
+                recipients:
+                  $ref: '#/components/schemas/relationship_objects'
                 participants:
                   $ref: '#/components/schemas/relationship_objects'
               required:
@@ -1474,21 +1321,60 @@ components:
           - relationships
           - type
           - id
-    notes_2:
+    create_note:
       type: object
       required:
       - data
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/note_properties-data'
-        meta:
           type: object
           properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              required:
+              - message
+              - public
+              properties:
+                message:
+                  type: string
+                  description: The message itself
+                  example: This is a note
+                public:
+                  type: boolean
+                  description: If the message is public
+                  example: true
+            relationships:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: array
+                  description: The recipients that will receive the message, one or more allowed
+                  items:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        required:
+                        - type
+                        - id
+                        properties:
+                          type:
+                            type: string
+                            example: recipients
+                            enum:
+                            - recipients
+                            - participants
+                          id:
+                            type: string
+                            format: uuid
+                            description: The uuid of the receiving user, *one or more allowed*
+                            example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
     create_case_note:
       type: object
       required:
@@ -1572,6 +1458,120 @@ components:
                               format: uuid
                               description: UUID of the participant
                               example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+    notes_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/note_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
+    note_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  examples:
+                  - true
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp'
+              required:
+              - message
+              - public
+            relationships:
+              type: object
+              properties:
+                recipients:
+                  $ref: '#/components/schemas/relationship_objects'
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                sender:
+                  $ref: '#/components/schemas/relationship_object'
+                participants:
+                  $ref: '#/components/schemas/relationship_objects'
+              required:
+              - recipients
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    note_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - notes
+        attributes:
+          type: object
+          properties:
+            message:
+              type: string
+              examples:
+              - This is a note
+            public:
+              type: boolean
+              description: Notes with Public selected can be viewed from the Fleet case perspective.
+              examples:
+              - true
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp'
+          required:
+          - message
+          - public
+        relationships:
+          type: object
+          properties:
+            recipients:
+              $ref: '#/components/schemas/relationship_objects'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            sender:
+              $ref: '#/components/schemas/relationship_object'
+            participants:
+              $ref: '#/components/schemas/relationship_objects'
+          required:
+          - recipients
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
   securitySchemes:
     AccessToken:
       type: http

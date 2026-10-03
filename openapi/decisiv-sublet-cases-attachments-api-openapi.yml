@@ -495,17 +495,15 @@ components:
       required:
       - status
       - title
-    attachments:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/properties-data'
-        meta:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     relationship_object:
       type: object
       properties:
@@ -654,15 +652,17 @@ components:
       - attributes
       - type
       - id
-    errors_response:
+    attachments:
       type: object
+      required:
+      - data
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

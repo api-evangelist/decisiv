@@ -507,6 +507,15 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     internal_user_properties-data:
       type: object
       properties:
@@ -560,15 +569,6 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     internal_user:
       type: object
       required:

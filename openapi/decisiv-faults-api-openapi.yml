@@ -778,23 +778,6 @@ components:
       required:
       - status
       - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     properties-attributes:
       type: object
       properties:
@@ -992,6 +975,32 @@ components:
       - triggered_at
       - active
       - details
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     faults:
       type: object
       required:
@@ -1033,221 +1042,6 @@ components:
                     description: Canonical URL of the fault resource
         meta:
           type: object
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    create_fault:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - faults
-            attributes:
-              type: object
-              properties:
-                triggered_at:
-                  type: string
-                  format: date-time
-                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
-                spn:
-                  type: string
-                  description: SPN value. *Must be sent together with `fmi`. Either the SPN/FMI pair or `fault_code` is required.*
-                fmi:
-                  type: string
-                  description: FMI value. *Must be sent together with `spn`. Either the SPN/FMI pair or `fault_code` is required.*
-                fault_code:
-                  type: string
-                  description: Fault code value. *Required when SPN/FMI pair is not provided.*
-                severity:
-                  type:
-                  - integer
-                  - 'null'
-                  minimum: 0
-                  maximum: 100
-                  description: Fault severity, ranging from `0` (lowest) to `100` (highest)
-                active:
-                  type: boolean
-                  description: Indicates whether this fault is still active
-                sensor_readings:
-                  type: array
-                  description: Sensor readings captured when the fault was triggered
-                  items:
-                    type: object
-                    required:
-                    - name
-                    - value
-                    properties:
-                      name:
-                        type: string
-                        description: Name of the sensor
-                      description:
-                        type: string
-                        description: Description of the sensor
-                      value:
-                        type: string
-                        description: Sensor reading value
-                      unit_of_measure:
-                        type: string
-                        description: Unit of measure for the sensor reading
-                      classification_header:
-                        type: string
-                        description: Header group used to classify the reading in the UI
-                      key_data:
-                        type: boolean
-                        description: Flag indicating whether the reading should be highlighted in the UI
-                      localize:
-                        type: boolean
-                        description: Flag indicating whether the reading should be localized in the UI
-                guidance:
-                  type: array
-                  description: Guidance information related to the fault
-                  items:
-                    type: object
-                    required:
-                    - name
-                    - value
-                    properties:
-                      name:
-                        type: string
-                        description: Name of the guidance entry
-                      description:
-                        type: string
-                        description: Description of the guidance entry
-                      value:
-                        type: string
-                        description: Guidance value
-                      classification_header:
-                        type: string
-                        description: Header group used to classify the entry in the UI
-                details:
-                  type: object
-                  description: Details of the fault
-                  required:
-                  - component
-                  properties:
-                    component:
-                      type: object
-                      description: Component on which the fault occurred
-                      required:
-                      - name
-                      - version
-                      properties:
-                        name:
-                          type: string
-                          description: Name of the component
-                        description:
-                          type: string
-                          description: Description of the component
-                        version:
-                          type: string
-                          description: Component version
-                    occurrences:
-                      type: integer
-                      description: Number of times the fault has occurred
-                    odometer_unit:
-                      type: string
-                      description: Odometer unit of measure
-                      enum:
-                      - mi
-                      - km
-                    odometer_value:
-                      type: number
-                      description: Odometer reading at the time of the fault
-                    severity_level:
-                      type: string
-                      description: Severity level label for the fault
-                    description:
-                      type: string
-                      description: Description of the Fault
-                location:
-                  type: object
-                  description: Geolocation information about the asset when the fault was triggered
-                  required:
-                  - latitude
-                  - longitude
-                  properties:
-                    latitude:
-                      type: string
-                      description: Asset latitude
-                    longitude:
-                      type: string
-                      description: Asset longitude
-                    altitude:
-                      oneOf:
-                      - type: number
-                        description: Asset altitude
-                      - type: string
-                        description: Asset altitude
-                    heading:
-                      oneOf:
-                      - type: number
-                        description: Asset heading
-                      - type: string
-                        description: Asset heading
-                external_resources:
-                  type: array
-                  description: External resources related to the fault
-                  items:
-                    type: object
-                    properties:
-                      href:
-                        type: string
-                        format: url
-                        description: Location (URL) of the external resource
-                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
-                      title:
-                        type: string
-                        description: Title of the external resource
-                        minLength: 3
-                        maxLength: 75
-                      description:
-                        type: string
-                        description: Description of the resource
-                        minLength: 3
-                        maxLength: 150
-                      classification_header:
-                        type: string
-                        description: Classification of the external resource
-                        minLength: 3
-                        maxLength: 50
-                      type:
-                        type: string
-                        description: Type of the external resource
-                        enum:
-                        - document
-                        - image
-                        - video
-                        - audio
-                        - website
-                        - other
-              required:
-              - triggered_at
-              - active
-              - details
-            relationships:
-              type: object
-              properties:
-                diagnostic_reading:
-                  $ref: '#/components/schemas/relationship_object'
-                source_account:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - diagnostic_reading
-          required:
-          - type
-          - attributes
-      required:
-      - data
     fault:
       type: object
       required:
@@ -1485,6 +1279,212 @@ components:
                   type: string
                   format: uri
                   description: Canonical URL of the fault resource
+    create_fault:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - faults
+            attributes:
+              type: object
+              properties:
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: Date / Time when the diagnostic was triggered in `ISO8601` format
+                spn:
+                  type: string
+                  description: SPN value. *Must be sent together with `fmi`. Either the SPN/FMI pair or `fault_code` is required.*
+                fmi:
+                  type: string
+                  description: FMI value. *Must be sent together with `spn`. Either the SPN/FMI pair or `fault_code` is required.*
+                fault_code:
+                  type: string
+                  description: Fault code value. *Required when SPN/FMI pair is not provided.*
+                severity:
+                  type:
+                  - integer
+                  - 'null'
+                  minimum: 0
+                  maximum: 100
+                  description: Fault severity, ranging from `0` (lowest) to `100` (highest)
+                active:
+                  type: boolean
+                  description: Indicates whether this fault is still active
+                sensor_readings:
+                  type: array
+                  description: Sensor readings captured when the fault was triggered
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the sensor
+                      description:
+                        type: string
+                        description: Description of the sensor
+                      value:
+                        type: string
+                        description: Sensor reading value
+                      unit_of_measure:
+                        type: string
+                        description: Unit of measure for the sensor reading
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the reading in the UI
+                      key_data:
+                        type: boolean
+                        description: Flag indicating whether the reading should be highlighted in the UI
+                      localize:
+                        type: boolean
+                        description: Flag indicating whether the reading should be localized in the UI
+                guidance:
+                  type: array
+                  description: Guidance information related to the fault
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - value
+                    properties:
+                      name:
+                        type: string
+                        description: Name of the guidance entry
+                      description:
+                        type: string
+                        description: Description of the guidance entry
+                      value:
+                        type: string
+                        description: Guidance value
+                      classification_header:
+                        type: string
+                        description: Header group used to classify the entry in the UI
+                details:
+                  type: object
+                  description: Details of the fault
+                  required:
+                  - component
+                  properties:
+                    component:
+                      type: object
+                      description: Component on which the fault occurred
+                      required:
+                      - name
+                      - version
+                      properties:
+                        name:
+                          type: string
+                          description: Name of the component
+                        description:
+                          type: string
+                          description: Description of the component
+                        version:
+                          type: string
+                          description: Component version
+                    occurrences:
+                      type: integer
+                      description: Number of times the fault has occurred
+                    odometer_unit:
+                      type: string
+                      description: Odometer unit of measure
+                      enum:
+                      - mi
+                      - km
+                    odometer_value:
+                      type: number
+                      description: Odometer reading at the time of the fault
+                    severity_level:
+                      type: string
+                      description: Severity level label for the fault
+                    description:
+                      type: string
+                      description: Description of the Fault
+                location:
+                  type: object
+                  description: Geolocation information about the asset when the fault was triggered
+                  required:
+                  - latitude
+                  - longitude
+                  properties:
+                    latitude:
+                      type: string
+                      description: Asset latitude
+                    longitude:
+                      type: string
+                      description: Asset longitude
+                    altitude:
+                      oneOf:
+                      - type: number
+                        description: Asset altitude
+                      - type: string
+                        description: Asset altitude
+                    heading:
+                      oneOf:
+                      - type: number
+                        description: Asset heading
+                      - type: string
+                        description: Asset heading
+                external_resources:
+                  type: array
+                  description: External resources related to the fault
+                  items:
+                    type: object
+                    properties:
+                      href:
+                        type: string
+                        format: url
+                        description: Location (URL) of the external resource
+                        pattern: ^https?://(www.)?[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)+([/?#].*)?$
+                      title:
+                        type: string
+                        description: Title of the external resource
+                        minLength: 3
+                        maxLength: 75
+                      description:
+                        type: string
+                        description: Description of the resource
+                        minLength: 3
+                        maxLength: 150
+                      classification_header:
+                        type: string
+                        description: Classification of the external resource
+                        minLength: 3
+                        maxLength: 50
+                      type:
+                        type: string
+                        description: Type of the external resource
+                        enum:
+                        - document
+                        - image
+                        - video
+                        - audio
+                        - website
+                        - other
+              required:
+              - triggered_at
+              - active
+              - details
+            relationships:
+              type: object
+              properties:
+                diagnostic_reading:
+                  $ref: '#/components/schemas/relationship_object'
+                source_account:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - diagnostic_reading
+          required:
+          - type
+          - attributes
+      required:
+      - data
   securitySchemes:
     AccessToken:
       type: http

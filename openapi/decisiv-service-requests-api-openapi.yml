@@ -1070,214 +1070,6 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    service_request_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - service_requests
-        attributes:
-          type: object
-          properties:
-            complaint:
-              type: string
-              description: Initially reported information from driver or other customer entity
-              examples:
-              - Broken truck
-            po_number:
-              type: string
-              description: PO number
-              examples:
-              - '1234'
-            auth_number:
-              type: string
-              description: The auth number
-              examples:
-              - '1234'
-            note:
-              type: string
-              description: The notes for the service request
-              examples:
-              - Initial note
-            reference_number:
-              type: number
-              description: Integer representation of the service request ID inside of the User Interface
-            status:
-              type: string
-              description: Status of the service request
-              examples:
-              - Pick-up
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the service request was updated'
-              examples:
-              - '2022-04-14T05:23:45Z'
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the service request was created'
-              examples:
-              - '2022-04-14T05:23:45Z'
-            asset_information:
-              type: object
-              description: The asset information when the service request was created
-              properties:
-                odometer_value:
-                  type: number
-                  description: Integer representation about the asset odometer
-                odometer_unit:
-                  type: string
-                  description: abreviation about the unit of asset can be mi for miles or km for Kilometers
-                  examples:
-                  - mi
-            breakdown:
-              type: object
-              description: Information about the breakdown location
-              properties:
-                city:
-                  type: string
-                  description: City of breakdown
-                  examples:
-                  - North Haven
-                location:
-                  type: string
-                  description: Exact map location of the breakdown
-                  examples:
-                  - 41.395022,-72.856326
-                state:
-                  type: string
-                  description: State of the breakdown
-                  examples:
-                  - CT
-            primary_contact:
-              type: object
-              description: Primary contact information
-              properties:
-                first_name:
-                  type: string
-                  description: First name
-                  examples:
-                  - Martha
-                last_name:
-                  type: string
-                  description: Last name
-                  examples:
-                  - Wayne
-                email:
-                  type: string
-                  description: Contact email
-                  examples:
-                  - martha@wayne.com
-                relation:
-                  type: string
-                  examples:
-                  - Bobby
-                phone:
-                  type: object
-                  description: Phone information
-                  properties:
-                    mobile:
-                      type: string
-                      examples:
-                      - (582) 123-1234
-                    work:
-                      type: string
-                      examples:
-                      - (582) 123-1234
-            driver:
-              type: object
-              description: Driver information
-              properties:
-                first_name:
-                  type: string
-                  description: First name
-                  examples:
-                  - Martha
-                last_name:
-                  type: string
-                  description: Last name
-                  examples:
-                  - Wayne
-                email:
-                  type: string
-                  description: Contact email
-                  examples:
-                  - martha@wayne.com
-                phone:
-                  type: object
-                  description: Phone information
-                  properties:
-                    mobile:
-                      type: string
-                      examples:
-                      - (582) 123-1234
-                    work:
-                      type: string
-                      examples:
-                      - (582) 123-1234
-            metadata:
-              type: string
-              additionalProperties: true
-            event_timestamps:
-              type: object
-              description: All the timestamps related to the service request
-              properties:
-                requested_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the service was requested'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                requested_completion_time:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the completion time of the case'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                requested_appointment_time:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating the appointment time'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-                asset_downtime:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                  examples:
-                  - '2022-04-14T05:23:45Z'
-        relationships:
-          type: object
-          properties:
-            registered_asset:
-              $ref: '#/components/schemas/relationship_object'
-            service_provider:
-              $ref: '#/components/schemas/relationship_object'
-            case:
-              $ref: '#/components/schemas/relationship_object'
-            primary_contact:
-              description: The contact designated as the primary contact for the service request. Resolved from the service request's descriptive primary contact information against the fleet's contacts; absent when no matching contact is found.
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
-    service_requests:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/service_request_properties-data'
-        meta:
-          type: object
     error_response:
       type: object
       properties:
@@ -1313,220 +1105,15 @@ components:
       required:
       - status
       - title
-    create_service_request:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - type
-          - attributes
-          properties:
-            type:
-              type: string
-              enum:
-              - service_requests
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  examples:
-                  - Broken truck
-                po_number:
-                  type: string
-                  description: PO number
-                  examples:
-                  - '1234'
-                auth_number:
-                  type: string
-                  description: The auth number
-                  examples:
-                  - '1234'
-                note:
-                  type: string
-                  description: The notes for the service request
-                  examples:
-                  - Initial note
-                vmrs_ck14_code:
-                  type: string
-                  description: VMRS CK14 code
-                vmrs_ck15_code:
-                  type: string
-                  description: VMRS CK15 code
-                vmrs_ck16_code:
-                  type: string
-                  description: VMRS CK16 code
-                vmrs_ck17_code:
-                  type: string
-                  description: VMRS CK17 code
-                cause_vmrs_ck18_code:
-                  type: string
-                  description: Cause VMRS CK18 code
-                complaint_vmrs_ck33_code:
-                  type: string
-                  description: Complaint VMRS CK33 code
-                complaint_vmrs_ck79_code:
-                  type: string
-                  description: Complaint VMRS CK79 code
-                asset_information:
-                  type: object
-                  description: The asset information when the service request was created
-                  properties:
-                    odometer_value:
-                      type: number
-                      description: Integer representation about the asset odometer
-                    odometer_unit:
-                      type: string
-                      description: abreviation about the unit of asset can be mi for miles or km for Kilometers
-                      examples:
-                      - mi
-                breakdown:
-                  type: object
-                  description: Information about the breakdown location
-                  properties:
-                    city:
-                      type: string
-                      description: City of breakdown
-                      examples:
-                      - North Haven
-                    location:
-                      type: string
-                      description: Exact map location of the breakdown
-                      examples:
-                      - 41.395022,-72.856326
-                    state:
-                      type: string
-                      description: State of the breakdown
-                      examples:
-                      - CT
-                primary_contact:
-                  type: object
-                  description: Primary contact information
-                  properties:
-                    first_name:
-                      type: string
-                      description: First name
-                      examples:
-                      - Martha
-                    last_name:
-                      type: string
-                      description: Last name
-                      examples:
-                      - Wayne
-                    email:
-                      type: string
-                      description: Contact email
-                      examples:
-                      - martha@wayne.com
-                    relation:
-                      type: string
-                      examples:
-                      - Bobby
-                    phone:
-                      type: object
-                      description: Phone information
-                      properties:
-                        mobile:
-                          type: string
-                          examples:
-                          - (582) 123-1234
-                        work:
-                          type: string
-                          examples:
-                          - (582) 123-1234
-                driver:
-                  type: object
-                  description: Driver information
-                  properties:
-                    first_name:
-                      type: string
-                      description: First name
-                      examples:
-                      - Martha
-                    last_name:
-                      type: string
-                      description: Last name
-                      examples:
-                      - Wayne
-                    email:
-                      type: string
-                      description: Contact email
-                      examples:
-                      - martha@wayne.com
-                    phone:
-                      type: object
-                      description: Phone information
-                      properties:
-                        mobile:
-                          type: string
-                          examples:
-                          - (582) 123-1234
-                        work:
-                          type: string
-                          examples:
-                          - (582) 123-1234
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the service request
-                  properties:
-                    requested_completion_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the case'
-                      examples:
-                      - '2022-04-14T05:23:45Z'
-                    requested_appointment_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the appointment time'
-                      examples:
-                      - '2022-04-14T05:23:45Z'
-                    asset_downtime:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
-                      examples:
-                      - '2022-04-14T05:23:45Z'
-                    requested_at:
-                      type: string
-              required:
-              - complaint
-            relationships:
-              type: object
-              required:
-              - service_provider
-              - registered_asset
-              properties:
-                service_provider:
-                  description: Information of the service provider that will be requested
-                  $ref: '#/components/schemas/relationship_object'
-                registered_asset:
-                  description: Information of the registered asset that needs to be serviced
-                  $ref: '#/components/schemas/relationship_object'
-                primary_contact:
-                  description: Optional linkage to an existing fleet contact to use as the primary contact for the service request. The linkage `id` is a contact identifier as returned by the contacts endpoints. When provided, its details take precedence over the descriptive `primary_contact` attribute.
-                  $ref: '#/components/schemas/relationship_object'
-    relationship_object:
+    errors_response:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
+      - errors
     service_request:
       type: object
       required:
@@ -1729,15 +1316,428 @@ components:
           - attributes
           - type
           - id
-    errors_response:
+    relationship_object:
       type: object
       properties:
-        errors:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    service_requests:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/service_request_properties-data'
+        meta:
+          type: object
+    service_request_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - service_requests
+        attributes:
+          type: object
+          properties:
+            complaint:
+              type: string
+              description: Initially reported information from driver or other customer entity
+              examples:
+              - Broken truck
+            po_number:
+              type: string
+              description: PO number
+              examples:
+              - '1234'
+            auth_number:
+              type: string
+              description: The auth number
+              examples:
+              - '1234'
+            note:
+              type: string
+              description: The notes for the service request
+              examples:
+              - Initial note
+            reference_number:
+              type: number
+              description: Integer representation of the service request ID inside of the User Interface
+            status:
+              type: string
+              description: Status of the service request
+              examples:
+              - Pick-up
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the service request was updated'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the service request was created'
+              examples:
+              - '2022-04-14T05:23:45Z'
+            asset_information:
+              type: object
+              description: The asset information when the service request was created
+              properties:
+                odometer_value:
+                  type: number
+                  description: Integer representation about the asset odometer
+                odometer_unit:
+                  type: string
+                  description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                  examples:
+                  - mi
+            breakdown:
+              type: object
+              description: Information about the breakdown location
+              properties:
+                city:
+                  type: string
+                  description: City of breakdown
+                  examples:
+                  - North Haven
+                location:
+                  type: string
+                  description: Exact map location of the breakdown
+                  examples:
+                  - 41.395022,-72.856326
+                state:
+                  type: string
+                  description: State of the breakdown
+                  examples:
+                  - CT
+            primary_contact:
+              type: object
+              description: Primary contact information
+              properties:
+                first_name:
+                  type: string
+                  description: First name
+                  examples:
+                  - Martha
+                last_name:
+                  type: string
+                  description: Last name
+                  examples:
+                  - Wayne
+                email:
+                  type: string
+                  description: Contact email
+                  examples:
+                  - martha@wayne.com
+                relation:
+                  type: string
+                  examples:
+                  - Bobby
+                phone:
+                  type: object
+                  description: Phone information
+                  properties:
+                    mobile:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+                    work:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+            driver:
+              type: object
+              description: Driver information
+              properties:
+                first_name:
+                  type: string
+                  description: First name
+                  examples:
+                  - Martha
+                last_name:
+                  type: string
+                  description: Last name
+                  examples:
+                  - Wayne
+                email:
+                  type: string
+                  description: Contact email
+                  examples:
+                  - martha@wayne.com
+                phone:
+                  type: object
+                  description: Phone information
+                  properties:
+                    mobile:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+                    work:
+                      type: string
+                      examples:
+                      - (582) 123-1234
+            metadata:
+              type: string
+              additionalProperties: true
+            event_timestamps:
+              type: object
+              description: All the timestamps related to the service request
+              properties:
+                requested_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the service was requested'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_completion_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the completion time of the case'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                requested_appointment_time:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating the appointment time'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+                asset_downtime:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                  examples:
+                  - '2022-04-14T05:23:45Z'
+        relationships:
+          type: object
+          properties:
+            registered_asset:
+              $ref: '#/components/schemas/relationship_object'
+            service_provider:
+              $ref: '#/components/schemas/relationship_object'
+            case:
+              $ref: '#/components/schemas/relationship_object'
+            primary_contact:
+              description: The contact designated as the primary contact for the service request. Resolved from the service request's descriptive primary contact information against the fleet's contacts; absent when no matching contact is found.
+              $ref: '#/components/schemas/relationship_object'
       required:
-      - errors
+      - attributes
+      - type
+      - id
+    create_service_request:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              type: string
+              enum:
+              - service_requests
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: PO number
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The auth number
+                  examples:
+                  - '1234'
+                note:
+                  type: string
+                  description: The notes for the service request
+                  examples:
+                  - Initial note
+                vmrs_ck14_code:
+                  type: string
+                  description: VMRS CK14 code
+                vmrs_ck15_code:
+                  type: string
+                  description: VMRS CK15 code
+                vmrs_ck16_code:
+                  type: string
+                  description: VMRS CK16 code
+                vmrs_ck17_code:
+                  type: string
+                  description: VMRS CK17 code
+                cause_vmrs_ck18_code:
+                  type: string
+                  description: Cause VMRS CK18 code
+                complaint_vmrs_ck33_code:
+                  type: string
+                  description: Complaint VMRS CK33 code
+                complaint_vmrs_ck79_code:
+                  type: string
+                  description: Complaint VMRS CK79 code
+                asset_information:
+                  type: object
+                  description: The asset information when the service request was created
+                  properties:
+                    odometer_value:
+                      type: number
+                      description: Integer representation about the asset odometer
+                    odometer_unit:
+                      type: string
+                      description: abreviation about the unit of asset can be mi for miles or km for Kilometers
+                      examples:
+                      - mi
+                breakdown:
+                  type: object
+                  description: Information about the breakdown location
+                  properties:
+                    city:
+                      type: string
+                      description: City of breakdown
+                      examples:
+                      - North Haven
+                    location:
+                      type: string
+                      description: Exact map location of the breakdown
+                      examples:
+                      - 41.395022,-72.856326
+                    state:
+                      type: string
+                      description: State of the breakdown
+                      examples:
+                      - CT
+                primary_contact:
+                  type: object
+                  description: Primary contact information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    relation:
+                      type: string
+                      examples:
+                      - Bobby
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                driver:
+                  type: object
+                  description: Driver information
+                  properties:
+                    first_name:
+                      type: string
+                      description: First name
+                      examples:
+                      - Martha
+                    last_name:
+                      type: string
+                      description: Last name
+                      examples:
+                      - Wayne
+                    email:
+                      type: string
+                      description: Contact email
+                      examples:
+                      - martha@wayne.com
+                    phone:
+                      type: object
+                      description: Phone information
+                      properties:
+                        mobile:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                        work:
+                          type: string
+                          examples:
+                          - (582) 123-1234
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the service request
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_appointment_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the appointment time'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    asset_downtime:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Asset was considered no longer operational'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    requested_at:
+                      type: string
+              required:
+              - complaint
+            relationships:
+              type: object
+              required:
+              - service_provider
+              - registered_asset
+              properties:
+                service_provider:
+                  description: Information of the service provider that will be requested
+                  $ref: '#/components/schemas/relationship_object'
+                registered_asset:
+                  description: Information of the registered asset that needs to be serviced
+                  $ref: '#/components/schemas/relationship_object'
+                primary_contact:
+                  description: Optional linkage to an existing fleet contact to use as the primary contact for the service request. The linkage `id` is a contact identifier as returned by the contacts endpoints. When provided, its details take precedence over the descriptive `primary_contact` attribute.
+                  $ref: '#/components/schemas/relationship_object'
   securitySchemes:
     AccessToken:
       type: http

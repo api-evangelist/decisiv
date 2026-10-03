@@ -222,6 +222,26 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    case_summaries:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/data'
+        meta:
+          type: object
     relationship_object:
       type: object
       properties:
@@ -239,17 +259,6 @@ components:
           - type
       required:
       - data
-    case_summaries:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/data'
-        meta:
-          type: object
     data:
       type: object
       properties:
@@ -288,15 +297,6 @@ components:
       - attributes
       - type
       - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

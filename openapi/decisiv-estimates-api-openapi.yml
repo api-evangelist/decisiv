@@ -571,17 +571,6 @@ paths:
                         reason: parts costs
 components:
   schemas:
-    estimates:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/estimate_properties-data'
-        meta:
-          type: object
     error_response:
       type: object
       properties:
@@ -617,68 +606,15 @@ components:
       required:
       - status
       - title
-    relationship_object:
+    errors_response:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
-    response_estimate:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                line_items:
-                  type: array
-                  description: Line Items inside the estimate
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        description: UUID of the line item
-                      status:
-                        type: string
-                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
-                        example: approved
-                        enum:
-                        - approved
-                        - declined
-                        - deferred
-                      comments:
-                        type: string
-                        example: Did not like the price
-                      reason:
-                        type: string
-                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
-                        example: defer
-                        enum:
-                        - defer
-                        - labor costs
-                        - parts costs
-                        - not interested
+      - errors
     estimate_properties-data:
       type: object
       properties:
@@ -872,15 +808,6 @@ components:
       - attributes
       - type
       - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     estimate:
       type: object
       required:
@@ -1079,6 +1006,79 @@ components:
           - attributes
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    response_estimate:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                line_items:
+                  type: array
+                  description: Line Items inside the estimate
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: UUID of the line item
+                      status:
+                        type: string
+                        description: Changing the status of each line item indicates the customer response and status of that line item in relation to the Estimate.
+                        example: approved
+                        enum:
+                        - approved
+                        - declined
+                        - deferred
+                      comments:
+                        type: string
+                        example: Did not like the price
+                      reason:
+                        type: string
+                        description: Reason for declined/deferred line items. MUST be provided for any line item which is not approved.
+                        example: defer
+                        enum:
+                        - defer
+                        - labor costs
+                        - parts costs
+                        - not interested
+    estimates:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/estimate_properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

@@ -179,15 +179,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     error_response:
       type: object
       properties:
@@ -244,6 +235,15 @@ components:
           - attributes
           - type
           - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

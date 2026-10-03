@@ -238,23 +238,6 @@ components:
       required:
       - status
       - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     relationship_objects:
       type: object
       properties:
@@ -274,6 +257,15 @@ components:
             - type
       required:
       - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     assignee_change:
       type: object
       required:
@@ -286,6 +278,23 @@ components:
               type: string
             id:
               type: string
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     line_item:
       type: object
       required:
@@ -696,15 +705,6 @@ components:
           - attributes
           - type
           - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

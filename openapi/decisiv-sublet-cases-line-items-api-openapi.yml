@@ -169,30 +169,41 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    errors_response:
+    error_response:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    sublet_case_line_items:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/sublet_case_line_item_properties-data'
-        meta:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
           properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
     sublet_case_line_item_properties-data:
       type: object
       description: 'A sublet case line item represents a single repair operation on the case — typically a labor task or a parts replacement performed by a sublet vendor.
@@ -381,41 +392,30 @@ components:
       - attributes
       - type
       - id
-    error_response:
+    sublet_case_line_items:
       type: object
+      required:
+      - data
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_case_line_item_properties-data'
+        meta:
           type: object
           properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+            record-count:
+              type: integer
+              description: Total count across all pages
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - status
-      - title
+      - errors
   securitySchemes:
     AccessToken:
       type: http

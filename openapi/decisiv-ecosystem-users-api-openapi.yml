@@ -237,64 +237,15 @@ components:
       required:
       - status
       - title
-    ecosystem_user:
+    errors_response:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          description: The user's UUID
-        type:
-          type: string
-          enum:
-          - ecosystem_users
-        attributes:
-          type: object
-          properties:
-            first_name:
-              type: string
-            last_name:
-              type: string
-            email:
-              type: string
-              format: email
-              description: User's email address. Also used as the username.
-            job_role:
-              type: string
-              description: Free-text label describing the user's job role (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
-            external_reference:
-              type: object
-              description: Identifiers available for the user from external systems
-              properties:
-                business_system:
-                  type:
-                  - string
-                  - 'null'
-                  description: External business-system identifier for this user, when one has been linked
-      required:
-      - attributes
-      - type
-      - id
-    ecosystem_user_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/ecosystem_user'
-    ecosystem_users:
-      type: object
-      required:
-      - data
-      properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/ecosystem_user'
-        meta:
-          type: object
-        links:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     ecosystem_user_create:
       type: object
       required:
@@ -377,15 +328,64 @@ components:
                       type: string
                       maxLength: 100
                       description: External business-system identifier (optional)
-    errors_response:
+    ecosystem_user:
       type: object
       properties:
-        errors:
+        id:
+          type: string
+          format: uuid
+          description: The user's UUID
+        type:
+          type: string
+          enum:
+          - ecosystem_users
+        attributes:
+          type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+              format: email
+              description: User's email address. Also used as the username.
+            job_role:
+              type: string
+              description: Free-text label describing the user's job role (e.g. `Branch Manager`). Returns an empty string when the user has no job role set; never `null`.
+            external_reference:
+              type: object
+              description: Identifiers available for the user from external systems
+              properties:
+                business_system:
+                  type:
+                  - string
+                  - 'null'
+                  description: External business-system identifier for this user, when one has been linked
+      required:
+      - attributes
+      - type
+      - id
+    ecosystem_users:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/ecosystem_user'
+        meta:
+          type: object
+        links:
+          type: object
+    ecosystem_user_by_id:
+      type: object
       required:
-      - errors
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/ecosystem_user'
   securitySchemes:
     AccessToken:
       type: http

@@ -79,30 +79,6 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    webhook_event:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - webhook_events
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Referential title of the webhook event; scoped to the applicable SRM module.
-              example: maintenance:scheduled_operation_due
-            description:
-              type: string
-              description: Detailed explanation of the webhook event.
-      required:
-      - attributes
-      - type
-      - id
     errors_response:
       type: object
       properties:
@@ -147,6 +123,30 @@ components:
       required:
       - status
       - title
+    webhook_event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - webhook_events
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Referential title of the webhook event; scoped to the applicable SRM module.
+              example: maintenance:scheduled_operation_due
+            description:
+              type: string
+              description: Detailed explanation of the webhook event.
+      required:
+      - attributes
+      - type
+      - id
     webhook_events:
       type: object
       required:

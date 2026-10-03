@@ -196,6 +196,22 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    role_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/role'
     role:
       type: object
       properties:
@@ -229,13 +245,6 @@ components:
       - attributes
       - type
       - id
-    role_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/role'
     roles:
       type: object
       required:
@@ -249,15 +258,6 @@ components:
           type: object
         links:
           type: object
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

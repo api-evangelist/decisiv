@@ -1386,23 +1386,6 @@ components:
       required:
       - status
       - title
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     update_extended_asset_attribute:
       type: object
       required:
@@ -1428,17 +1411,6 @@ components:
                 value:
                   type: string
                   description: Value of extended attribute for the asset
-    extended_asset_attributes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
-        meta:
-          type: object
     errors_response:
       type: object
       properties:
@@ -1497,6 +1469,23 @@ components:
           - relationships
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     extended_asset_attribute_properties-data:
       type: object
       properties:
@@ -1541,6 +1530,17 @@ components:
       - relationships
       - type
       - id
+    extended_asset_attributes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
+        meta:
+          type: object
     extended_asset_attribute_2:
       type: object
       required:
