@@ -187,6 +187,23 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -242,23 +259,6 @@ components:
             $ref: '#/components/schemas/data'
         meta:
           type: object
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     data:
       type: object
       properties:

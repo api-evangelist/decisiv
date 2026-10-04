@@ -448,6 +448,70 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    note_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - notes
+        attributes:
+          type: object
+          properties:
+            message:
+              type: string
+              examples:
+              - This is a note
+            public:
+              type: boolean
+              description: Notes with Public selected can be viewed from the Fleet case perspective.
+              examples:
+              - true
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp'
+          required:
+          - message
+          - public
+        relationships:
+          type: object
+          properties:
+            recipients:
+              $ref: '#/components/schemas/relationship_objects'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            sender:
+              $ref: '#/components/schemas/relationship_object'
+            participants:
+              $ref: '#/components/schemas/relationship_objects'
+          required:
+          - recipients
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -483,6 +547,77 @@ components:
       required:
       - status
       - title
+    note:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - notes
+            attributes:
+              type: object
+              properties:
+                message:
+                  type: string
+                  examples:
+                  - This is a note
+                public:
+                  type: boolean
+                  description: Notes with Public selected can be viewed from the Fleet case perspective.
+                  examples:
+                  - true
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp'
+              required:
+              - message
+              - public
+            relationships:
+              type: object
+              properties:
+                recipients:
+                  $ref: '#/components/schemas/relationship_objects'
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                sender:
+                  $ref: '#/components/schemas/relationship_object'
+                participants:
+                  $ref: '#/components/schemas/relationship_objects'
+              required:
+              - recipients
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
     create_case_note:
       type: object
       required:
@@ -566,25 +701,6 @@ components:
                               format: uuid
                               description: UUID of the participant
                               example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
     errors_response:
       type: object
       properties:
@@ -609,122 +725,6 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    note:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - notes
-            attributes:
-              type: object
-              properties:
-                message:
-                  type: string
-                  examples:
-                  - This is a note
-                public:
-                  type: boolean
-                  description: Notes with Public selected can be viewed from the Fleet case perspective.
-                  examples:
-                  - true
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp'
-              required:
-              - message
-              - public
-            relationships:
-              type: object
-              properties:
-                recipients:
-                  $ref: '#/components/schemas/relationship_objects'
-                subject:
-                  $ref: '#/components/schemas/relationship_object'
-                sender:
-                  $ref: '#/components/schemas/relationship_object'
-                participants:
-                  $ref: '#/components/schemas/relationship_objects'
-              required:
-              - recipients
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
-    note_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - notes
-        attributes:
-          type: object
-          properties:
-            message:
-              type: string
-              examples:
-              - This is a note
-            public:
-              type: boolean
-              description: Notes with Public selected can be viewed from the Fleet case perspective.
-              examples:
-              - true
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp'
-          required:
-          - message
-          - public
-        relationships:
-          type: object
-          properties:
-            recipients:
-              $ref: '#/components/schemas/relationship_objects'
-            subject:
-              $ref: '#/components/schemas/relationship_object'
-            sender:
-              $ref: '#/components/schemas/relationship_object'
-            participants:
-              $ref: '#/components/schemas/relationship_objects'
-          required:
-          - recipients
-      required:
-      - attributes
-      - relationships
-      - type
-      - id
   securitySchemes:
     AccessToken:
       type: http

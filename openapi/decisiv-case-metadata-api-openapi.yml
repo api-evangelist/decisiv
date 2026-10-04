@@ -314,47 +314,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    case_metadata:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - case_metadata
-            attributes:
-              type: object
-              properties:
-                metadata:
-                  type: array
-                  description: Metadata about the case
-                  minItems: 1
-                  maxItems: 50
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        description: Metadata key has to start and end with a letter or number, be lower snake case
-                        minLength: 1
-                        maxLength: 50
-                        pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
-                        example: some_key
-                      value:
-                        type: string
-                        description: The metadata value must be a string with 500 characters or less
-                        minLength: 1
-                        maxLength: 500
-                        example: The value goes here
-              required:
-              - metadata
-          required:
-          - type
-          - attributes
-      required:
-      - data
     error_response:
       type: object
       properties:
@@ -414,6 +373,15 @@ components:
           required:
           - type
           - attributes
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     case_metadata_persisted:
       type: object
       required:
@@ -437,15 +405,47 @@ components:
                   minProperties: 1
                   maxProperties: 50
                   properties: {}
-    errors_response:
+    case_metadata:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - case_metadata
+            attributes:
+              type: object
+              properties:
+                metadata:
+                  type: array
+                  description: Metadata about the case
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Metadata key has to start and end with a letter or number, be lower snake case
+                        minLength: 1
+                        maxLength: 50
+                        pattern: ^[a-z0-9]+(_{1}[a-z0-9]+)*$
+                        example: some_key
+                      value:
+                        type: string
+                        description: The metadata value must be a string with 500 characters or less
+                        minLength: 1
+                        maxLength: 500
+                        example: The value goes here
+              required:
+              - metadata
+          required:
+          - type
+          - attributes
       required:
-      - errors
+      - data
   securitySchemes:
     AccessToken:
       type: http

@@ -680,6 +680,17 @@ components:
           - attributes
           - type
           - id
+    extended_attributes:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/extended_attribute_properties-data'
+        meta:
+          type: object
     error_response:
       type: object
       properties:
@@ -715,6 +726,15 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     extended_attribute_properties-data:
       type: object
       properties:
@@ -897,26 +917,6 @@ components:
       - attributes
       - type
       - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    extended_attributes:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/extended_attribute_properties-data'
-        meta:
-          type: object
     extended_attribute_2:
       type: object
       required:

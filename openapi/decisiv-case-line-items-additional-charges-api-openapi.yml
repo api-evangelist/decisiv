@@ -686,6 +686,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -721,165 +738,6 @@ components:
       required:
       - status
       - title
-    create_additional_charge:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: object
-              required:
-              - description
-              - pricing
-              properties:
-                code:
-                  type: string
-                  description: The code for the additional charge
-                  maxLength: 20
-                  example: TAX-123
-                description:
-                  type: string
-                  description: The description for the additional charge
-                  maxLength: 255
-                  example: Required state tax for the service
-                pricing:
-                  type: object
-                  description: Pricing information for the additional charge
-                  properties:
-                    amount:
-                      type: string
-                      description: The amount for the additional charge, formatted as a decimal with up to two decimal places.
-                      pattern: ^-?\d{1,7}(\.\d{1,2})?$
-                      example: '8.25'
-            relationships:
-              type: object
-              required:
-              - category
-              properties:
-                category:
-                  type: object
-                  description: The additional charge category to associate with this charge.
-                  required:
-                  - data
-                  properties:
-                    data:
-                      type: object
-                      required:
-                      - type
-                      - id
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - additional_charge_categories
-                        id:
-                          type: string
-                          format: uuid
-                          description: The UUID of the additional charge category.
-                          example: 5f3a7d6c-8b1e-4f2a-9c4d-1e5b8a7f2c3d
-          required:
-          - type
-          - attributes
-          - relationships
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    additional_charge:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - line_item_additional_charges
-            attributes:
-              type: object
-              properties:
-                code:
-                  type: string
-                  description: The code for the additional charge
-                  maxLength: 20
-                  example: TAX-123
-                description:
-                  type: string
-                  description: The description for the additional charge
-                  maxLength: 255
-                  example: Required state tax for the service
-                pricing:
-                  type: object
-                  description: Pricing information for the additional charge
-                  properties:
-                    amount:
-                      type: string
-                      description: The amount for the additional charge, formatted as a decimal with two decimal places
-                      pattern: ^-?\d{1,7}\.\d{2}$
-                      example: '8.25'
-                    sales_tax_amount:
-                      type: string
-                      description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
-                      pattern: ^-?\d{1,7}\.\d{2}$
-                      example: '1.25'
-                    total_amount:
-                      type: string
-                      description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
-                      pattern: ^-?\d{1,7}\.\d{2}$
-                      example: '9.50'
-                created_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the additional charge was created'
-                updated_at:
-                  type: string
-                  format: date-time
-                  description: '`ISO 8601` timestamp indicating when the additional charge was updated'
-              required:
-              - code
-              - description
-              - pricing
-            relationships:
-              type: object
-              properties:
-                category:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - type
-          - id
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     technician_story:
       type: object
       required:
@@ -976,17 +834,148 @@ components:
       - attributes
       - type
       - id
-    additional_charges:
+    additional_charge:
       type: object
       required:
       - data
       properties:
         data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_item_additional_charges
+            attributes:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '8.25'
+                    sales_tax_amount:
+                      type: string
+                      description: The amount for the sales tax in the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '1.25'
+                    total_amount:
+                      type: string
+                      description: The amount and the sales tax added together for the additional charge, formatted as a decimal with two decimal places
+                      pattern: ^-?\d{1,7}\.\d{2}$
+                      example: '9.50'
+                created_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was created'
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: '`ISO 8601` timestamp indicating when the additional charge was updated'
+              required:
+              - code
+              - description
+              - pricing
+            relationships:
+              type: object
+              properties:
+                category:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/additional_charge_properties-data'
-        meta:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_additional_charge:
+      type: object
+      required:
+      - data
+      properties:
+        data:
           type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - description
+              - pricing
+              properties:
+                code:
+                  type: string
+                  description: The code for the additional charge
+                  maxLength: 20
+                  example: TAX-123
+                description:
+                  type: string
+                  description: The description for the additional charge
+                  maxLength: 255
+                  example: Required state tax for the service
+                pricing:
+                  type: object
+                  description: Pricing information for the additional charge
+                  properties:
+                    amount:
+                      type: string
+                      description: The amount for the additional charge, formatted as a decimal with up to two decimal places.
+                      pattern: ^-?\d{1,7}(\.\d{1,2})?$
+                      example: '8.25'
+            relationships:
+              type: object
+              required:
+              - category
+              properties:
+                category:
+                  type: object
+                  description: The additional charge category to associate with this charge.
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - additional_charge_categories
+                        id:
+                          type: string
+                          format: uuid
+                          description: The UUID of the additional charge category.
+                          example: 5f3a7d6c-8b1e-4f2a-9c4d-1e5b8a7f2c3d
+          required:
+          - type
+          - attributes
+          - relationships
     update_additional_charge:
       type: object
       required:
@@ -1043,6 +1032,17 @@ components:
           - attributes
           - id
           - relationships
+    additional_charges:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/additional_charge_properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http

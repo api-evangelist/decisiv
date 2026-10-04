@@ -1358,90 +1358,6 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    modify_case_contact_relationship:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          description: JSON:API resource linkage. `id` must be the `uuid` of one of the fleet's own registered contacts; `type` may be `contacts`, `registered_contacts`, or `recipients`, since a registered contact can be referenced by any of these resource types.
-          properties:
-            type:
-              type: string
-              enum:
-              - contacts
-              - registered_contacts
-              - recipients
-            id:
-              type: string
-              format: uuid
-          required:
-          - type
-          - id
     case:
       type: object
       required:
@@ -1692,6 +1608,27 @@ components:
           - attributes
           - type
           - id
+    modify_case_contact_relationship:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          description: JSON:API resource linkage. `id` must be the `uuid` of one of the fleet's own registered contacts; `type` may be `contacts`, `registered_contacts`, or `recipients`, since a registered contact can be referenced by any of these resource types.
+          properties:
+            type:
+              type: string
+              enum:
+              - contacts
+              - registered_contacts
+              - recipients
+            id:
+              type: string
+              format: uuid
+          required:
+          - type
+          - id
     relationship_object:
       type: object
       properties:
@@ -1709,108 +1646,69 @@ components:
           - type
       required:
       - data
-    modify_billing_customer:
+    error_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
           properties:
-            id:
-              type: string
-              description: UUID of the customer to be associated
-              maxLength: 36
-            type:
-              oneOf:
-              - type: string
-                description: customers
-              - type: string
-                description: registered_customers
-          required:
-          - type
-          - id
-    modify_primary_contact_response:
-      type: object
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - data
+      - status
+      - title
+    relationship_objects:
+      type: object
       properties:
         data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
+          type: array
+          items:
             type:
-              type: string
-            relationships:
-              type: object
-              properties:
-                primary_contact:
-                  type: object
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          format: uuid
-                        type:
-                          type: string
-    modify_primary_contact:
-      type: object
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
       required:
       - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              description: UUID of the contact to be associated
-              maxLength: 36
-            type:
-              type: string
-              description: Must be one of "recipients", "contacts", "registered_contacts"
-          required:
-          - type
-          - id
-    modify_program_type:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              description: UUID of the program type to be associated
-              maxLength: 36
-            type:
-              type: string
-              description: Must be "program_types"
-          required:
-          - type
-          - id
-    modify_driver:
-      type: object
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              description: UUID of the contact to be associated
-              maxLength: 36
-            type:
-              type: string
-              description: Must be one of "recipients", "contacts", "registered_contacts"
-          required:
-          - type
-          - id
+      - errors
     case_2:
       type: object
       required:
@@ -2295,54 +2193,6 @@ components:
           - relationships
           - type
           - id
-    modify_billing_contact_response:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            relationships:
-              type: object
-              properties:
-                billing_contact:
-                  type: object
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          format: uuid
-                        type:
-                          type: string
-    modify_shipping_customer:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              description: UUID of the customer to be associated
-              maxLength: 36
-            type:
-              oneOf:
-              - type: string
-                description: customers
-              - type: string
-                description: registered_customers
-          required:
-          - type
-          - id
     modify_driver_response:
       type: object
       required:
@@ -2370,6 +2220,156 @@ components:
                           format: uuid
                         type:
                           type: string
+    modify_program_type:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: UUID of the program type to be associated
+              maxLength: 36
+            type:
+              type: string
+              description: Must be "program_types"
+          required:
+          - type
+          - id
+    modify_primary_contact:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: UUID of the contact to be associated
+              maxLength: 36
+            type:
+              type: string
+              description: Must be one of "recipients", "contacts", "registered_contacts"
+          required:
+          - type
+          - id
+    modify_shipping_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: UUID of the customer to be associated
+              maxLength: 36
+            type:
+              oneOf:
+              - type: string
+                description: customers
+              - type: string
+                description: registered_customers
+          required:
+          - type
+          - id
+    modify_driver:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: UUID of the contact to be associated
+              maxLength: 36
+            type:
+              type: string
+              description: Must be one of "recipients", "contacts", "registered_contacts"
+          required:
+          - type
+          - id
+    modify_billing_contact_response:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            relationships:
+              type: object
+              properties:
+                billing_contact:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+    modify_primary_contact_response:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            relationships:
+              type: object
+              properties:
+                primary_contact:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+    modify_billing_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: UUID of the customer to be associated
+              maxLength: 36
+            type:
+              oneOf:
+              - type: string
+                description: customers
+              - type: string
+                description: registered_customers
+          required:
+          - type
+          - id
   securitySchemes:
     AccessToken:
       type: http

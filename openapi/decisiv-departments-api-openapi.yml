@@ -131,21 +131,15 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    departments:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/department_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     error_response:
       type: object
       properties:
@@ -181,6 +175,21 @@ components:
       required:
       - status
       - title
+    departments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/department_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     department_properties-data:
       type: object
       properties:
@@ -201,15 +210,6 @@ components:
       - attributes
       - type
       - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

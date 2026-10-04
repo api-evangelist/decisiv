@@ -802,50 +802,6 @@ components:
           - attributes
           - type
           - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     update_estimate_item_part:
       type: object
       required:
@@ -1405,6 +1361,122 @@ components:
           - relationships
           - type
           - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    part_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - line_item_parts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Part name of materials associated with the item
+              maxLength: 510
+            quantity:
+              type: string
+              description: Count of specific parts associated with the item
+              maxLength: 11
+              pattern: ^[0-9]{1,9}\.[0-9]{2}$
+            quantity_shipped:
+              type:
+              - string
+              - 'null'
+              description: Count of parts that have been shipped for the item, emitted as an integer-formatted string for consistency with quantity
+            quantity_backordered:
+              type:
+              - string
+              - 'null'
+              description: Count of parts that are backordered for the item, emitted as an integer-formatted string for consistency with quantity
+            number:
+              type: string
+              description: Part number of material associated with the item
+              maxLength: 100
+            unit_price:
+              type: string
+              description: Unit cost of each part associated with the item
+              maxLength: 11
+              pattern: ^[0-9]{1,7}\.[0-9]{4}$
+            core:
+              type: object
+              description: Information about the core parts
+              properties:
+                quantity:
+                  type:
+                  - integer
+                  - 'null'
+                  description: Count of specific core parts associated with the item
+                price:
+                  type: string
+                  description: Unit cost of each core part associated with the item
+                  maxLength: 11
+                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
+        relationships:
+          type: object
+          properties:
+            salesperson:
+              $ref: '#/components/schemas/relationship_object'
+      required:
+      - attributes
+      - type
+      - id
     create_estimate_item_part:
       type: object
       required:
@@ -1483,87 +1555,15 @@ components:
           required:
           - type
           - attributes
-    relationship_object:
+    errors_response:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
-    part_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - line_item_parts
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Part name of materials associated with the item
-              maxLength: 510
-            quantity:
-              type: string
-              description: Count of specific parts associated with the item
-              maxLength: 11
-              pattern: ^[0-9]{1,9}\.[0-9]{2}$
-            quantity_shipped:
-              type:
-              - string
-              - 'null'
-              description: Count of parts that have been shipped for the item, emitted as an integer-formatted string for consistency with quantity
-            quantity_backordered:
-              type:
-              - string
-              - 'null'
-              description: Count of parts that are backordered for the item, emitted as an integer-formatted string for consistency with quantity
-            number:
-              type: string
-              description: Part number of material associated with the item
-              maxLength: 100
-            unit_price:
-              type: string
-              description: Unit cost of each part associated with the item
-              maxLength: 11
-              pattern: ^[0-9]{1,7}\.[0-9]{4}$
-            core:
-              type: object
-              description: Information about the core parts
-              properties:
-                quantity:
-                  type:
-                  - integer
-                  - 'null'
-                  description: Count of specific core parts associated with the item
-                price:
-                  type: string
-                  description: Unit cost of each core part associated with the item
-                  maxLength: 11
-                  pattern: ^[0-9]{1,7}\.[0-9]{4}$
-        relationships:
-          type: object
-          properties:
-            salesperson:
-              $ref: '#/components/schemas/relationship_object'
-      required:
-      - attributes
-      - type
-      - id
+      - errors
     parts:
       type: object
       required:

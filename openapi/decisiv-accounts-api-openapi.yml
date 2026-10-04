@@ -483,6 +483,191 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
+    account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - accounts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the account
+            address1:
+              type: string
+              description: First line of the Address
+            address2:
+              type: string
+              description: Second line of the Address
+            city:
+              type: string
+              description: City the address is located in
+            state:
+              type: string
+              description: State or province the address is located in
+            country:
+              type: string
+              description: ISO 3166 country code for the country the address is located in
+            postal_code:
+              type: string
+              description: ZIP or Postal Code the address is located in
+            phone:
+              type: string
+              description: Phone number to reach the organization
+            fax:
+              type: string
+              description: Fax number to reach the organization
+            email:
+              type: string
+              description: Email to reach the organization
+            external_reference:
+              type: object
+              description: Identifiers available for the Account
+              properties:
+                business_system:
+                  type: string
+                  description: Business System Identifier
+                dms:
+                  type: string
+                  description: DMS Identifier
+                  deprecated: true
+                srm_account:
+                  type: string
+                  description: SRM Account Identifier
+                decisiv:
+                  type: string
+                  description: Decisiv Identifier
+            module_subscriptions:
+              type: array
+              description: A list of objects that indicate which SRM Modules the account currently participates within in SRM land
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: Snake case representation of the SRM module
+                    example: account_management
+                  name:
+                    type: string
+                    description: Name of the SRM module
+                    example: Account Management
+                  description:
+                    type: string
+                    description: Detailed explanation of the SRM module
+        relationships:
+          type: object
+          description: Present only when the request includes `?include=roles`. Omitted entirely otherwise.
+          properties:
+            roles:
+              type: object
+              description: The authenticated user's RBAC roles on this account, including both public and private (account-owned) roles. The full role resources are returned in the top-level `included` array.
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - roles
+                      id:
+                        type: string
+                        format: uuid
+      required:
+      - attributes
+      - type
+      - id
+    role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - roles
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the role
+            description:
+              type:
+              - string
+              - 'null'
+              description: Description of the role
+            public:
+              type: boolean
+              description: Whether the role is public (from a subscribed service) or private (owned by the account)
+            permissions:
+              type: array
+              description: List of permissions granted by this role
+              items:
+                type: string
+      required:
+      - attributes
+      - type
+      - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    accounts:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/account'
+        included:
+          type: array
+          description: Populated with the related `roles` resources when the request includes `?include=roles`.
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
     account_by_id:
       example:
         data:
@@ -630,41 +815,6 @@ components:
             $ref: '#/components/schemas/role'
       required:
       - data
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
     errors_response:
       type: object
       properties:
@@ -674,156 +824,6 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
-    account:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - accounts
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the account
-            address1:
-              type: string
-              description: First line of the Address
-            address2:
-              type: string
-              description: Second line of the Address
-            city:
-              type: string
-              description: City the address is located in
-            state:
-              type: string
-              description: State or province the address is located in
-            country:
-              type: string
-              description: ISO 3166 country code for the country the address is located in
-            postal_code:
-              type: string
-              description: ZIP or Postal Code the address is located in
-            phone:
-              type: string
-              description: Phone number to reach the organization
-            fax:
-              type: string
-              description: Fax number to reach the organization
-            email:
-              type: string
-              description: Email to reach the organization
-            external_reference:
-              type: object
-              description: Identifiers available for the Account
-              properties:
-                business_system:
-                  type: string
-                  description: Business System Identifier
-                dms:
-                  type: string
-                  description: DMS Identifier
-                  deprecated: true
-                srm_account:
-                  type: string
-                  description: SRM Account Identifier
-                decisiv:
-                  type: string
-                  description: Decisiv Identifier
-            module_subscriptions:
-              type: array
-              description: A list of objects that indicate which SRM Modules the account currently participates within in SRM land
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    description: Snake case representation of the SRM module
-                    example: account_management
-                  name:
-                    type: string
-                    description: Name of the SRM module
-                    example: Account Management
-                  description:
-                    type: string
-                    description: Detailed explanation of the SRM module
-        relationships:
-          type: object
-          description: Present only when the request includes `?include=roles`. Omitted entirely otherwise.
-          properties:
-            roles:
-              type: object
-              description: The authenticated user's RBAC roles on this account, including both public and private (account-owned) roles. The full role resources are returned in the top-level `included` array.
-              properties:
-                data:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        enum:
-                        - roles
-                      id:
-                        type: string
-                        format: uuid
-      required:
-      - attributes
-      - type
-      - id
-    accounts:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/account'
-        included:
-          type: array
-          description: Populated with the related `roles` resources when the request includes `?include=roles`.
-          items:
-            $ref: '#/components/schemas/role'
-        meta:
-          type: object
-    role:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - roles
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the role
-            description:
-              type:
-              - string
-              - 'null'
-              description: Description of the role
-            public:
-              type: boolean
-              description: Whether the role is public (from a subscribed service) or private (owned by the account)
-            permissions:
-              type: array
-              description: List of permissions granted by this role
-              items:
-                type: string
-      required:
-      - attributes
-      - type
-      - id
   securitySchemes:
     AccessToken:
       type: http

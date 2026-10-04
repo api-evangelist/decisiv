@@ -562,6 +562,23 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -617,23 +634,6 @@ components:
             $ref: '#/components/schemas/participant_recipient_properties-data'
         meta:
           type: object
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     participant_recipient_properties-data:
       type: object
       properties:
@@ -718,76 +718,6 @@ components:
             record-count:
               type: integer
               description: Total count across all pages
-    recipient_properties-data:
-      type: object
-      description: A participant recipient — the addressable identity used to deliver case notifications. The `type` indicates which underlying record provides the contact details (a directly-attached recipient, a registered contact, an ad-hoc contact, or a service-group contact).
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          description: Discriminator for the recipient's underlying source record.
-          enum:
-          - recipients
-          - registered_contacts
-          - contacts
-          - service_group_contacts
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              example: John Doe
-            email:
-              type: string
-              example: support@support.com
-            phone:
-              type: string
-              example: '12345678910'
-            first_name:
-              type: string
-              example: John
-              maxLength: 100
-            last_name:
-              type: string
-              example: Doe
-              maxLength: 100
-            communication:
-              type: array
-              items:
-                type: object
-                properties:
-                  method_type:
-                    type: string
-                    example: email
-                    enum:
-                    - email
-                    - mobile
-                  value:
-                    type: string
-                    example: 123-456-7890
-                    maxLength: 128
-                  notify:
-                    type: boolean
-                    description: Whether to notify via this method
-                    example: true
-        relationships:
-          type: object
-          properties:
-            affiliation:
-              allOf:
-              - $ref: '#/components/schemas/relationship_object'
-              - description: The affiliated participant.
-        links:
-          type: object
-          properties:
-            self:
-              type: string
-      required:
-      - attributes
-      - type
-      - id
     recipient:
       type: object
       required:
@@ -863,6 +793,76 @@ components:
           - attributes
           - type
           - id
+    recipient_properties-data:
+      type: object
+      description: A participant recipient — the addressable identity used to deliver case notifications. The `type` indicates which underlying record provides the contact details (a directly-attached recipient, a registered contact, an ad-hoc contact, or a service-group contact).
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          description: Discriminator for the recipient's underlying source record.
+          enum:
+          - recipients
+          - registered_contacts
+          - contacts
+          - service_group_contacts
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              example: John Doe
+            email:
+              type: string
+              example: support@support.com
+            phone:
+              type: string
+              example: '12345678910'
+            first_name:
+              type: string
+              example: John
+              maxLength: 100
+            last_name:
+              type: string
+              example: Doe
+              maxLength: 100
+            communication:
+              type: array
+              items:
+                type: object
+                properties:
+                  method_type:
+                    type: string
+                    example: email
+                    enum:
+                    - email
+                    - mobile
+                  value:
+                    type: string
+                    example: 123-456-7890
+                    maxLength: 128
+                  notify:
+                    type: boolean
+                    description: Whether to notify via this method
+                    example: true
+        relationships:
+          type: object
+          properties:
+            affiliation:
+              allOf:
+              - $ref: '#/components/schemas/relationship_object'
+              - description: The affiliated participant.
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+      required:
+      - attributes
+      - type
+      - id
   securitySchemes:
     AccessToken:
       type: http

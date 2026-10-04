@@ -254,18 +254,23 @@ components:
               properties:
                 registered_asset:
                   $ref: '#/components/schemas/relationship_object'
-    registered_asset_change:
+    relationship_object:
       type: object
-      required:
-      - data
       properties:
         data:
-          type: object
+          type:
+          - object
+          - 'null'
           properties:
-            type:
-              type: string
             id:
               type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -301,6 +306,13 @@ components:
       required:
       - status
       - title
+    registered_asset_remove:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: 'null'
     errors_response:
       type: object
       properties:
@@ -310,30 +322,18 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
-    relationship_object:
+    registered_asset_change:
       type: object
+      required:
+      - data
       properties:
         data:
-          type:
-          - object
-          - 'null'
+          type: object
           properties:
-            id:
-              type: string
             type:
               type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    registered_asset_remove:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: 'null'
+            id:
+              type: string
   securitySchemes:
     AccessToken:
       type: http

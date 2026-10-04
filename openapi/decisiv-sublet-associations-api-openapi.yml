@@ -482,6 +482,57 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    create_sublet_association:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - sublet_associations
+            attributes:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for create the association
+                  examples:
+                  - Text description of the reason for the association
+            relationships:
+              type: object
+              properties:
+                parent_case:
+                  $ref: '#/components/schemas/relationship_object'
+                sublet_case:
+                  $ref: '#/components/schemas/relationship_object'
+              required:
+              - parent_case
+              - sublet_case
+          required:
+          - type
+          - attributes
+          - relationships
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -517,70 +568,6 @@ components:
       required:
       - status
       - title
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    sublet_association:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - sublet_associations
-            attributes:
-              type: object
-              properties:
-                reason:
-                  type: string
-                  description: Reason for create the association
-                  examples:
-                  - Text description of the reason for the association
-            relationships:
-              type: object
-              properties:
-                parent_case:
-                  $ref: '#/components/schemas/relationship_object'
-                sublet_case:
-                  $ref: '#/components/schemas/relationship_object'
-              required:
-              - sublet_case
-              - parent_case
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     parent_case:
       type: object
       required:
@@ -748,6 +735,65 @@ components:
           - attributes
           - type
           - id
+    sublet_associations:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_association_properties-data'
+        meta:
+          type: object
+        included:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/parent_case'
+            - $ref: '#/components/schemas/sublet_case'
+    sublet_association_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - sublet_associations
+        attributes:
+          type: object
+          properties:
+            reason:
+              type: string
+              description: Reason for create the association
+              examples:
+              - Text description of the reason for the association
+        relationships:
+          type: object
+          properties:
+            parent_case:
+              $ref: '#/components/schemas/relationship_object'
+            sublet_case:
+              $ref: '#/components/schemas/relationship_object'
+          required:
+          - sublet_case
+          - parent_case
+      required:
+      - attributes
+      - relationships
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     sublet_case:
       type: object
       required:
@@ -877,24 +923,7 @@ components:
           - attributes
           - type
           - id
-    sublet_associations:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/sublet_association_properties-data'
-        meta:
-          type: object
-        included:
-          type: array
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/parent_case'
-            - $ref: '#/components/schemas/sublet_case'
-    create_sublet_association:
+    sublet_association:
       type: object
       required:
       - data
@@ -902,6 +931,9 @@ components:
         data:
           type: object
           properties:
+            id:
+              type: string
+              format: uuid
             type:
               type: string
               enum:
@@ -922,45 +954,13 @@ components:
                 sublet_case:
                   $ref: '#/components/schemas/relationship_object'
               required:
-              - parent_case
               - sublet_case
+              - parent_case
           required:
-          - type
           - attributes
           - relationships
-    sublet_association_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - sublet_associations
-        attributes:
-          type: object
-          properties:
-            reason:
-              type: string
-              description: Reason for create the association
-              examples:
-              - Text description of the reason for the association
-        relationships:
-          type: object
-          properties:
-            parent_case:
-              $ref: '#/components/schemas/relationship_object'
-            sublet_case:
-              $ref: '#/components/schemas/relationship_object'
-          required:
-          - sublet_case
-          - parent_case
-      required:
-      - attributes
-      - relationships
-      - type
-      - id
+          - type
+          - id
   securitySchemes:
     AccessToken:
       type: http

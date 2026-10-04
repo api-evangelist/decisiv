@@ -1351,6 +1351,23 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -1386,40 +1403,17 @@ components:
       required:
       - status
       - title
-    update_extended_asset_attribute:
+    extended_asset_attributes:
       type: object
       required:
       - data
       properties:
         data:
-          type: object
-          required:
-          - id
-          - type
-          - attributes
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-            attributes:
-              type: object
-              required:
-              - value
-              properties:
-                value:
-                  type: string
-                  description: Value of extended attribute for the asset
-    errors_response:
-      type: object
-      properties:
-        errors:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
+            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
+        meta:
+          type: object
     extended_asset_attribute:
       type: object
       required:
@@ -1469,23 +1463,15 @@ components:
           - relationships
           - type
           - id
-    relationship_object:
+    errors_response:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
+      - errors
     extended_asset_attribute_properties-data:
       type: object
       properties:
@@ -1530,17 +1516,31 @@ components:
       - relationships
       - type
       - id
-    extended_asset_attributes:
+    update_extended_asset_attribute:
       type: object
       required:
       - data
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/extended_asset_attribute_properties-data'
-        meta:
           type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - value
+              properties:
+                value:
+                  type: string
+                  description: Value of extended attribute for the asset
     extended_asset_attribute_2:
       type: object
       required:

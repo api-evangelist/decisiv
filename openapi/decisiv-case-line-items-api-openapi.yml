@@ -972,103 +972,6 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    line_items:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/line_item_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type:
-              - integer
-              - 'null'
-              description: Total count across all pages. An integer on the case-nested collection; null on the account-wide `GET /line_items` collection, which omits the count for performance.
     line_item_properties-data:
       type: object
       description: 'A line_item represents a single operation (complaint/cause/correction) on the case.
@@ -1474,350 +1377,94 @@ components:
       - attributes
       - type
       - id
-    update_line_item:
+    line_items:
       type: object
-      description: 'PATCH body for a case line item. Note that `assignee` reassignment is not supported on PATCH — set the assignee on create and manage subsequent changes via the relationship endpoint.
-
-        '
       required:
       - data
       properties:
         data:
+          type: array
+          items:
+            $ref: '#/components/schemas/line_item_properties-data'
+        meta:
           type: object
           properties:
-            type:
-              type: string
+            record-count:
+              type:
+              - integer
+              - 'null'
+              description: Total count across all pages. An integer on the case-nested collection; null on the account-wide `GET /line_items` collection, which omits the count for performance.
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
             id:
               type: string
-              format: uuid
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the operation line item
-                  maxLength: 510
-                opcode:
-                  type: string
-                  description: Unique operation code
-                  maxLength: 255
-                complaint:
-                  type: string
-                  description: Complaint that originated the operation
-                  maxLength: 6000
-                cause:
-                  type: string
-                  description: Cause of the operation
-                  maxLength: 6000
-                correction:
-                  type: string
-                  description: Correction to be made in the operation
-                  maxLength: 6000
-                internal_label:
-                  type: string
-                  description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values. `none` is always accepted and represents "no label".
-                  maxLength: 255
-                  example: approved
-                description:
-                  type: string
-                  description: Description for the operation
-                  maxLength: 6000
-                price_code:
-                  type: string
-                  description: Price code for the operation
-                  maxLength: 255
-                approval_group_tag:
-                  type: string
-                  maxLength: 255
-                  description: Free-form tag used to group line items for approval workflows.
-                  example: GROUP-A
-                billing_classification:
-                  type: string
-                  description: How the operation is billed. Maps to the operation type. Mutually exclusive with `under_warranty`.
-                  enum:
-                  - billable
-                  - warranty
-                  - policy
-                  - campaign
-                  - recall
-                  example: warranty
-                under_warranty:
-                  type: boolean
-                  description: Marks the operation as warranty work. Mutually exclusive with `billing_classification`.
-                  example: true
-                labor:
-                  type: object
-                  properties:
-                    time:
-                      type: number
-                      minimum: 0
-                      description: Labor hours required for the operation.
-                    skill_level:
-                      type: string
-                      maxLength: 32
-                      description: Skill level required for the operation
-                    rate:
-                      type: number
-                      minimum: 0
-                      description: Hourly labor rate for the operation.
-                    total:
-                      type: number
-                      minimum: 0
-                      description: Labor total price for the operation.
-                approval_status:
-                  type: object
-                  description: Sets the metadata-backed approval status for the line item, attributed to the requesting user and account.
-                  required:
-                  - name
-                  properties:
-                    name:
-                      type: string
-                      enum:
-                      - requested
-                      - approved
-                      - declined
-                      - deferred
-                      example: approved
-                    reason:
-                      type: string
-                      maxLength: 255
-                      description: Reason associated with the approval decision.
-                    reason_description:
-                      type: string
-                      maxLength: 6000
-                      description: Free-form description of the approval reason.
-                vmrs:
-                  type: object
-                  description: VMRS coding to persist on the line item. Each category takes a `code` string; `operator_report` takes a list of `{ code }` entries. Omitted categories are left unchanged; a category sent with a blank `code` clears it.
-                  properties:
-                    work_accomplished:
-                      type: object
-                      description: Work accomplished (VMRS CK15).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 2
-                          example: A
-                    technician_failure:
-                      type: object
-                      description: Technician-diagnosed failure (VMRS CK18).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 2
-                          example: B1
-                    component:
-                      type: object
-                      description: Component (VMRS CK33).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 11
-                          example: 023-000-000
-                    position:
-                      type: object
-                      description: Position (VMRS CK79).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 2
-                          example: '03'
-                    operator_report:
-                      type: array
-                      description: Operator reports (VMRS CK82).
-                      items:
-                        type: object
-                        properties:
-                          code:
-                            type: string
-                            maxLength: 3
-                            example: '001'
-          required:
-          - type
-          - attributes
-          - id
-    create_line_item:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
             type:
               type: string
-            attributes:
-              type: object
-              required:
-              - name
-              - opcode
-              properties:
-                name:
-                  type: string
-                  description: Name of the operation line item
-                  maxLength: 510
-                opcode:
-                  type: string
-                  description: Unique operation code
-                  maxLength: 255
-                complaint:
-                  type: string
-                  description: Complaint that originated the operation
-                  maxLength: 6000
-                cause:
-                  type: string
-                  description: Cause of the operation
-                  maxLength: 6000
-                correction:
-                  type: string
-                  description: Correction to be made in the operation
-                  maxLength: 6000
-                internal_label:
-                  type: string
-                  description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values. `none` is always accepted and represents "no label".
-                  maxLength: 255
-                  example: approved
-                description:
-                  type: string
-                  description: Description for the operation
-                  maxLength: 6000
-                price_code:
-                  type: string
-                  description: Price code for the operation
-                  maxLength: 255
-                approval_group_tag:
-                  type: string
-                  maxLength: 255
-                  description: Free-form tag used to group line items for approval workflows.
-                  example: GROUP-A
-                billing_classification:
-                  type: string
-                  description: How the operation is billed. Maps to the operation type. Mutually exclusive with `under_warranty`.
-                  enum:
-                  - billable
-                  - warranty
-                  - policy
-                  - campaign
-                  - recall
-                  example: warranty
-                under_warranty:
-                  type: boolean
-                  description: Marks the operation as warranty work. Mutually exclusive with `billing_classification`.
-                  example: true
-                labor:
-                  type: object
-                  properties:
-                    time:
-                      type: number
-                      minimum: 0
-                      description: Labor hours required for the operation.
-                    skill_level:
-                      type: string
-                      maxLength: 32
-                      description: Skill level required for the operation
-                    rate:
-                      type: number
-                      minimum: 0
-                      description: Hourly labor rate for the operation.
-                    total:
-                      type: number
-                      minimum: 0
-                      description: Labor total price for the operation.
-                approval_status:
-                  type: object
-                  description: Sets the metadata-backed approval status for the line item, attributed to the requesting user and account.
-                  required:
-                  - name
-                  properties:
-                    name:
-                      type: string
-                      enum:
-                      - requested
-                      - approved
-                      - declined
-                      - deferred
-                      example: approved
-                    reason:
-                      type: string
-                      maxLength: 255
-                      description: Reason associated with the approval decision.
-                    reason_description:
-                      type: string
-                      maxLength: 6000
-                      description: Free-form description of the approval reason.
-                vmrs:
-                  type: object
-                  description: VMRS coding to persist on the new line item. Each category takes a `code` string; `operator_report` takes a list of `{ code }` entries. Categories omitted here are not set; a category sent with a blank `code` is left empty.
-                  properties:
-                    work_accomplished:
-                      type: object
-                      description: Work accomplished (VMRS CK15).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 2
-                          example: A
-                    technician_failure:
-                      type: object
-                      description: Technician-diagnosed failure (VMRS CK18).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 2
-                          example: B1
-                    component:
-                      type: object
-                      description: Component (VMRS CK33).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 11
-                          example: 023-000-000
-                    position:
-                      type: object
-                      description: Position (VMRS CK79).
-                      properties:
-                        code:
-                          type: string
-                          maxLength: 2
-                          example: '03'
-                    operator_report:
-                      type: array
-                      description: Operator reports (VMRS CK82).
-                      items:
-                        type: object
-                        properties:
-                          code:
-                            type: string
-                            maxLength: 3
-                            example: '001'
-            relationships:
-              type: object
-              properties:
-                assignee:
-                  type: object
-                  required:
-                  - data
-                  properties:
-                    data:
-                      type: object
-                      required:
-                      - type
-                      - id
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - internal_users
-                          example: internal_users
-                        id:
-                          type: string
-                          format: uuid
-                          description: The uuid of the assignee
-                          example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
           required:
+          - id
           - type
-          - attributes
+      required:
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
     line_item:
       type: object
       required:
@@ -2228,6 +1875,359 @@ components:
           - attributes
           - type
           - id
+    update_line_item:
+      type: object
+      description: 'PATCH body for a case line item. Note that `assignee` reassignment is not supported on PATCH — set the assignee on create and manage subsequent changes via the relationship endpoint.
+
+        '
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string
+              format: uuid
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the operation line item
+                  maxLength: 510
+                opcode:
+                  type: string
+                  description: Unique operation code
+                  maxLength: 255
+                complaint:
+                  type: string
+                  description: Complaint that originated the operation
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Cause of the operation
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Correction to be made in the operation
+                  maxLength: 6000
+                internal_label:
+                  type: string
+                  description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values. `none` is always accepted and represents "no label".
+                  maxLength: 255
+                  example: approved
+                description:
+                  type: string
+                  description: Description for the operation
+                  maxLength: 6000
+                price_code:
+                  type: string
+                  description: Price code for the operation
+                  maxLength: 255
+                approval_group_tag:
+                  type: string
+                  maxLength: 255
+                  description: Free-form tag used to group line items for approval workflows.
+                  example: GROUP-A
+                billing_classification:
+                  type: string
+                  description: How the operation is billed. Maps to the operation type. Mutually exclusive with `under_warranty`.
+                  enum:
+                  - billable
+                  - warranty
+                  - policy
+                  - campaign
+                  - recall
+                  example: warranty
+                under_warranty:
+                  type: boolean
+                  description: Marks the operation as warranty work. Mutually exclusive with `billing_classification`.
+                  example: true
+                labor:
+                  type: object
+                  properties:
+                    time:
+                      type: number
+                      minimum: 0
+                      description: Labor hours required for the operation.
+                    skill_level:
+                      type: string
+                      maxLength: 32
+                      description: Skill level required for the operation
+                    rate:
+                      type: number
+                      minimum: 0
+                      description: Hourly labor rate for the operation.
+                    total:
+                      type: number
+                      minimum: 0
+                      description: Labor total price for the operation.
+                approval_status:
+                  type: object
+                  description: Sets the metadata-backed approval status for the line item, attributed to the requesting user and account.
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                      enum:
+                      - requested
+                      - approved
+                      - declined
+                      - deferred
+                      example: approved
+                    reason:
+                      type: string
+                      maxLength: 255
+                      description: Reason associated with the approval decision.
+                    reason_description:
+                      type: string
+                      maxLength: 6000
+                      description: Free-form description of the approval reason.
+                vmrs:
+                  type: object
+                  description: VMRS coding to persist on the line item. Each category takes a `code` string; `operator_report` takes a list of `{ code }` entries. Omitted categories are left unchanged; a category sent with a blank `code` clears it.
+                  properties:
+                    work_accomplished:
+                      type: object
+                      description: Work accomplished (VMRS CK15).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 2
+                          example: A
+                    technician_failure:
+                      type: object
+                      description: Technician-diagnosed failure (VMRS CK18).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 2
+                          example: B1
+                    component:
+                      type: object
+                      description: Component (VMRS CK33).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 11
+                          example: 023-000-000
+                    position:
+                      type: object
+                      description: Position (VMRS CK79).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 2
+                          example: '03'
+                    operator_report:
+                      type: array
+                      description: Operator reports (VMRS CK82).
+                      items:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                            maxLength: 3
+                            example: '001'
+          required:
+          - type
+          - attributes
+          - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_line_item:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              required:
+              - name
+              - opcode
+              properties:
+                name:
+                  type: string
+                  description: Name of the operation line item
+                  maxLength: 510
+                opcode:
+                  type: string
+                  description: Unique operation code
+                  maxLength: 255
+                complaint:
+                  type: string
+                  description: Complaint that originated the operation
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Cause of the operation
+                  maxLength: 6000
+                correction:
+                  type: string
+                  description: Correction to be made in the operation
+                  maxLength: 6000
+                internal_label:
+                  type: string
+                  description: Workflow status of the line item. Values are configurable per account — see `GET /line_item_internal_labels` for the accepted values. `none` is always accepted and represents "no label".
+                  maxLength: 255
+                  example: approved
+                description:
+                  type: string
+                  description: Description for the operation
+                  maxLength: 6000
+                price_code:
+                  type: string
+                  description: Price code for the operation
+                  maxLength: 255
+                approval_group_tag:
+                  type: string
+                  maxLength: 255
+                  description: Free-form tag used to group line items for approval workflows.
+                  example: GROUP-A
+                billing_classification:
+                  type: string
+                  description: How the operation is billed. Maps to the operation type. Mutually exclusive with `under_warranty`.
+                  enum:
+                  - billable
+                  - warranty
+                  - policy
+                  - campaign
+                  - recall
+                  example: warranty
+                under_warranty:
+                  type: boolean
+                  description: Marks the operation as warranty work. Mutually exclusive with `billing_classification`.
+                  example: true
+                labor:
+                  type: object
+                  properties:
+                    time:
+                      type: number
+                      minimum: 0
+                      description: Labor hours required for the operation.
+                    skill_level:
+                      type: string
+                      maxLength: 32
+                      description: Skill level required for the operation
+                    rate:
+                      type: number
+                      minimum: 0
+                      description: Hourly labor rate for the operation.
+                    total:
+                      type: number
+                      minimum: 0
+                      description: Labor total price for the operation.
+                approval_status:
+                  type: object
+                  description: Sets the metadata-backed approval status for the line item, attributed to the requesting user and account.
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                      enum:
+                      - requested
+                      - approved
+                      - declined
+                      - deferred
+                      example: approved
+                    reason:
+                      type: string
+                      maxLength: 255
+                      description: Reason associated with the approval decision.
+                    reason_description:
+                      type: string
+                      maxLength: 6000
+                      description: Free-form description of the approval reason.
+                vmrs:
+                  type: object
+                  description: VMRS coding to persist on the new line item. Each category takes a `code` string; `operator_report` takes a list of `{ code }` entries. Categories omitted here are not set; a category sent with a blank `code` is left empty.
+                  properties:
+                    work_accomplished:
+                      type: object
+                      description: Work accomplished (VMRS CK15).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 2
+                          example: A
+                    technician_failure:
+                      type: object
+                      description: Technician-diagnosed failure (VMRS CK18).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 2
+                          example: B1
+                    component:
+                      type: object
+                      description: Component (VMRS CK33).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 11
+                          example: 023-000-000
+                    position:
+                      type: object
+                      description: Position (VMRS CK79).
+                      properties:
+                        code:
+                          type: string
+                          maxLength: 2
+                          example: '03'
+                    operator_report:
+                      type: array
+                      description: Operator reports (VMRS CK82).
+                      items:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                            maxLength: 3
+                            example: '001'
+            relationships:
+              type: object
+              properties:
+                assignee:
+                  type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - internal_users
+                          example: internal_users
+                        id:
+                          type: string
+                          format: uuid
+                          description: The uuid of the assignee
+                          example: 1ed4f5ce-e426-11eb-a848-4fd53322f5bb
+          required:
+          - type
+          - attributes
   securitySchemes:
     AccessToken:
       type: http

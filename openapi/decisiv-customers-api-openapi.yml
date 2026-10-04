@@ -776,6 +776,184 @@ paths:
     - url: /api/v1/
 components:
   schemas:
+    create_customer:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+              required:
+              - name
+              - external_reference
+          required:
+          - type
+          - attributes
+      required:
+      - data
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    update_registered_customer:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - registered_customers
+            attributes:
+              type: object
+              properties:
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+          required:
+          - attributes
+          - type
+          - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
     update_customer:
       type: object
       required:
@@ -866,283 +1044,6 @@ components:
           - attributes
           - type
           - id
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    customers:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/customer_properties-data'
-        meta:
-          type: object
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    customer:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - customers
-              - registered_customers
-              - service_group_customers
-              - service_group_registered_customers
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the customer
-                  maxLength: 100
-                address1:
-                  type: string
-                  description: Primary address information
-                  maxLength: 100
-                address2:
-                  type: string
-                  description: Secondary address information
-                  maxLength: 100
-                city:
-                  type: string
-                  description: City in which the business resides
-                  maxLength: 100
-                state:
-                  type: string
-                  description: Second part of the `ISO 3166-2` code indicating the state
-                  minLength: 1
-                  maxLength: 3
-                  example: NJ
-                country:
-                  type: string
-                  description: '`ISO 3166-1` alpha-2 code indicating the country'
-                  minLength: 2
-                  maxLength: 2
-                  example: US
-                postal_code:
-                  type: string
-                  description: Postal ZIP Code
-                  maxLength: 20
-                phone:
-                  type: string
-                  description: Telephone number, must conform to E.164 standard
-                  maxLength: 60
-                fax:
-                  type: string
-                  description: Fax number, must conform to E.164 standard
-                  maxLength: 60
-                email:
-                  type: string
-                  description: Email contact information
-                  maxLength: 128
-                notes:
-                  type: string
-                  description: Free-form notes about the customer
-                  example: Premium customer - call ahead
-                account_number:
-                  type: string
-                  description: Account number for the customer (applies to MVP/OEM accounts)
-                  maxLength: 36
-                  example: ACC-1234
-                external_reference:
-                  type: object
-                  description: Reference Identifiers used outside of Decisiv SRM
-                  properties:
-                    customer_number:
-                      type: string
-                      description: Number used to identify Customer record in external system
-                      minLength: 1
-                      maxLength: 40
-                      deprecated: true
-                    business_system:
-                      type: string
-                      description: Number used to identify Customer record in external system
-                      minLength: 1
-                      maxLength: 40
-            relationships:
-              type: object
-              properties:
-                srm_account:
-                  $ref: '#/components/schemas/relationship_object'
-                service_location:
-                  $ref: '#/components/schemas/relationship_object'
-    update_registered_customer:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - registered_customers
-            attributes:
-              type: object
-              properties:
-                external_reference:
-                  type: object
-                  description: Reference Identifiers used outside of Decisiv SRM
-                  properties:
-                    customer_number:
-                      type: string
-                      description: Number used to identify Customer record in external system
-                      minLength: 1
-                      maxLength: 40
-                      deprecated: true
-                    business_system:
-                      type: string
-                      description: Number used to identify Customer record in external system
-                      minLength: 1
-                      maxLength: 40
-          required:
-          - attributes
-          - type
-          - id
-    create_customer:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - customers
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of the customer
-                  maxLength: 100
-                address1:
-                  type: string
-                  description: Primary address information
-                  maxLength: 100
-                address2:
-                  type: string
-                  description: Secondary address information
-                  maxLength: 100
-                city:
-                  type: string
-                  description: City in which the business resides
-                  maxLength: 100
-                state:
-                  type: string
-                  description: Second part of the `ISO 3166-2` code indicating the state
-                  minLength: 1
-                  maxLength: 3
-                  example: NJ
-                country:
-                  type: string
-                  description: '`ISO 3166-1` alpha-2 code indicating the country'
-                  minLength: 2
-                  maxLength: 2
-                  example: US
-                postal_code:
-                  type: string
-                  description: Postal ZIP Code
-                  maxLength: 20
-                phone:
-                  type: string
-                  description: Telephone number, must conform to E.164 standard
-                  maxLength: 60
-                fax:
-                  type: string
-                  description: Fax number, must conform to E.164 standard
-                  maxLength: 60
-                email:
-                  type: string
-                  description: Email contact information
-                  maxLength: 128
-                notes:
-                  type: string
-                  description: Free-form notes about the customer
-                  example: Premium customer - call ahead
-                account_number:
-                  type: string
-                  description: Account number for the customer (applies to MVP/OEM accounts)
-                  maxLength: 36
-                  example: ACC-1234
-                external_reference:
-                  type: object
-                  description: Reference Identifiers used outside of Decisiv SRM
-                  properties:
-                    customer_number:
-                      type: string
-                      description: Number used to identify Customer record in external system
-                      minLength: 1
-                      maxLength: 40
-                      deprecated: true
-                    business_system:
-                      type: string
-                      description: Number used to identify Customer record in external system
-                      minLength: 1
-                      maxLength: 40
-              required:
-              - name
-              - external_reference
-          required:
-          - type
-          - attributes
-      required:
-      - data
     customer_by_id:
       example:
         data:
@@ -1269,23 +1170,111 @@ components:
           - id
       required:
       - data
-    relationship_object:
+    errors_response:
       type: object
       properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    customer:
+      type: object
+      required:
+      - data
+      properties:
         data:
-          type:
-          - object
-          - 'null'
+          type: object
           properties:
             id:
               type: string
+              format: uuid
             type:
               type: string
-          required:
-          - id
-          - type
-      required:
-      - data
+              enum:
+              - customers
+              - registered_customers
+              - service_group_customers
+              - service_group_registered_customers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                  maxLength: 100
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                phone:
+                  type: string
+                  description: Telephone number, must conform to E.164 standard
+                  maxLength: 60
+                fax:
+                  type: string
+                  description: Fax number, must conform to E.164 standard
+                  maxLength: 60
+                email:
+                  type: string
+                  description: Email contact information
+                  maxLength: 128
+                notes:
+                  type: string
+                  description: Free-form notes about the customer
+                  example: Premium customer - call ahead
+                account_number:
+                  type: string
+                  description: Account number for the customer (applies to MVP/OEM accounts)
+                  maxLength: 36
+                  example: ACC-1234
+                external_reference:
+                  type: object
+                  description: Reference Identifiers used outside of Decisiv SRM
+                  properties:
+                    customer_number:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+                      deprecated: true
+                    business_system:
+                      type: string
+                      description: Number used to identify Customer record in external system
+                      minLength: 1
+                      maxLength: 40
+            relationships:
+              type: object
+              properties:
+                srm_account:
+                  $ref: '#/components/schemas/relationship_object'
+                service_location:
+                  $ref: '#/components/schemas/relationship_object'
     customer_properties-data:
       type: object
       properties:
@@ -1377,6 +1366,17 @@ components:
               $ref: '#/components/schemas/relationship_object'
             service_location:
               $ref: '#/components/schemas/relationship_object'
+    customers:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_properties-data'
+        meta:
+          type: object
     tooManyRequestsResponseErrorWithExample:
       title: tooManyRequestsResponseErrorWithExample
       type: object
@@ -1406,15 +1406,143 @@ components:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
           example: Too Many Requests
-    jsonapiErrorResponse:
+    jsonapiCustomerResponse:
       type: object
       properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/JSONAPI_Errors'
-          type: array
-          allOf:
-          - $ref: '#/components/schemas/JSONAPI_Errors'
+        name:
+          type: string
+          maxLength: 35
+          description: Name of company
+          example: Runaway Jim Trucking
+        address1:
+          type: string
+          maxLength: 40
+          description: Main address - Line 1
+          example: 100 Famous Mockingbird Lane
+        address2:
+          type: string
+          maxLength: 40
+          description: Main address - Line 2
+          example: 2410 Sloan Street
+        city:
+          type: string
+          maxLength: 25
+          description: City name
+          example: Gamehendge
+        state:
+          type: string
+          maxLength: 2
+          description: Postal abbreviation for the state or province
+          example: VT
+        postal_code:
+          type: string
+          maxLength: 10
+          example: '25610'
+          description: USPS zip code or Canadian postal code
+        country:
+          type: string
+          maxLength: 20
+          description: Country in which the state or province is located
+          example: US
+        phone:
+          type: string
+          maxLength: 10
+          description: Main office telephone number
+          example: 555-5555
+        fax:
+          type: string
+          maxLength: 10
+          description: Main office fax telephone number
+          example: 555-5555
+        email:
+          type: string
+          maxLength: 128
+          description: Main email address to be used for communication with the customer during estimating and repair processes
+          example: contact@decisiv.net
+        note:
+          type: string
+          maxLength: 300
+          description: Special instructions and / or any other information which will be useful to Service Network CSR while using DSRM
+          example: Note for contact
+        dms_id:
+          type: string
+          maxLength: 40
+          example: '12345'
+          description: Dealer Management System id
+        created_at:
+          type: string
+          example: '2023-10-17T15:50:52.133Z'
+        updated_at:
+          type: string
+          example: '2023-10-17T15:50:52.133Z'
+        created_by:
+          type: string
+          example: current_user
+        updated_by:
+          type: string
+          example: current_user
+    JSONAPI_Errors:
+      title: JSONAPI_Errors
+      type: array
+      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
+
+
+        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
+
+
+        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+
+        '
+      items:
+        $ref: '#/components/schemas/JSONAPI_Error'
+    JSONAPI_Error:
+      title: JSONAPI_Error
+      type: object
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
+
+        '
+      properties:
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+        id:
+          description: a unique identifier for this particular ocurrence of the problem.
+          type: string
+        links:
+          description: a links object containing the following members.
+          type: object
+          properties:
+            about:
+              type: string
+              description: a link that leads to further details about this particular occurrence of the problem.
+        meta:
+          type: object
+          description: a meta object containing non-standard meta-information about the error.
+        status:
+          type: string
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+        source:
+          type: object
+          description: an object containing references to the source of the error, optionally including any of the following members.
+          properties:
+            parameter:
+              type: string
+              description: a string indicating which URI query parameter caused the error.
+            pointer:
+              type: string
+              description: a JSON pointer (RFC6901) to the associated entity in the request document.
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
     jsonapiCustomerUpdateObject:
       type: object
       properties:
@@ -1546,81 +1674,6 @@ components:
           maxLength: 40
           example: '12345'
           description: Dealer Management System id
-    jsonapiCustomerResponse:
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 35
-          description: Name of company
-          example: Runaway Jim Trucking
-        address1:
-          type: string
-          maxLength: 40
-          description: Main address - Line 1
-          example: 100 Famous Mockingbird Lane
-        address2:
-          type: string
-          maxLength: 40
-          description: Main address - Line 2
-          example: 2410 Sloan Street
-        city:
-          type: string
-          maxLength: 25
-          description: City name
-          example: Gamehendge
-        state:
-          type: string
-          maxLength: 2
-          description: Postal abbreviation for the state or province
-          example: VT
-        postal_code:
-          type: string
-          maxLength: 10
-          example: '25610'
-          description: USPS zip code or Canadian postal code
-        country:
-          type: string
-          maxLength: 20
-          description: Country in which the state or province is located
-          example: US
-        phone:
-          type: string
-          maxLength: 10
-          description: Main office telephone number
-          example: 555-5555
-        fax:
-          type: string
-          maxLength: 10
-          description: Main office fax telephone number
-          example: 555-5555
-        email:
-          type: string
-          maxLength: 128
-          description: Main email address to be used for communication with the customer during estimating and repair processes
-          example: contact@decisiv.net
-        note:
-          type: string
-          maxLength: 300
-          description: Special instructions and / or any other information which will be useful to Service Network CSR while using DSRM
-          example: Note for contact
-        dms_id:
-          type: string
-          maxLength: 40
-          example: '12345'
-          description: Dealer Management System id
-        created_at:
-          type: string
-          example: '2023-10-17T15:50:52.133Z'
-        updated_at:
-          type: string
-          example: '2023-10-17T15:50:52.133Z'
-        created_by:
-          type: string
-          example: current_user
-        updated_by:
-          type: string
-          example: current_user
     jsonapiCustomersResponse:
       type: object
       properties:
@@ -1696,62 +1749,6 @@ components:
         updated_by:
           type: string
           example: current_user
-    JSONAPI_Error:
-      title: JSONAPI_Error
-      type: object
-      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
-
-        An error object MAY have the following members.
-
-        '
-      properties:
-        code:
-          type: string
-          description: an application-specific error code, expressed as a string value.
-        detail:
-          type: string
-          description: 'A human-readable explanation specific to this occurrence of the problem.
-
-            Like `title`, this field''s value can be localized.
-
-            '
-        id:
-          description: a unique identifier for this particular ocurrence of the problem.
-          type: string
-        links:
-          description: a links object containing the following members.
-          type: object
-          properties:
-            about:
-              type: string
-              description: a link that leads to further details about this particular occurrence of the problem.
-        meta:
-          type: object
-          description: a meta object containing non-standard meta-information about the error.
-        status:
-          type: string
-          description: the HTTP status code applicable to this problem, expressed as a string value.
-        source:
-          type: object
-          description: an object containing references to the source of the error, optionally including any of the following members.
-          properties:
-            parameter:
-              type: string
-              description: a string indicating which URI query parameter caused the error.
-            pointer:
-              type: string
-              description: a JSON pointer (RFC6901) to the associated entity in the request document.
-        title:
-          type: string
-          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
-    tooManyRequestsResponseError:
-      title: Too Many Requests
-      type: array
-      description: 'Access restricted for a given user or application due to undesired behavior
-
-        '
-      items:
-        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
     tooManyRequestsResponse:
       type: object
       properties:
@@ -1761,21 +1758,47 @@ components:
           type: array
           allOf:
           - $ref: '#/components/schemas/tooManyRequestsResponseError'
-    JSONAPI_Errors:
-      title: JSONAPI_Errors
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
+          type: array
+          allOf:
+          - $ref: '#/components/schemas/JSONAPI_Errors'
+    tooManyRequestsResponseError:
+      title: Too Many Requests
       type: array
-      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
-
-
-        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
-
-
-        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+      description: 'Access restricted for a given user or application due to undesired behavior
 
         '
       items:
-        $ref: '#/components/schemas/JSONAPI_Error'
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
   parameters:
+    createdBeforeParam:
+      name: filter[created_before]
+      in: query
+      description: 'Return records created before date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYYYDD
+    updatedAfterParam:
+      name: filter[updated_after]
+      in: query
+      description: 'Return records updated after date, ex: 20170101 (YYYYMMDD)'
+      required: false
+      schema:
+        type: string
+        format: YYYYYYDD
+    serviceLocationIdParam:
+      name: filter[service_location_id]
+      in: query
+      required: false
+      description: ID of Service Location
+      schema:
+        type: string
     customerNameParam:
       name: filter[name]
       in: query
@@ -1792,21 +1815,6 @@ components:
       schema:
         type: string
         format: YYYYYYDD
-    serviceLocationIdParam:
-      name: filter[service_location_id]
-      in: query
-      required: false
-      description: ID of Service Location
-      schema:
-        type: string
-    updatedAfterParam:
-      name: filter[updated_after]
-      in: query
-      description: 'Return records updated after date, ex: 20170101 (YYYYMMDD)'
-      required: false
-      schema:
-        type: string
-        format: YYYYYYDD
     dmsIdParam:
       name: filter[dms_id]
       in: query
@@ -1814,14 +1822,6 @@ components:
       required: false
       schema:
         type: string
-    createdBeforeParam:
-      name: filter[created_before]
-      in: query
-      description: 'Return records created before date, ex: 20170101 (YYYYMMDD)'
-      required: false
-      schema:
-        type: string
-        format: YYYYYYDD
     createdAfterParam:
       name: filter[created_after]
       in: query

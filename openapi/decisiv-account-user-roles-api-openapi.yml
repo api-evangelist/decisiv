@@ -118,23 +118,26 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    communication_preferences:
+    add_account_user_roles_request:
       type: object
-      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      required:
+      - data
       properties:
-        visible_as_external_recipient:
-          type: boolean
-          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
-        visible_as_internal_recipient:
-          type: boolean
-          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
-        visible_as_workflow_assignee:
-          type: boolean
-          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
-      example:
-        visible_as_external_recipient: true
-        visible_as_internal_recipient: true
-        visible_as_workflow_assignee: true
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - type
+            - id
+            properties:
+              type:
+                type: string
+                enum:
+                - roles
+              id:
+                type: string
+                format: uuid
     error_response:
       type: object
       properties:
@@ -170,26 +173,6 @@ components:
       required:
       - status
       - title
-    add_account_user_roles_request:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - type
-            - id
-            properties:
-              type:
-                type: string
-                enum:
-                - roles
-              id:
-                type: string
-                format: uuid
     errors_response:
       type: object
       properties:
@@ -206,6 +189,23 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/account_user'
+    communication_preferences:
+      type: object
+      description: Per-account visibility flags. When a key is omitted on update, the stored value is left alone. On responses, all three keys are always present, defaulting to true when no row exists for this (user, account) pair.
+      properties:
+        visible_as_external_recipient:
+          type: boolean
+          description: When false, hide this user from External users (Customer, Bill To, or Ship To contacts) in the recipients lists. Except in cases where this account owner sends an external or a public note.
+        visible_as_internal_recipient:
+          type: boolean
+          description: When false, hide this user from Internal users within the same location, dealer group, and field managers. This applies to the Notes Recipients list of cases created by this location. Except in cases where this account owner sends an internal or a public note.
+        visible_as_workflow_assignee:
+          type: boolean
+          description: When false, hide this user from the Assign To field in the Workflow section of the Editing Case page. This account owner will be hidden from the assign to list when assigning a Case.
+      example:
+        visible_as_external_recipient: true
+        visible_as_internal_recipient: true
+        visible_as_workflow_assignee: true
     account_user:
       type: object
       properties:

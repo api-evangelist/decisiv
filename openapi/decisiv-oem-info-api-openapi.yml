@@ -54,17 +54,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    JSONAPI_Links:
-      title: JSONAPI_Links
-      type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
-      properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     tooManyRequestsResponseErrorWithExample:
       title: tooManyRequestsResponseErrorWithExample
       type: object
@@ -94,13 +83,38 @@ components:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
           example: Too Many Requests
-    jsonapiErrorResponse:
+    JSONAPI_Errors:
+      title: JSONAPI_Errors
+      type: array
+      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
+
+
+        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
+
+
+        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+
+        '
+      items:
+        $ref: '#/components/schemas/JSONAPI_Error'
+    vinResponse:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/JSONAPI_Errors'
+        engine_make:
+          type: string
+          example: Cummins
+        engine_name:
+          type: string
+          example: ISX12G
+        make:
+          type: string
+          example: Kenworth
+        model:
+          type: string
+          example: T680
+        year:
+          type: string
+          example: 2017
     VinValidationError:
       type: object
       properties:
@@ -136,26 +150,6 @@ components:
       - meta
       - status
       - source
-    JSONAPI_DocumentLink:
-      title: JSONAPI_DocumentLink
-      type: string
-      description: 'A "JSON API" document link.
-
-        '
-    JSONAPI_Errors:
-      title: JSONAPI_Errors
-      type: array
-      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
-
-
-        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
-
-
-        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
-
-        '
-      items:
-        $ref: '#/components/schemas/JSONAPI_Error'
     jsonapiVinResponse:
       type: object
       properties:
@@ -234,14 +228,23 @@ components:
         title:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
-    tooManyRequestsResponseError:
-      title: Too Many Requests
-      type: array
-      description: 'Access restricted for a given user or application due to undesired behavior
+    JSONAPI_DocumentLink:
+      title: JSONAPI_DocumentLink
+      type: string
+      description: 'A "JSON API" document link.
 
         '
-      items:
-        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+    JSONAPI_Links:
+      title: JSONAPI_Links
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
     tooManyRequestsResponse:
       type: object
       properties:
@@ -251,6 +254,21 @@ components:
           type: array
           allOf:
           - $ref: '#/components/schemas/tooManyRequestsResponseError'
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
+    tooManyRequestsResponseError:
+      title: Too Many Requests
+      type: array
+      description: 'Access restricted for a given user or application due to undesired behavior
+
+        '
+      items:
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
     Error:
       type: object
       properties:
@@ -267,27 +285,15 @@ components:
       - detail
       - code
       - status
-    vinResponse:
-      type: object
-      properties:
-        engine_make:
-          type: string
-          example: Cummins
-        engine_name:
-          type: string
-          example: ISX12G
-        make:
-          type: string
-          example: Kenworth
-        model:
-          type: string
-          example: T680
-        year:
-          type: string
-          example: 2017
   responses:
     GatewayTimeout:
       description: 504 Gateway Timeout Error
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadGateway:
+      description: 502 Bad Gateway Error
       content:
         application/vnd.api+json:
           schema:
@@ -298,12 +304,6 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/VinValidationError'
-    BadGateway:
-      description: 502 Bad Gateway Error
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     fullVinRequiredParam:
       name: vin

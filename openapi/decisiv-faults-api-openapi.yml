@@ -743,6 +743,23 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -778,6 +795,56 @@ components:
       required:
       - status
       - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    faults:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            required:
+            - id
+            - type
+            - attributes
+            properties:
+              id:
+                type: string
+                format: uuid
+              type:
+                type: string
+                enum:
+                - faults
+              attributes:
+                $ref: '#/components/schemas/properties-attributes'
+              relationships:
+                type: object
+                properties:
+                  diagnostic_reading:
+                    $ref: '#/components/schemas/relationship_object'
+                  source_account:
+                    $ref: '#/components/schemas/relationship_object'
+                  asset:
+                    $ref: '#/components/schemas/relationship_object'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    format: uri
+                    description: Canonical URL of the fault resource
+        meta:
+          type: object
     properties-attributes:
       type: object
       properties:
@@ -975,73 +1042,6 @@ components:
       - triggered_at
       - active
       - details
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    faults:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            required:
-            - id
-            - type
-            - attributes
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-                enum:
-                - faults
-              attributes:
-                $ref: '#/components/schemas/properties-attributes'
-              relationships:
-                type: object
-                properties:
-                  diagnostic_reading:
-                    $ref: '#/components/schemas/relationship_object'
-                  source_account:
-                    $ref: '#/components/schemas/relationship_object'
-                  asset:
-                    $ref: '#/components/schemas/relationship_object'
-              links:
-                type: object
-                properties:
-                  self:
-                    type: string
-                    format: uri
-                    description: Canonical URL of the fault resource
-        meta:
-          type: object
     fault:
       type: object
       required:

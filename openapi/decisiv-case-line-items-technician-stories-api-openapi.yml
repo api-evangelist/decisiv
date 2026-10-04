@@ -395,6 +395,15 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     technician_story:
       type: object
       required:
@@ -463,15 +472,6 @@ components:
       required:
       - status
       - title
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     create_technician_story:
       type: object
       required:

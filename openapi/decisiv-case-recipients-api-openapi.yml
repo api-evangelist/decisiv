@@ -261,50 +261,6 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     recipients:
       type: object
       required:
@@ -316,51 +272,6 @@ components:
             $ref: '#/components/schemas/recipient_properties-data'
         meta:
           type: object
-    recipient_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            username:
-              type: string
-              description: The username inside the system
-              example: support@support.com
-            first_name:
-              type: string
-              description: First name
-              example: John
-            last_name:
-              type: string
-              description: Last name
-              example: Doe
-            name:
-              type: string
-              description: Full name
-              example: John Doe
-            email:
-              type: string
-              description: Contact email
-              example: support@support.com
-            affiliation:
-              type: object
-              properties:
-                account_name:
-                  type: string
-                  description: The account from the recipient
-                  example: Dealer Name
-                recipient_type:
-                  type: string
-                  example: other
-      required:
-      - attributes
-      - type
-      - id
     recipient:
       type: object
       required:
@@ -411,6 +322,95 @@ components:
           - attributes
           - type
           - id
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    recipient_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            username:
+              type: string
+              description: The username inside the system
+              example: support@support.com
+            first_name:
+              type: string
+              description: First name
+              example: John
+            last_name:
+              type: string
+              description: Last name
+              example: Doe
+            name:
+              type: string
+              description: Full name
+              example: John Doe
+            email:
+              type: string
+              description: Contact email
+              example: support@support.com
+            affiliation:
+              type: object
+              properties:
+                account_name:
+                  type: string
+                  description: The account from the recipient
+                  example: Dealer Name
+                recipient_type:
+                  type: string
+                  example: other
+      required:
+      - attributes
+      - type
+      - id
   securitySchemes:
     AccessToken:
       type: http

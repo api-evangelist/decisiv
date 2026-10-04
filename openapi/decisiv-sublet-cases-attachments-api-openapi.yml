@@ -460,50 +460,80 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    error_response:
+    attachments:
       type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
       required:
-      - status
-      - title
-    errors_response:
-      type: object
+      - data
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response'
+            $ref: '#/components/schemas/properties-data'
+        meta:
+          type: object
+    properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            description:
+              type: string
+              maxLength: 1024
+              description: The description of the file
+            filename:
+              type: string
+              maxLength: 256
+              description: The name of the file
+              example: example.pdf
+            size:
+              type: integer
+              maximum: 10485760
+              description: The file size in bytes (max allowed is 10 megabytes)
+              example: 2684355
+            format:
+              type: string
+              description: The file content type
+              example: application/pdf
+            download_url:
+              type: string
+              description: A temporary URL to download the file
+              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
+            created_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was created'
+              example: '2023-10-01T12:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: '`ISO 8601` timestamp indicating when the attachment was updated'
+              example: '2023-10-01T12:00:00Z'
+          required:
+          - filename
+          - size
+          - format
+          - download_url
+          - created_at
+          - updated_at
+        relationships:
+          type: object
+          properties:
+            publisher:
+              $ref: '#/components/schemas/relationship_object'
+            subject:
+              $ref: '#/components/schemas/relationship_object'
+            recipients:
+              $ref: '#/components/schemas/relationship_object'
       required:
-      - errors
+      - attributes
+      - type
+      - id
     relationship_object:
       type: object
       properties:
@@ -589,80 +619,50 @@ components:
           - attributes
           - type
           - id
-    properties-data:
+    error_response:
       type: object
       properties:
-        id:
+        status:
           type: string
-          format: uuid
-        type:
+        title:
           type: string
-        attributes:
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
           type: object
           properties:
-            description:
-              type: string
-              maxLength: 1024
-              description: The description of the file
-            filename:
-              type: string
-              maxLength: 256
-              description: The name of the file
-              example: example.pdf
-            size:
-              type: integer
-              maximum: 10485760
-              description: The file size in bytes (max allowed is 10 megabytes)
-              example: 2684355
-            format:
-              type: string
-              description: The file content type
-              example: application/pdf
-            download_url:
-              type: string
-              description: A temporary URL to download the file
-              example: https://decisiv.net/shared/downloads/7746422/get_authed?filename=example.pdf&key=184bddd6479a3e3d
-            created_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the attachment was created'
-              example: '2023-10-01T12:00:00Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: '`ISO 8601` timestamp indicating when the attachment was updated'
-              example: '2023-10-01T12:00:00Z'
-          required:
-          - filename
-          - size
-          - format
-          - download_url
-          - created_at
-          - updated_at
-        relationships:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
           type: object
-          properties:
-            publisher:
-              $ref: '#/components/schemas/relationship_object'
-            subject:
-              $ref: '#/components/schemas/relationship_object'
-            recipients:
-              $ref: '#/components/schemas/relationship_object'
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
       required:
-      - attributes
-      - type
-      - id
-    attachments:
+      - status
+      - title
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/properties-data'
-        meta:
-          type: object
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
   securitySchemes:
     AccessToken:
       type: http

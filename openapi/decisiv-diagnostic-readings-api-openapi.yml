@@ -748,6 +748,23 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -850,23 +867,6 @@ components:
                     description: Canonical URL of the diagnostic reading resource
         meta:
           type: object
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     attributes:
       type: object
       properties:

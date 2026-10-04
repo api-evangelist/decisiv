@@ -259,6 +259,52 @@ components:
       required:
       - status
       - title
+    service_network_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - service_networks
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the Service Network
+              minLength: 1
+              maxLength: 150
+      required:
+      - attributes
+      - type
+      - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    service_networks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_network_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     service_network:
       type: object
       required:
@@ -286,52 +332,6 @@ components:
           - attributes
           - type
           - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    service_network_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - service_networks
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the Service Network
-              minLength: 1
-              maxLength: 150
-      required:
-      - attributes
-      - type
-      - id
-    service_networks:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/service_network_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http

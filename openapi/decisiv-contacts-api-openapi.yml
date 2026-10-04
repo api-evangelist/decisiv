@@ -1645,41 +1645,107 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
+    contact:
       type: object
+      required:
+      - data
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
+        data:
           type: object
           properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  minLength: 2
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  minLength: 2
+                  maxLength: 100
+                notes:
+                  type: string
+                  description: Notes about the contact
+                  minLength: 2
+                  maxLength: 200
+                address1:
+                  type: string
+                  description: Primary address information
+                  maxLength: 100
+                address2:
+                  type: string
+                  description: Secondary address information
+                  maxLength: 100
+                city:
+                  type: string
+                  description: City in which the business resides
+                  maxLength: 100
+                state:
+                  type: string
+                  description: Second part of the `ISO 3166-2` code indicating the state
+                  minLength: 1
+                  maxLength: 3
+                  example: NJ
+                country:
+                  type: string
+                  description: '`ISO 3166-1` alpha-2 code indicating the country'
+                  minLength: 2
+                  maxLength: 2
+                  example: US
+                postal_code:
+                  type: string
+                  description: Postal ZIP Code
+                  maxLength: 20
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type: string
+                        description: Value of the communication method (e.g., email address, phone number)
+                        minLength: 2
+                        maxLength: 254
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+            relationships:
+              type: object
+              required:
+              - depot
+              properties:
+                depot:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - relationships
+          - type
+          - id
     contact_by_id:
       example:
         data:
@@ -1804,15 +1870,6 @@ components:
           - id
       required:
       - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     contact_properties-data:
       type: object
       properties:
@@ -1909,107 +1966,6 @@ components:
       - relationships
       - type
       - id
-    contact:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - contacts
-            attributes:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: First name of the contact
-                  minLength: 2
-                  maxLength: 100
-                last_name:
-                  type: string
-                  description: Last name of the contact
-                  minLength: 2
-                  maxLength: 100
-                notes:
-                  type: string
-                  description: Notes about the contact
-                  minLength: 2
-                  maxLength: 200
-                address1:
-                  type: string
-                  description: Primary address information
-                  maxLength: 100
-                address2:
-                  type: string
-                  description: Secondary address information
-                  maxLength: 100
-                city:
-                  type: string
-                  description: City in which the business resides
-                  maxLength: 100
-                state:
-                  type: string
-                  description: Second part of the `ISO 3166-2` code indicating the state
-                  minLength: 1
-                  maxLength: 3
-                  example: NJ
-                country:
-                  type: string
-                  description: '`ISO 3166-1` alpha-2 code indicating the country'
-                  minLength: 2
-                  maxLength: 2
-                  example: US
-                postal_code:
-                  type: string
-                  description: Postal ZIP Code
-                  maxLength: 20
-                communication:
-                  type: array
-                  description: Array of communication methods for the contact
-                  items:
-                    type: object
-                    properties:
-                      method_type:
-                        type: string
-                        description: Type of communication method (e.g., email, mobile)
-                        enum:
-                        - email
-                        - mobile
-                      value:
-                        type: string
-                        description: Value of the communication method (e.g., email address, phone number)
-                        minLength: 2
-                        maxLength: 254
-                      notify:
-                        type: boolean
-                        description: Indicates if notifications should be sent to this contact
-                    required:
-                    - method_type
-                    - value
-                    - notify
-              required:
-              - first_name
-              - last_name
-              - communication
-            relationships:
-              type: object
-              required:
-              - depot
-              properties:
-                depot:
-                  $ref: '#/components/schemas/relationship_object'
-          required:
-          - attributes
-          - relationships
-          - type
-          - id
     relationship_object:
       type: object
       properties:
@@ -2027,6 +1983,50 @@ components:
           - type
       required:
       - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     contacts:
       type: object
       required:
@@ -2038,6 +2038,72 @@ components:
             $ref: '#/components/schemas/contact_properties-data'
         meta:
           type: object
+    contact_2:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - contacts
+              - service_group_contacts
+              - registered_contacts
+            attributes:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the contact
+                  maxLength: 100
+                last_name:
+                  type: string
+                  description: Last name of the contact
+                  maxLength: 100
+                communication:
+                  type: array
+                  description: Array of communication methods for the contact
+                  items:
+                    type: object
+                    properties:
+                      method_type:
+                        type: string
+                        description: Type of communication method (e.g., email, mobile)
+                        enum:
+                        - email
+                        - mobile
+                      value:
+                        type:
+                        - string
+                        - 'null'
+                        description: Value of the communication method (e.g., email address, phone number)
+                        maxLength: 128
+                      notify:
+                        type: boolean
+                        description: Indicates if notifications should be sent to this contact
+                    required:
+                    - method_type
+                    - value
+                    - notify
+              required:
+              - first_name
+              - last_name
+              - communication
+            links:
+              type: object
+              properties:
+                self:
+                  type: string
+          required:
+          - id
+          - type
+          - attributes
+      required:
+      - data
     contact_by_id_2:
       example:
         data:
@@ -2179,72 +2245,6 @@ components:
       - id
       - type
       - attributes
-    contact_2:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - contacts
-              - service_group_contacts
-              - registered_contacts
-            attributes:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  description: First name of the contact
-                  maxLength: 100
-                last_name:
-                  type: string
-                  description: Last name of the contact
-                  maxLength: 100
-                communication:
-                  type: array
-                  description: Array of communication methods for the contact
-                  items:
-                    type: object
-                    properties:
-                      method_type:
-                        type: string
-                        description: Type of communication method (e.g., email, mobile)
-                        enum:
-                        - email
-                        - mobile
-                      value:
-                        type:
-                        - string
-                        - 'null'
-                        description: Value of the communication method (e.g., email address, phone number)
-                        maxLength: 128
-                      notify:
-                        type: boolean
-                        description: Indicates if notifications should be sent to this contact
-                    required:
-                    - method_type
-                    - value
-                    - notify
-              required:
-              - first_name
-              - last_name
-              - communication
-            links:
-              type: object
-              properties:
-                self:
-                  type: string
-          required:
-          - id
-          - type
-          - attributes
-      required:
-      - data
     contact_update:
       type: object
       required:
@@ -2298,6 +2298,21 @@ components:
           - attributes
           - type
           - id
+    contacts_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/contact_properties-data_2'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     create_contact:
       type: object
       properties:
@@ -2351,21 +2366,6 @@ components:
           - attributes
       required:
       - data
-    contacts_2:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/contact_properties-data_2'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http

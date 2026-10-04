@@ -1989,69 +1989,6 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
-    relationship_objects:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     case:
       type: object
       required:
@@ -2302,134 +2239,6 @@ components:
           - attributes
           - type
           - id
-    update_case:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  examples:
-                  - Broken truck
-                po_number:
-                  type: string
-                  description: PO number
-                  examples:
-                  - '1234'
-                auth_number:
-                  type: string
-                  description: The auth number
-                  examples:
-                  - '1234'
-                correction:
-                  type: string
-                  description: Correction details for the case
-                  writeOnly: true
-                  maxLength: 6000
-                status:
-                  type: string
-                  description: Status of the case
-                  examples:
-                  - Pick-up
-                event_timestamps:
-                  type: object
-                  description: All the timestamps related to the case
-                  properties:
-                    requested_completion_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the completion time of the case'
-                      examples:
-                      - '2022-04-14T05:23:45Z'
-                    followup_time:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
-                      examples:
-                      - '2022-04-14T05:23:45Z'
-                ro_number:
-                  type: string
-            relationships:
-              type: object
-              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; `id` must be the `uuid` of one of the fleet''s own registered contacts.'
-              properties:
-                billing_contact:
-                  type: object
-                  description: Billing contact on the case.
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - contacts
-                          - registered_contacts
-                          - recipients
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-                primary_contact:
-                  type: object
-                  description: Primary contact on the case.
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                          - contacts
-                          - registered_contacts
-                          - recipients
-                        id:
-                          type: string
-                          format: uuid
-                      required:
-                      - type
-                      - id
-                  required:
-                  - data
-          required:
-          - id
-          - type
-          - attributes
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
     properties-data:
       type: object
       properties:
@@ -2675,6 +2484,197 @@ components:
       - attributes
       - type
       - id
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    relationship_objects:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
+      required:
+      - data
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    update_case:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  examples:
+                  - Broken truck
+                po_number:
+                  type: string
+                  description: PO number
+                  examples:
+                  - '1234'
+                auth_number:
+                  type: string
+                  description: The auth number
+                  examples:
+                  - '1234'
+                correction:
+                  type: string
+                  description: Correction details for the case
+                  writeOnly: true
+                  maxLength: 6000
+                status:
+                  type: string
+                  description: Status of the case
+                  examples:
+                  - Pick-up
+                event_timestamps:
+                  type: object
+                  description: All the timestamps related to the case
+                  properties:
+                    requested_completion_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the completion time of the case'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                    followup_time:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating the next check-in point between Customer / Provider'
+                      examples:
+                      - '2022-04-14T05:23:45Z'
+                ro_number:
+                  type: string
+            relationships:
+              type: object
+              description: 'Relationships that may be reassigned on update. Each value follows the JSON:API `{ data: { type, id } }` shape; `id` must be the `uuid` of one of the fleet''s own registered contacts.'
+              properties:
+                billing_contact:
+                  type: object
+                  description: Billing contact on the case.
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                          - registered_contacts
+                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+                primary_contact:
+                  type: object
+                  description: Primary contact on the case.
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - contacts
+                          - registered_contacts
+                          - recipients
+                        id:
+                          type: string
+                          format: uuid
+                      required:
+                      - type
+                      - id
+                  required:
+                  - data
+          required:
+          - id
+          - type
+          - attributes
     cases:
       type: object
       required:
@@ -2686,6 +2686,49 @@ components:
             $ref: '#/components/schemas/properties-data'
         meta:
           type: object
+    case_update_meter_data_odometer_meter:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Odometer readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - odometer
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - mi
+                        - km
+                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
     case_2:
       type: object
       required:
@@ -3170,48 +3213,6 @@ components:
           - relationships
           - type
           - id
-    case_update_meter_data_eng_hours:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                meter_data:
-                  type: array
-                  description: Engine-hours meter readings to record on the case.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - engine_hours
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - hr
-                        description: Unit of measurement for given meter data. Valid unit for `engine_hours` is `hr`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-          required:
-          - attributes
-          - type
-          - id
     case_update_meter_data_switch_hours:
       type: object
       required:
@@ -3254,91 +3255,28 @@ components:
           - attributes
           - type
           - id
-    case_update_meter_data_stand_hours:
+    cases_2:
       type: object
       required:
       - data
       properties:
         data:
+          type: array
+          items:
+            $ref: '#/components/schemas/data'
+        meta:
           type: object
           properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
+            metadata:
               type: object
               properties:
-                meter_data:
-                  type: array
-                  description: Stand-by-hours meter readings to record on the case.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - stand_by_hours
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - hr
-                        description: Unit of measurement for given meter data. Valid unit for `stand_by_hours` is `hr`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-          required:
-          - attributes
-          - type
-          - id
-    case_update_meter_data_odometer_meter:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - cases
-            attributes:
-              type: object
-              properties:
-                meter_data:
-                  type: array
-                  description: Odometer readings to record on the case.
-                  items:
-                    type: object
-                    description: Type of meter data
-                    properties:
-                      meter:
-                        type: string
-                        enum:
-                        - odometer
-                        description: Meter data type to be changed
-                      unit:
-                        type: string
-                        enum:
-                        - mi
-                        - km
-                        description: Unit of measurement for given meter data. Valid units for `odometer` are `mi` and `km`.
-                      value:
-                        type: integer
-                        description: Reading value for the given meter data
-          required:
-          - attributes
-          - type
-          - id
+                record-count:
+                  type:
+                  - integer
+                  - 'null'
+                  description: 'Total record count for the query. Intentionally null in degraded mode to avoid expensive COUNT queries; paginate until a page returns fewer items than `page[size]`.
+
+                    '
     case_update:
       type: object
       required:
@@ -3691,6 +3629,90 @@ components:
           - id
           - type
           - attributes
+    case_update_meter_data_stand_hours:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Stand-by-hours meter readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - stand_by_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `stand_by_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
+    case_update_meter_data_eng_hours:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - cases
+            attributes:
+              type: object
+              properties:
+                meter_data:
+                  type: array
+                  description: Engine-hours meter readings to record on the case.
+                  items:
+                    type: object
+                    description: Type of meter data
+                    properties:
+                      meter:
+                        type: string
+                        enum:
+                        - engine_hours
+                        description: Meter data type to be changed
+                      unit:
+                        type: string
+                        enum:
+                        - hr
+                        description: Unit of measurement for given meter data. Valid unit for `engine_hours` is `hr`.
+                      value:
+                        type: integer
+                        description: Reading value for the given meter data
+          required:
+          - attributes
+          - type
+          - id
     data:
       type: object
       properties:
@@ -4170,28 +4192,6 @@ components:
       - relationships
       - type
       - id
-    cases_2:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/data'
-        meta:
-          type: object
-          properties:
-            metadata:
-              type: object
-              properties:
-                record-count:
-                  type:
-                  - integer
-                  - 'null'
-                  description: 'Total record count for the query. Intentionally null in degraded mode to avoid expensive COUNT queries; paginate until a page returns fewer items than `page[size]`.
-
-                    '
   securitySchemes:
     AccessToken:
       type: http

@@ -191,6 +191,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -226,15 +243,6 @@ components:
       required:
       - status
       - title
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     additional_charge:
       type: object
       required:
@@ -303,6 +311,15 @@ components:
           - attributes
           - type
           - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     update_relationship_additional_charges:
       type: object
       properties:
@@ -317,23 +334,6 @@ components:
           required:
           - type
           - id
-      required:
-      - data
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
       required:
       - data
   securitySchemes:

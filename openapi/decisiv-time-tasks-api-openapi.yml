@@ -895,7 +895,24 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    time_task_update:
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
+    time_task:
       type: object
       required:
       - data
@@ -908,6 +925,8 @@ components:
               format: uuid
             type:
               type: string
+              enum:
+              - time_tasks
             attributes:
               type: object
               properties:
@@ -917,17 +936,33 @@ components:
                   maxLength: 255
                 event_timestamps:
                   type: object
+                  required:
+                  - started_at
                   description: All the timestamps related to the time task
                   properties:
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Time task was initiated'
+                      example: '2022-04-14T05:23:45Z'
                     stopped_at:
                       type: string
                       format: date-time
                       description: '`ISO 8601` timestamp indicating the completion time of the Time task'
                       example: '2022-04-14T05:23:45Z'
+              required:
+              - event_timestamps
+            relationships:
+              type: object
+              properties:
+                subject:
+                  $ref: '#/components/schemas/relationship_object'
+                employee:
+                  $ref: '#/components/schemas/relationship_object'
           required:
+          - attributes
           - type
           - id
-          - attributes
     error_response:
       type: object
       properties:
@@ -1010,44 +1045,7 @@ components:
           required:
           - attributes
           - type
-    time_tasks:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/time_task'
-        meta:
-          type: object
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    relationship_object:
-      type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
-      required:
-      - data
-    time_task:
+    time_task_update:
       type: object
       required:
       - data
@@ -1060,8 +1058,6 @@ components:
               format: uuid
             type:
               type: string
-              enum:
-              - time_tasks
             attributes:
               type: object
               properties:
@@ -1071,33 +1067,37 @@ components:
                   maxLength: 255
                 event_timestamps:
                   type: object
-                  required:
-                  - started_at
                   description: All the timestamps related to the time task
                   properties:
-                    started_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Time task was initiated'
-                      example: '2022-04-14T05:23:45Z'
                     stopped_at:
                       type: string
                       format: date-time
                       description: '`ISO 8601` timestamp indicating the completion time of the Time task'
                       example: '2022-04-14T05:23:45Z'
-              required:
-              - event_timestamps
-            relationships:
-              type: object
-              properties:
-                subject:
-                  $ref: '#/components/schemas/relationship_object'
-                employee:
-                  $ref: '#/components/schemas/relationship_object'
           required:
-          - attributes
           - type
           - id
+          - attributes
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    time_tasks:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/time_task'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http
