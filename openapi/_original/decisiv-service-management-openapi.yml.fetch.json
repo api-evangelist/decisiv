@@ -1,0 +1,12 @@
+{
+ "url": "https://srm-api.decisivapps.com/swagger-docs/v1/service_management_swagger.json",
+ "requested_url": "https://srm-api.decisivapps.com/swagger-docs/v1/service_management_swagger.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 877541,
+ "sha256": "aa8fad5fc409d7390f61fc0ff5c21904b661ff89313ef59b962dfced6aa8abc9",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.993), but the bytes differ, so the archive is an earlier or reformatted copy."
+}

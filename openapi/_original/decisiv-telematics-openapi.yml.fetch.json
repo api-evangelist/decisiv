@@ -1,0 +1,12 @@
+{
+ "url": "https://srm-api.decisivapps.com/swagger-docs/v1/telematics_swagger.json",
+ "requested_url": "https://srm-api.decisivapps.com/swagger-docs/v1/telematics_swagger.json",
+ "status": 200,
+ "content_type": "application/json; charset=utf-8",
+ "bytes": 62676,
+ "sha256": "66d6e6afc4402b002307fd03febb421ec830c5b841f1bea9c0659cfb6a322141",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
