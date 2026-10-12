@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/decisiv/integrations
+- https://n8n.io/integrations/decisiv/
+- https://composio.dev/toolkits/decisiv
+- https://monid.ai/tools/decisiv
+checked:
+- https://composio.dev/toolkits/decisiv
+- https://monid.ai/tools/decisiv
+- https://n8n.io/integrations/decisiv/
+- https://zapier.com/apps/decisiv/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
