@@ -1,16 +1,33 @@
 generated: '2026-10-12'
-method: none
+method: searched
 source:
 - https://zapier.com/apps/decisiv/integrations
 - https://n8n.io/integrations/decisiv/
 - https://composio.dev/toolkits/decisiv
 - https://monid.ai/tools/decisiv
 checked:
+- geotab/integrations/geotab-integration-edges.yml
 - https://composio.dev/toolkits/decisiv
 - https://monid.ai/tools/decisiv
 - https://n8n.io/integrations/decisiv/
 - https://zapier.com/apps/decisiv/integrations
 summary: null
 marketplace_apps: []
-edges: []
+edges:
+- partner_name: Geotab (own)
+  partner: geotab
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.geotab.com/partner/decisiv-inc./
+  mirror_of: geotab/integrations/geotab-integration-edges.yml
+  apps:
+  - Decisiv Inc.
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
 templates: []
