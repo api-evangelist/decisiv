@@ -53,50 +53,26 @@ paths:
       summary: Get vin information
       x-summary-source: derived
 components:
+  responses:
+    BadRequestVinValidation:
+      description: 400 Bad Request
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/VinValidationError'
+    GatewayTimeout:
+      description: 504 Gateway Timeout Error
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadGateway:
+      description: 502 Bad Gateway Error
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    tooManyRequestsResponseErrorWithExample:
-      title: tooManyRequestsResponseErrorWithExample
-      type: object
-      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
-
-        An error object MAY have the following members.
-
-        '
-      properties:
-        code:
-          type: string
-          description: an application-specific error code, expressed as a string value.
-          example: '429'
-        detail:
-          type: string
-          description: 'A human-readable explanation specific to this occurrence of the problem.
-
-            Like `title`, this field''s value can be localized.
-
-            '
-          example: The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.
-        status:
-          type: string
-          description: the HTTP status code applicable to this problem, expressed as a string value.
-          example: '429'
-        title:
-          type: string
-          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
-          example: Too Many Requests
-    JSONAPI_Errors:
-      title: JSONAPI_Errors
-      type: array
-      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
-
-
-        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
-
-
-        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
-
-        '
-      items:
-        $ref: '#/components/schemas/JSONAPI_Error'
     vinResponse:
       type: object
       properties:
@@ -115,41 +91,61 @@ components:
         year:
           type: string
           example: 2017
-    VinValidationError:
+    Error:
       type: object
       properties:
         title:
           type: string
-          example: Invalid format
         detail:
           type: string
-          example: vin - invalid format
         code:
           type: string
-          example: '100'
-        meta:
-          type: object
-          properties:
-            decisiv_code:
-              type: string
-              description: "The error code why the VIN is invalid. Error codes: \n* invalid check digit: '100:vins:01' \n* invalid size: '100:vins:02' \n* invalid charater_i: '100:vins:03' \n* invalid charater o: '100:vins:04' \n* invalid charater q: '100:vins:05' \n* invalid format: '100:vins:06'"
-              example: 100:vins:06
         status:
           type: string
-          example: '400'
-        source:
-          type: object
-          properties:
-            pointer:
-              type: string
-              example: /data/attributes/vin
       required:
       - title
       - detail
       - code
-      - meta
       - status
-      - source
+    JSONAPI_Links:
+      title: JSONAPI_Links
+      type: object
+      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
+
+        '
+      properties:
+        self:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        related:
+          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+    JSONAPI_Errors:
+      title: JSONAPI_Errors
+      type: array
+      description: 'A server MAY choose to stop processing as soon as a problem is encountered, or it MAY continue processing and encounter multiple problems.
+
+
+        When a server encounters multiple problems for a single request, the most generally applicaple HTTP error code SHOULD be used in the response.
+
+
+        For instance, `400 Bad Request` might be appropriate for multiple 4xx errors or `500 Internal Server Error` might be appropriate for multiple 5xx errors.
+
+        '
+      items:
+        $ref: '#/components/schemas/JSONAPI_Error'
+    tooManyRequestsResponseError:
+      title: Too Many Requests
+      type: array
+      description: 'Access restricted for a given user or application due to undesired behavior
+
+        '
+      items:
+        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
+    JSONAPI_DocumentLink:
+      title: JSONAPI_DocumentLink
+      type: string
+      description: 'A "JSON API" document link.
+
+        '
     jsonapiVinResponse:
       type: object
       properties:
@@ -228,23 +224,48 @@ components:
         title:
           type: string
           description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
-    JSONAPI_DocumentLink:
-      title: JSONAPI_DocumentLink
-      type: string
-      description: 'A "JSON API" document link.
-
-        '
-    JSONAPI_Links:
-      title: JSONAPI_Links
+    VinValidationError:
       type: object
-      description: 'Where specific, a links member can be used to represent links. The value of each "links" member MUST be a `links` object.
-
-        '
       properties:
-        self:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
-        related:
-          $ref: '#/components/schemas/JSONAPI_DocumentLink'
+        title:
+          type: string
+          example: Invalid format
+        detail:
+          type: string
+          example: vin - invalid format
+        code:
+          type: string
+          example: '100'
+        meta:
+          type: object
+          properties:
+            decisiv_code:
+              type: string
+              description: "The error code why the VIN is invalid. Error codes: \n* invalid check digit: '100:vins:01' \n* invalid size: '100:vins:02' \n* invalid charater_i: '100:vins:03' \n* invalid charater o: '100:vins:04' \n* invalid charater q: '100:vins:05' \n* invalid format: '100:vins:06'"
+              example: 100:vins:06
+        status:
+          type: string
+          example: '400'
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              example: /data/attributes/vin
+      required:
+      - title
+      - detail
+      - code
+      - meta
+      - status
+      - source
+    jsonapiErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/JSONAPI_Errors'
     tooManyRequestsResponse:
       type: object
       properties:
@@ -254,56 +275,35 @@ components:
           type: array
           allOf:
           - $ref: '#/components/schemas/tooManyRequestsResponseError'
-    jsonapiErrorResponse:
+    tooManyRequestsResponseErrorWithExample:
+      title: tooManyRequestsResponseErrorWithExample
       type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/JSONAPI_Errors'
-    tooManyRequestsResponseError:
-      title: Too Many Requests
-      type: array
-      description: 'Access restricted for a given user or application due to undesired behavior
+      description: 'Error objects provide additional information about problems encountered while performing an operation. Error objects MUST be returned as an array keyed by `errors` in the top level of a JSON API document.
+
+        An error object MAY have the following members.
 
         '
-      items:
-        $ref: '#/components/schemas/tooManyRequestsResponseErrorWithExample'
-    Error:
-      type: object
       properties:
-        title:
-          type: string
-        detail:
-          type: string
         code:
           type: string
+          description: an application-specific error code, expressed as a string value.
+          example: '429'
+        detail:
+          type: string
+          description: 'A human-readable explanation specific to this occurrence of the problem.
+
+            Like `title`, this field''s value can be localized.
+
+            '
+          example: The maximum number of requests for this application has been far exceeded with the given credentials. Please refer to the Retry-After header for additional information about when requests may be successfully processed again.
         status:
           type: string
-      required:
-      - title
-      - detail
-      - code
-      - status
-  responses:
-    GatewayTimeout:
-      description: 504 Gateway Timeout Error
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadGateway:
-      description: 502 Bad Gateway Error
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequestVinValidation:
-      description: 400 Bad Request
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/VinValidationError'
+          description: the HTTP status code applicable to this problem, expressed as a string value.
+          example: '429'
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that should not change from occurrence to occurrence of the problem, except for purposes of localization.
+          example: Too Many Requests
   parameters:
     fullVinRequiredParam:
       name: vin

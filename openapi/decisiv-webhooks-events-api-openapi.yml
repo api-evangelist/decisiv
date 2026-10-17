@@ -88,6 +88,17 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
+    webhook_events:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook_event'
+        meta:
+          type: object
     error_response:
       type: object
       properties:
@@ -123,17 +134,6 @@ components:
       required:
       - status
       - title
-    webhook_events:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/webhook_event'
-        meta:
-          type: object
     webhook_event:
       type: object
       properties:

@@ -178,6 +178,21 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
+    sublet_case_line_items:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/sublet_case_line_item_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     error_response:
       type: object
       properties:
@@ -401,21 +416,6 @@ components:
       - attributes
       - type
       - id
-    sublet_case_line_items:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/sublet_case_line_item_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
   securitySchemes:
     AccessToken:
       type: http

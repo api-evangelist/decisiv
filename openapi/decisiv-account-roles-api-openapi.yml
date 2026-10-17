@@ -194,6 +194,35 @@ components:
       - attributes
       - type
       - id
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    roles:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/role'
+        meta:
+          type: object
+        links:
+          type: object
+    role_by_id:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/role'
     error_response:
       type: object
       properties:
@@ -229,35 +258,6 @@ components:
       required:
       - status
       - title
-    role_by_id:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/role'
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    roles:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/role'
-        meta:
-          type: object
-        links:
-          type: object
   securitySchemes:
     AccessToken:
       type: http

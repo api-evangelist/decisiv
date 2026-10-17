@@ -465,6 +465,15 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
     participant:
       type: object
       required:
@@ -513,6 +522,38 @@ components:
             $ref: '#/components/schemas/participant_properties-data'
         meta:
           type: object
+    participant_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Participant name
+              example: Pilot Travel Centers
+            scopes:
+              type: array
+              description: A list of scopes to which the participant belongs.
+              items:
+                type: string
+                description: Name of the scope
+              minItems: 1
+              example:
+              - service_provider
+              - billing_customer
+              - customer
+              - originator
+              - other
+      required:
+      - attributes
+      - type
+      - id
     error_response:
       type: object
       properties:
@@ -548,47 +589,6 @@ components:
       required:
       - status
       - title
-    participant_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Participant name
-              example: Pilot Travel Centers
-            scopes:
-              type: array
-              description: A list of scopes to which the participant belongs.
-              items:
-                type: string
-                description: Name of the scope
-              minItems: 1
-              example:
-              - service_provider
-              - billing_customer
-              - customer
-              - originator
-              - other
-      required:
-      - attributes
-      - type
-      - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     participant_2:
       type: object
       required:

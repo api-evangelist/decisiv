@@ -85,33 +85,6 @@ components:
             $ref: '#/components/schemas/error_response'
       required:
       - errors
-    line_item_internal_labels:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - line_item_internal_labels
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Name of line item status
-                  minLength: 1
-                  maxLength: 150
-          required:
-          - attributes
-          - type
-          - id
     error_response:
       type: object
       properties:
@@ -147,6 +120,33 @@ components:
       required:
       - status
       - title
+    line_item_internal_labels:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - line_item_internal_labels
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of line item status
+                  minLength: 1
+                  maxLength: 150
+          required:
+          - attributes
+          - type
+          - id
   securitySchemes:
     AccessToken:
       type: http

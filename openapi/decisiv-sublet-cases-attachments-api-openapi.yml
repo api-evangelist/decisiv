@@ -460,17 +460,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    attachments:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/properties-data'
-        meta:
-          type: object
     properties-data:
       type: object
       properties:
@@ -534,23 +523,15 @@ components:
       - attributes
       - type
       - id
-    relationship_object:
+    errors_response:
       type: object
       properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
       required:
-      - data
+      - errors
     attachment:
       type: object
       required:
@@ -619,6 +600,34 @@ components:
           - attributes
           - type
           - id
+    attachments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/properties-data'
+        meta:
+          type: object
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -654,15 +663,6 @@ components:
       required:
       - status
       - title
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
   securitySchemes:
     AccessToken:
       type: http

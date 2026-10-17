@@ -926,6 +926,26 @@ components:
           items:
             anyOf:
             - $ref: '#/components/schemas/service_provider'
+    errors_response:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    customer_assets:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/customer_asset_properties-data'
+        meta:
+          type: object
     customer_asset_properties-data:
       type: object
       properties:
@@ -1081,98 +1101,73 @@ components:
       - relationships
       - type
       - id
-    error_response_with_header:
+    errors_response_with_header:
       type: object
       properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-            header:
-              type:
-              - string
-              - 'null'
-              description: The request header the error refers to (e.g. X-DECISIV-IDEMPOTENCY-KEY).
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/error_response_with_header'
       required:
-      - status
-      - title
-    relationship_object:
+      - errors
+    service_provider:
       type: object
+      required:
+      - data
       properties:
         data:
-          type:
-          - object
-          - 'null'
+          type: object
           properties:
             id:
               type: string
+              format: uuid
             type:
               type: string
+              enum:
+              - service_providers
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                postal_code:
+                  type: string
+                country:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                fax:
+                  type: string
+                location:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                    distance_from_geolocation:
+                      type: number
+                      description: Present only when filtering by `geolocation.point`.
+            relationships:
+              type: object
+              properties:
+                service_networks:
+                  $ref: '#/components/schemas/relationship_objects'
           required:
-          - id
+          - attributes
           - type
-      required:
-      - data
-    error_response:
-      type: object
-      properties:
-        status:
-          type: string
-        title:
-          type: string
-        detail:
-          type:
-          - string
-          - 'null'
-        code:
-          type:
-          - string
-          - 'null'
-        source:
-          type: object
-          properties:
-            parameter:
-              type:
-              - string
-              - 'null'
-            pointer:
-              type:
-              - string
-              - 'null'
-        links:
-          type: object
-          description: Links related to this error (e.g. documentation reference).
-          additionalProperties:
-            type: string
-            format: uri
-      required:
-      - status
-      - title
+          - id
     customer_asset_by_id:
       example:
         data:
@@ -1321,149 +1316,23 @@ components:
           - id
       required:
       - data
-    relationship_objects:
+    relationship_object:
       type: object
       properties:
         data:
-          type: array
-          items:
-            type:
-            - object
-            - 'null'
-            properties:
-              id:
-                type: string
-              type:
-                type: string
-            required:
-            - id
-            - type
-      required:
-      - data
-    service_history:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
+          type:
+          - object
+          - 'null'
           properties:
             id:
               type: string
-              format: uuid
             type:
               type: string
-              enum:
-              - in_network_cases
-            attributes:
-              type: object
-              properties:
-                reference_number:
-                  type: integer
-                  description: Integer representation of the Case ID inside of the User Interface
-                complaint:
-                  type: string
-                  description: Initially reported information from driver or other customer entity
-                  maxLength: 6000
-                cause:
-                  type: string
-                  description: Documentation of the technical failure assessed by the Service Location
-                correction:
-                  type: string
-                  description: Summary of the actual work accomplished to address the reported issue
-                repair_status:
-                  type: string
-                  description: Name of the repair status
-                event_timestamps:
-                  type: object
-                  description: Timestamp attributes relfecting key events surround the case
-                  properties:
-                    closed_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
-                      example: '2025-06-19T12:41:31Z'
-                    started_at:
-                      type: string
-                      format: date-time
-                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
-                      example: '2025-06-19T11:11:31Z'
-            relationships:
-              type: object
-              properties:
-                service_provider:
-                  $ref: '#/components/schemas/relationship_object'
           required:
-          - attributes
-          - type
           - id
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
-    service_provider:
-      type: object
+          - type
       required:
       - data
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-            type:
-              type: string
-              enum:
-              - service_providers
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                address1:
-                  type: string
-                address2:
-                  type: string
-                city:
-                  type: string
-                state:
-                  type: string
-                postal_code:
-                  type: string
-                country:
-                  type: string
-                email:
-                  type: string
-                  format: email
-                phone:
-                  type: string
-                fax:
-                  type: string
-                location:
-                  type: object
-                  properties:
-                    latitude:
-                      type: number
-                    longitude:
-                      type: number
-                    distance_from_geolocation:
-                      type: number
-                      description: Present only when filtering by `geolocation.point`.
-            relationships:
-              type: object
-              properties:
-                service_networks:
-                  $ref: '#/components/schemas/relationship_objects'
-          required:
-          - attributes
-          - type
-          - id
     service_group_customer_asset_create_case:
       type: object
       properties:
@@ -1702,26 +1571,157 @@ components:
           - attributes
       required:
       - data
-    errors_response_with_header:
+    relationship_objects:
       type: object
       properties:
-        errors:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/error_response_with_header'
+            type:
+            - object
+            - 'null'
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+            required:
+            - id
+            - type
       required:
-      - errors
-    customer_assets:
+      - data
+    service_history:
       type: object
       required:
       - data
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/customer_asset_properties-data'
-        meta:
           type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            type:
+              type: string
+              enum:
+              - in_network_cases
+            attributes:
+              type: object
+              properties:
+                reference_number:
+                  type: integer
+                  description: Integer representation of the Case ID inside of the User Interface
+                complaint:
+                  type: string
+                  description: Initially reported information from driver or other customer entity
+                  maxLength: 6000
+                cause:
+                  type: string
+                  description: Documentation of the technical failure assessed by the Service Location
+                correction:
+                  type: string
+                  description: Summary of the actual work accomplished to address the reported issue
+                repair_status:
+                  type: string
+                  description: Name of the repair status
+                event_timestamps:
+                  type: object
+                  description: Timestamp attributes relfecting key events surround the case
+                  properties:
+                    closed_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was marked as completed and closed'
+                      example: '2025-06-19T12:41:31Z'
+                    started_at:
+                      type: string
+                      format: date-time
+                      description: '`ISO 8601` timestamp indicating when the Case was first opened'
+                      example: '2025-06-19T11:11:31Z'
+            relationships:
+              type: object
+              properties:
+                service_provider:
+                  $ref: '#/components/schemas/relationship_object'
+          required:
+          - attributes
+          - type
+          - id
+    error_response_with_header:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+            header:
+              type:
+              - string
+              - 'null'
+              description: The request header the error refers to (e.g. X-DECISIV-IDEMPOTENCY-KEY).
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
+    error_response:
+      type: object
+      properties:
+        status:
+          type: string
+        title:
+          type: string
+        detail:
+          type:
+          - string
+          - 'null'
+        code:
+          type:
+          - string
+          - 'null'
+        source:
+          type: object
+          properties:
+            parameter:
+              type:
+              - string
+              - 'null'
+            pointer:
+              type:
+              - string
+              - 'null'
+        links:
+          type: object
+          description: Links related to this error (e.g. documentation reference).
+          additionalProperties:
+            type: string
+            format: uri
+      required:
+      - status
+      - title
   securitySchemes:
     AccessToken:
       type: http

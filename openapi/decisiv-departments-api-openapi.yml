@@ -131,6 +131,41 @@ paths:
                 $ref: '#/components/schemas/errors_response'
 components:
   schemas:
+    department_properties-data:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'The department code. Note: this is a dealer-scoped string code (e.g. "SERVICE"), not a UUID.'
+        type:
+          type: string
+          enum:
+          - departments
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the Department
+      required:
+      - attributes
+      - type
+      - id
+    departments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/department_properties-data'
+        meta:
+          type: object
+          properties:
+            record-count:
+              type: integer
+              description: Total count across all pages
     errors_response:
       type: object
       properties:
@@ -175,41 +210,6 @@ components:
       required:
       - status
       - title
-    departments:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/department_properties-data'
-        meta:
-          type: object
-          properties:
-            record-count:
-              type: integer
-              description: Total count across all pages
-    department_properties-data:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 'The department code. Note: this is a dealer-scoped string code (e.g. "SERVICE"), not a UUID.'
-        type:
-          type: string
-          enum:
-          - departments
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-              description: Name of the Department
-      required:
-      - attributes
-      - type
-      - id
   securitySchemes:
     AccessToken:
       type: http

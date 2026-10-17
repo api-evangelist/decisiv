@@ -981,34 +981,41 @@ paths:
     - url: https://srm-api.decisivapps.com
 components:
   schemas:
-    attachments:
+    errors_response:
       type: object
-      required:
-      - data
       properties:
-        data:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/attachment_properties-data'
-        meta:
-          type: object
-    relationship_object:
+            $ref: '#/components/schemas/error_response'
+      required:
+      - errors
+    create_attachment:
       type: object
-      properties:
-        data:
-          type:
-          - object
-          - 'null'
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-          required:
-          - id
-          - type
       required:
       - data
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: object
+              properties:
+                description:
+                  type: string
+                  maxLength: 1024
+                  description: The description of the file
+                url:
+                  type: string
+                  maxLength: 255
+                  description: The URL of the file
+              required:
+              - url
+          required:
+          - attributes
+          - type
     attachment:
       type: object
       required:
@@ -1078,6 +1085,34 @@ components:
           - attributes
           - type
           - id
+    attachments:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/attachment_properties-data'
+        meta:
+          type: object
+    relationship_object:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+          required:
+          - id
+          - type
+      required:
+      - data
     error_response:
       type: object
       properties:
@@ -1113,41 +1148,6 @@ components:
       required:
       - status
       - title
-    create_attachment:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-            attributes:
-              type: object
-              properties:
-                description:
-                  type: string
-                  maxLength: 1024
-                  description: The description of the file
-                url:
-                  type: string
-                  maxLength: 255
-                  description: The URL of the file
-              required:
-              - url
-          required:
-          - attributes
-          - type
-    errors_response:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/error_response'
-      required:
-      - errors
     attachment_properties-data:
       type: object
       properties:
@@ -1212,17 +1212,6 @@ components:
       - attributes
       - type
       - id
-    attachments_2:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/properties-data'
-        meta:
-          type: object
     properties-data:
       type: object
       properties:
@@ -1354,6 +1343,17 @@ components:
           - attributes
           - type
           - id
+    attachments_2:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/properties-data'
+        meta:
+          type: object
   securitySchemes:
     AccessToken:
       type: http
